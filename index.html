@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DCF Master - Fix 2026</title>
+    <title>DCF Master - 2026 Compatible</title>
     <style>
         :root { --bg: #0b0e11; --card: #1e2329; --text: #eaecef; --blurple: #f0b90b; --green: #0ecb81; --red: #f6465d; }
-        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); display: flex; justify-content: center; padding: 20px; }
-        .container { background: var(--card); padding: 30px; border-radius: 16px; box-shadow: 0 12px 40px rgba(0,0,0,0.6); width: 100%; max-width: 450px; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); display: flex; justify-content: center; padding: 20px; margin: 0; }
+        .container { background: var(--card); padding: 30px; border-radius: 16px; box-shadow: 0 12px 40px rgba(0,0,0,0.6); width: 100%; max-width: 480px; }
         h1 { font-size: 1.5rem; color: var(--blurple); text-align: center; margin-bottom: 25px; }
         .search-group { display: flex; gap: 10px; margin-bottom: 10px; }
         input { flex: 1; padding: 12px; background: #2b3139; border: 1px solid #474d57; border-radius: 8px; color: #fff; font-size: 1rem; }
@@ -20,14 +20,14 @@
 <body>
 
 <div class="container">
-    <h1>📊 DCF MASTER</h1>
+    <h1>📊 DCF CALCULATOR</h1>
     
     <div class="search-group">
-        <input type="text" id="ticker" placeholder="Tape NVDA ou AAPL">
+        <input type="text" id="ticker" placeholder="Ex: AAPL">
         <button class="btn-fetch" onclick="fetchData()">ANALYSER</button>
     </div>
     
-    <div id="status">Prêt. Entrez un ticker US uniquement.</div>
+    <div id="status">Prêt. Entrez un ticker US (ex: NVDA).</div>
 
     <div id="uiSection" class="ui-section">
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
@@ -58,32 +58,26 @@ let stock = {};
 async function fetchData() {
     let t = document.getElementById('ticker').value.trim().toUpperCase();
     if(!t) return;
-    
-    // Correction automatique des erreurs de frappe communes
-    if(t === "APPAL") t = "AAPL";
+    if(t === "APPAL") t = "AAPL"; // Auto-correction
 
     const status = document.getElementById('status');
-    status.innerText = "⌛ Connexion aux routes Stable v3...";
+    status.innerText = "⌛ Connexion API v3 (Query Mode)...";
     status.style.color = "#848e9c";
 
     try {
-        // En 2026, FMP exige l'utilisation des versions stables et des paramètres annuels
+        // LE CHANGEMENT EST ICI : On utilise ?symbol=TICKER au lieu de /TICKER
+        // C'est la seule méthode acceptée pour les nouveaux comptes
         const [pRes, cRes] = await Promise.all([
-            fetch(`https://financialmodelingprep.com/api/v3/profile/${t}?apikey=${API_KEY}`),
-            fetch(`https://financialmodelingprep.com/api/v3/cash-flow-statement/${t}?period=annual&apikey=${API_KEY}`)
+            fetch(`https://financialmodelingprep.com/api/v3/profile?symbol=${t}&apikey=${API_KEY}`),
+            fetch(`https://financialmodelingprep.com/api/v3/cash-flow-statement?symbol=${t}&period=annual&apikey=${API_KEY}`)
         ]);
 
         const profile = await pRes.json();
         const cashflow = await cRes.json();
 
-        // Analyse de l'erreur Legacy
-        if (profile["Error Message"] && profile["Error Message"].includes("Legacy")) {
-            throw new Error("API : Route bloquée. Ce compte nécessite les routes Stable.");
-        }
-        
-        if (!profile[0] || !cashflow[0]) {
-            throw new Error("Ticker non trouvé. Note : Le plan gratuit est limité aux actions US (NASDAQ/NYSE).");
-        }
+        // Gestion d'erreur spécifique
+        if (profile["Error Message"]) throw new Error("API Error: " + profile["Error Message"]);
+        if (!profile[0]) throw new Error("Action introuvable (US Only).");
 
         stock = {
             price: profile[0].price,
@@ -93,7 +87,7 @@ async function fetchData() {
             symbol: profile[0].symbol
         };
 
-        status.innerText = `✅ Données de ${stock.symbol} chargées (Stable).`;
+        status.innerText = `✅ Données de ${stock.symbol} chargées.`;
         status.style.color = "#0ecb81";
         document.getElementById('uiSection').style.display = "block";
         calculate();
@@ -109,11 +103,10 @@ function calculate() {
     const growth = parseFloat(document.getElementById('growth').value)/100;
     const mult = parseFloat(document.getElementById('mult').value);
     
-    // Formule exacte du Bot : Projection 5 ans -> Multiple -> Actualisation 10%
+    // Formule Bot Discord
     const futureMetric = stock[metric] * Math.pow(1 + growth, 5);
     const futurePrice = (futureMetric * mult) / stock.shares;
     const fairToday = futurePrice / Math.pow(1.10, 5);
-    
     const upside = ((fairToday - stock.price) / stock.price) * 100;
 
     document.getElementById('outFair').innerText = fairToday.toFixed(2) + " $";
