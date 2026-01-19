@@ -3,105 +3,116 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DCF Master - Fix 2026</title>
+    <title>DCF Master - Version Stable 2026</title>
     <style>
         :root { --bg: #0b0e11; --card: #1e2329; --text: #eaecef; --blurple: #f0b90b; --green: #0ecb81; --red: #f6465d; --input-bg: #2b3139; }
         body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); display: flex; justify-content: center; padding: 20px; margin: 0; }
         .container { background: var(--card); padding: 30px; border-radius: 16px; box-shadow: 0 12px 40px rgba(0,0,0,0.6); width: 100%; max-width: 480px; }
-        h1 { font-size: 1.5rem; color: var(--blurple); text-align: center; margin-bottom: 25px; }
-        .search-group { display: flex; gap: 10px; margin-bottom: 10px; }
-        input { flex: 1; padding: 12px; background: var(--input-bg); border: 1px solid #474d57; border-radius: 8px; color: #fff; }
-        .btn-fetch { background: var(--blurple); color: #000; border: none; padding: 0 20px; border-radius: 8px; cursor: pointer; font-weight: 700; }
+        h1 { font-size: 1.5rem; color: var(--blurple); text-align: center; margin-bottom: 25px; letter-spacing: 1px; }
+        .section-label { font-size: 0.7rem; font-weight: 600; color: #848e9c; text-transform: uppercase; margin-bottom: 8px; display: block; }
+        .search-group { display: flex; gap: 10px; margin-bottom: 15px; }
+        input, select { flex: 1; padding: 12px; background: var(--input-bg); border: 1px solid #474d57; border-radius: 8px; color: #fff; font-size: 1rem; }
+        .btn-fetch { background: var(--blurple); color: #000; border: none; padding: 0 25px; border-radius: 8px; cursor: pointer; font-weight: 700; }
         #status { text-align: center; font-size: 0.85rem; margin-bottom: 20px; padding: 10px; border-radius: 8px; min-height: 20px; color: #848e9c; }
         .ui-section { display: none; border-top: 1px solid #474d57; padding-top: 20px; }
-        .fair-value { font-size: 2.2rem; color: var(--green); font-weight: 800; text-align: center; margin: 15px 0; }
+        .result-card { background: #2b3139; padding: 20px; border-radius: 12px; border-left: 4px solid var(--blurple); }
+        .fair-value { font-size: 2.2rem; color: var(--green); font-weight: 800; text-align: center; margin: 10px 0; }
+        .res-row { display: flex; justify-content: space-between; margin-bottom: 12px; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <h1>📊 DCF CALCULATOR</h1>
+
+    <span class="section-label">1. Action US (NASDAQ/NYSE)</span>
     <div class="search-group">
-        <input type="text" id="ticker" placeholder="Tape AAPL ou NVDA">
+        <input type="text" id="ticker" placeholder="Ex: AAPL, NVDA, TSLA">
         <button class="btn-fetch" onclick="fetchData()">ANALYSER</button>
     </div>
+
     <div id="status">Prêt pour l'analyse.</div>
 
     <div id="uiSection" class="ui-section">
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
             <div style="grid-column: span 2;">
-                <label style="font-size: 0.7rem; color: #848e9c; text-transform: uppercase;">Métrique</label>
-                <select id="metricChoice" onchange="calculate()" style="width:100%; padding:10px; background:#2b3139; color:white; border-radius:8px;">
+                <label class="section-label">Métrique de référence</label>
+                <select id="metricChoice" onchange="calculate()">
                     <option value="freeCashFlow">Free Cash Flow (FCF)</option>
-                    <option value="netIncome">Net Income</option>
+                    <option value="netIncome">Net Income (Bénéfice Net)</option>
                 </select>
             </div>
             <div>
-                <label style="font-size: 0.7rem; color: #848e9c; text-transform: uppercase;">Croissance %</label>
-                <input type="number" id="growth" value="12" step="0.5" oninput="calculate()" style="width:90%;">
+                <label class="section-label">Croissance 5 ans (%)</label>
+                <input type="number" id="growth" value="12" step="0.5" oninput="calculate()">
             </div>
             <div>
-                <label style="font-size: 0.7rem; color: #848e9c; text-transform: uppercase;">Multiple</label>
-                <input type="number" id="exitMult" value="25" oninput="calculate()" style="width:90%;">
+                <label class="section-label">Multiple Terminal</label>
+                <input type="number" id="exitMult" value="25" oninput="calculate()">
             </div>
         </div>
 
-        <div style="background:#2b3139; padding:20px; border-radius:12px;">
+        <div class="result-card">
+            <div class="res-row"><span>Prix Actuel</span><span id="outPrice">0.00</span></div>
+            <div class="res-row"><span>Upside Potentiel</span><span id="outUpside" style="font-weight:bold;">0%</span></div>
             <div id="outFair" class="fair-value">0.00 $</div>
-            <div style="text-align: center;">Upside: <span id="outUpside">0%</span></div>
+            <div style="text-align:center; font-size: 0.9rem; color: #848e9c;">
+                Rendement Estimé : <span id="outCAGR" style="color:var(--blurple); font-weight:bold;">0%</span> / an
+            </div>
         </div>
     </div>
 </div>
 
 <script>
+// Ta clé API confirmée
 const API_KEY = "cCUKcjC9uAt3yTUyvtGbYl5CrI41G21e";
 let stock = {};
 
 async function fetchData() {
-    let t = document.getElementById('ticker').value.trim().toUpperCase();
-    if(!t) return;
-    
-    // Correction pour les erreurs de frappe (comme ton "appal")
-    if(t === "APPAL") t = "AAPL";
-
+    const t = document.getElementById('ticker').value.trim().toUpperCase();
     const status = document.getElementById('status');
-    status.innerText = "⌛ Requête vers les serveurs Stable...";
+    if(!t) return;
+
+    status.innerText = "⌛ Requête vers les routes Stable v3...";
     status.style.color = "#848e9c";
 
     try {
-        // En 2026, l'API impose d'utiliser ces routes pour le plan gratuit
-        const [pRes, cRes] = await Promise.all([
+        // En 2026, FMP exige des endpoints v3 stables avec paramètres annuels
+        const [pRes, iRes, cRes] = await Promise.all([
             fetch(`https://financialmodelingprep.com/api/v3/profile/${t}?apikey=${API_KEY}`),
+            fetch(`https://financialmodelingprep.com/api/v3/income-statement/${t}?period=annual&apikey=${API_KEY}`),
             fetch(`https://financialmodelingprep.com/api/v3/cash-flow-statement/${t}?period=annual&apikey=${API_KEY}`)
         ]);
 
         const profile = await pRes.json();
-        const cashflow = await cRes.json();
+        
+        // Détection de l'erreur Legacy (compte après 31/08/2025)
+        if (profile["Error Message"] && profile["Error Message"].includes("Legacy")) {
+            throw new Error("Erreur : Ce compte récent nécessite les routes Stable v3.");
+        }
+        if (!profile[0]) throw new Error("Ticker US introuvable (Ex: NVDA).");
 
-        // Analyse de la réponse d'erreur de FMP
-        if (profile["Error Message"]) {
-            throw new Error(`API: ${profile["Error Message"]}`);
-        }
-        if (!profile[0] || !cashflow[0]) {
-            throw new Error("Données introuvables. Utilisez un ticker US (ex: AAPL).");
-        }
+        const income = await iRes.json();
+        const cashflow = await cRes.json();
 
         stock = {
             price: profile[0].price,
             shares: profile[0].mktCap / profile[0].price,
-            freeCashFlow: cashflow[0].freeCashFlow,
-            netIncome: cashflow[0].netIncome,
+            freeCashFlow: cashflow[0]?.freeCashFlow || 0,
+            netIncome: income[0]?.netIncome || 0,
             currency: profile[0].currency || "$"
         };
 
-        status.innerText = `✅ Connecté à ${t}`;
-        status.style.color = "#0ecb81";
+        status.innerText = `✅ Données de ${t} chargées via Stable API.`;
+        status.style.color = "var(--green)";
         document.getElementById('uiSection').style.display = "block";
         calculate();
 
     } catch (e) {
         status.innerText = "❌ " + e.message;
-        status.style.color = "#f6465d";
+        status.style.color = "var(--red)";
+        status.style.background = "rgba(246, 70, 93, 0.1)";
+        console.error("Erreur API:", e);
     }
 }
 
@@ -110,13 +121,21 @@ function calculate() {
     const growth = parseFloat(document.getElementById('growth').value) / 100;
     const mult = parseFloat(document.getElementById('exitMult').value);
     
-    // Formule DCF (Bot Discord)
-    const futureVal = stock[metric] * Math.pow(1 + growth, 5);
-    const futurePrice = (futureVal * mult) / stock.shares;
-    const fairToday = futurePrice / Math.pow(1.10, 5); // Actualisation 10%
+    // Logique du bot Discord
+    const futureMetric = stock[metric] * Math.pow(1 + growth, 5);
+    const futurePrice = (futureMetric * mult) / stock.shares;
     
+    // Taux d'actualisation de 10%
+    const fairToday = futurePrice / Math.pow(1.10, 5);
+    const upside = ((fairToday - stock.price) / stock.price) * 100;
+    const cagr = (Math.pow(futurePrice / stock.price, 1/5) - 1) * 100;
+
+    document.getElementById('outPrice').innerText = `${stock.price.toFixed(2)} ${stock.currency}`;
     document.getElementById('outFair').innerText = `${fairToday.toFixed(2)} ${stock.currency}`;
-    document.getElementById('outUpside').innerText = `${(((fairToday - stock.price)/stock.price)*100).toFixed(1)}%`;
+    const upEl = document.getElementById('outUpside');
+    upEl.innerText = `${upside > 0 ? '+' : ''}${upside.toFixed(1)}%`;
+    upEl.style.color = upside > 0 ? "var(--green)" : "var(--red)";
+    document.getElementById('outCAGR').innerText = `${cagr.toFixed(2)}%`;
 }
 </script>
 </body>
