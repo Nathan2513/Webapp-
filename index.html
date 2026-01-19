@@ -3,33 +3,142 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DCF Master - Pro Version</title>
+    <title>DCF Master - Bot Edition</title>
     <style>
-        :root { --bg: #0b0e11; --card: #1e2329; --text: #eaecef; --blurple: #f0b90b; --green: #0ecb81; --red: #f6465d; --input-bg: #2b3139; }
-        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); display: flex; justify-content: center; padding: 20px; margin: 0; }
-        .container { background: var(--card); padding: 30px; border-radius: 16px; box-shadow: 0 12px 40px rgba(0,0,0,0.6); width: 100%; max-width: 500px; }
-        h1 { font-size: 1.5rem; color: var(--blurple); text-align: center; margin-bottom: 25px; letter-spacing: 1px; }
-        
-        .section-label { font-size: 0.7rem; font-weight: 600; color: #848e9c; text-transform: uppercase; margin-bottom: 8px; display: block; }
-        
-        /* Recherche */
-        .search-group { display: flex; gap: 10px; margin-bottom: 25px; }
-        input, select { flex: 1; padding: 12px; background: var(--input-bg); border: 1px solid #474d57; border-radius: 8px; color: #fff; font-size: 1rem; }
-        input:focus { border-color: var(--blurple); outline: none; }
-        .btn-fetch { background: var(--blurple); color: #000; border: none; padding: 0 25px; border-radius: 8px; cursor: pointer; font-weight: 700; }
+        :root {
+            --bg: #0b0e11;
+            --card: #1e2329;
+            --text: #eaecef;
+            --blurple: #f0b90b; /* Jaune style Binance/Finance */
+            --green: #0ecb81;
+            --red: #f6465d;
+            --input-bg: #2b3139;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+            margin: 0;
+        }
+
+        .container {
+            background: var(--card);
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.6);
+            width: 100%;
+            max-width: 480px;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            color: var(--blurple);
+            text-align: center;
+            margin-bottom: 25px;
+            letter-spacing: 1px;
+        }
+
+        .section-label {
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #848e9c;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        /* Barre de Recherche */
+        .search-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        input, select {
+            flex: 1;
+            padding: 12px;
+            background: var(--input-bg);
+            border: 1px solid #474d57;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 1rem;
+            transition: 0.2s;
+        }
+
+        input:focus {
+            border-color: var(--blurple);
+            outline: none;
+        }
+
+        .btn-fetch {
+            background: var(--blurple);
+            color: #000;
+            border: none;
+            padding: 0 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 700;
+        }
+
         .btn-fetch:hover { opacity: 0.9; }
 
-        /* Paramètres */
-        .params-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; border-top: 1px solid #474d57; padding-top: 20px; display: none; }
+        /* Status Message */
+        #status {
+            text-align: center;
+            font-size: 0.85rem;
+            margin-bottom: 20px;
+            padding: 10px;
+            border-radius: 8px;
+            min-height: 20px;
+        }
+
+        /* Paramètres et Résultats */
+        .ui-section {
+            display: none; /* Caché tant qu'on n'a pas chargé d'action */
+            border-top: 1px solid #474d57;
+            padding-top: 20px;
+        }
+
+        .params-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
         .full-width { grid-column: span 2; }
 
-        /* Résultats */
-        #resultCard { background: #2b3139; padding: 20px; border-radius: 12px; display: none; margin-top: 20px; }
-        .res-row { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 1.1rem; }
-        .fair-value { font-size: 1.8rem; color: var(--green); font-weight: 800; }
-        .badge { background: rgba(14, 203, 129, 0.15); color: var(--green); padding: 4px 8px; border-radius: 4px; font-size: 0.9rem; font-weight: bold; }
-        
-        .status-msg { text-align: center; font-size: 0.9rem; margin-top: 10px; min-height: 20px; color: #848e9c; }
+        .result-card {
+            background: #2b3139;
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 4px solid var(--blurple);
+        }
+
+        .res-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            font-size: 1.05rem;
+        }
+
+        .fair-value {
+            font-size: 2rem;
+            color: var(--green);
+            font-weight: 800;
+            text-align: center;
+            margin: 10px 0;
+        }
+
+        .upside-badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -37,131 +146,147 @@
 <div class="container">
     <h1>📊 DCF CALCULATOR</h1>
 
-    <span class="section-label">1. Rechercher une action</span>
+    <span class="section-label">1. Rechercher une action (Ticker US)</span>
     <div class="search-group">
-        <input type="text" id="ticker" placeholder="Ex: NVDA, AAPL, OR.PA">
-        <button class="btn-fetch" onclick="initFetch()">ANALYSER</button>
+        <input type="text" id="ticker" placeholder="Ex: NVDA, AAPL, TSLA">
+        <button class="btn-fetch" onclick="fetchData()">ANALYSER</button>
     </div>
-    <div id="status" class="status-msg">Prêt pour l'analyse.</div>
 
-    <div id="paramsUI" class="params-grid">
-        <div class="full-width">
-            <label class="section-label">Métrique de référence</label>
-            <select id="metricChoice" onchange="calculate()">
-                <option value="freeCashFlow">Free Cash Flow (FCF)</option>
-                <option value="netIncome">Net Income (Bénéfice Net)</option>
-                <option value="operatingCashFlow">Operating Cash Flow (OCF)</option>
-                <option value="operatingIncome">Operating Income (EBIT)</option>
-            </select>
-        </div>
-        <div>
-            <label class="section-label">Croissance 5 ans (%)</label>
-            <input type="number" id="growth" value="12" step="0.5" oninput="calculate()">
-        </div>
-        <div>
-            <label class="section-label">Multiple Terminal</label>
-            <input type="number" id="exitMult" value="25" oninput="calculate()">
+    <div id="status">Prêt pour l'analyse.</div>
+
+    <div id="uiSection" class="ui-section">
+        <div class="params-grid">
+            <div class="full-width">
+                <label class="section-label">Métrique de référence</label>
+                <select id="metricChoice" onchange="calculate()">
+                    <option value="freeCashFlow">Free Cash Flow (FCF)</option>
+                    <option value="netIncome">Net Income (Bénéfice Net)</option>
+                    <option value="operatingCashFlow">Operating Cash Flow (OCF)</option>
+                </select>
+            </div>
+            <div>
+                <label class="section-label">Croissance 5 ans (%)</label>
+                <input type="number" id="growth" value="12" step="0.5" oninput="calculate()">
+            </div>
+            <div>
+                <label class="section-label">Multiple Terminal</label>
+                <input type="number" id="exitMult" value="25" oninput="calculate()">
+            </div>
         </div>
 
-        <div id="resultCard" class="full-width">
+        <div class="result-card">
             <div class="res-row">
                 <span>Prix Actuel</span>
                 <span id="outPrice">0.00</span>
             </div>
-            <div class="res-row" style="margin-top: 10px;">
-                <span style="font-weight: bold;">Fair Value Today</span>
-                <span class="badge" id="outUpside">0%</span>
+            <div class="res-row">
+                <span>Upside Potentiel</span>
+                <span id="outUpside" class="upside-badge">0%</span>
             </div>
-            <div id="outFair" class="fair-value" style="text-align: center; margin: 10px 0;">0.00 €</div>
-            <div class="res-row" style="border-top: 1px solid #474d57; padding-top: 15px;">
-                <span>CAGR Estimé</span>
-                <span id="outCAGR" style="font-weight: bold; color: var(--blurple);">0%</span>
+            <div id="outFair" class="fair-value">0.00 $</div>
+            <div class="res-row" style="border-top: 1px solid #474d57; padding-top: 10px; margin-top: 10px;">
+                <span style="color: #848e9c;">Rendement (CAGR)</span>
+                <span id="outCAGR" style="font-weight: bold; color: var(--blurple);">0% / an</span>
             </div>
         </div>
     </div>
 </div>
 
 <script>
+// --- CONFIGURATION ---
 const API_KEY = "cCUKcjC9uAt3yTUyvtGbYl5CrI41G21e";
 let stock = {};
 
-function updateStatus(msg, isError = false) {
+function setStatus(msg, type = 'info') {
     const el = document.getElementById('status');
     el.innerText = msg;
-    el.style.color = isError ? "#f6465d" : "#848e9c";
+    el.style.color = type === 'error' ? 'var(--red)' : (type === 'success' ? 'var(--green)' : '#848e9c');
+    el.style.background = type === 'error' ? 'rgba(246, 70, 93, 0.1)' : 'none';
 }
 
-async function initFetch() {
+async function fetchData() {
     const ticker = document.getElementById('ticker').value.trim().toUpperCase();
-    if(!ticker) return updateStatus("Veuillez entrer un ticker.", true);
+    if (!ticker) return setStatus("⚠️ Veuillez entrer un ticker.", "error");
 
-    updateStatus("⌛ Chargement des données...");
-    document.getElementById('paramsUI').style.display = "none";
-    document.getElementById('resultCard').style.display = "none";
+    setStatus("⌛ Connexion aux marchés...");
+    document.getElementById('uiSection').style.display = "none";
 
     try {
-        const [profileRes, incRes, cfRes] = await Promise.all([
+        // Appels à l'API Financial Modeling Prep
+        const [pRes, iRes, cRes] = await Promise.all([
             fetch(`https://financialmodelingprep.com/api/v3/profile/${ticker}?apikey=${API_KEY}`),
             fetch(`https://financialmodelingprep.com/api/v3/income-statement/${ticker}?limit=1&apikey=${API_KEY}`),
             fetch(`https://financialmodelingprep.com/api/v3/cash-flow-statement/${ticker}?limit=1&apikey=${API_KEY}`)
         ]);
 
-        const profileData = await profileRes.json();
-        if (profileData["Error Message"]) throw new Error("Clé API invalide ou expirée.");
-        if (!profileData[0]) throw new Error("Ticker introuvable ou non supporté.");
+        const profile = await pRes.json();
+        
+        // GESTION DES ERREURS API
+        if (profile["Error Message"]) {
+            throw new Error("Clé API invalide ou limite atteinte. Vérifiez votre compte FMP.");
+        }
+        if (!profile[0]) {
+            throw new Error("Action introuvable. Note: Le plan gratuit supporte surtout le marché US.");
+        }
 
-        const incomeData = await incRes.json();
-        const cfData = await cfRes.json();
+        const income = await iRes.json();
+        const cashflow = await cRes.json();
 
+        // Stockage des données pour le calcul
         stock = {
-            symbol: profileData[0].symbol,
-            price: profileData[0].price,
-            shares: profileData[0].mktCap / profileData[0].price,
-            freeCashFlow: cfData[0]?.freeCashFlow || 0,
-            netIncome: incomeData[0]?.netIncome || 0,
-            operatingCashFlow: cfData[0]?.operatingCashFlow || 0,
-            operatingIncome: incomeData[0]?.operatingIncome || 0,
-            currency: profileData[0].currency || "USD"
+            symbol: profile[0].symbol,
+            price: profile[0].price,
+            shares: profile[0].mktCap / profile[0].price,
+            freeCashFlow: cashflow[0]?.freeCashFlow || 0,
+            netIncome: income[0]?.netIncome || 0,
+            operatingCashFlow: cashflow[0]?.operatingCashFlow || 0,
+            currency: profile[0].currency || "$"
         };
 
-        updateStatus(`✅ Données chargées pour ${stock.symbol}`);
-        document.getElementById('paramsUI').style.display = "grid";
-        document.getElementById('resultCard').style.display = "block";
+        setStatus(`✅ Données de ${stock.symbol} chargées avec succès !`, "success");
+        document.getElementById('uiSection').style.display = "block";
         calculate();
 
     } catch (err) {
-        updateStatus("❌ " + err.message, true);
+        setStatus("❌ " + err.message, "error");
     }
 }
 
 function calculate() {
-    if(!stock.price) return;
+    if (!stock.price) return;
 
+    // Récupération des entrées utilisateur
     const metric = document.getElementById('metricChoice').value;
     const baseValue = stock[metric];
     const growth = parseFloat(document.getElementById('growth').value) / 100;
-    const multiple = parseFloat(document.getElementById('exitMult').value);
+    const exitMult = parseFloat(document.getElementById('exitMult').value);
+
+    // LOGIQUE DU BOT DISCORD
+    // 1. Projection de la valeur de la métrique dans 5 ans
+    const futureMetricVal = baseValue * Math.pow(1 + growth, 5);
     
-    // Logique DCF :
-    // 1. Valeur Future = Métrique * (1 + g)^5
-    const futureVal = baseValue * Math.pow(1 + growth, 5);
-    // 2. Prix futur = (Valeur Future * Multiple) / Actions
-    const futurePrice = (futureVal * multiple) / stock.shares;
-    // 3. Fair Value = Prix Futur / (1.10)^5 (Actualisé à 10%)
+    // 2. Calcul de la Market Cap future (Métrique * Multiple)
+    const futureMarketCap = futureMetricVal * exitMult;
+    
+    // 3. Prix cible dans 5 ans
+    const futurePrice = futureMarketCap / stock.shares;
+
+    // 4. Fair Value aujourd'hui (Actualisation à 10%)
     const fairToday = futurePrice / Math.pow(1.10, 5);
-    
+
+    // 5. Upside et CAGR
     const upside = ((fairToday - stock.price) / stock.price) * 100;
     const cagr = (Math.pow(futurePrice / stock.price, 1/5) - 1) * 100;
 
-    // Affichage
+    // MISE À JOUR DE L'INTERFACE
     document.getElementById('outPrice').innerText = `${stock.price.toFixed(2)} ${stock.currency}`;
     document.getElementById('outFair').innerText = `${fairToday.toFixed(2)} ${stock.currency}`;
     
     const upEl = document.getElementById('outUpside');
     upEl.innerText = `${upside > 0 ? '+' : ''}${upside.toFixed(1)}%`;
-    upEl.style.background = upside > 0 ? "rgba(14, 203, 129, 0.15)" : "rgba(246, 70, 93, 0.15)";
-    upEl.style.color = upside > 0 ? "var(--green)" : "var(--red)";
-    
+    upEl.style.color = upside > 0 ? 'var(--green)' : 'var(--red)';
+    upEl.style.background = upside > 0 ? 'rgba(14, 203, 129, 0.1)' : 'rgba(246, 70, 93, 0.1)';
+
     document.getElementById('outCAGR').innerText = `${cagr.toFixed(2)}% / an`;
 }
 </script>
