@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DCF Master - 2026 Stable</title>
+    <title>DCF Master - Version 2026</title>
     <style>
         :root { --bg: #0b0e11; --card: #1e2329; --text: #eaecef; --blurple: #f0b90b; --green: #0ecb81; --red: #f6465d; --input-bg: #2b3139; }
         body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); display: flex; justify-content: center; padding: 20px; margin: 0; }
@@ -13,7 +13,7 @@
         .search-group { display: flex; gap: 10px; margin-bottom: 15px; }
         input, select { flex: 1; padding: 12px; background: var(--input-bg); border: 1px solid #474d57; border-radius: 8px; color: #fff; font-size: 1rem; }
         .btn-fetch { background: var(--blurple); color: #000; border: none; padding: 0 25px; border-radius: 8px; cursor: pointer; font-weight: 700; }
-        #status { text-align: center; font-size: 0.85rem; margin-bottom: 20px; padding: 10px; border-radius: 8px; min-height: 20px; color: #848e9c; }
+        #status { text-align: center; font-size: 0.85rem; margin-bottom: 20px; padding: 10px; border-radius: 8px; min-height: 20px; color: #848e9c; line-height: 1.4; }
         .ui-section { display: none; border-top: 1px solid #474d57; padding-top: 20px; }
         .result-card { background: #2b3139; padding: 20px; border-radius: 12px; border-left: 4px solid var(--blurple); }
         .fair-value { font-size: 2rem; color: var(--green); font-weight: 800; text-align: center; margin: 10px 0; }
@@ -64,6 +64,7 @@
 </div>
 
 <script>
+// Ta clé API validée
 const API_KEY = "cCUKcjC9uAt3yTUyvtGbYl5CrI41G21e";
 let stock = {};
 
@@ -72,12 +73,12 @@ async function fetchData() {
     const status = document.getElementById('status');
     if(!t) return;
 
-    status.innerText = "⌛ Connexion aux routes stables...";
+    status.innerText = "⌛ Connexion aux routes API Stable...";
     status.style.color = "#848e9c";
     status.style.background = "none";
 
     try {
-        // En 2026, FMP exige des paramètres spécifiques pour le plan gratuit
+        // En 2026, nous utilisons les routes stables v3 avec les paramètres obligatoires pour le plan gratuit
         const [pRes, iRes, cRes] = await Promise.all([
             fetch(`https://financialmodelingprep.com/api/v3/profile/${t}?apikey=${API_KEY}`),
             fetch(`https://financialmodelingprep.com/api/v3/income-statement/${t}?period=annual&apikey=${API_KEY}`),
@@ -85,15 +86,17 @@ async function fetchData() {
         ]);
 
         const profile = await pRes.json();
-        
-        // Détection automatique de l'erreur Legacy
-        if (profile["Error Message"] && profile["Error Message"].includes("Legacy")) {
-            throw new Error("Erreur : Ce compte nécessite les nouvelles routes API (Stable).");
-        }
-        if (!profile[0]) throw new Error("Ticker US introuvable (Plan Gratuit = US Only).");
-
         const income = await iRes.json();
         const cashflow = await cRes.json();
+
+        // Gestion spécifique des erreurs de "Legacy Endpoint"
+        if (profile["Error Message"] && profile["Error Message"].includes("Legacy")) {
+            throw new Error("Erreur : Ce compte récent nécessite les routes API Stable (v3).");
+        }
+        
+        if (!profile[0]) {
+            throw new Error("Action US introuvable. Vérifie le ticker (Ex: AAPL).");
+        }
 
         stock = {
             price: profile[0].price,
@@ -103,7 +106,7 @@ async function fetchData() {
             currency: profile[0].currency || "$"
         };
 
-        status.innerText = `✅ Données de ${t} chargées.`;
+        status.innerText = `✅ Données de ${t} chargées via route Stable.`;
         status.style.color = "var(--green)";
         document.getElementById('uiSection').style.display = "block";
         calculate();
@@ -112,16 +115,22 @@ async function fetchData() {
         status.innerText = "❌ " + e.message;
         status.style.color = "var(--red)";
         status.style.background = "rgba(246, 70, 93, 0.1)";
+        console.error("Détails de l'erreur:", e);
     }
 }
 
 function calculate() {
+    if (!stock.price) return;
+
     const metric = document.getElementById('metricChoice').value;
     const growth = parseFloat(document.getElementById('growth').value) / 100;
     const mult = parseFloat(document.getElementById('exitMult').value);
     
     // Logique du bot : Projection 5 ans -> Multiple -> Actualisation 10%
-    const futurePrice = ((stock[metric] * Math.pow(1 + growth, 5)) * mult) / stock.shares;
+    const futureMetric = stock[metric] * Math.pow(1 + growth, 5);
+    const futurePrice = (futureMetric * mult) / stock.shares;
+    
+    // Taux d'actualisation de 10% comme dans ton bot précédent
     const fairToday = futurePrice / Math.pow(1.10, 5);
     const upside = ((fairToday - stock.price) / stock.price) * 100;
     const cagr = (Math.pow(futurePrice / stock.price, 1/5) - 1) * 100;
