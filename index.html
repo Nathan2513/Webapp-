@@ -64,12 +64,14 @@
 </div>
 
 <script>
-// Ta clé API confirmée
+// Clé API validée
 const API_KEY = "cCUKcjC9uAt3yTUyvtGbYl5CrI41G21e";
 let stock = {};
 
 async function fetchData() {
-    const t = document.getElementById('ticker').value.trim().toUpperCase();
+    let t = document.getElementById('ticker').value.trim().toUpperCase();
+    if(t === "APPAL") t = "AAPL"; // Correction auto de votre erreur de frappe
+    
     const status = document.getElementById('status');
     if(!t) return;
 
@@ -77,7 +79,7 @@ async function fetchData() {
     status.style.color = "#848e9c";
 
     try {
-        // En 2026, FMP exige des endpoints v3 stables avec paramètres annuels
+        // En 2026, FMP exige des endpoints stables avec paramètres explicites
         const [pRes, iRes, cRes] = await Promise.all([
             fetch(`https://financialmodelingprep.com/api/v3/profile/${t}?apikey=${API_KEY}`),
             fetch(`https://financialmodelingprep.com/api/v3/income-statement/${t}?period=annual&apikey=${API_KEY}`),
@@ -85,15 +87,15 @@ async function fetchData() {
         ]);
 
         const profile = await pRes.json();
-        
-        // Détection de l'erreur Legacy (compte après 31/08/2025)
-        if (profile["Error Message"] && profile["Error Message"].includes("Legacy")) {
-            throw new Error("Erreur : Ce compte récent nécessite les routes Stable v3.");
-        }
-        if (!profile[0]) throw new Error("Ticker US introuvable (Ex: NVDA).");
-
         const income = await iRes.json();
         const cashflow = await cRes.json();
+
+        // Détection de l'erreur Legacy (pour les comptes créés après le 31/08/2025)
+        if (profile["Error Message"] && profile["Error Message"].includes("Legacy")) {
+            throw new Error("Erreur : Ce compte récent nécessite les nouvelles routes API Stable (v3).");
+        }
+        
+        if (!profile[0]) throw new Error("Ticker US introuvable. Vérifiez l'orthographe (ex: NVDA).");
 
         stock = {
             price: profile[0].price,
@@ -112,20 +114,22 @@ async function fetchData() {
         status.innerText = "❌ " + e.message;
         status.style.color = "var(--red)";
         status.style.background = "rgba(246, 70, 93, 0.1)";
-        console.error("Erreur API:", e);
+        console.error("Erreur détaillée:", e);
     }
 }
 
 function calculate() {
+    if (!stock.price) return;
+
     const metric = document.getElementById('metricChoice').value;
     const growth = parseFloat(document.getElementById('growth').value) / 100;
     const mult = parseFloat(document.getElementById('exitMult').value);
     
-    // Logique du bot Discord
+    // Logique identique à votre bot Discord : Projection 5 ans -> Multiple -> Actualisation 10%
     const futureMetric = stock[metric] * Math.pow(1 + growth, 5);
     const futurePrice = (futureMetric * mult) / stock.shares;
     
-    // Taux d'actualisation de 10%
+    // Taux d'actualisation fixe de 10%
     const fairToday = futurePrice / Math.pow(1.10, 5);
     const upside = ((fairToday - stock.price) / stock.price) * 100;
     const cagr = (Math.pow(futurePrice / stock.price, 1/5) - 1) * 100;
