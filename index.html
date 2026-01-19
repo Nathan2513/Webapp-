@@ -3,122 +3,136 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DCF Master Pro</title>
+    <title>DCF Master - 2026 Stable</title>
     <style>
-        :root { --bg: #0b0e11; --card: #1e2329; --text: #eaecef; --blurple: #f0b90b; --green: #0ecb81; --red: #f6465d; }
+        :root { --bg: #0b0e11; --card: #1e2329; --text: #eaecef; --blurple: #f0b90b; --green: #0ecb81; --red: #f6465d; --input-bg: #2b3139; }
         body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); display: flex; justify-content: center; padding: 20px; margin: 0; }
         .container { background: var(--card); padding: 30px; border-radius: 16px; box-shadow: 0 12px 40px rgba(0,0,0,0.6); width: 100%; max-width: 480px; }
-        h1 { font-size: 1.5rem; color: var(--blurple); text-align: center; margin-bottom: 25px; }
-        .search-group { display: flex; gap: 10px; margin-bottom: 10px; }
-        input { flex: 1; padding: 12px; background: #2b3139; border: 1px solid #474d57; border-radius: 8px; color: #fff; font-size: 1rem; }
-        .btn-fetch { background: var(--blurple); color: #000; border: none; padding: 0 20px; border-radius: 8px; cursor: pointer; font-weight: 700; }
-        #status { text-align: center; font-size: 0.85rem; margin-bottom: 20px; padding: 10px; border-radius: 8px; min-height: 20px; }
-        .results { display: none; border-top: 1px solid #474d57; padding-top: 20px; }
-        .fair-value { font-size: 2.2rem; color: var(--green); font-weight: 800; text-align: center; margin: 15px 0; }
-        .metric-row { display: flex; justify-content: space-between; margin-bottom: 12px; }
+        h1 { font-size: 1.5rem; color: var(--blurple); text-align: center; margin-bottom: 25px; letter-spacing: 1px; }
+        .section-label { font-size: 0.7rem; font-weight: 600; color: #848e9c; text-transform: uppercase; margin-bottom: 8px; display: block; }
+        .search-group { display: flex; gap: 10px; margin-bottom: 15px; }
+        input, select { flex: 1; padding: 12px; background: var(--input-bg); border: 1px solid #474d57; border-radius: 8px; color: #fff; font-size: 1rem; }
+        .btn-fetch { background: var(--blurple); color: #000; border: none; padding: 0 25px; border-radius: 8px; cursor: pointer; font-weight: 700; }
+        #status { text-align: center; font-size: 0.85rem; margin-bottom: 20px; padding: 10px; border-radius: 8px; min-height: 20px; color: #848e9c; }
+        .ui-section { display: none; border-top: 1px solid #474d57; padding-top: 20px; }
+        .result-card { background: #2b3139; padding: 20px; border-radius: 12px; border-left: 4px solid var(--blurple); }
+        .fair-value { font-size: 2rem; color: var(--green); font-weight: 800; text-align: center; margin: 10px 0; }
+        .res-row { display: flex; justify-content: space-between; margin-bottom: 12px; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <h1>📊 DCF CALCULATOR</h1>
-    
-    <div class="search-group">
-        <input type="text" id="ticker" placeholder="Ex: AAPL, NVDA, TSLA">
-        <button class="btn-fetch" onclick="runAnalysis()">ANALYSER</button>
-    </div>
-    
-    <div id="status">En attente d'un ticker US...</div>
 
-    <div id="ui" class="results">
-        <div class="metric-row">
-            <label>Métrique</label>
-            <select id="metric" onchange="calculate()" style="background:#2b3139; color:white; border-radius:5px;">
-                <option value="fcf">Free Cash Flow</option>
-                <option value="netIncome">Net Income</option>
-            </select>
+    <span class="section-label">1. Action US (NASDAQ/NYSE)</span>
+    <div class="search-group">
+        <input type="text" id="ticker" placeholder="Ex: NVDA, AAPL, TSLA">
+        <button class="btn-fetch" onclick="fetchData()">ANALYSER</button>
+    </div>
+
+    <div id="status">Prêt pour l'analyse.</div>
+
+    <div id="uiSection" class="ui-section">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
+            <div style="grid-column: span 2;">
+                <label class="section-label">Métrique de référence</label>
+                <select id="metricChoice" onchange="calculate()">
+                    <option value="freeCashFlow">Free Cash Flow (FCF)</option>
+                    <option value="netIncome">Net Income (Bénéfice Net)</option>
+                </select>
+            </div>
+            <div>
+                <label class="section-label">Croissance 5 ans (%)</label>
+                <input type="number" id="growth" value="12" step="0.5" oninput="calculate()">
+            </div>
+            <div>
+                <label class="section-label">Multiple Terminal</label>
+                <input type="number" id="exitMult" value="25" oninput="calculate()">
+            </div>
         </div>
-        <div class="metric-row">
-            <label>Croissance annuelle (%)</label>
-            <input type="number" id="growth" value="12" style="width:60px; background:#2b3139; color:white;" oninput="calculate()">
-        </div>
-        <div class="metric-row">
-            <label>Multiple Terminal</label>
-            <input type="number" id="exitMult" value="25" style="width:60px; background:#2b3139; color:white;" oninput="calculate()">
-        </div>
-        
-        <div id="fairValue" class="fair-value">0.00 $</div>
-        <div style="text-align:center; font-weight:bold; font-size: 1.2rem;">
-            Upside: <span id="upside">0%</span>
+
+        <div class="result-card">
+            <div class="res-row"><span>Prix Actuel</span><span id="outPrice">0.00</span></div>
+            <div class="res-row"><span>Upside Potentiel</span><span id="outUpside" style="font-weight:bold;">0%</span></div>
+            <div id="outFair" class="fair-value">0.00 $</div>
+            <div style="text-align:center; font-size: 0.9rem; color: #848e9c;">
+                Rendement Estimé : <span id="outCAGR" style="color:var(--blurple); font-weight:bold;">0%</span> / an
+            </div>
         </div>
     </div>
 </div>
 
 <script>
-const API_KEY = "cCUKcjC9uAt3yTUyvtGbYl5CrI41G21e".trim();
-let data = {};
+const API_KEY = "cCUKcjC9uAt3yTUyvtGbYl5CrI41G21e";
+let stock = {};
 
-async function runAnalysis() {
+async function fetchData() {
     const t = document.getElementById('ticker').value.trim().toUpperCase();
     const status = document.getElementById('status');
     if(!t) return;
 
-    status.innerText = "⌛ Connexion à l'API...";
-    status.style.background = "none";
+    status.innerText = "⌛ Connexion aux routes stables...";
     status.style.color = "#848e9c";
+    status.style.background = "none";
 
     try {
-        // 1. Appel du profil pour le prix et les actions
-        const res = await fetch(`https://financialmodelingprep.com/api/v3/profile/${t}?apikey=${API_KEY}`);
-        const profile = await res.json();
+        // En 2026, FMP exige des paramètres spécifiques pour le plan gratuit
+        const [pRes, iRes, cRes] = await Promise.all([
+            fetch(`https://financialmodelingprep.com/api/v3/profile/${t}?apikey=${API_KEY}`),
+            fetch(`https://financialmodelingprep.com/api/v3/income-statement/${t}?period=annual&apikey=${API_KEY}`),
+            fetch(`https://financialmodelingprep.com/api/v3/cash-flow-statement/${t}?period=annual&apikey=${API_KEY}`)
+        ]);
 
-        if (profile["Error Message"]) throw new Error(profile["Error Message"]);
-        if (!profile[0]) throw new Error("Ticker non trouvé (Plan gratuit = Actions US uniquement)");
-
-        // 2. Appel du Cash Flow Statement
-        const cfRes = await fetch(`https://financialmodelingprep.com/api/v3/cash-flow-statement/${t}?limit=1&apikey=${API_KEY}`);
-        const cf = await cfRes.json();
+        const profile = await pRes.json();
         
-        if (!cf[0]) throw new Error("Données financières indisponibles pour ce ticker.");
+        // Détection automatique de l'erreur Legacy
+        if (profile["Error Message"] && profile["Error Message"].includes("Legacy")) {
+            throw new Error("Erreur : Ce compte nécessite les nouvelles routes API (Stable).");
+        }
+        if (!profile[0]) throw new Error("Ticker US introuvable (Plan Gratuit = US Only).");
 
-        data = {
+        const income = await iRes.json();
+        const cashflow = await cRes.json();
+
+        stock = {
             price: profile[0].price,
             shares: profile[0].mktCap / profile[0].price,
-            fcf: cf[0].freeCashFlow,
-            netIncome: profile[0].lastDiv > 0 ? profile[0].lastDiv * 1000000000 : cf[0].netIncome, // Fallback
-            symbol: profile[0].symbol
+            freeCashFlow: cashflow[0]?.freeCashFlow || 0,
+            netIncome: income[0]?.netIncome || 0,
+            currency: profile[0].currency || "$"
         };
 
-        status.innerText = "✅ Succès : " + data.symbol;
-        status.style.color = "#0ecb81";
-        document.getElementById('ui').style.display = "block";
+        status.innerText = `✅ Données de ${t} chargées.`;
+        status.style.color = "var(--green)";
+        document.getElementById('uiSection').style.display = "block";
         calculate();
 
-    } catch (err) {
-        status.innerText = "❌ " + err.message;
-        status.style.color = "#f6465d";
+    } catch (e) {
+        status.innerText = "❌ " + e.message;
+        status.style.color = "var(--red)";
         status.style.background = "rgba(246, 70, 93, 0.1)";
     }
 }
 
 function calculate() {
-    const metricType = document.getElementById('metric').value;
-    const baseValue = data[metricType];
+    const metric = document.getElementById('metricChoice').value;
     const growth = parseFloat(document.getElementById('growth').value) / 100;
     const mult = parseFloat(document.getElementById('exitMult').value);
     
-    // Logique : Projection 5 ans -> Multiple -> Actualisation 10%
-    const futureMetric = baseValue * Math.pow(1 + growth, 5);
-    const futurePrice = (futureMetric * mult) / data.shares;
+    // Logique du bot : Projection 5 ans -> Multiple -> Actualisation 10%
+    const futurePrice = ((stock[metric] * Math.pow(1 + growth, 5)) * mult) / stock.shares;
     const fairToday = futurePrice / Math.pow(1.10, 5);
-    const upside = ((fairToday - data.price) / data.price) * 100;
+    const upside = ((fairToday - stock.price) / stock.price) * 100;
+    const cagr = (Math.pow(futurePrice / stock.price, 1/5) - 1) * 100;
 
-    document.getElementById('fairValue').innerText = fairToday.toFixed(2) + " $";
-    const upEl = document.getElementById('upside');
-    upEl.innerText = (upside > 0 ? "+" : "") + upside.toFixed(1) + "%";
-    upEl.style.color = upside > 0 ? "#0ecb81" : "#f6465d";
+    document.getElementById('outPrice').innerText = `${stock.price.toFixed(2)} ${stock.currency}`;
+    document.getElementById('outFair').innerText = `${fairToday.toFixed(2)} ${stock.currency}`;
+    const upEl = document.getElementById('outUpside');
+    upEl.innerText = `${upside > 0 ? '+' : ''}${upside.toFixed(1)}%`;
+    upEl.style.color = upside > 0 ? "var(--green)" : "var(--red)";
+    document.getElementById('outCAGR').innerText = `${cagr.toFixed(2)}%`;
 }
 </script>
-
 </body>
 </html>
