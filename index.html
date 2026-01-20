@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DCF Master - Full Options</title>
+    <title>DCF Master - Debug Mode</title>
     <style>
         :root { --bg: #0b0e11; --card: #1e2329; --text: #eaecef; --blurple: #f0b90b; --green: #0ecb81; --red: #f6465d; }
         body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); display: flex; justify-content: center; padding: 20px; margin: 0; }
@@ -15,6 +15,10 @@
         #status { text-align: center; font-size: 0.85rem; margin-bottom: 20px; padding: 10px; border-radius: 8px; min-height: 20px; color: #848e9c; }
         .ui-section { display: none; border-top: 1px solid #474d57; padding-top: 20px; }
         .fair-value { font-size: 2.2rem; color: var(--green); font-weight: 800; text-align: center; margin: 15px 0; }
+        
+        /* Zone de Debug pour voir les chiffres */
+        .debug-box { margin-top: 20px; padding: 15px; background: rgba(240, 185, 11, 0.1); border-radius: 8px; font-size: 0.75rem; color: #f0b90b; border: 1px solid #f0b90b; display: none; }
+        .debug-row { display: flex; justify-content: space-between; margin-bottom: 5px; font-family: monospace; }
     </style>
 </head>
 <body>
@@ -26,17 +30,17 @@
         <input type="text" id="ticker" placeholder="Ex: NVDA">
         <button class="btn-fetch" onclick="fetchData()">ANALYSER</button>
     </div>
-    <div id="status">Prêt. Entrez un ticker US.</div>
+    <div id="status">Prêt.</div>
 
     <div id="uiSection" class="ui-section">
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
             <div style="grid-column: span 2;">
                 <label style="font-size: 0.7rem; color: #848e9c;">MÉTRIQUE</label>
                 <select id="metric" onchange="calculate()">
-                    <option value="fcf">Free Cash Flow (FCF)</option>
-                    <option value="netIncome">Net Income (Résultat Net)</option>
-                    <option value="ocf">Operating Cash Flow (OCF)</option>
-                    <option value="oi">Operating Income (EBIT)</option>
+                    <option value="fcf">Free Cash Flow</option>
+                    <option value="netIncome">Net Income</option>
+                    <option value="ocf">Operating Cash Flow</option>
+                    <option value="oi">Operating Income</option>
                 </select>
             </div>
             <div>
@@ -53,8 +57,13 @@
             <div id="outFair" class="fair-value">0.00 $</div>
             <div style="text-align: center;">Upside: <span id="outUpside">0%</span></div>
         </div>
-        <div style="text-align:center; margin-top:10px; font-size:0.8rem; color:#848e9c;">
-            Prix actuel: <span id="currentPrice">--</span>
+
+        <div id="debug" class="debug-box">
+            <div style="text-align:center; font-weight:bold; margin-bottom:10px;">🔍 DIAGNOSTIC DONNÉES</div>
+            <div class="debug-row"><span>Prix:</span> <span id="dbgPrice">--</span></div>
+            <div class="debug-row"><span>Market Cap:</span> <span id="dbgMktCap">--</span></div>
+            <div class="debug-row"><span>Actions (Shares):</span> <span id="dbgShares">--</span></div>
+            <div class="debug-row"><span>Métrique choisie:</span> <span id="dbgMetric">--</span></div>
         </div>
     </div>
 </div>
@@ -69,12 +78,10 @@ async function fetchData() {
     if(t === "APPAL") t = "AAPL"; 
 
     const status = document.getElementById('status');
-    status.innerText = "⌛ Chargement complet...";
+    status.innerText = "⌛ Récupération des données...";
     status.style.color = "#848e9c";
 
     try {
-        // ON RECUPERE TOUT : Profil + Cash Flow + Income Statement
-        // Toujours avec la route /stable/ qui fonctionne pour toi
         const [pRes, cRes, iRes] = await Promise.all([
             fetch(`https://financialmodelingprep.com/stable/profile?symbol=${t}&apikey=${API_KEY}`),
             fetch(`https://financialmodelingprep.com/stable/cash-flow-statement?symbol=${t}&period=annual&apikey=${API_KEY}`),
@@ -86,24 +93,38 @@ async function fetchData() {
         const income = await iRes.json();
 
         if (profile["Error Message"]) throw new Error(profile["Error Message"]);
-        if (!profile[0]) throw new Error("Action introuvable (US Only).");
+        if (!profile[0]) throw new Error("Action introuvable.");
 
-        // Stockage de TOUTES les données pour éviter le NaN
+        // --- CORRECTION DU CALCUL ---
+        // On sécurise chaque chiffre. Si c'est manquant, on met 0.
+        // On essaie 'mktCap' et 'marketCap' car l'API change parfois de nom.
+        const mktCap = profile[0].mktCap || profile[0].marketCap || 0;
+        const price = profile[0].price || 0;
+        const shares = (mktCap && price) ? (mktCap / price) : 0;
+
         stock = {
-            price: profile[0].price,
-            shares: profile[0].mktCap / profile[0].price,
+            price: price,
+            mktCap: mktCap,
+            shares: shares,
             fcf: cashflow[0] ? cashflow[0].freeCashFlow : 0,
             ocf: cashflow[0] ? cashflow[0].operatingCashFlow : 0,
             netIncome: income[0] ? income[0].netIncome : 0,
             oi: income[0] ? income[0].operatingIncome : 0,
-            symbol: profile[0].symbol
+            symbol: profile[0].symbol,
+            currency: profile[0].currency || "$"
         };
 
-        status.innerText = `✅ Données de ${stock.symbol} chargées.`;
+        status.innerText = `✅ Données de ${stock.symbol} prêtes.`;
         status.style.color = "#0ecb81";
-        document.getElementById('currentPrice').innerText = stock.price.toFixed(2) + " $";
         
         document.getElementById('uiSection').style.display = "block";
+        document.getElementById('debug').style.display = "block";
+        
+        // Remplissage du diagnostic
+        document.getElementById('dbgPrice').innerText = stock.price;
+        document.getElementById('dbgMktCap').innerText = (stock.mktCap / 1000000000).toFixed(2) + " B$";
+        document.getElementById('dbgShares').innerText = (stock.shares / 1000000).toFixed(2) + " M";
+
         calculate();
 
     } catch (e) {
@@ -113,22 +134,31 @@ async function fetchData() {
 }
 
 function calculate() {
-    if(!stock.price) return; // Sécurité anti-NaN
+    if(!stock.price) return;
 
     const metricKey = document.getElementById('metric').value;
-    const baseValue = stock[metricKey]; // Récupère fcf, ocf, netIncome ou oi
+    const baseValue = stock[metricKey]; 
     
+    // Affichage valeur utilisée dans le debug
+    document.getElementById('dbgMetric').innerText = (baseValue / 1000000000).toFixed(2) + " B$";
+
     const growth = parseFloat(document.getElementById('growth').value) / 100;
     const mult = parseFloat(document.getElementById('mult').value);
     
-    // Calcul DCF
+    // Si shares est 0 ou NaN, on évite le crash
+    if (!stock.shares || stock.shares === 0) {
+        document.getElementById('outFair').innerText = "Erreur Données";
+        return;
+    }
+
+    // Calcul
     const futureValue = baseValue * Math.pow(1 + growth, 5);
     const futurePrice = (futureValue * mult) / stock.shares;
     const fairToday = futurePrice / Math.pow(1.10, 5);
     
     const upside = ((fairToday - stock.price) / stock.price) * 100;
 
-    document.getElementById('outFair').innerText = fairToday.toFixed(2) + " $";
+    document.getElementById('outFair').innerText = fairToday.toFixed(2) + " " + stock.currency;
     
     const upEl = document.getElementById('outUpside');
     upEl.innerText = (upside > 0 ? "+" : "") + upside.toFixed(1) + "%";
