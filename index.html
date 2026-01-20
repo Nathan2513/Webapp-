@@ -7,7 +7,7 @@
     <style>
         :root { --bg: #0b0e11; --card: #1e2329; --text: #eaecef; --blurple: #f0b90b; --green: #0ecb81; --red: #f6465d; }
         body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); display: flex; justify-content: center; padding: 20px; margin: 0; }
-        .container { background: var(--card); padding: 30px; border-radius: 16px; box-shadow: 0 12px 40px rgba(0,0,0,0.6); width: 100%; max-width: 480px; }
+        .container { background: var(--card); padding: 30px; border-radius: 16px; box-shadow: 0 12px 40px rgba(0,0,0,0.6); width: 100%; max-width: 450px; }
         h1 { font-size: 1.5rem; color: var(--blurple); text-align: center; margin-bottom: 25px; }
         .search-group { display: flex; gap: 10px; margin-bottom: 10px; }
         input { flex: 1; padding: 12px; background: #2b3139; border: 1px solid #474d57; border-radius: 8px; color: #fff; font-size: 1rem; }
@@ -58,15 +58,15 @@ let stock = {};
 async function fetchData() {
     let t = document.getElementById('ticker').value.trim().toUpperCase();
     if(!t) return;
-    if(t === "APPAL") t = "AAPL"; // Auto-correction
+    if(t === "APPAL") t = "AAPL"; 
 
     const status = document.getElementById('status');
     status.innerText = "⌛ Connexion API v3 (Query Mode)...";
     status.style.color = "#848e9c";
 
     try {
-        // LE CHANGEMENT EST ICI : On utilise ?symbol=TICKER au lieu de /TICKER
-        // C'est la seule méthode acceptée pour les nouveaux comptes
+        // C'EST ICI QUE ÇA CHANGE : ?symbol=TICKER
+        // Si tu vois encore l'erreur 403 Legacy, c'est que ton navigateur n'a pas pris ce fichier !
         const [pRes, cRes] = await Promise.all([
             fetch(`https://financialmodelingprep.com/api/v3/profile?symbol=${t}&apikey=${API_KEY}`),
             fetch(`https://financialmodelingprep.com/api/v3/cash-flow-statement?symbol=${t}&period=annual&apikey=${API_KEY}`)
@@ -75,7 +75,6 @@ async function fetchData() {
         const profile = await pRes.json();
         const cashflow = await cRes.json();
 
-        // Gestion d'erreur spécifique
         if (profile["Error Message"]) throw new Error("API Error: " + profile["Error Message"]);
         if (!profile[0]) throw new Error("Action introuvable (US Only).");
 
@@ -95,6 +94,7 @@ async function fetchData() {
     } catch (e) {
         status.innerText = "❌ " + e.message;
         status.style.color = "#f6465d";
+        console.error("Erreur:", e); // Pour que tu puisses vérifier la console si besoin
     }
 }
 
@@ -103,7 +103,6 @@ function calculate() {
     const growth = parseFloat(document.getElementById('growth').value)/100;
     const mult = parseFloat(document.getElementById('mult').value);
     
-    // Formule Bot Discord
     const futureMetric = stock[metric] * Math.pow(1 + growth, 5);
     const futurePrice = (futureMetric * mult) / stock.shares;
     const fairToday = futurePrice / Math.pow(1.10, 5);
