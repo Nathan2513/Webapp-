@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DCF Master - 2026 Compatible</title>
+    <title>DCF Master - Fix Stable</title>
     <style>
         :root { --bg: #0b0e11; --card: #1e2329; --text: #eaecef; --blurple: #f0b90b; --green: #0ecb81; --red: #f6465d; }
         body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); display: flex; justify-content: center; padding: 20px; margin: 0; }
-        .container { background: var(--card); padding: 30px; border-radius: 16px; box-shadow: 0 12px 40px rgba(0,0,0,0.6); width: 100%; max-width: 450px; }
+        .container { background: var(--card); padding: 30px; border-radius: 16px; box-shadow: 0 12px 40px rgba(0,0,0,0.6); width: 100%; max-width: 480px; }
         h1 { font-size: 1.5rem; color: var(--blurple); text-align: center; margin-bottom: 25px; }
         .search-group { display: flex; gap: 10px; margin-bottom: 10px; }
         input { flex: 1; padding: 12px; background: #2b3139; border: 1px solid #474d57; border-radius: 8px; color: #fff; font-size: 1rem; }
@@ -21,12 +21,10 @@
 
 <div class="container">
     <h1>📊 DCF CALCULATOR</h1>
-    
     <div class="search-group">
         <input type="text" id="ticker" placeholder="Ex: AAPL">
         <button class="btn-fetch" onclick="fetchData()">ANALYSER</button>
     </div>
-    
     <div id="status">Prêt. Entrez un ticker US (ex: NVDA).</div>
 
     <div id="uiSection" class="ui-section">
@@ -61,15 +59,15 @@ async function fetchData() {
     if(t === "APPAL") t = "AAPL"; 
 
     const status = document.getElementById('status');
-    status.innerText = "⌛ Connexion API v3 (Query Mode)...";
+    status.innerText = "⌛ Connexion API (Route Stable)...";
     status.style.color = "#848e9c";
 
     try {
-        // C'EST ICI QUE ÇA CHANGE : ?symbol=TICKER
-        // Si tu vois encore l'erreur 403 Legacy, c'est que ton navigateur n'a pas pris ce fichier !
+        // --- CORRECTION MAJEURE ICI ---
+        // On remplace '/api/v3/' par '/stable/' qui est la nouvelle route obligatoire pour vous.
         const [pRes, cRes] = await Promise.all([
-            fetch(`https://financialmodelingprep.com/api/v3/profile?symbol=${t}&apikey=${API_KEY}`),
-            fetch(`https://financialmodelingprep.com/api/v3/cash-flow-statement?symbol=${t}&period=annual&apikey=${API_KEY}`)
+            fetch(`https://financialmodelingprep.com/stable/profile?symbol=${t}&apikey=${API_KEY}`),
+            fetch(`https://financialmodelingprep.com/stable/cash-flow-statement?symbol=${t}&period=annual&apikey=${API_KEY}`)
         ]);
 
         const profile = await pRes.json();
@@ -94,7 +92,6 @@ async function fetchData() {
     } catch (e) {
         status.innerText = "❌ " + e.message;
         status.style.color = "#f6465d";
-        console.error("Erreur:", e); // Pour que tu puisses vérifier la console si besoin
     }
 }
 
