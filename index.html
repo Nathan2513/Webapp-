@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DCF Master - Pro Design</title>
+    <title>DCF Master - Pro</title>
     <style>
         :root { --bg: #0b0e11; --card: #1e2329; --text: #eaecef; --blurple: #f0b90b; --green: #0ecb81; --red: #f6465d; --gray-btn: #2b3139; }
         body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); display: flex; justify-content: center; padding: 20px; margin: 0; }
@@ -18,11 +18,9 @@
         .btn-fetch:hover { opacity: 0.9; }
         #status { text-align: center; font-size: 0.85rem; margin-bottom: 25px; color: #848e9c; min-height: 20px; }
 
-        /* Interface Principale (cachée au début) */
+        /* Interface Principale */
         .ui-section { display: none; }
-
-        /* Labels */
-        .label-txt { font-size: 0.75rem; color: #848e9c; margin-bottom: 8px; display: block; font-weight: 600; }
+        .label-txt { font-size: 0.75rem; color: #848e9c; margin-bottom: 8px; display: block; font-weight: 600; text-transform: uppercase; }
 
         /* Boutons Métriques */
         .metrics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 25px; }
@@ -30,25 +28,25 @@
             background: var(--gray-btn); border: 1px solid #474d57; color: #848e9c; padding: 12px; border-radius: 10px; cursor: pointer; font-weight: 600; transition: 0.3s;
         }
         .metric-btn:hover { background: #363c45; }
-        /* Style du bouton actif (Jaune) */
         .metric-btn.active { background: var(--blurple); color: #000; border-color: var(--blurple); }
 
-        /* Inputs numériques stylisés comme des boutons gris */
+        /* Inputs numériques */
         .inputs-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 30px; }
         .input-box input {
-            width: 100%; padding: 14px; background: var(--gray-btn); border: 1px solid #474d57; border-radius: 10px; color: #fff; font-size: 1.1rem; text-align: center; font-weight: bold; outline: none;
+            width: 100%; padding: 14px; background: var(--gray-btn); border: 1px solid #474d57; border-radius: 10px; color: #fff; font-size: 1.1rem; text-align: center; font-weight: bold; outline: none; box-sizing: border-box; /* Important pour l'alignement */
         }
         .input-box input:focus { border-color: var(--blurple); }
-        /* Cache les flèches moches des navigateurs */
+        
+        /* Cache les flèches numériques */
         input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
         input[type=number] { -moz-appearance: textfield; }
 
-        /* Section Résultats (3 blocs) */
+        /* Résultats */
         .results-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
-        .result-box { background: #2b3139; padding: 15px 10px; border-radius: 12px; text-align: center; border: 1px solid #474d57; }
-        .res-label { font-size: 0.7rem; color: #848e9c; margin-bottom: 5px; display: block; }
+        .result-box { background: #2b3139; padding: 15px 5px; border-radius: 12px; text-align: center; border: 1px solid #474d57; }
+        .res-label { font-size: 0.65rem; color: #848e9c; margin-bottom: 5px; display: block; text-transform: uppercase; }
         .res-value { font-size: 1.1rem; font-weight: 800; color: var(--text); }
-        .res-main { font-size: 1.4rem; color: var(--blurple); }
+        .res-main { font-size: 1.3rem; color: var(--blurple); }
         .res-green { color: var(--green); }
 
         /* Prix actuel */
@@ -74,7 +72,7 @@
         </div>
 
         <div>
-            <span class="label-txt">CHOISIR LA MÉTRIQUE DE BASE</span>
+            <span class="label-txt">CHOISIR LA MÉTRIQUE</span>
             <div class="metrics-grid">
                 <button class="metric-btn active" onclick="selectMetric('fcf', this)">Free Cash Flow</button>
                 <button class="metric-btn" onclick="selectMetric('netIncome', this)">Net Income</button>
@@ -90,21 +88,21 @@
             </div>
             <div class="input-box">
                 <span class="label-txt">MULTIPLE TERMINAL</span>
-                <input type="number" id="mult" value="25" oninput="calculate()">
+                <input type="number" id="exitMult" value="25" oninput="calculate()">
             </div>
         </div>
         
         <div class="results-grid">
             <div class="result-box" style="border-color: var(--blurple);">
-                <span class="res-label">FAIR VALUE AUJOURD'HUI</span>
+                <span class="res-label">FAIR VALUE (AUJ)</span>
                 <div id="resFairToday" class="res-value res-main">0.00 $</div>
             </div>
             <div class="result-box">
-                <span class="res-label">VALEUR DANS 5 ANS</span>
+                <span class="res-label">VALEUR (5 ANS)</span>
                 <div id="resFutureValue" class="res-value">0.00 $</div>
             </div>
             <div class="result-box">
-                <span class="res-label">RENDEMENT ANNUEL (CAGR)</span>
+                <span class="res-label">RENDEMENT (CAGR)</span>
                 <div id="resCAGR" class="res-value res-green">0.0%</div>
             </div>
         </div>
@@ -115,21 +113,12 @@
 <script>
 const API_KEY = "cCUKcjC9uAt3yTUyvtGbYl5CrI41G21e";
 let stock = {};
-// Métrique par défaut
 let currentMetric = 'fcf';
 
-// Fonction pour gérer le clic sur les boutons de métrique
 function selectMetric(metricKey, btnElement) {
-    // 1. Mettre à jour la variable
     currentMetric = metricKey;
-    
-    // 2. Enlever la classe 'active' de tous les boutons
     document.querySelectorAll('.metric-btn').forEach(btn => btn.classList.remove('active'));
-    
-    // 3. Ajouter la classe 'active' (jaune) au bouton cliqué
     btnElement.classList.add('active');
-    
-    // 4. Relancer le calcul
     calculate();
 }
 
@@ -143,7 +132,6 @@ async function fetchData() {
     status.style.color = "#848e9c";
 
     try {
-        // Utilisation des routes STABLE pour 2026
         const [pRes, cRes, iRes] = await Promise.all([
             fetch(`https://financialmodelingprep.com/stable/profile?symbol=${t}&apikey=${API_KEY}`),
             fetch(`https://financialmodelingprep.com/stable/cash-flow-statement?symbol=${t}&period=annual&apikey=${API_KEY}`),
@@ -177,7 +165,6 @@ async function fetchData() {
         document.getElementById('currentPrice').innerText = stock.price.toFixed(2) + " " + stock.currency;
         
         document.getElementById('uiSection').style.display = "block";
-        // On lance le calcul avec la métrique par défaut (fcf)
         calculate();
 
     } catch (e) {
@@ -189,34 +176,27 @@ async function fetchData() {
 function calculate() {
     if(!stock.price || !stock.shares) return;
 
-    // Utilise la métrique sélectionnée par les boutons
     const baseValue = stock[currentMetric];
-    
     const growth = parseFloat(document.getElementById('growth').value) / 100;
+    // C'est ici que ça plantait avant, maintenant c'est corrigé !
     const mult = parseFloat(document.getElementById('exitMult').value);
     
-    // --- CALCULS ---
-    // 1. Valeur Future dans 5 ans
+    // Calculs
     const futureTotalValue = baseValue * Math.pow(1 + growth, 5);
     const futurePrice = (futureTotalValue * mult) / stock.shares;
-
-    // 2. Fair Value Aujourd'hui (Actualisée à 10%)
     const fairToday = futurePrice / Math.pow(1.10, 5);
     
-    // 3. Rendement Annuel Estimé (CAGR) si on achète au prix actuel et qu'on vend au prix futur
-    // Formule : (Prix Futur / Prix Actuel)^(1/5) - 1
     let cagr = 0;
     if (stock.price > 0) {
         cagr = (Math.pow(futurePrice / stock.price, 1/5) - 1) * 100;
     }
 
-    // --- AFFICHAGE DES 3 RÉSULTATS ---
+    // Affichage
     document.getElementById('resFairToday').innerText = fairToday.toFixed(2) + " " + stock.currency;
     document.getElementById('resFutureValue').innerText = futurePrice.toFixed(2) + " " + stock.currency;
     
     const cagrEl = document.getElementById('resCAGR');
     cagrEl.innerText = cagr.toFixed(1) + "% / an";
-    // Change la couleur du CAGR si négatif
     cagrEl.style.color = cagr >= 0 ? "var(--green)" : "var(--red)";
 }
 </script>
