@@ -3,22 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DCF Master - Debug Mode</title>
+    <title>DCF Master - Pro Design</title>
     <style>
-        :root { --bg: #0b0e11; --card: #1e2329; --text: #eaecef; --blurple: #f0b90b; --green: #0ecb81; --red: #f6465d; }
+        :root { --bg: #0b0e11; --card: #1e2329; --text: #eaecef; --blurple: #f0b90b; --green: #0ecb81; --red: #f6465d; --gray-btn: #2b3139; }
         body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); display: flex; justify-content: center; padding: 20px; margin: 0; }
-        .container { background: var(--card); padding: 30px; border-radius: 16px; box-shadow: 0 12px 40px rgba(0,0,0,0.6); width: 100%; max-width: 500px; }
-        h1 { font-size: 1.5rem; color: var(--blurple); text-align: center; margin-bottom: 25px; }
-        .search-group { display: flex; gap: 10px; margin-bottom: 10px; }
-        input, select { flex: 1; padding: 12px; background: #2b3139; border: 1px solid #474d57; border-radius: 8px; color: #fff; font-size: 1rem; }
-        .btn-fetch { background: var(--blurple); color: #000; border: none; padding: 0 20px; border-radius: 8px; cursor: pointer; font-weight: 700; }
-        #status { text-align: center; font-size: 0.85rem; margin-bottom: 20px; padding: 10px; border-radius: 8px; min-height: 20px; color: #848e9c; }
-        .ui-section { display: none; border-top: 1px solid #474d57; padding-top: 20px; }
-        .fair-value { font-size: 2.2rem; color: var(--green); font-weight: 800; text-align: center; margin: 15px 0; }
+        .container { background: var(--card); padding: 30px; border-radius: 20px; box-shadow: 0 12px 40px rgba(0,0,0,0.6); width: 100%; max-width: 500px; }
+        h1 { font-size: 1.5rem; color: var(--blurple); text-align: center; margin-bottom: 25px; letter-spacing: 1px; }
         
-        /* Zone de Debug pour voir les chiffres */
-        .debug-box { margin-top: 20px; padding: 15px; background: rgba(240, 185, 11, 0.1); border-radius: 8px; font-size: 0.75rem; color: #f0b90b; border: 1px solid #f0b90b; display: none; }
-        .debug-row { display: flex; justify-content: space-between; margin-bottom: 5px; font-family: monospace; }
+        /* Section Recherche */
+        .search-group { display: flex; gap: 10px; margin-bottom: 15px; }
+        input[type="text"] { flex: 1; padding: 14px; background: var(--gray-btn); border: 1px solid #474d57; border-radius: 10px; color: #fff; font-size: 1rem; outline: none; transition: 0.3s; }
+        input[type="text"]:focus { border-color: var(--blurple); }
+        .btn-fetch { background: var(--blurple); color: #000; border: none; padding: 0 25px; border-radius: 10px; cursor: pointer; font-weight: 700; transition: 0.2s; }
+        .btn-fetch:hover { opacity: 0.9; }
+        #status { text-align: center; font-size: 0.85rem; margin-bottom: 25px; color: #848e9c; min-height: 20px; }
+
+        /* Interface Principale (cachée au début) */
+        .ui-section { display: none; }
+
+        /* Labels */
+        .label-txt { font-size: 0.75rem; color: #848e9c; margin-bottom: 8px; display: block; font-weight: 600; }
+
+        /* Boutons Métriques */
+        .metrics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 25px; }
+        .metric-btn {
+            background: var(--gray-btn); border: 1px solid #474d57; color: #848e9c; padding: 12px; border-radius: 10px; cursor: pointer; font-weight: 600; transition: 0.3s;
+        }
+        .metric-btn:hover { background: #363c45; }
+        /* Style du bouton actif (Jaune) */
+        .metric-btn.active { background: var(--blurple); color: #000; border-color: var(--blurple); }
+
+        /* Inputs numériques stylisés comme des boutons gris */
+        .inputs-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 30px; }
+        .input-box input {
+            width: 100%; padding: 14px; background: var(--gray-btn); border: 1px solid #474d57; border-radius: 10px; color: #fff; font-size: 1.1rem; text-align: center; font-weight: bold; outline: none;
+        }
+        .input-box input:focus { border-color: var(--blurple); }
+        /* Cache les flèches moches des navigateurs */
+        input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+        input[type=number] { -moz-appearance: textfield; }
+
+        /* Section Résultats (3 blocs) */
+        .results-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+        .result-box { background: #2b3139; padding: 15px 10px; border-radius: 12px; text-align: center; border: 1px solid #474d57; }
+        .res-label { font-size: 0.7rem; color: #848e9c; margin-bottom: 5px; display: block; }
+        .res-value { font-size: 1.1rem; font-weight: 800; color: var(--text); }
+        .res-main { font-size: 1.4rem; color: var(--blurple); }
+        .res-green { color: var(--green); }
+
+        /* Prix actuel */
+        .current-price-bar { text-align: center; margin-bottom: 20px; padding: 10px; background: rgba(132, 142, 156, 0.1); border-radius: 10px; font-size: 0.9rem; color: #848e9c; }
+        #currentPrice { color: var(--text); font-weight: bold; }
     </style>
 </head>
 <body>
@@ -27,50 +62,76 @@
     <h1>📊 DCF MASTER</h1>
     
     <div class="search-group">
-        <input type="text" id="ticker" placeholder="Ex: NVDA">
+        <input type="text" id="ticker" placeholder="Ex: NVDA, AAPL">
         <button class="btn-fetch" onclick="fetchData()">ANALYSER</button>
     </div>
-    <div id="status">Prêt.</div>
+    <div id="status">Prêt. Entrez un ticker US.</div>
 
     <div id="uiSection" class="ui-section">
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
-            <div style="grid-column: span 2;">
-                <label style="font-size: 0.7rem; color: #848e9c;">MÉTRIQUE</label>
-                <select id="metric" onchange="calculate()">
-                    <option value="fcf">Free Cash Flow</option>
-                    <option value="netIncome">Net Income</option>
-                    <option value="ocf">Operating Cash Flow</option>
-                    <option value="oi">Operating Income</option>
-                </select>
+        
+        <div class="current-price-bar">
+            Prix Actuel : <span id="currentPrice">--</span>
+        </div>
+
+        <div>
+            <span class="label-txt">CHOISIR LA MÉTRIQUE DE BASE</span>
+            <div class="metrics-grid">
+                <button class="metric-btn active" onclick="selectMetric('fcf', this)">Free Cash Flow</button>
+                <button class="metric-btn" onclick="selectMetric('netIncome', this)">Net Income</button>
+                <button class="metric-btn" onclick="selectMetric('ocf', this)">Operating CF</button>
+                <button class="metric-btn" onclick="selectMetric('oi', this)">Operating Income</button>
             </div>
-            <div>
-                <label style="font-size: 0.7rem; color: #848e9c;">CROISSANCE %</label>
+        </div>
+
+        <div class="inputs-grid">
+            <div class="input-box">
+                <span class="label-txt">CROISSANCE 5 ANS (%)</span>
                 <input type="number" id="growth" value="15" oninput="calculate()">
             </div>
-            <div>
-                <label style="font-size: 0.7rem; color: #848e9c;">MULTIPLE</label>
+            <div class="input-box">
+                <span class="label-txt">MULTIPLE TERMINAL</span>
                 <input type="number" id="mult" value="25" oninput="calculate()">
             </div>
         </div>
         
-        <div style="background:#2b3139; padding:20px; border-radius:12px; border-left: 4px solid var(--blurple);">
-            <div id="outFair" class="fair-value">0.00 $</div>
-            <div style="text-align: center;">Upside: <span id="outUpside">0%</span></div>
+        <div class="results-grid">
+            <div class="result-box" style="border-color: var(--blurple);">
+                <span class="res-label">FAIR VALUE AUJOURD'HUI</span>
+                <div id="resFairToday" class="res-value res-main">0.00 $</div>
+            </div>
+            <div class="result-box">
+                <span class="res-label">VALEUR DANS 5 ANS</span>
+                <div id="resFutureValue" class="res-value">0.00 $</div>
+            </div>
+            <div class="result-box">
+                <span class="res-label">RENDEMENT ANNUEL (CAGR)</span>
+                <div id="resCAGR" class="res-value res-green">0.0%</div>
+            </div>
         </div>
 
-        <div id="debug" class="debug-box">
-            <div style="text-align:center; font-weight:bold; margin-bottom:10px;">🔍 DIAGNOSTIC DONNÉES</div>
-            <div class="debug-row"><span>Prix:</span> <span id="dbgPrice">--</span></div>
-            <div class="debug-row"><span>Market Cap:</span> <span id="dbgMktCap">--</span></div>
-            <div class="debug-row"><span>Actions (Shares):</span> <span id="dbgShares">--</span></div>
-            <div class="debug-row"><span>Métrique choisie:</span> <span id="dbgMetric">--</span></div>
-        </div>
     </div>
 </div>
 
 <script>
 const API_KEY = "cCUKcjC9uAt3yTUyvtGbYl5CrI41G21e";
 let stock = {};
+// Métrique par défaut
+let currentMetric = 'fcf';
+
+// Fonction pour gérer le clic sur les boutons de métrique
+function selectMetric(metricKey, btnElement) {
+    // 1. Mettre à jour la variable
+    currentMetric = metricKey;
+    
+    // 2. Enlever la classe 'active' de tous les boutons
+    document.querySelectorAll('.metric-btn').forEach(btn => btn.classList.remove('active'));
+    
+    // 3. Ajouter la classe 'active' (jaune) au bouton cliqué
+    btnElement.classList.add('active');
+    
+    // 4. Relancer le calcul
+    calculate();
+}
 
 async function fetchData() {
     let t = document.getElementById('ticker').value.trim().toUpperCase();
@@ -78,10 +139,11 @@ async function fetchData() {
     if(t === "APPAL") t = "AAPL"; 
 
     const status = document.getElementById('status');
-    status.innerText = "⌛ Récupération des données...";
+    status.innerText = "⌛ Chargement des données...";
     status.style.color = "#848e9c";
 
     try {
+        // Utilisation des routes STABLE pour 2026
         const [pRes, cRes, iRes] = await Promise.all([
             fetch(`https://financialmodelingprep.com/stable/profile?symbol=${t}&apikey=${API_KEY}`),
             fetch(`https://financialmodelingprep.com/stable/cash-flow-statement?symbol=${t}&period=annual&apikey=${API_KEY}`),
@@ -93,18 +155,14 @@ async function fetchData() {
         const income = await iRes.json();
 
         if (profile["Error Message"]) throw new Error(profile["Error Message"]);
-        if (!profile[0]) throw new Error("Action introuvable.");
+        if (!profile[0]) throw new Error("Action introuvable (US Only).");
 
-        // --- CORRECTION DU CALCUL ---
-        // On sécurise chaque chiffre. Si c'est manquant, on met 0.
-        // On essaie 'mktCap' et 'marketCap' car l'API change parfois de nom.
         const mktCap = profile[0].mktCap || profile[0].marketCap || 0;
         const price = profile[0].price || 0;
         const shares = (mktCap && price) ? (mktCap / price) : 0;
 
         stock = {
             price: price,
-            mktCap: mktCap,
             shares: shares,
             fcf: cashflow[0] ? cashflow[0].freeCashFlow : 0,
             ocf: cashflow[0] ? cashflow[0].operatingCashFlow : 0,
@@ -114,17 +172,12 @@ async function fetchData() {
             currency: profile[0].currency || "$"
         };
 
-        status.innerText = `✅ Données de ${stock.symbol} prêtes.`;
+        status.innerText = `✅ Données chargées pour ${stock.symbol}`;
         status.style.color = "#0ecb81";
+        document.getElementById('currentPrice').innerText = stock.price.toFixed(2) + " " + stock.currency;
         
         document.getElementById('uiSection').style.display = "block";
-        document.getElementById('debug').style.display = "block";
-        
-        // Remplissage du diagnostic
-        document.getElementById('dbgPrice').innerText = stock.price;
-        document.getElementById('dbgMktCap').innerText = (stock.mktCap / 1000000000).toFixed(2) + " B$";
-        document.getElementById('dbgShares').innerText = (stock.shares / 1000000).toFixed(2) + " M";
-
+        // On lance le calcul avec la métrique par défaut (fcf)
         calculate();
 
     } catch (e) {
@@ -134,35 +187,37 @@ async function fetchData() {
 }
 
 function calculate() {
-    if(!stock.price) return;
+    if(!stock.price || !stock.shares) return;
 
-    const metricKey = document.getElementById('metric').value;
-    const baseValue = stock[metricKey]; 
+    // Utilise la métrique sélectionnée par les boutons
+    const baseValue = stock[currentMetric];
     
-    // Affichage valeur utilisée dans le debug
-    document.getElementById('dbgMetric').innerText = (baseValue / 1000000000).toFixed(2) + " B$";
-
     const growth = parseFloat(document.getElementById('growth').value) / 100;
-    const mult = parseFloat(document.getElementById('mult').value);
+    const mult = parseFloat(document.getElementById('exitMult').value);
     
-    // Si shares est 0 ou NaN, on évite le crash
-    if (!stock.shares || stock.shares === 0) {
-        document.getElementById('outFair').innerText = "Erreur Données";
-        return;
-    }
+    // --- CALCULS ---
+    // 1. Valeur Future dans 5 ans
+    const futureTotalValue = baseValue * Math.pow(1 + growth, 5);
+    const futurePrice = (futureTotalValue * mult) / stock.shares;
 
-    // Calcul
-    const futureValue = baseValue * Math.pow(1 + growth, 5);
-    const futurePrice = (futureValue * mult) / stock.shares;
+    // 2. Fair Value Aujourd'hui (Actualisée à 10%)
     const fairToday = futurePrice / Math.pow(1.10, 5);
     
-    const upside = ((fairToday - stock.price) / stock.price) * 100;
+    // 3. Rendement Annuel Estimé (CAGR) si on achète au prix actuel et qu'on vend au prix futur
+    // Formule : (Prix Futur / Prix Actuel)^(1/5) - 1
+    let cagr = 0;
+    if (stock.price > 0) {
+        cagr = (Math.pow(futurePrice / stock.price, 1/5) - 1) * 100;
+    }
 
-    document.getElementById('outFair').innerText = fairToday.toFixed(2) + " " + stock.currency;
+    // --- AFFICHAGE DES 3 RÉSULTATS ---
+    document.getElementById('resFairToday').innerText = fairToday.toFixed(2) + " " + stock.currency;
+    document.getElementById('resFutureValue').innerText = futurePrice.toFixed(2) + " " + stock.currency;
     
-    const upEl = document.getElementById('outUpside');
-    upEl.innerText = (upside > 0 ? "+" : "") + upside.toFixed(1) + "%";
-    upEl.style.color = upside > 0 ? "#0ecb81" : "#f6465d";
+    const cagrEl = document.getElementById('resCAGR');
+    cagrEl.innerText = cagr.toFixed(1) + "% / an";
+    // Change la couleur du CAGR si négatif
+    cagrEl.style.color = cagr >= 0 ? "var(--green)" : "var(--red)";
 }
 </script>
 </body>
