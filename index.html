@@ -66,12 +66,12 @@
         
         /* Placeholder pour l'icône du lion. 
            À REMPLACER par votre vraie balise <img> : <img src="lion.svg" width="40"> */
-        .logo-icon-placeholder {
-            width: 40px;
-            height: 40px;
-            background-color: var(--primary-orange);
-            /* Forme temporaire pour simuler la tête de lion */
-            clip-path: polygon(50% 0%, 80% 10%, 100% 35%, 100% 70%, 80% 90%, 50% 100%, 20% 90%, 0% 70%, 0% 35%, 20% 10%);
+        .logo-img {
+    height: 45px;       /* Règle la hauteur du logo */
+    width: auto;        /* Garde les proportions */
+    border-radius: 50%; /* S'assure que le cercle est bien net */
+    object-fit: cover;
+}
         }
 
         .nav-links {
