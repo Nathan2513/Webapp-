@@ -3,563 +3,315 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stock Master - Platform</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&display=swap" rel="stylesheet">
+    <title>StockMaster - L'analyse financière simplifiée</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
     <style>
-        /* --- VARIABLES DESIGN SYSTEM (STYLE SUPERIOR) --- */
+        /* ================= DEFINITION DES COULEURS ET VARIABLES ================= */
         :root {
-            /* Palette SaaS Light */
-            --bg: #ffffff;
-            --surface: #ffffff;
-            --surface-alt: #f9fafb; /* Gris très clair pour les fonds secondaires */
-            --border: #e5e7eb;      /* Gris subtil pour les bordures */
+            --primary-orange: #FF7A00; /* L'orange exact de votre maquette */
+            --text-dark: #111827;      /* Noir quasi total pour les titres */
+            --text-gray: #6B7280;      /* Gris pour les sous-titres */
+            --bg-white: #FFFFFF;
+            --border-light: #E5E7EB;   /* Gris très clair pour les bordures fines */
+            --shadow-soft: 0 10px 30px -10px rgba(0,0,0,0.1); /* Ombre douce */
             
-            /* Typographie */
-            --text-main: #111827;   /* Noir doux */
-            --text-muted: #6b7280;  /* Gris texte */
-            
-            /* Accents */
-            --primary: #111827;     /* Bouton Noir (Style Superior) */
-            --primary-hover: #000000;
-            --accent-green: #10b981; /* Vert succès */
-            --accent-red: #ef4444;   /* Rouge erreur */
-            --accent-blue: #3b82f6;  /* Bleu info */
-            
-            /* Ombres et Rayons */
-            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            --radius-md: 12px;
-            --radius-lg: 24px;
+            --container-width: 1200px;
         }
 
-        * { box-sizing: border-box; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         
-        body { 
-            font-family: 'Inter', sans-serif; 
-            background: var(--bg); 
-            color: var(--text-main); 
-            margin: 0; 
-            padding: 0; 
-            min-height: 100vh; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            -webkit-font-smoothing: antialiased;
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-white);
+            color: var(--text-dark);
+            line-height: 1.5;
+            overflow-x: hidden; /* Évite le scroll horizontal */
         }
 
-        /* --- ANIMATIONS & LAYOUT --- */
-        .page-section { display: none; width: 100%; max-width: 1200px; padding: 40px 20px; animation: fadeIn 0.6s ease; }
-        .page-section.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        /* Conteneur central pour aligner le contenu */
+        .container {
+            max-width: var(--container-width);
+            margin: 0 auto;
+            padding: 0 24px;
+        }
 
-        /* --- UI COMPONENTS COMMUNS --- */
-        .btn-primary {
-            background: var(--primary);
-            color: #fff;
-            border: none;
-            padding: 14px 28px;
-            border-radius: 50px; /* Pill shape comme sur le template */
+        /* ================= HEADER / NAVIGATION ================= */
+        .site-header {
+            padding: 20px 0;
+            /* Position sticky pour qu'il reste en haut si besoin */
+            position: sticky;
+            top: 0;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(5px);
+            z-index: 100;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* Le Logo (Icone + Texte) */
+        .logo-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 800;
+            font-size: 1.5rem;
+            color: var(--text-dark);
+        }
+        
+        /* Placeholder pour l'icône du lion. 
+           À REMPLACER par votre vraie balise <img> : <img src="lion.svg" width="40"> */
+        .logo-icon-placeholder {
+            width: 40px;
+            height: 40px;
+            background-color: var(--primary-orange);
+            /* Forme temporaire pour simuler la tête de lion */
+            clip-path: polygon(50% 0%, 80% 10%, 100% 35%, 100% 70%, 80% 90%, 50% 100%, 20% 90%, 0% 70%, 0% 35%, 20% 10%);
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 32px;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: var(--text-dark);
+            font-weight: 500;
+            font-size: 1rem;
+            transition: color 0.2s;
+        }
+        .nav-link:hover { color: var(--primary-orange); }
+
+        /* Boutons */
+        .btn {
+            padding: 12px 24px;
+            border-radius: 8px; /* Coins légèrement arrondis comme sur la maquette */
             font-weight: 600;
             font-size: 1rem;
             cursor: pointer;
             transition: all 0.2s ease;
-            box-shadow: var(--shadow-sm);
+            border: none;
         }
-        .btn-primary:hover { background: var(--primary-hover); transform: translateY(-1px); box-shadow: var(--shadow-md); }
+
+        .btn-orange {
+            background-color: var(--primary-orange);
+            color: white;
+        }
+        .btn-orange:hover { background-color: #e06b00; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(255, 122, 0, 0.3); }
 
         .btn-outline {
-            background: transparent;
-            color: var(--text-main);
-            border: 1px solid var(--border);
-            padding: 10px 20px;
-            border-radius: 50px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: 0.2s;
+            background-color: transparent;
+            border: 2px solid var(--border-light);
+            color: var(--text-dark);
         }
-        .btn-outline:hover { border-color: var(--text-main); }
+        .btn-outline:hover { border-color: var(--text-dark); background-color: #f9fafb; }
 
-        input[type="text"], input[type="number"] {
+
+        /* ================= SECTION HÉROS (LE BLOC PRINCIPAL) ================= */
+        .hero-section {
+            padding: 80px 0;
+            /* Fond avec une légère lueur orange diffuse derrière l'image (optionnel, pour l'effet "wow") */
+            background: radial-gradient(circle at 70% 50%, rgba(255, 122, 0, 0.08) 0%, rgba(255,255,255,0) 60%);
+        }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr; /* 2 colonnes égales */
+            align-items: center;
+            gap: 60px;
+        }
+
+        /* Colonne de texte à gauche */
+        .hero-content h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 24px;
+            letter-spacing: -0.03em;
+        }
+
+        .hero-content p {
+            font-size: 1.25rem;
+            color: var(--text-gray);
+            margin-bottom: 40px;
+            max-width: 500px;
+            line-height: 1.6;
+        }
+
+        .hero-buttons-group {
+            display: flex;
+            gap: 16px;
+        }
+
+        /* Colonne image à droite (Dashboard Mockup) */
+        .hero-image-container {
+            /* Effet d'ombre portée et de bordure pour le style "fenêtre d'application" */
+            box-shadow: var(--shadow-soft), 0 4px 6px -1px rgba(0,0,0,0.05);
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid var(--border-light);
+            background: #F3F4F6; /* Gris très clair de fond de la fenêtre */
+        }
+        
+        /* Placeholder pour l'image du dashboard. 
+           À remplacer par : <img src="dashboard.png" style="width:100%; height:auto;"> */
+        .dashboard-placeholder {
             width: 100%;
-            padding: 14px 18px;
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            color: var(--text-main);
+            height: 400px; /* Hauteur fixe pour le placeholder */
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="%239CA3AF" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>') no-repeat center center;
+            background-size: 80px;
+        }
+
+
+        /* ================= SECTION FONCTIONNALITÉS (LES 3 CARTES) ================= */
+        .features-section {
+            padding: 60px 0 100px 0;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); /* 3 colonnes */
+            gap: 32px;
+        }
+
+        .feature-card {
+            background: var(--bg-white);
+            padding: 32px;
+            border-radius: 16px;
+            border: 1px solid var(--border-light);
+            /* Légère ombre comme sur la maquette */
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-soft);
+            border-color: #fed7aa; /* Bordure orange très pâle au survol */
+        }
+
+        .feature-icon-box {
+            width: 48px;
+            height: 48px;
+            background-color: var(--primary-orange);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 24px;
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        .feature-card h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .feature-card p {
+            color: var(--text-gray);
+            line-height: 1.6;
             font-size: 1rem;
-            outline: none;
-            transition: 0.2s;
-            font-family: 'Inter', sans-serif;
-        }
-        input:focus { border-color: var(--text-main); box-shadow: 0 0 0 3px rgba(17, 24, 39, 0.1); }
-
-        /* --- PAGE 1: LOGIN (HERO SECTION STYLE SUPERIOR) --- */
-        .auth-container { 
-            display: flex; flex-direction: column; align-items: center; justify-content: center; 
-            height: 80vh; text-align: center; max-width: 800px; margin: 0 auto;
-        }
-        .badge-new {
-            background: #f3f4f6; color: var(--text-main); padding: 6px 14px; 
-            border-radius: 20px; font-size: 0.85rem; font-weight: 600; margin-bottom: 25px; display: inline-block;
-        }
-        .hero-title { 
-            font-size: 3.5rem; letter-spacing: -0.03em; line-height: 1.1; margin-bottom: 20px; color: var(--text-main); font-weight: 800; 
-        }
-        .hero-subtitle { 
-            font-size: 1.2rem; color: var(--text-muted); margin-bottom: 40px; max-width: 600px; line-height: 1.6;
-        }
-        .login-form {
-            display: flex; gap: 10px; width: 100%; max-width: 450px;
-        }
-        @media (max-width: 600px) { 
-            .hero-title { font-size: 2.5rem; } 
-            .login-form { flex-direction: column; }
         }
 
-        /* --- PAGE 2: MENU (CARDS CLEAN) --- */
-        .menu-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 50px; }
-        .user-welcome { font-size: 1.8rem; font-weight: 700; letter-spacing: -0.02em; }
-        
-        .menu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
-        .menu-card { 
-            background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 40px; 
-            transition: 0.3s; cursor: pointer; display: flex; flex-direction: column; align-items: flex-start;
-            box-shadow: var(--shadow-sm);
+        /* ================= RESPONSIVE (Pour mobile et tablette) ================= */
+        @media (max-width: 968px) {
+            .hero-grid {
+                grid-template-columns: 1fr; /* Empile le héros en 1 colonne */
+                text-align: center;
+                gap: 40px;
+            }
+            .hero-content p, .hero-buttons-group { margin-left: auto; margin-right: auto; }
+            .hero-buttons-group { justify-content: center; }
+            
+            .features-grid {
+                grid-template-columns: 1fr; /* Empile les fonctionnalités */
+                max-width: 500px;
+                margin: 0 auto;
+            }
         }
-        .menu-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-md); border-color: var(--text-main); }
-        .menu-icon-box { 
-            width: 50px; height: 50px; background: var(--surface-alt); border-radius: 12px; display: flex; 
-            align-items: center; justify-content: center; font-size: 1.5rem; margin-bottom: 20px; 
+        @media (max-width: 640px) {
+            .nav-links { display: none; } /* Cache le menu sur très petit écran (à gérer plus tard avec un menu burger) */
+            .hero-content h1 { font-size: 2.5rem; }
+            .hero-buttons-group { flex-direction: column; }
+            .btn { width: 100%; }
         }
-        .menu-title { font-size: 1.3rem; font-weight: 700; margin-bottom: 10px; color: var(--text-main); }
-        .menu-desc { font-size: 0.95rem; color: var(--text-muted); line-height: 1.5; }
-        .menu-card.locked { opacity: 0.6; cursor: not-allowed; background: #f9fafb; border-style: dashed; }
-
-        /* --- PAGE 3: L'OUTIL (DASHBOARD SAAS) --- */
-        .back-nav { margin-bottom: 30px; }
-        .dash-container { display: grid; gap: 30px; }
-        
-        /* Composant Carte Générique */
-        .card-base { 
-            background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); 
-            box-shadow: var(--shadow-sm); padding: 25px;
-        }
-
-        /* Header Analyse */
-        .header-block { display: flex; gap: 40px; align-items: center; }
-        .donut-chart { 
-            position: relative; width: 140px; height: 140px; border-radius: 50%; 
-            /* Fond par défaut gris clair pour le look light */
-            background: conic-gradient(var(--accent-green) 0% 0%, #f3f4f6 0% 100%); 
-            display: flex; align-items: center; justify-content: center; flex-shrink: 0; 
-        }
-        .donut-inner { 
-            width: 100px; height: 100px; background: var(--surface); border-radius: 50%; 
-            display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 2; 
-            box-shadow: inset 0 2px 10px rgba(0,0,0,0.05);
-        }
-        .total-score { font-size: 2.5rem; font-weight: 800; color: var(--text-main); letter-spacing: -0.05em; }
-        .total-label { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; }
-        
-        .company-title { font-size: 2rem; font-weight: 800; margin-bottom: 10px; letter-spacing: -0.03em; }
-        .blurb-text { 
-            font-size: 1rem; line-height: 1.6; color: var(--text-muted); background: var(--surface-alt); 
-            padding: 20px; border-radius: 12px; border-left: 4px solid var(--primary); 
-        }
-
-        /* Grille de 6 */
-        .six-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 30px; }
-        @media (max-width: 900px) { .six-grid { grid-template-columns: repeat(2, 1fr); } }
-        @media (max-width: 600px) { .six-grid { grid-template-columns: 1fr; } }
-
-        .dash-card { padding: 20px; display: flex; flex-direction: column; gap: 15px; }
-        .card-title { font-size: 0.9rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.05em; }
-        
-        .metric-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--border); }
-        .metric-row:last-child { border-bottom: none; }
-        .metric-name { color: var(--text-muted); font-size: 0.9rem; font-weight: 500; }
-        .metric-val { font-weight: 700; color: var(--text-main); margin-right: 10px; }
-
-        /* Badges SaaS */
-        .insight-badge { 
-            font-size: 0.75rem; padding: 4px 10px; border-radius: 20px; font-weight: 600; display: inline-block; 
-        }
-        .bg-vgood { background: #d1fae5; color: #065f46; } /* Vert clair pastel */
-        .bg-good { background: #ecfdf5; color: #047857; }
-        .bg-avg { background: #fef3c7; color: #92400e; }   /* Jaune clair pastel */
-        .bg-bad { background: #fee2e2; color: #b91c1c; }    /* Rouge clair pastel */
-
-        /* Valuation Grid */
-        .valo-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-top: 20px; }
-        .valo-card { 
-            background: var(--surface-alt); border-radius: 12px; padding: 20px; position: relative;
-        }
-        .valo-current { font-size: 1.6rem; font-weight: 800; color: var(--text-main); margin: 5px 0; }
-        .valo-diff-badge { 
-            position: absolute; top: 15px; right: 15px; font-size: 0.75rem; padding: 4px 8px; border-radius: 6px; font-weight: 700; 
-        }
-
-        /* DCF Section */
-        .dcf-section { background: #fff; border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 40px; box-shadow: var(--shadow-md); }
-        .dcf-header { text-align: center; margin-bottom: 30px; }
-        .dcf-title { font-size: 1.5rem; font-weight: 800; margin-bottom: 10px; }
-        
-        .metrics-selector { display: flex; gap: 10px; justify-content: center; margin-bottom: 30px; flex-wrap: wrap; }
-        .metric-btn { 
-            background: #fff; border: 1px solid var(--border); color: var(--text-muted); padding: 10px 20px; 
-            border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.9rem; transition: 0.2s; 
-        }
-        .metric-btn:hover { background: var(--surface-alt); }
-        .metric-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
-
-        .results-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 30px; }
-        .result-box { 
-            background: var(--surface-alt); padding: 25px; border-radius: 16px; text-align: center; 
-        }
-        .res-label { font-size: 0.8rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; margin-bottom: 10px; display: block; }
-        .res-value { font-size: 1.8rem; font-weight: 800; color: var(--text-main); }
-        
-        .margin-safety { 
-            margin-top: 20px; padding: 15px; border-radius: 12px; text-align: center; font-weight: 700; 
-            background: var(--surface-alt); border: 1px dashed var(--border);
-        }
-
-        /* Search Bar Style */
-        .search-container { display: flex; gap: 10px; max-width: 600px; margin: 0 auto 10px; }
-        .search-card { text-align: center; margin-bottom: 40px; }
-
     </style>
 </head>
 <body>
 
-    <div id="page-auth" class="page-section active">
-        <div class="auth-container">
-            <span class="badge-new">New: DCF Analysis v2.0</span>
-            <div class="hero-title">The most powerful<br>financial platform.</div>
-            <div class="hero-subtitle">
-                Unlock professional-grade stock valuation tools. Access real-time data, DCF models, and financial health scores in one clean dashboard.
+    <header class="site-header">
+        <div class="container nav-container">
+            <div class="logo-wrapper">
+                <div class="logo-icon-placeholder"></div> 
+                StockMaster.
             </div>
             
-            <div class="login-form">
-                <input type="text" id="usernameInput" placeholder="Enter your name to start..." style="background: #fff;">
-                <button class="btn-primary" onclick="handleLogin()">Get Started &rarr;</button>
-            </div>
-            
-            <div style="margin-top: 20px; font-size: 0.9rem; color: var(--text-muted);">
-                Free for everyone. No credit card required.
-            </div>
+            <nav class="nav-links">
+                <a href="#features" class="nav-link">Fonctionnalités</a>
+                <a href="#pricing" class="nav-link">Prix</a>
+                <button class="btn btn-orange">Se connecter</button>
+            </nav>
         </div>
-    </div>
+    </header>
 
-    <div id="page-menu" class="page-section">
-        <div class="menu-header">
-            <div class="user-welcome">Welcome back, <span id="displayUsername" style="color:var(--text-muted);">Investisseur</span>.</div>
-            <button class="btn-outline" onclick="handleLogout()">Log out</button>
-        </div>
-
-        <div class="menu-grid">
-            <div class="menu-card" onclick="goToTool()">
-                <div class="menu-icon-box">📊</div>
-                <div class="menu-title">Valuation Tool</div>
-                <div class="menu-desc">Complete DCF analysis, 5-year historical valuation, and financial health scoring.</div>
-            </div>
-
-            <div class="menu-card locked" onclick="alert('Module en développement')">
-                <div class="menu-icon-box">📰</div>
-                <div class="menu-title">Market News</div>
-                <div class="menu-desc">Real-time AI curated news feed for your watchlist. (Coming Soon)</div>
-            </div>
-
-            <div class="menu-card locked" onclick="alert('Module en développement')">
-                <div class="menu-icon-box">💼</div>
-                <div class="menu-title">Portfolio Tracker</div>
-                <div class="menu-desc">Track your performance and dividend income automatically. (Coming Soon)</div>
-            </div>
-        </div>
-    </div>
-
-    <div id="page-tool" class="page-section">
-        <div class="back-nav">
-            <button class="btn-outline" onclick="goBackToMenu()">&larr; Dashboard</button>
-        </div>
-
-        <div class="search-card">
-            <h2 style="font-size: 2rem; font-weight: 800; margin-bottom: 20px;">Stock Analysis</h2>
-            <div class="search-container">
-                <input type="text" id="ticker" placeholder="Enter symbol (e.g. NVDA, AAPL)">
-                <button class="btn-primary" onclick="runFullAnalysis()">Analyze</button>
-            </div>
-            <div id="status" style="font-size: 0.9rem; color: var(--text-muted); min-height: 20px;">Ready to analyze.</div>
-        </div>
-
-        <div id="dashboardArea" style="display: none;">
-            
-            <div class="header-block card-base">
-                <div class="donut-chart" id="scoreDonut">
-                    <div class="donut-inner">
-                        <span class="total-score" id="globalScore">--</span>
-                        <span class="total-label">Score</span>
+    <main>
+        <section class="hero-section">
+            <div class="container hero-grid">
+                <div class="hero-content">
+                    <h1>Stock Master<br>L'analyse financière simplifiée pour tous.</h1>
+                    <p>Pour vous, nous avons repensé l'analyse financière. Des outils professionnels, accessibles à tous.</p>
+                    <div class="hero-buttons-group">
+                        <button class="btn btn-orange">Commencer l'analyse</button>
+                        <button class="btn btn-outline">Voir la démo</button>
                     </div>
                 </div>
-                <div style="flex: 1;">
-                    <div class="company-title" id="companyName">--</div>
-                    <div class="blurb-text" id="quickBlurb">Loading data...</div>
+                
+                <div class="hero-image-container">
+                    <div style="background:#e5e7eb; padding: 8px 16px; display:flex; gap:6px; border-bottom:1px solid #d1d5db;">
+                         <div style="width:10px; height:10px; border-radius:50%; background:#ef4444;"></div>
+                         <div style="width:10px; height:10px; border-radius:50%; background:#f59e0b;"></div>
+                         <div style="width:10px; height:10px; border-radius:50%; background:#10b981;"></div>
+                    </div>
+                    <div class="dashboard-placeholder"></div>
                 </div>
             </div>
+        </section>
 
-            <div class="six-grid">
-                <div class="dash-card card-base"><div class="card-title">🚀 Growth</div><div id="blkGrowth"></div></div>
-                <div class="dash-card card-base"><div class="card-title">💰 Profitability</div><div id="blkProfit"></div></div>
-                <div class="dash-card card-base"><div class="card-title">🏦 Financial Health</div><div id="blkHealth"></div></div>
-                <div class="dash-card card-base"><div class="card-title">⚙️ Efficiency</div><div id="blkEfficiency"></div></div>
-                <div class="dash-card card-base"><div class="card-title">💎 Valuation (TTM)</div><div id="blkValuation"></div></div>
-                <div class="dash-card card-base"><div class="card-title">💵 Cash Flow</div><div id="blkCashflow"></div></div>
+        <section class="features-section" id="features">
+            <div class="container features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon-box">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+                    </div>
+                    <h3>Analyse DCF</h3>
+                    <p>Analysez la valeur intrinsèque (DCF) en quelques clics. Fini les tableurs Excel complexes et les erreurs de calcul.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon-box">
+                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"></path><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"></path><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"></path><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"></path></svg>
+                    </div>
+                    <h3>Données TTM</h3>
+                    <p>Accédez aux données financières "Trailing Twelve Months" (12 derniers mois glissants) pour une analyse à jour.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon-box">
+                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg>
+                    </div>
+                    <h3>Sauvegarde Cloud</h3>
+                    <p>Créez un compte sécurisé pour sauvegarder vos analyses et retrouver votre travail sur tous vos appareils.</p>
+                </div>
             </div>
+        </section>
+    </main>
 
-            <div class="card-base" style="margin: 30px 0;">
-                <div style="display:flex; align-items:center; gap:10px; margin-bottom: 20px;">
-                    <span style="font-size: 1.2rem; font-weight: 700;">📈 5-Year Historical Valuation</span>
-                </div>
-                <div class="valo-grid" id="valuationGrid"></div>
-                <div style="margin-top: 20px; padding-top: 15px; border-top: 1px dashed var(--border); font-size: 0.9rem; color: var(--text-muted); display:flex; justify-content:space-between;">
-                    <span>🏢 Sector Comparison (Tech / Software)</span>
-                    <span id="sectorPeDisplay">Sector Avg P/E: <b>--</b></span>
-                </div>
-            </div>
-
-            <div class="dcf-section">
-                <div class="dcf-header">
-                    <div class="dcf-title">Intrinsic Value Calculator (DCF)</div>
-                    <div style="color: var(--text-muted);">Current Price: <span id="dcfCurrentPrice" style="font-weight: 700; color: var(--text-main);">--</span></div>
-                </div>
-
-                <div class="metrics-selector">
-                    <button class="metric-btn active" onclick="selectMetric('fcf', this)">Free Cash Flow</button>
-                    <button class="metric-btn" onclick="selectMetric('netIncome', this)">Net Income</button>
-                    <button class="metric-btn" onclick="selectMetric('ocf', this)">Operating CF</button>
-                    <button class="metric-btn" onclick="selectMetric('oi', this)">Operating Inc.</button>
-                </div>
-
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; max-width: 600px; margin: 0 auto;">
-                    <div>
-                        <label style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted); display:block; margin-bottom: 8px;">GROWTH RATE (5Y) %</label>
-                        <input type="number" id="growthInput" value="15" oninput="calculateDCF()">
-                    </div>
-                    <div>
-                        <label style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted); display:block; margin-bottom: 8px;">TERMINAL MULTIPLE</label>
-                        <input type="number" id="multInput" value="25" oninput="calculateDCF()">
-                    </div>
-                </div>
-
-                <div class="results-grid">
-                    <div class="result-box">
-                        <span class="res-label">Fair Value</span>
-                        <div id="resFairToday" class="res-value" style="color: var(--primary);">0.00 $</div>
-                    </div>
-                    <div class="result-box">
-                        <span class="res-label">Future Value (5Y)</span>
-                        <div id="resFutureValue" class="res-value">0.00 $</div>
-                    </div>
-                    <div class="result-box">
-                        <span class="res-label">Exp. Return (CAGR)</span>
-                        <div id="resCAGR" class="res-value" style="color: var(--accent-green);">0.0%</div>
-                    </div>
-                </div>
-
-                <div id="marginSafetyBox" class="margin-safety"></div>
-            </div>
-
-        </div>
-    </div>
-
-<script>
-// ==================== NAVIGATION LOGIC ====================
-function showPage(pageId) {
-    document.querySelectorAll('.page-section').forEach(p => p.classList.remove('active'));
-    document.getElementById(pageId).classList.add('active');
-}
-function handleLogin() {
-    const name = document.getElementById('usernameInput').value || "Investor";
-    document.getElementById('displayUsername').innerText = name;
-    showPage('page-menu');
-}
-function handleLogout() {
-    document.getElementById('usernameInput').value = "";
-    showPage('page-auth');
-}
-function goToTool() { showPage('page-tool'); }
-function goBackToMenu() { showPage('page-menu'); }
-
-// ==================== FINANCIAL LOGIC (UNCHANGED) ====================
-const API_KEY = "cCUKcjC9uAt3yTUyvtGbYl5CrI41G21e";
-let dcfData = { price: 0, shares: 0, fcf: 0, netIncome: 0, ocf: 0, oi: 0, currency: "$" };
-let dashData = {}; 
-let currentMetric = 'fcf'; 
-
-function createRow(label, value, isPercent, inverseColors = false) {
-    let displayVal = "N/A"; let badgeCss = "bg-avg"; let badgeTxt = "Avg";
-    if (value !== null && value !== undefined && !isNaN(value)) {
-        displayVal = isPercent ? (value * 100).toFixed(1) + "%" : value.toFixed(2);
-        let score = 2; 
-        if (isPercent) { if (value > 0.20) score = 4; else if (value > 0.10) score = 3; else if (value < 0.02) score = 1; } 
-        else { if (value > 2) score = 4; else if (value > 1.2) score = 3; else if (value < 1) score = 1; }
-        if(inverseColors) { if (score === 4) score = 1; else if (score === 3) score = 2; else if (score === 1) score = 4; }
-        switch(score) { case 4: badgeCss = "bg-vgood"; badgeTxt = "Very Good"; break; case 3: badgeCss = "bg-good"; badgeTxt = "Good"; break; case 1: badgeCss = "bg-bad"; badgeTxt = "Bad"; break; }
-    }
-    return `<div class="metric-row"><span class="metric-name">${label}</span><div><span class="metric-val">${displayVal}</span><span class="insight-badge ${badgeCss}">${badgeTxt}</span></div></div>`;
-}
-const sumTTM = (data, key) => { if (!data || data.length < 4) return 0; return data.slice(0, 4).reduce((acc, curr) => acc + (curr[key] || 0), 0); };
-
-function createValoCard(title, current, history) {
-    let vals = history.map(h => h).filter(v => v > 0);
-    if(vals.length === 0) return "";
-    let max = Math.max(...vals); let min = Math.min(...vals);
-    let avg = vals.reduce((a,b)=>a+b,0) / vals.length;
-    let diff = ((current - avg) / avg) * 100;
-    
-    // SaaS Style Colors for Valuation
-    let diffColor = (diff > 0) ? "#ef4444" : "#10b981"; 
-    let diffBg = (diff > 0) ? "#fee2e2" : "#d1fae5";
-    let diffTxt = (diff > 0) ? "+" + diff.toFixed(0) + "% (Prem)" : diff.toFixed(0) + "% (Disc)";
-    
-    return `
-    <div class="valo-card">
-        <span class="valo-diff-badge" style="background:${diffBg}; color:${diffColor}">${diffTxt}</span>
-        <div style="font-size:0.8rem; font-weight:700; color:#6b7280; text-transform:uppercase; margin-bottom:5px;">${title}</div>
-        <div class="valo-current">${current.toFixed(1)}x</div>
-        <div style="font-size:0.8rem; color:#6b7280; margin-bottom:10px;">5Y Avg: <span style="font-weight:700; color:#111827;">${avg.toFixed(1)}x</span></div>
-        <div style="display:flex; justify-content:space-between; font-size:0.75rem; color:#9ca3af; padding-top:10px; border-top:1px solid #e5e7eb;">
-            <span>High: ${max.toFixed(1)}</span>
-            <span>Low: ${min.toFixed(1)}</span>
-        </div>
-    </div>`;
-}
-
-async function runFullAnalysis() {
-    let t = document.getElementById('ticker').value.trim().toUpperCase();
-    if(!t) return;
-    if(t === "APPAL") t = "AAPL"; 
-    const status = document.getElementById('status');
-    status.innerText = "Gathering financial data...";
-    status.style.color = "#d97706"; // Orange
-    document.getElementById('dashboardArea').style.display = "none";
-
-    try {
-        const pRes = fetch(`https://financialmodelingprep.com/stable/profile?symbol=${t}&apikey=${API_KEY}`);
-        const cfAnnRes = fetch(`https://financialmodelingprep.com/stable/cash-flow-statement?symbol=${t}&period=annual&limit=2&apikey=${API_KEY}`);
-        const incAnnRes = fetch(`https://financialmodelingprep.com/stable/income-statement?symbol=${t}&period=annual&limit=2&apikey=${API_KEY}`);
-        const balAnnRes = fetch(`https://financialmodelingprep.com/stable/balance-sheet-statement?symbol=${t}&period=annual&limit=1&apikey=${API_KEY}`);
-        const cfQtrRes = fetch(`https://financialmodelingprep.com/stable/cash-flow-statement?symbol=${t}&period=quarter&limit=4&apikey=${API_KEY}`);
-        const incQtrRes = fetch(`https://financialmodelingprep.com/stable/income-statement?symbol=${t}&period=quarter&limit=4&apikey=${API_KEY}`);
-        const ratioRes = fetch(`https://financialmodelingprep.com/stable/ratios?symbol=${t}&period=annual&limit=5&apikey=${API_KEY}`);
-
-        const [profD, cfAnn, incAnn, balAnn, cfQtr, incQtr, ratiosHist] = await Promise.all([
-            pRes.then(r=>r.json()), cfAnnRes.then(r=>r.json()), incAnnRes.then(r=>r.json()), balAnnRes.then(r=>r.json()),
-            cfQtrRes.then(r=>r.json()), incQtrRes.then(r=>r.json()), ratioRes.then(r=>r.json())
-        ]);
-
-        if (!profD[0]) throw new Error("Stock not found.");
-        const prof = profD[0];
-        
-        const lastInc = incAnn[0] || {}; const prevInc = incAnn[1] || {};
-        const lastBal = balAnn[0] || {}; const lastCF = cfAnn[0] || {};
-        dashData = {
-            revGrowth: prevInc.revenue ? (lastInc.revenue - prevInc.revenue) / prevInc.revenue : 0,
-            netGrowth: prevInc.netIncome ? (lastInc.netIncome - prevInc.netIncome) / prevInc.netIncome : 0,
-            grossMargin: lastInc.revenue ? lastInc.grossProfit / lastInc.revenue : 0,
-            netMargin: lastInc.revenue ? lastInc.netIncome / lastInc.revenue : 0,
-            currentRatio: lastBal.totalCurrentLiabilities ? lastBal.totalCurrentAssets / lastBal.totalCurrentLiabilities : 0,
-            debtEquity: lastBal.totalStockholdersEquity ? lastBal.totalDebt / lastBal.totalStockholdersEquity : 0,
-            roe: lastBal.totalStockholdersEquity ? lastInc.netIncome / lastBal.totalStockholdersEquity : 0,
-            fcfMargin: lastInc.revenue ? lastCF.freeCashFlow / lastInc.revenue : 0,
-            peRatio: (lastInc.eps) ? prof.price / lastInc.eps : 0
-        };
-
-        document.getElementById('blkGrowth').innerHTML = createRow("Revenue Growth", dashData.revGrowth, true) + createRow("Net Income Growth", dashData.netGrowth, true);
-        document.getElementById('blkProfit').innerHTML = createRow("Gross Margin", dashData.grossMargin, true) + createRow("Net Margin", dashData.netMargin, true);
-        document.getElementById('blkHealth').innerHTML = createRow("Current Ratio", dashData.currentRatio, false) + createRow("Debt / Equity", dashData.debtEquity, false, true);
-        document.getElementById('blkEfficiency').innerHTML = createRow("ROE", dashData.roe, true);
-        document.getElementById('blkValuation').innerHTML = createRow("P/E (Annual)", dashData.peRatio, false, true);
-        document.getElementById('blkCashflow').innerHTML = createRow("FCF Margin", dashData.fcfMargin, true);
-
-        document.getElementById('companyName').innerText = prof.companyName;
-        let s1 = (dashData.revGrowth > 0.15) ? 5 : 3; let s2 = (dashData.netMargin > 0.20) ? 5 : 3; let s3 = (dashData.currentRatio > 1.2) ? 5 : 3;
-        let gScore = ((s1+s2+s3)/3).toFixed(1);
-        document.getElementById('globalScore').innerText = gScore;
-        
-        // Update Donut Color for Light Mode (Track is light gray #f3f4f6)
-        let dColor = (gScore>=4)?"#10b981":(gScore>=2.5)?"#f59e0b":"#ef4444";
-        document.getElementById('scoreDonut').style.background = `conic-gradient(${dColor} 0% ${gScore*20}%, #f3f4f6 ${gScore*20}% 100%)`;
-        document.getElementById('quickBlurb').innerText = `${prof.companyName} (${prof.exchangeShortName}) trades at $${prof.price}. Net margin stands at ${(dashData.netMargin*100).toFixed(1)}%.`;
-
-        if(ratiosHist && ratiosHist.length > 0) {
-            const peHist = ratiosHist.map(r => r.priceEarningsRatio);
-            const pfcfHist = ratiosHist.map(r => r.priceToFreeCashFlowRatio);
-            const pocfHist = ratiosHist.map(r => r.priceToOperatingCashFlowRatio);
-            const psHist = ratiosHist.map(r => r.priceToSalesRatio); 
-            const curPE = prof.price / (incQtr.slice(0,4).reduce((a,b)=>a+b.eps,0) || lastInc.eps);
-            
-            let gridHTML = "";
-            gridHTML += createValoCard("Price / Earnings", curPE || ratiosHist[0].priceEarningsRatio, peHist);
-            gridHTML += createValoCard("Price / FCF", ratiosHist[0].priceToFreeCashFlowRatio, pfcfHist); 
-            gridHTML += createValoCard("Price / OCF", ratiosHist[0].priceToOperatingCashFlowRatio, pocfHist);
-            gridHTML += createValoCard("Price / Sales", ratiosHist[0].priceToSalesRatio, psHist);
-            document.getElementById('valuationGrid').innerHTML = gridHTML;
-            document.getElementById('sectorPeDisplay').innerHTML = `Sector Avg P/E: <b>${(curPE * 0.8).toFixed(1)}</b> (Est.)`; 
-        }
-
-        const mktCap = prof.mktCap || prof.marketCap || 0;
-        const price = prof.price || 0;
-        const shares = (mktCap && price) ? (mktCap / price) : 1;
-        dashData.shares = shares; 
-
-        dcfData = {
-            price: price, shares: shares,
-            fcf: sumTTM(cfQtr, 'freeCashFlow'), ocf: sumTTM(cfQtr, 'operatingCashFlow'),
-            netIncome: sumTTM(incQtr, 'netIncome'), oi: sumTTM(incQtr, 'operatingIncome'),
-            symbol: prof.symbol, currency: prof.currency || "$"
-        };
-        document.getElementById('dcfCurrentPrice').innerText = dcfData.price.toFixed(2) + " " + dcfData.currency;
-        
-        status.innerText = `Analysis complete for ${prof.symbol}`;
-        status.style.color = "#10b981";
-        document.getElementById('dashboardArea').style.display = "block";
-        calculateDCF();
-
-    } catch (e) {
-        console.error(e);
-        status.innerText = "Error: " + e.message;
-        status.style.color = "#ef4444";
-    }
-}
-
-function selectMetric(k, b) { currentMetric = k; document.querySelectorAll('.metric-btn').forEach(x => x.classList.remove('active')); b.classList.add('active'); calculateDCF(); }
-function calculateDCF() {
-    if(!dcfData.price) return;
-    const base = dcfData[currentMetric];
-    if (base <= 0) { document.getElementById('marginSafetyBox').innerHTML = "Negative Cash Flow. DCF Impossible."; return; }
-    const gr = parseFloat(document.getElementById('growthInput').value)/100;
-    const mu = parseFloat(document.getElementById('multInput').value);
-    const fut = ((base * Math.pow(1+gr, 5)) * mu) / dcfData.shares;
-    const fair = fut / Math.pow(1.10, 5);
-    const cagr = (Math.pow(fut/dcfData.price, 1/5)-1)*100;
-    const up = ((fair - dcfData.price)/dcfData.price)*100;
-    
-    document.getElementById('resFairToday').innerText = fair.toFixed(2) + " " + dcfData.currency;
-    document.getElementById('resFutureValue').innerText = fut.toFixed(2) + " " + dcfData.currency;
-    document.getElementById('resCAGR').innerText = cagr.toFixed(1) + "%";
-    
-    const box = document.getElementById('marginSafetyBox');
-    if(up>0) { 
-        box.innerHTML = `UNDERVALUED by <span style="color:#10b981">${up.toFixed(1)}%</span> 🚀`; 
-        box.style.background = "#ecfdf5"; 
-        box.style.borderColor = "#10b981";
-    } else { 
-        box.innerHTML = `OVERVALUED by <span style="color:#ef4444">${Math.abs(up).toFixed(1)}%</span> ⚠️`; 
-        box.style.background = "#fee2e2"; 
-        box.style.borderColor = "#ef4444";
-    }
-}
-</script>
 </body>
 </html>
