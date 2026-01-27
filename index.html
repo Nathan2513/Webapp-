@@ -60,6 +60,12 @@
     align-items: center;
     gap: 8px;
     /* ... le reste de ton style logo ... */
+    
+    font-family: 'Inter', sans-serif;  /* Force la police Inter */
+    font-weight: 800;                  /* 800 = Extra Bold (Très gras) */
+    font-size: 1.5rem;                 /* Taille du texte */
+    color: var(--text-dark);
+}
 }
 
 /* 2. On crée la classe pour le MILIEU (Centrage parfait) */
@@ -277,8 +283,9 @@
     <header class="site-header">
         <div class="container nav-container">
            <div class="logo-wrapper">
-<img src="logo.png" alt="Logo" class="logo-img">
-StockMaster.  </div>
+            <div class="logo-wrapper">
+    <img src="logo.png" alt="Logo" class="logo-img">
+    StockMaster.
 </div>
 
 <nav class="nav-center">
