@@ -53,16 +53,43 @@
             justify-content: space-between;
             align-items: center;
         }
+/* 1. On dit au logo de pousser vers la gauche */
+.logo-wrapper {
+    flex: 1; 
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    /* ... le reste de ton style logo ... */
+}
 
-        /* Le Logo (Icone + Texte) */
-        .logo-wrapper {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-weight: 800;
-            font-size: 1.5rem;
-            color: var(--text-dark);
-        }
+/* 2. On crée la classe pour le MILIEU (Centrage parfait) */
+.nav-center {
+    flex: 1; /* Prend 1 part d'espace */
+    display: flex;
+    justify-content: center; /* C'est cette ligne qui CENTRE les liens */
+    align-items: center;
+    gap: 40px; /* Espace entre tes mots */
+}
+
+/* 3. On crée la classe pour la DROITE (Alignement à droite) */
+.nav-right {
+    flex: 1; /* Prend 1 part d'espace */
+    display: flex;
+    justify-content: flex-end; /* Pousse les boutons tout au bout à droite */
+    align-items: center;
+    gap: 15px; /* Espace entre le bouton Login et le bouton Orange */
+}
+
+/* 4. Le style du bouton "Login" (Optionnel : style transparent) */
+.btn-ghost {
+    background: transparent;
+    color: var(--text-dark);
+    /* Pas de bordure, juste du texte cliquable propre */
+}
+.btn-ghost:hover {
+    color: var(--primary-orange);
+}
+        
         
         /* Placeholder pour l'icône du lion. 
            À REMPLACER par votre vraie balise <img> : <img src="lion.svg" width="40"> */
