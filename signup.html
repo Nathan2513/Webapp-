@@ -106,9 +106,41 @@
             padding: 10px;
             border-radius: 6px;
         }
+
+        /* LOADING STATE */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.9);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        .loading-overlay.active { display: flex; }
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #f3f4f6;
+            border-top: 4px solid var(--primary-orange);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
+
+    <!-- LOADING OVERLAY -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+    </div>
 
     <a href="index.html" class="logo-link">
         <img src="logo.png" alt="Logo" class="logo-img">
@@ -142,7 +174,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getAuth, setPersistence, browserLocalPersistence, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyD4dkPbO1C-bZiSokalUnwNqOTpeAyrOU0",
@@ -162,6 +194,32 @@
         const successBox = document.getElementById('successBox');
         const submitBtn = document.getElementById('submitBtn');
         const googleBtn = document.getElementById('googleBtn');
+        const loadingOverlay = document.getElementById('loadingOverlay');
+
+        // ✅ FORCER LA PERSISTANCE LOCAL (session illimitée)
+        setPersistence(auth, browserLocalPersistence)
+            .then(() => {
+                console.log("✅ Persistance LOCAL activée : l'utilisateur reste connecté même après 1 semaine !");
+            })
+            .catch((error) => {
+                console.error("❌ Erreur setPersistence:", error);
+            });
+
+        // ========== AUTO-LOGIN : Vérifier si déjà connecté ==========
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                // L'utilisateur est déjà connecté, on le redirige automatiquement
+                console.log("✅ Utilisateur déjà connecté:", user.email);
+                loadingOverlay.classList.add('active');
+                
+                setTimeout(() => {
+                    window.location.href = "webapp.html";
+                }, 500);
+            } else {
+                // Pas connecté, on reste sur la page signup
+                console.log("❌ Utilisateur non connecté");
+            }
+        });
 
         // ========== INSCRIPTION EMAIL/PASSWORD ==========
         document.getElementById('signupForm').addEventListener('submit', async (e) => {
@@ -184,6 +242,8 @@
                 
                 successBox.innerText = "✅ Account created! Redirecting...";
                 successBox.style.display = 'block';
+                
+                loadingOverlay.classList.add('active');
                 
                 setTimeout(() => {
                     window.location.href = "webapp.html";
@@ -230,6 +290,8 @@
                 successBox.innerText = "✅ Signed in with Google! Redirecting...";
                 successBox.style.display = 'block';
                 
+                loadingOverlay.classList.add('active');
+                
                 setTimeout(() => {
                     window.location.href = "webapp.html";
                 }, 1500);
@@ -258,4 +320,3 @@
     </script>
 </body>
 </html>
-
