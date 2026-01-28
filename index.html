@@ -305,9 +305,9 @@
     </div>
 
     <div id="user-buttons" style="display: none; align-items: center; gap: 10px;">
-        <button class="btn btn-outline" style="border-color: #FF7A00; color: #FF7A00;">
-            My Account
-        </button>
+        <a href="webapp.html" class="btn btn-orange" style="text-decoration:none;">
+            Go to Dashboard
+        </a>
         <button id="logoutBtn" class="btn btn-ghost" style="font-size: 0.9rem;">
             Sign Out
         </button>
@@ -324,7 +324,7 @@
                     <h1>Analyse Better,<br>Invest Better.</h1>
                     <p>For you, we have created a tool to analyze any stock in the simplest way possible.</p>
                     <div class="hero-buttons-group">
-                        <a href="signup.html" class="btn btn-orange" style="text-decoration:none; display:flex; justify-content:center; align-items:center;">Get Started for Free</a>
+                        <a href="signup.html" id="heroBtn" class="btn btn-orange" style="text-decoration:none; display:flex; justify-content:center; align-items:center;">Get Started for Free</a>
                     </div>
                 </div>
                 
@@ -359,61 +359,4 @@
                     <div class="feature-icon-box">
                          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg>
                     </div>
-                    <h3>Sauvegarde Cloud</h3>
-                    <p>Créez un compte sécurisé pour sauvegarder vos analyses et retrouver votre travail sur tous vos appareils.</p>
-                </div>
-            </div>
-        </section>
-    </main>
-<script type="module">
-    // 1. On importe les outils Firebase
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-
-    // 2. TA CONFIGURATION EST DÉJÀ REMPLIE ICI
-    const firebaseConfig = {
-        apiKey: "AIzaSyD4dkPbO1C-bZiSokalUnwNqOTpeAyrOU0",
-        authDomain: "stockmaster-30835.firebaseapp.com",
-        projectId: "stockmaster-30835",
-        storageBucket: "stockmaster-30835.firebasestorage.app",
-        messagingSenderId: "506097874613",
-        appId: "1:506097874613:web:0d15d2bd1575a55c8ab0fc",
-        measurementId: "G-2PG7Q471TR"
-    };
-
-    // 3. On démarre Firebase
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-
-    // 4. On récupère les éléments HTML (Assure-toi d'avoir bien mis les IDs dans ton HTML à l'étape 1)
-    const guestGroup = document.getElementById('guest-buttons');
-    const userGroup = document.getElementById('user-buttons');
-    const logoutBtn = document.getElementById('logoutBtn');
-
-    // 5. LE SURVEILLANT : S'active quand l'état de connexion change
-    onAuthStateChanged(auth, (user) => {
-        if (user) {
-            // CONNECTÉ : On cache les boutons invités, on montre le compte
-            console.log("Connecté : " + user.email);
-            if(guestGroup) guestGroup.style.display = 'none';
-            if(userGroup) userGroup.style.display = 'flex';
-        } else {
-            // DÉCONNECTÉ : On montre les boutons invités
-            console.log("Déconnecté");
-            if(guestGroup) guestGroup.style.display = 'flex';
-            if(userGroup) userGroup.style.display = 'none';
-        }
-    });
-
-    // 6. LE BOUTON DÉCONNEXION
-    if(logoutBtn) {
-        logoutBtn.addEventListener('click', () => {
-            signOut(auth).then(() => {
-                window.location.reload(); // On recharge la page après déconnexion
-            });
-        });
-    }
-</script>
-    
-</body>
-</html>
+                    <h3>Sauvegarde
