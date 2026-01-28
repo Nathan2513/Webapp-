@@ -7,32 +7,38 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
     <style>
-        /* MÊME STYLE QUE SIGNUP */
+        /* DESIGN SYSTEM IDENTIQUE A SIGNUP */
         :root { --primary-orange: #FF7A00; --text-dark: #111827; --text-gray: #6B7280; --border-color: #E5E7EB; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Inter', sans-serif; background-color: #ffffff; color: var(--text-dark); min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding-top: 50px; }
         
+        /* LOGO */
         .logo-link { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--text-dark); font-weight: 800; font-size: 1.5rem; margin-bottom: 40px; }
         .logo-img { height: 50px; width: auto; border-radius: 50%; }
+        
+        /* CONTAINER */
         .login-container { width: 100%; max-width: 450px; padding: 20px; text-align: center; }
         h1 { font-size: 1.8rem; margin-bottom: 10px; }
         .subtitle { color: var(--text-gray); margin-bottom: 30px; font-size: 0.95rem; }
         
+        /* GOOGLE BTN */
         .btn-google { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; padding: 12px; background: white; border: 1px solid var(--border-color); border-radius: 8px; font-weight: 600; cursor: pointer; margin-bottom: 30px; font-size: 1rem; color: var(--text-dark); }
         .btn-google:hover { background-color: #f9fafb; }
         
+        /* DIVIDER */
         .divider { display: flex; align-items: center; color: #9CA3AF; font-size: 0.85rem; margin-bottom: 30px; }
         .divider::before, .divider::after { content: ""; flex: 1; height: 1px; background-color: var(--border-color); }
         .divider span { padding: 0 10px; }
         
+        /* INPUTS & SUBMIT */
         input { width: 100%; padding: 14px; margin-bottom: 15px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 1rem; }
-        
         .btn-submit { width: 100%; padding: 14px; background-color: var(--primary-orange); color: white; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; margin-top: 10px; }
         .btn-submit:hover { background-color: #e06b00; }
         
+        /* FOOTER & ERROR */
         .footer-link { margin-top: 20px; font-size: 0.9rem; }
         .footer-link a { color: var(--primary-orange); text-decoration: none; font-weight: 600; }
-        .error-message { color: #ef4444; font-size: 0.9rem; margin-bottom: 15px; display: none; }
+        .error-message { color: #ef4444; font-size: 0.9rem; margin-bottom: 15px; display: none; background: #fee2e2; padding: 10px; border-radius: 6px;}
     </style>
 </head>
 <body>
@@ -52,6 +58,7 @@
         </button>
 
         <div class="divider"><span>or sign in with email</span></div>
+        
         <div id="errorBox" class="error-message"></div>
 
         <form id="loginForm">
@@ -67,38 +74,49 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        // NOTE: Ici on importe signInWithEmailAndPassword (Se connecter) au lieu de createUser...
         import { getAuth, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-        // --- 👇 COLLE TES CLÉS FIREBASE ICI (LES MÊMES QUE SIGNUP) 👇 ---
+        // --- TES CLES SONT INTEGRÉES ICI ---
         const firebaseConfig = {
-            apiKey: "...", 
-            authDomain: "...", 
-            projectId: "...", 
-            storageBucket: "...", 
-            messagingSenderId: "...", 
-            appId: "..." 
+            apiKey: "AIzaSyD4dkPbO1C-bZiSokalUnwNqOTpeAyrOU0",
+            authDomain: "stockmaster-30835.firebaseapp.com",
+            projectId: "stockmaster-30835",
+            storageBucket: "stockmaster-30835.firebasestorage.app",
+            messagingSenderId: "506097874613",
+            appId: "1:506097874613:web:0d15d2bd1575a55c8ab0fc",
+            measurementId: "G-2PG7Q471TR"
         };
-        // -------------------------------------------------------------
+        // ------------------------------------
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const provider = new GoogleAuthProvider();
 
         // 1. Connexion Email
-        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+        const loginForm = document.getElementById('loginForm');
+        const errorBox = document.getElementById('errorBox');
+
+        loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            const errorBox = document.getElementById('errorBox');
-            errorBox.style.display = 'none';
+            errorBox.style.display = 'none'; // Cacher l'erreur précédente
 
             try {
+                // Tentative de connexion
                 await signInWithEmailAndPassword(auth, 
                     document.getElementById('emailInput').value, 
                     document.getElementById('passwordInput').value
                 );
-                window.location.href = "index.html"; // Retour à l'accueil connecté
+                // Si OK :
+                window.location.href = "index.html"; 
             } catch (error) {
-                errorBox.innerText = "Email ou mot de passe incorrect.";
+                // Si Erreur (Mot de passe faux ou email inconnu)
+                console.error(error);
+                let msg = "Email ou mot de passe incorrect.";
+                if (error.code === 'auth/user-not-found') msg = "Aucun compte avec cet email.";
+                if (error.code === 'auth/wrong-password') msg = "Mot de passe incorrect.";
+                if (error.code === 'auth/invalid-credential') msg = "Identifiants invalides.";
+                
+                errorBox.innerText = msg;
                 errorBox.style.display = 'block';
             }
         });
@@ -110,6 +128,8 @@
                 window.location.href = "index.html";
             } catch (error) {
                 console.error(error);
+                errorBox.innerText = "Erreur Google : " + error.message;
+                errorBox.style.display = 'block';
             }
         });
     </script>
