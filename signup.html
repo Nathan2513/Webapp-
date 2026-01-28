@@ -86,12 +86,30 @@
             border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; margin-top: 10px;
         }
         .btn-submit:hover { background-color: #e06b00; }
+        .btn-submit:disabled { background-color: #ffa94d; cursor: not-allowed; }
 
         .footer-link { margin-top: 20px; font-size: 0.9rem; }
         .footer-link a { color: var(--primary-orange); text-decoration: none; font-weight: 600; }
         
-        /* Message d'erreur */
-        .error-message { color: #ef4444; font-size: 0.9rem; margin-bottom: 15px; display: none; }
+        /* Message d'erreur et succès */
+        .error-message { 
+            color: #ef4444; 
+            font-size: 0.9rem; 
+            margin-bottom: 15px; 
+            display: none; 
+            background: #fee2e2; 
+            padding: 10px; 
+            border-radius: 6px;
+        }
+        .success-message {
+            color: #10b981;
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+            display: none;
+            background: #d1fae5;
+            padding: 10px;
+            border-radius: 6px;
+        }
     </style>
 </head>
 <body>
@@ -111,16 +129,18 @@
         </button>
 
         <div class="divider"><span>or continue with email</span></div>
+        
         <div id="errorBox" class="error-message"></div>
+        <div id="successBox" class="success-message"></div>
 
         <form id="signupForm">
             <input type="email" id="emailInput" placeholder="Enter your email..." required>
-            <input type="password" id="passwordInput" placeholder="Enter your password..." required>
-            <button type="submit" class="btn-submit">Create Free Account</button>
+            <input type="password" id="passwordInput" placeholder="Enter your password (min 6 characters)..." required>
+            <button type="submit" class="btn-submit" id="submitBtn">Create Free Account</button>
         </form>
 
         <div class="footer-link">
-            Already have an account? <a href="#">Sign In</a>
+            Already have an account? <a href="login.html">Sign In</a>
         </div>
     </div>
 
@@ -128,7 +148,7 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-        // --- TES CLES SONT MAINTENANT ICI ---
+        // --- CONFIGURATION FIREBASE ---
         const firebaseConfig = {
             apiKey: "AIzaSyD4dkPbO1C-bZiSokalUnwNqOTpeAyrOU0",
             authDomain: "stockmaster-30835.firebaseapp.com",
@@ -138,46 +158,114 @@
             appId: "1:506097874613:web:0d15d2bd1575a55c8ab0fc",
             measurementId: "G-2PG7Q471TR"
         };
-        // ------------------------------------
 
+        // Initialisation Firebase
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const provider = new GoogleAuthProvider();
 
-        // 1. Inscription Email
+        // Récupération des éléments
+        const errorBox = document.getElementById('errorBox');
+        const successBox = document.getElementById('successBox');
+        const submitBtn = document.getElementById('submitBtn');
+
+        // ========== INSCRIPTION EMAIL/PASSWORD ==========
         document.getElementById('signupForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const errorBox = document.getElementById('errorBox');
+            
+            // Cache les messages précédents
             errorBox.style.display = 'none';
+            successBox.style.display = 'none';
+            
+            const email = document.getElementById('emailInput').value;
+            const password = document.getElementById('passwordInput').value;
+
+            console.log("🔍 Tentative de création de compte pour:", email);
+
+            // Désactive le bouton pendant le traitement
+            submitBtn.disabled = true;
+            submitBtn.innerText = "Creating account...";
             
             try {
-                // Création du compte
-                await createUserWithEmailAndPassword(auth, 
-                    document.getElementById('emailInput').value, 
-                    document.getElementById('passwordInput').value
-                );
-                // Si réussite : Alerte + Redirection
-                alert("Compte créé avec succès !");
-                window.location.href = "index.html"; 
-            } catch (error) {
-                // Si erreur (ex: mot de passe < 6 caractères)
-                let message = error.message;
-                if(message.includes("weak-password")) message = "Password should be at least 6 characters";
-                if(message.includes("email-already-in-use")) message = "This email is already used";
+                // ✅ CRÉATION DU COMPTE (Firebase connecte automatiquement l'utilisateur)
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                console.log("✅ Compte créé avec succès:", userCredential.user.email);
                 
-                errorBox.innerText = "Error: " + message;
+                // Affiche un message de succès
+                successBox.innerText = "✅ Account created! Redirecting...";
+                successBox.style.display = 'block';
+                
+                // ⏳ REDIRECTION AUTOMATIQUE VERS LA PAGE SOUHAITÉE
+                // 🔥 CHANGE "dashboard.html" par la page où tu veux rediriger
+                setTimeout(() => {
+                    window.location.href = "dashboard.html"; // 👈 CHANGE ICI
+                }, 1000); // Attend 1 seconde pour que l'utilisateur voit le message
+                
+            } catch (error) {
+                console.error("❌ Erreur de création de compte:", error.code, error.message);
+                
+                // Réactive le bouton
+                submitBtn.disabled = false;
+                submitBtn.innerText = "Create Free Account";
+                
+                let message = "An error occurred. Please try again.";
+                
+                // Messages d'erreur personnalisés
+                if (error.code === 'auth/weak-password') {
+                    message = "Password should be at least 6 characters.";
+                } else if (error.code === 'auth/email-already-in-use') {
+                    message = "This email is already used. Try signing in instead.";
+                } else if (error.code === 'auth/invalid-email') {
+                    message = "Invalid email format.";
+                } else if (error.code === 'auth/operation-not-allowed') {
+                    message = "Email/password accounts are not enabled. Contact support.";
+                } else if (error.code === 'auth/network-request-failed') {
+                    message = "Network error. Check your internet connection.";
+                }
+                
+                errorBox.innerText = message;
                 errorBox.style.display = 'block';
             }
         });
 
-        // 2. Connexion Google
+        // ========== INSCRIPTION AVEC GOOGLE ==========
         document.getElementById('googleBtn').addEventListener('click', async () => {
+            errorBox.style.display = 'none';
+            successBox.style.display = 'none';
+            
+            console.log("🔍 Tentative de connexion Google...");
+            
             try {
-                await signInWithPopup(auth, provider);
-                window.location.href = "index.html";
+                // ✅ CONNEXION GOOGLE (Crée le compte si nouveau, ou connecte si existe)
+                const result = await signInWithPopup(auth, provider);
+                console.log("✅ Connexion Google réussie:", result.user.email);
+                
+                successBox.innerText = "✅ Signed in with Google! Redirecting...";
+                successBox.style.display = 'block';
+                
+                // ⏳ REDIRECTION AUTOMATIQUE
+                // 🔥 CHANGE "dashboard.html" par la page où tu veux rediriger
+                setTimeout(() => {
+                    window.location.href = "webapp.html"; // 👈 CHANGE ICI
+                }, 1000);
+                
             } catch (error) {
-                console.error(error);
-                alert("Erreur Google : " + error.message);
+                console.error("❌ Erreur Google:", error.code, error.message);
+                
+                let message = "Error signing in with Google.";
+                
+                if (error.code === 'auth/popup-blocked') {
+                    message = "Popups are blocked. Please allow popups for this site.";
+                } else if (error.code === 'auth/popup-closed-by-user') {
+                    message = "Sign-in cancelled.";
+                } else if (error.code === 'auth/unauthorized-domain') {
+                    message = "This domain is not authorized. Configure Firebase Console.";
+                } else if (error.code === 'auth/operation-not-allowed') {
+                    message = "Google sign-in is not enabled. Activate it in Firebase Console.";
+                }
+                
+                errorBox.innerText = message;
+                errorBox.style.display = 'block';
             }
         });
     </script>
