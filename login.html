@@ -39,9 +39,41 @@
         .footer-link { margin-top: 20px; font-size: 0.9rem; }
         .footer-link a { color: var(--primary-orange); text-decoration: none; font-weight: 600; }
         .error-message { color: #ef4444; font-size: 0.9rem; margin-bottom: 15px; display: none; background: #fee2e2; padding: 10px; border-radius: 6px;}
+        
+        /* LOADING STATE */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.9);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        .loading-overlay.active { display: flex; }
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #f3f4f6;
+            border-top: 4px solid var(--primary-orange);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
+
+    <!-- LOADING OVERLAY -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+    </div>
 
     <a href="index.html" class="logo-link">
         <img src="logo.png" alt="Logo" class="logo-img">
@@ -74,7 +106,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getAuth, setPersistence, browserLocalPersistence, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
         // --- CONFIGURATION FIREBASE ---
         const firebaseConfig = {
@@ -95,6 +127,32 @@
         // Récupération des éléments
         const loginForm = document.getElementById('loginForm');
         const errorBox = document.getElementById('errorBox');
+        const loadingOverlay = document.getElementById('loadingOverlay');
+
+        // ✅ FORCER LA PERSISTANCE LOCAL (session illimitée)
+        setPersistence(auth, browserLocalPersistence)
+            .then(() => {
+                console.log("✅ Persistance LOCAL activée : l'utilisateur reste connecté même après 1 semaine !");
+            })
+            .catch((error) => {
+                console.error("❌ Erreur setPersistence:", error);
+            });
+
+        // ========== AUTO-LOGIN : Vérifier si déjà connecté ==========
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                // L'utilisateur est déjà connecté, on le redirige automatiquement
+                console.log("✅ Utilisateur déjà connecté:", user.email);
+                loadingOverlay.classList.add('active');
+                
+                setTimeout(() => {
+                    window.location.href = "webapp.html";
+                }, 500);
+            } else {
+                // Pas connecté, on reste sur la page login
+                console.log("❌ Utilisateur non connecté");
+            }
+        });
 
         // ========== CONNEXION EMAIL/PASSWORD ==========
         loginForm.addEventListener('submit', async (e) => {
@@ -109,6 +167,8 @@
             try {
                 const userCredential = await signInWithEmailAndPassword(auth, email, password);
                 console.log("✅ Connexion réussie:", userCredential.user.email);
+                
+                loadingOverlay.classList.add('active');
                 
                 // Redirection vers webapp.html
                 setTimeout(() => {
@@ -148,6 +208,8 @@
             try {
                 const result = await signInWithPopup(auth, provider);
                 console.log("✅ Connexion Google réussie:", result.user.email);
+                
+                loadingOverlay.classList.add('active');
                 
                 // Redirection vers webapp.html
                 setTimeout(() => {
