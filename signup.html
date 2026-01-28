@@ -7,74 +7,98 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
     <style>
-        /* --- MÊME DESIGN SYSTEM QUE L'ACCUEIL --- */
         :root {
             --primary-orange: #FF7A00;
             --text-dark: #111827;
             --text-gray: #6B7280;
-            --bg-white: #FFFFFF;
-            --border-light: #E5E7EB;
-            --radius: 8px;
+            --border-color: #E5E7EB;
+            --bg-gray: #F9FAFB;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #F9FAFB; /* Fond très gris clair pour faire ressortir la carte */
+            background-color: #ffffff;
             color: var(--text-dark);
-            height: 100vh;
+            min-height: 100vh;
             display: flex;
+            flex-direction: column;
             align-items: center;
-            justify-content: center;
+            padding-top: 60px; /* Espace depuis le haut */
         }
 
-        /* --- LA CARTE D'INSCRIPTION --- */
-        .auth-card {
-            background: white;
-            padding: 40px;
-            width: 100%;
-            max-width: 450px; /* Largeur max de la boite */
-            border-radius: 16px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-            border: 1px solid var(--border-light);
-            text-align: center;
-        }
-
-        /* Logo en haut */
-        .logo-wrapper {
+        /* --- 1. HEADER (LOGO) --- */
+        .header-logo {
             display: flex;
             align-items: center;
-            justify-content: center;
             gap: 8px;
             font-weight: 800;
             font-size: 1.5rem;
-            margin-bottom: 30px;
             color: var(--text-dark);
+            margin-bottom: 40px;
+            text-decoration: none; /* Si on clique dessus pour revenir à l'accueil */
         }
         .logo-img { height: 50px; width: auto; border-radius: 50%; }
 
-        h1 { font-size: 1.8rem; font-weight: 700; margin-bottom: 10px; }
-        .subtitle { color: var(--text-gray); font-size: 0.95rem; margin-bottom: 30px; }
-
-        /* --- FORMULAIRE --- */
-        .form-group { margin-bottom: 20px; text-align: left; }
-        
-        label {
-            display: block;
-            font-size: 0.9rem;
-            font-weight: 600;
-            margin-bottom: 8px;
-            color: var(--text-dark);
+        /* --- 2. CONTENEUR PRINCIPAL --- */
+        .auth-container {
+            width: 100%;
+            max-width: 480px; /* Largeur idéale pour ce style */
+            padding: 20px;
+            text-align: center;
         }
 
+        h1 { font-size: 1.75rem; font-weight: 700; margin-bottom: 12px; }
+        .subtitle { color: var(--text-gray); font-size: 0.95rem; margin-bottom: 30px; line-height: 1.5; }
+
+        /* --- 3. BOUTON GOOGLE --- */
+        .btn-social {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            background: white;
+            border: 1px solid var(--border-color);
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 600;
+            color: var(--text-dark);
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 1rem;
+            margin-bottom: 25px;
+        }
+        .btn-social:hover { background-color: #f9fafb; border-color: #d1d5db; }
+
+        /* --- 4. DIVIDER (Ligne "or continue with") --- */
+        .divider {
+            display: flex;
+            align-items: center;
+            color: #9CA3AF; /* Gris clair */
+            font-size: 0.85rem;
+            margin-bottom: 25px;
+        }
+        .divider::before, .divider::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background-color: var(--border-color);
+        }
+        .divider span { padding: 0 15px; }
+
+        /* --- 5. FORMULAIRE --- */
+        .form-group { margin-bottom: 16px; text-align: left; }
+        
         input {
             width: 100%;
-            padding: 12px;
-            border: 1px solid var(--border-light);
-            border-radius: var(--radius);
+            padding: 14px 16px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
             font-size: 1rem;
             font-family: 'Inter', sans-serif;
+            color: var(--text-dark);
             transition: 0.2s;
         }
         input:focus {
@@ -82,67 +106,37 @@
             border-color: var(--primary-orange);
             box-shadow: 0 0 0 3px rgba(255, 122, 0, 0.1);
         }
+        input::placeholder { color: #9CA3AF; }
 
-        /* Bouton Large */
-        .btn-full {
+        /* Icone Oeil (Mot de passe) */
+        .password-wrapper { position: relative; }
+        .eye-icon {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #9CA3AF;
+        }
+
+        /* Bouton Principal Orange */
+        .btn-submit {
             width: 100%;
             padding: 14px;
             background-color: var(--primary-orange);
             color: white;
             border: none;
-            border-radius: var(--radius);
+            border-radius: 8px;
             font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
             transition: 0.2s;
             margin-top: 10px;
+            margin-bottom: 20px;
         }
-        .btn-full:hover { background-color: #e06b00; transform: translateY(-1px); }
+        .btn-submit:hover { background-color: #e06b00; transform: translateY(-1px); }
 
-        /* Lien Login */
-        .login-link {
-            margin-top: 20px;
-            font-size: 0.9rem;
-            color: var(--text-gray);
-        }
-        .login-link a { color: var(--primary-orange); text-decoration: none; font-weight: 600; }
-        .login-link a:hover { text-decoration: underline; }
-    </style>
-</head>
-<body>
+        .terms { font-size: 0.75rem; color: #9CA3AF; margin-bottom: 30px; }
+        .terms a { color: #6B7280; text-decoration: underline; }
 
-    <div class="auth-card">
-        <div class="logo-wrapper">
-            <img src="logo.png" alt="Logo" class="logo-img">
-            StockMaster.
-        </div>
-
-        <h1>Create your account</h1>
-        <p class="subtitle">Start analyzing stocks like a pro today.</p>
-
-        <form onsubmit="alert('Inscription bientôt disponible !'); return false;">
-            <div class="form-group">
-                <label>Full Name</label>
-                <input type="text" placeholder="John Doe" required>
-            </div>
-            
-            <div class="form-group">
-                <label>Email Address</label>
-                <input type="email" placeholder="john@example.com" required>
-            </div>
-
-            <div class="form-group">
-                <label>Password</label>
-                <input type="password" placeholder="••••••••" required>
-            </div>
-
-            <button type="submit" class="btn-full">Sign Up</button>
-        </form>
-
-        <div class="login-link">
-            Already have an account? <a href="#">Log in</a>
-        </div>
-    </div>
-
-</body>
-</html>
+        /* --- 6. FOOTER (Gris en bas) --- */
