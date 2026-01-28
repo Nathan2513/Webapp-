@@ -11,7 +11,6 @@
             /* COULEURS LIGHT MODE */
             --primary-orange: #FF7A00;
             --bg-main: #F9FAFB;
-            --bg-sidebar: #FFFFFF;
             --bg-topbar: #FFFFFF;
             --text-primary: #111827;
             --text-secondary: #6B7280;
@@ -24,7 +23,6 @@
         [data-theme="dark"] {
             /* COULEURS DARK MODE */
             --bg-main: #0F172A;
-            --bg-sidebar: #1E293B;
             --bg-topbar: #1E293B;
             --text-primary: #F1F5F9;
             --text-secondary: #94A3B8;
@@ -50,143 +48,72 @@
 
         /* ============= STRUCTURE PRINCIPALE ============= */
         .app-container {
-            display: grid;
-            grid-template-columns: 260px 1fr;
-            grid-template-rows: 70px 1fr;
-            height: 100vh;
-            grid-template-areas: 
-                "sidebar topbar"
-                "sidebar main";
-        }
-
-        /* ============= SIDEBAR (MENU GAUCHE) ============= */
-        .sidebar {
-            grid-area: sidebar;
-            background-color: var(--bg-sidebar);
-            border-right: 1px solid var(--border-color);
             display: flex;
             flex-direction: column;
-            padding: 20px 0;
-            transition: background-color 0.3s ease;
+            height: 100vh;
         }
 
-        .sidebar-logo {
+        /* ============= TOPBAR (BARRE SUPÉRIEURE) ============= */
+        .topbar {
+            background-color: var(--bg-topbar);
+            border-bottom: 1px solid var(--border-color);
+            padding: 0 30px;
+            transition: background-color 0.3s ease;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        /* LOGO À GAUCHE */
+        .topbar-logo {
             display: flex;
             align-items: center;
             gap: 12px;
-            padding: 0 20px 30px 20px;
             font-weight: 800;
             font-size: 1.4rem;
             color: var(--text-primary);
-            border-bottom: 1px solid var(--border-color);
         }
 
-        .sidebar-logo img {
+        .topbar-logo img {
             height: 45px;
             width: auto;
             border-radius: 50%;
         }
 
-        .sidebar-nav {
-            flex: 1;
-            padding: 20px 0;
-            overflow-y: auto;
-        }
-
-        .nav-section {
-            margin-bottom: 30px;
-        }
-
-        .nav-section-title {
-            font-size: 0.75rem;
-            font-weight: 600;
-            color: var(--text-secondary);
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            padding: 0 20px;
-            margin-bottom: 10px;
-        }
-
-        .nav-item {
+        /* MENU NAVIGATION AU CENTRE */
+        .topbar-nav {
             display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 12px 20px;
-            color: var(--text-secondary);
-            text-decoration: none;
-            font-weight: 500;
+            gap: 8px;
+            flex: 1;
+            justify-content: center;
+        }
+
+        .nav-btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
             font-size: 0.95rem;
-            transition: all 0.2s ease;
             cursor: pointer;
-            border-left: 3px solid transparent;
-        }
-
-        .nav-item:hover {
-            background-color: var(--hover-bg);
-            color: var(--text-primary);
-        }
-
-        .nav-item.active {
-            background-color: rgba(255, 122, 0, 0.1);
-            color: var(--primary-orange);
-            border-left-color: var(--primary-orange);
-            font-weight: 600;
-        }
-
-        .nav-item svg {
-            width: 20px;
-            height: 20px;
-            stroke-width: 2;
-        }
-
-        /* ============= TOPBAR (BARRE SUPÉRIEURE) ============= */
-        .topbar {
-            grid-area: topbar;
-            background-color: var(--bg-topbar);
-            border-bottom: 1px solid var(--border-color);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 30px;
-            transition: background-color 0.3s ease;
-        }
-
-        .search-bar {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            background-color: var(--hover-bg);
-            padding: 10px 16px;
-            border-radius: 10px;
-            width: 400px;
-            border: 1px solid var(--border-color);
             transition: all 0.2s ease;
-        }
-
-        .search-bar:focus-within {
-            border-color: var(--primary-orange);
-            box-shadow: 0 0 0 3px rgba(255, 122, 0, 0.1);
-        }
-
-        .search-bar svg {
-            width: 18px;
-            height: 18px;
-            color: var(--text-secondary);
-        }
-
-        .search-bar input {
-            flex: 1;
             border: none;
             background: transparent;
-            color: var(--text-primary);
-            font-size: 0.95rem;
-            outline: none;
-        }
-
-        .search-bar input::placeholder {
             color: var(--text-secondary);
+            text-decoration: none;
+            display: inline-block;
         }
 
+        .nav-btn:hover {
+            background-color: var(--hover-bg);
+            color: var(--text-primary);
+        }
+
+        .nav-btn.active {
+            background-color: rgba(255, 122, 0, 0.1);
+            color: var(--primary-orange);
+        }
+
+        /* ACTIONS À DROITE */
         .topbar-actions {
             display: flex;
             align-items: center;
@@ -217,6 +144,11 @@
             color: var(--text-primary);
         }
 
+        /* USER AVATAR AVEC DROPDOWN */
+        .user-menu {
+            position: relative;
+        }
+
         .user-avatar {
             width: 40px;
             height: 40px;
@@ -235,9 +167,63 @@
             transform: scale(1.1);
         }
 
+        /* DROPDOWN MENU */
+        .dropdown-menu {
+            position: absolute;
+            top: 55px;
+            right: 0;
+            background: var(--bg-topbar);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            box-shadow: var(--shadow-lg);
+            min-width: 200px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .dropdown-menu.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dropdown-item {
+            padding: 12px 20px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            color: var(--text-primary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.95rem;
+        }
+
+        .dropdown-item:first-child {
+            border-radius: 12px 12px 0 0;
+        }
+
+        .dropdown-item:last-child {
+            border-radius: 0 0 12px 12px;
+            border-top: 1px solid var(--border-color);
+            color: #ef4444;
+        }
+
+        .dropdown-item:hover {
+            background-color: var(--hover-bg);
+        }
+
+        .dropdown-item svg {
+            width: 18px;
+            height: 18px;
+        }
+
         /* ============= MAIN CONTENT AREA ============= */
         .main-content {
-            grid-area: main;
+            flex: 1;
             padding: 30px;
             overflow-y: auto;
         }
@@ -259,7 +245,7 @@
 
         /* PLACEHOLDER POUR LE CONTENU */
         .placeholder-message {
-            background-color: var(--bg-sidebar);
+            background-color: var(--bg-topbar);
             border: 2px dashed var(--border-color);
             border-radius: 16px;
             padding: 60px;
@@ -275,33 +261,7 @@
 
         /* ============= RESPONSIVE ============= */
         @media (max-width: 968px) {
-            .app-container {
-                grid-template-columns: 1fr;
-                grid-template-areas: 
-                    "topbar"
-                    "main";
-            }
-
-            .sidebar {
-                position: fixed;
-                left: -260px;
-                top: 0;
-                bottom: 0;
-                z-index: 1000;
-                transition: left 0.3s ease;
-            }
-
-            .sidebar.open {
-                left: 0;
-            }
-
-            .search-bar {
-                width: 250px;
-            }
-        }
-
-        @media (max-width: 640px) {
-            .search-bar {
+            .topbar-nav {
                 display: none;
             }
 
@@ -313,97 +273,34 @@
                 padding: 20px;
             }
         }
+
+        @media (max-width: 640px) {
+            .theme-toggle {
+                display: none;
+            }
+        }
     </style>
 </head>
 <body>
 
     <div class="app-container">
-        <!-- ========== SIDEBAR (MENU GAUCHE) ========== -->
-        <aside class="sidebar">
-            <div class="sidebar-logo">
+        <!-- ========== TOPBAR (BARRE SUPÉRIEURE) ========== -->
+        <header class="topbar">
+            <!-- LOGO À GAUCHE -->
+            <div class="topbar-logo">
                 <img src="logo.png" alt="Logo">
                 StockMaster
             </div>
 
-            <nav class="sidebar-nav">
-                <div class="nav-section">
-                    <div class="nav-section-title">Main</div>
-                    <a class="nav-item active">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                        </svg>
-                        Dashboard
-                    </a>
-                    <a class="nav-item">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                        </svg>
-                        Portfolio
-                    </a>
-                    <a class="nav-item">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                        </svg>
-                        Stock Screener
-                    </a>
-                    <a class="nav-item">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z" />
-                        </svg>
-                        Watchlist
-                    </a>
-                </div>
-
-                <div class="nav-section">
-                    <div class="nav-section-title">Analysis</div>
-                    <a class="nav-item">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                        </svg>
-                        DCF Calculator
-                    </a>
-                    <a class="nav-item">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M16 8v8m-4-5v5m-4-2v2m-2 4h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                        </svg>
-                        Financial Ratios
-                    </a>
-                    <a class="nav-item">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                        </svg>
-                        Reports
-                    </a>
-                </div>
-
-                <div class="nav-section">
-                    <div class="nav-section-title">Settings</div>
-                    <a class="nav-item">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                        </svg>
-                        Settings
-                    </a>
-                    <a class="nav-item" id="logoutBtn">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                        </svg>
-                        Logout
-                    </a>
-                </div>
+            <!-- NAVIGATION AU CENTRE (4 BOUTONS) -->
+            <nav class="topbar-nav">
+                <a href="watchlist.html" class="nav-btn">Watchlist</a>
+                <a href="stock-screener.html" class="nav-btn">Stock Screener</a>
+                <a href="valorisation-analysis.html" class="nav-btn">Valorisation Analysis</a>
+                <a href="dcf-calculator.html" class="nav-btn active">DCF Calculator</a>
             </nav>
-        </aside>
 
-        <!-- ========== TOPBAR (BARRE SUPÉRIEURE) ========== -->
-        <header class="topbar">
-            <div class="search-bar">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
-                <input type="text" placeholder="Search global stocks & ETFs... (⌘K)">
-            </div>
-
+            <!-- ACTIONS À DROITE -->
             <div class="topbar-actions">
                 <!-- THEME TOGGLE BUTTON -->
                 <button class="theme-toggle" id="themeToggle">
@@ -415,8 +312,34 @@
                     </svg>
                 </button>
 
-                <div class="user-avatar" title="User Profile">
-                    U
+                <!-- USER MENU AVEC DROPDOWN -->
+                <div class="user-menu">
+                    <div class="user-avatar" id="userAvatar" title="User Profile">
+                        U
+                    </div>
+                    
+                    <!-- DROPDOWN MENU -->
+                    <div class="dropdown-menu" id="dropdownMenu">
+                        <a href="settings.html" class="dropdown-item">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            </svg>
+                            Settings
+                        </a>
+                        <a href="billings-plans.html" class="dropdown-item">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                            </svg>
+                            Billings & Plans
+                        </a>
+                        <div class="dropdown-item" id="signOutBtn">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                            </svg>
+                            Sign Out
+                        </div>
+                    </div>
                 </div>
             </div>
         </header>
@@ -435,7 +358,7 @@
         </main>
     </div>
 
-    <!-- ========== FIREBASE & THEME TOGGLE SCRIPT ========== -->
+    <!-- ========== FIREBASE & SCRIPTS ========== -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
@@ -467,8 +390,25 @@
             }
         });
 
-        // Bouton déconnexion
-        document.getElementById('logoutBtn').addEventListener('click', async () => {
+        // ========== DROPDOWN MENU ==========
+        const userAvatar = document.getElementById('userAvatar');
+        const dropdownMenu = document.getElementById('dropdownMenu');
+
+        // Toggle dropdown au clic sur l'avatar
+        userAvatar.addEventListener('click', (e) => {
+            e.stopPropagation();
+            dropdownMenu.classList.toggle('active');
+        });
+
+        // Fermer le dropdown si on clique ailleurs
+        document.addEventListener('click', (e) => {
+            if (!userAvatar.contains(e.target) && !dropdownMenu.contains(e.target)) {
+                dropdownMenu.classList.remove('active');
+            }
+        });
+
+        // ========== SIGN OUT ==========
+        document.getElementById('signOutBtn').addEventListener('click', async () => {
             try {
                 await signOut(auth);
                 window.location.href = "index.html";
