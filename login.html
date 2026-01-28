@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StockMaster - Connexion</title>
+    <title>StockMaster - Login</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
     <style>
@@ -76,7 +76,7 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-        // --- TES CLES SONT INTEGRÉES ICI ---
+        // --- CONFIGURATION FIREBASE ---
         const firebaseConfig = {
             apiKey: "AIzaSyD4dkPbO1C-bZiSokalUnwNqOTpeAyrOU0",
             authDomain: "stockmaster-30835.firebaseapp.com",
@@ -86,49 +86,89 @@
             appId: "1:506097874613:web:0d15d2bd1575a55c8ab0fc",
             measurementId: "G-2PG7Q471TR"
         };
-        // ------------------------------------
 
+        // Initialisation Firebase
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const provider = new GoogleAuthProvider();
 
-        // 1. Connexion Email
+        // Récupération des éléments
         const loginForm = document.getElementById('loginForm');
         const errorBox = document.getElementById('errorBox');
 
+        // ========== CONNEXION EMAIL/PASSWORD ==========
         loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            errorBox.style.display = 'none'; // Cacher l'erreur précédente
+            errorBox.style.display = 'none';
+
+            const email = document.getElementById('emailInput').value;
+            const password = document.getElementById('passwordInput').value;
+
+            console.log("🔍 Tentative de connexion pour:", email);
 
             try {
-                // Tentative de connexion
-                await signInWithEmailAndPassword(auth, 
-                    document.getElementById('emailInput').value, 
-                    document.getElementById('passwordInput').value
-                );
-                // Si OK :
-                window.location.href = "index.html"; 
+                const userCredential = await signInWithEmailAndPassword(auth, email, password);
+                console.log("✅ Connexion réussie:", userCredential.user.email);
+                
+                // Petite pause avant redirection pour que Firebase synchronise
+                setTimeout(() => {
+                    window.location.href = "index.html";
+                }, 300);
+                
             } catch (error) {
-                // Si Erreur (Mot de passe faux ou email inconnu)
-                console.error(error);
+                console.error("❌ Erreur de connexion:", error.code, error.message);
+                
                 let msg = "Email ou mot de passe incorrect.";
-                if (error.code === 'auth/user-not-found') msg = "Aucun compte avec cet email.";
-                if (error.code === 'auth/wrong-password') msg = "Mot de passe incorrect.";
-                if (error.code === 'auth/invalid-credential') msg = "Identifiants invalides.";
+                
+                // Messages d'erreur personnalisés
+                if (error.code === 'auth/user-not-found') {
+                    msg = "Aucun compte trouvé avec cet email.";
+                } else if (error.code === 'auth/wrong-password') {
+                    msg = "Mot de passe incorrect.";
+                } else if (error.code === 'auth/invalid-credential') {
+                    msg = "Identifiants invalides. Vérifiez votre email et mot de passe.";
+                } else if (error.code === 'auth/invalid-email') {
+                    msg = "Format d'email invalide.";
+                } else if (error.code === 'auth/too-many-requests') {
+                    msg = "Trop de tentatives. Réessayez plus tard.";
+                } else if (error.code === 'auth/network-request-failed') {
+                    msg = "Erreur réseau. Vérifiez votre connexion internet.";
+                }
                 
                 errorBox.innerText = msg;
                 errorBox.style.display = 'block';
             }
         });
 
-        // 2. Connexion Google
+        // ========== CONNEXION GOOGLE ==========
         document.getElementById('googleBtn').addEventListener('click', async () => {
+            errorBox.style.display = 'none';
+            console.log("🔍 Tentative de connexion Google...");
+
             try {
-                await signInWithPopup(auth, provider);
-                window.location.href = "index.html";
+                const result = await signInWithPopup(auth, provider);
+                console.log("✅ Connexion Google réussie:", result.user.email);
+                
+                setTimeout(() => {
+                    window.location.href = "index.html";
+                }, 300);
+                
             } catch (error) {
-                console.error(error);
-                errorBox.innerText = "Erreur Google : " + error.message;
+                console.error("❌ Erreur Google:", error.code, error.message);
+                
+                let msg = "Erreur lors de la connexion avec Google.";
+                
+                if (error.code === 'auth/popup-blocked') {
+                    msg = "Les popups sont bloquées. Autorisez-les pour ce site.";
+                } else if (error.code === 'auth/popup-closed-by-user') {
+                    msg = "Connexion annulée.";
+                } else if (error.code === 'auth/unauthorized-domain') {
+                    msg = "Ce domaine n'est pas autorisé. Configurez Firebase Console.";
+                } else if (error.code === 'auth/operation-not-allowed') {
+                    msg = "La connexion Google n'est pas activée. Activez-la dans Firebase Console.";
+                }
+                
+                errorBox.innerText = msg;
                 errorBox.style.display = 'block';
             }
         });
