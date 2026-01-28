@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Firebase Diagnostic Test</title>
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            background: #0f0f0f;
+            color: #00ff00;
+            padding: 40px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        h1 { color: #00ff00; border-bottom: 2px solid #00ff00; padding-bottom: 10px; }
+        .test-section {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .test-title {
+            font-weight: bold;
+            color: #ffaa00;
+            margin-bottom: 10px;
+        }
+        .status {
+            padding: 5px 10px;
+            border-radius: 4px;
+            display: inline-block;
+            margin: 5px 0;
+        }
+        .success { background: #00ff00; color: #000; }
+        .error { background: #ff0000; color: #fff; }
+        .warning { background: #ffaa00; color: #000; }
+        .info { background: #0088ff; color: #fff; }
+        pre {
+            background: #000;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+            border-left: 3px solid #00ff00;
+        }
+        button {
+            background: #00ff00;
+            color: #000;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            margin: 10px 5px;
+        }
+        button:hover { background: #00cc00; }
+        .log-entry {
+            padding: 5px;
+            margin: 2px 0;
+            border-left: 3px solid #333;
+            padding-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔍 StockMaster Firebase Diagnostic</h1>
+
+    <div class="test-section">
+        <div class="test-title">📋 Test 1: Firebase Initialization</div>
+        <div id="test1"></div>
+    </div>
+
+    <div class="test-section">
+        <div class="test-title">🔐 Test 2: Authentication Service</div>
+        <div id="test2"></div>
+    </div>
+
+    <div class="test-section">
+        <div class="test-title">🌐 Test 3: Network & Domain Configuration</div>
+        <div id="test3"></div>
+    </div>
+
+    <div class="test-section">
+        <div class="test-title">✉️ Test 4: Email/Password Signup Test</div>
+        <div id="test4">
+            <p>Entrez un email de test pour vérifier la création de compte :</p>
+            <input type="email" id="testEmail" placeholder="test@example.com" style="padding:10px; width:300px; margin-right:10px; border-radius:4px;">
+            <input type="password" id="testPassword" placeholder="test123" style="padding:10px; width:200px; margin-right:10px; border-radius:4px;">
+            <button onclick="testSignup()">Test Signup</button>
+            <div id="signupResult" style="margin-top:15px;"></div>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <div class="test-title">📝 Console Logs</div>
+        <div id="logs"></div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+        // Capture console logs
+        const logsDiv = document.getElementById('logs');
+        const originalLog = console.log;
+        const originalError = console.error;
+        
+        console.log = function(...args) {
+            originalLog.apply(console, args);
+            logsDiv.innerHTML += `<div class="log-entry" style="border-color:#00ff00;">📘 ${args.join(' ')}</div>`;
+        };
+        
+        console.error = function(...args) {
+            originalError.apply(console, args);
+            logsDiv.innerHTML += `<div class="log-entry" style="border-color:#ff0000;">❌ ${args.join(' ')}</div>`;
+        };
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyD4dkPbO1C-bZiSokalUnwNqOTpeAyrOU0",
+            authDomain: "stockmaster-30835.firebaseapp.com",
+            projectId: "stockmaster-30835",
+            storageBucket: "stockmaster-30835.firebasestorage.app",
+            messagingSenderId: "506097874613",
+            appId: "1:506097874613:web:0d15d2bd1575a55c8ab0fc",
+            measurementId: "G-2PG7Q471TR"
+        };
+
+        // TEST 1: Firebase Initialization
+        console.log("🔍 Starting Firebase Initialization Test...");
+        try {
+            const app = initializeApp(firebaseConfig);
+            document.getElementById('test1').innerHTML = `
+                <span class="status success">✅ SUCCESS</span>
+                <pre>Firebase initialized successfully
+Project ID: ${firebaseConfig.projectId}
+Auth Domain: ${firebaseConfig.authDomain}</pre>
+            `;
+            console.log("✅ Firebase initialized");
+        } catch (error) {
+            document.getElementById('test1').innerHTML = `
+                <span class="status error">❌ FAILED</span>
+                <pre>Error: ${error.message}</pre>
+            `;
+            console.error("❌ Firebase init failed:", error);
+        }
+
+        // TEST 2: Auth Service
+        console.log("🔍 Starting Auth Service Test...");
+        try {
+            const auth = getAuth();
+            document.getElementById('test2').innerHTML = `
+                <span class="status success">✅ SUCCESS</span>
+                <pre>Auth service accessible
+Current User: ${auth.currentUser ? auth.currentUser.email : 'None (not logged in)'}
+Auth Domain: ${auth.config.authDomain}</pre>
+            `;
+            console.log("✅ Auth service ready");
+            window.testAuth = auth; // Make available globally for test
+        } catch (error) {
+            document.getElementById('test2').innerHTML = `
+                <span class="status error">❌ FAILED</span>
+                <pre>Error: ${error.message}</pre>
+            `;
+            console.error("❌ Auth service failed:", error);
+        }
+
+        // TEST 3: Network & Domain
+        console.log("🔍 Starting Network Test...");
+        const currentDomain = window.location.hostname;
+        const isLocalhost = currentDomain === 'localhost' || currentDomain === '127.0.0.1';
+        
+        document.getElementById('test3').innerHTML = `
+            <span class="status info">ℹ️ INFO</span>
+            <pre>Current Domain: ${currentDomain}
+Is Localhost: ${isLocalhost}
+Protocol: ${window.location.protocol}
+
+<span style="color:#ffaa00;">⚠️ IMPORTANT:</span>
+${isLocalhost ? 
+    '✅ Running on localhost - should work if authorized in Firebase Console' : 
+    '⚠️ Not on localhost - make sure this domain is authorized in Firebase Console'
+}
+
+<span style="color:#00ff00;">📋 TO CHECK IN FIREBASE CONSOLE:</span>
+1. Go to: https://console.firebase.google.com
+2. Select project: stockmaster-30835
+3. Go to: Authentication → Settings → Authorized domains
+4. Make sure "${currentDomain}" is in the list
+5. Go to: Authentication → Sign-in method
+6. Make sure "Email/Password" is ENABLED</pre>
+        `;
+
+        // TEST 4: Signup function
+        window.testSignup = async function() {
+            const email = document.getElementById('testEmail').value;
+            const password = document.getElementById('testPassword').value;
+            const resultDiv = document.getElementById('signupResult');
+            
+            if (!email || !password) {
+                resultDiv.innerHTML = '<span class="status warning">⚠️ Please enter email and password</span>';
+                return;
+            }
+
+            console.log(`🔍 Testing signup for: ${email}`);
+            resultDiv.innerHTML = '<span class="status info">⏳ Testing signup...</span>';
+
+            try {
+                const userCredential = await createUserWithEmailAndPassword(window.testAuth, email, password);
+                console.log("✅ Signup successful:", userCredential.user.email);
+                resultDiv.innerHTML = `
+                    <span class="status success">✅ SUCCESS!</span>
+                    <pre>Account created successfully!
+User: ${userCredential.user.email}
+UID: ${userCredential.user.uid}
+
+<span style="color:#00ff00;">✅ Your Firebase configuration is working!</span>
+The problem might be in the redirect logic.</pre>
+                `;
+            } catch (error) {
+                console.error("❌ Signup failed:", error.code, error.message);
+                resultDiv.innerHTML = `
+                    <span class="status error">❌ SIGNUP FAILED</span>
+                    <pre>Error Code: ${error.code}
+Error Message: ${error.message}
+
+<span style="color:#ffaa00;">🔧 COMMON FIXES:</span>
+${error.code === 'auth/email-already-in-use' ? '• This email is already registered. Try a different email.' : ''}
+${error.code === 'auth/weak-password' ? '• Password must be at least 6 characters.' : ''}
+${error.code === 'auth/invalid-email' ? '• Invalid email format.' : ''}
+${error.code === 'auth/operation-not-allowed' ? '• Email/Password auth is NOT ENABLED in Firebase Console!\n  Go to Authentication → Sign-in method → Enable Email/Password' : ''}
+${error.code === 'auth/network-request-failed' ? '• Network error. Check your internet connection.' : ''}
+${error.code === 'auth/unauthorized-domain' ? '• This domain is NOT AUTHORIZED in Firebase Console!\n  Go to Authentication → Settings → Authorized domains → Add "${currentDomain}"' : ''}
+</pre>
+                `;
+            }
+        };
+
+        console.log("✅ Diagnostic page loaded");
+    </script>
+</body>
+</html>
