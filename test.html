@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Firebase</title>
+</head>
+<body>
+    <h1>Test de connexion Firebase</h1>
+    <div id="status">Chargement...</div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyD4dkPbO1C-bZiSokalUnwNqOTpeAyrOU0",
+            authDomain: "stockmaster-30835.firebaseapp.com",
+            projectId: "stockmaster-30835",
+            storageBucket: "stockmaster-30835.firebasestorage.app",
+            messagingSenderId: "506097874613",
+            appId: "1:506097874613:web:0d15d2bd1575a55c8ab0fc"
+        };
+
+        try {
+            const app = initializeApp(firebaseConfig);
+            const auth = getAuth(app);
+            
+            document.getElementById('status').innerHTML = "✅ Firebase initialisé !<br>";
+            
+            onAuthStateChanged(auth, (user) => {
+                if (user) {
+                    document.getElementById('status').innerHTML += "✅ Utilisateur connecté: " + user.email;
+                } else {
+                    document.getElementById('status').innerHTML += "❌ Aucun utilisateur connecté";
+                }
+            });
+            
+        } catch (error) {
+            document.getElementById('status').innerHTML = "❌ Erreur: " + error.message;
+            console.error(error);
+        }
+    </script>
+</body>
+</html>
