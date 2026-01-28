@@ -27,7 +27,6 @@
             padding-top: 50px;
         }
 
-        /* LIEN RETOUR ACCUEIL */
         .logo-link {
             display: flex;
             align-items: center;
@@ -40,7 +39,6 @@
         }
         .logo-img { height: 50px; width: auto; border-radius: 50%; }
 
-        /* CONTENEUR */
         .signup-container {
             width: 100%;
             max-width: 450px;
@@ -51,7 +49,6 @@
         h1 { font-size: 1.8rem; margin-bottom: 10px; }
         .subtitle { color: var(--text-gray); margin-bottom: 30px; font-size: 0.95rem; }
 
-        /* BOUTON GOOGLE */
         .btn-google {
             display: flex;
             align-items: center;
@@ -69,6 +66,7 @@
             color: var(--text-dark);
         }
         .btn-google:hover { background-color: #f9fafb; }
+        .btn-google:disabled { opacity: 0.6; cursor: not-allowed; }
 
         .divider {
             display: flex; align-items: center; color: #9CA3AF; font-size: 0.85rem; margin-bottom: 30px;
@@ -76,7 +74,6 @@
         .divider::before, .divider::after { content: ""; flex: 1; height: 1px; background-color: var(--border-color); }
         .divider span { padding: 0 10px; }
 
-        /* CHAMPS & BOUTONS */
         input {
             width: 100%; padding: 14px; margin-bottom: 15px;
             border: 1px solid var(--border-color); border-radius: 8px; font-size: 1rem;
@@ -91,7 +88,6 @@
         .footer-link { margin-top: 20px; font-size: 0.9rem; }
         .footer-link a { color: var(--primary-orange); text-decoration: none; font-weight: 600; }
         
-        /* Message d'erreur et succès */
         .error-message { 
             color: #ef4444; 
             font-size: 0.9rem; 
@@ -148,7 +144,6 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-        // --- CONFIGURATION FIREBASE ---
         const firebaseConfig = {
             apiKey: "AIzaSyD4dkPbO1C-bZiSokalUnwNqOTpeAyrOU0",
             authDomain: "stockmaster-30835.firebaseapp.com",
@@ -159,58 +154,49 @@
             measurementId: "G-2PG7Q471TR"
         };
 
-        // Initialisation Firebase
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const provider = new GoogleAuthProvider();
 
-        // Récupération des éléments
         const errorBox = document.getElementById('errorBox');
         const successBox = document.getElementById('successBox');
         const submitBtn = document.getElementById('submitBtn');
+        const googleBtn = document.getElementById('googleBtn');
 
         // ========== INSCRIPTION EMAIL/PASSWORD ==========
         document.getElementById('signupForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             
-            // Cache les messages précédents
             errorBox.style.display = 'none';
             successBox.style.display = 'none';
             
             const email = document.getElementById('emailInput').value;
             const password = document.getElementById('passwordInput').value;
 
-            console.log("🔍 Tentative de création de compte pour:", email);
+            console.log("📧 Tentative d'inscription pour:", email);
 
-            // Désactive le bouton pendant le traitement
             submitBtn.disabled = true;
             submitBtn.innerText = "Creating account...";
             
             try {
-                // ✅ CRÉATION DU COMPTE (Firebase connecte automatiquement l'utilisateur)
                 const userCredential = await createUserWithEmailAndPassword(auth, email, password);
                 console.log("✅ Compte créé avec succès:", userCredential.user.email);
                 
-                // Affiche un message de succès
                 successBox.innerText = "✅ Account created! Redirecting...";
                 successBox.style.display = 'block';
                 
-                // ⏳ REDIRECTION AUTOMATIQUE VERS LA PAGE SOUHAITÉE
-                // 🔥 CHANGE "dashboard.html" par la page où tu veux rediriger
                 setTimeout(() => {
-                    window.location.href = "dashboard.html"; // 👈 CHANGE ICI
-                }, 1000); // Attend 1 seconde pour que l'utilisateur voit le message
+                    window.location.href = "webapp.html";
+                }, 1500);
                 
             } catch (error) {
-                console.error("❌ Erreur de création de compte:", error.code, error.message);
+                console.error("❌ Erreur d'inscription:", error.code, error.message);
                 
-                // Réactive le bouton
                 submitBtn.disabled = false;
                 submitBtn.innerText = "Create Free Account";
                 
                 let message = "An error occurred. Please try again.";
                 
-                // Messages d'erreur personnalisés
                 if (error.code === 'auth/weak-password') {
                     message = "Password should be at least 6 characters.";
                 } else if (error.code === 'auth/email-already-in-use') {
@@ -218,7 +204,7 @@
                 } else if (error.code === 'auth/invalid-email') {
                     message = "Invalid email format.";
                 } else if (error.code === 'auth/operation-not-allowed') {
-                    message = "Email/password accounts are not enabled. Contact support.";
+                    message = "Email/password signup is not enabled. Please contact support.";
                 } else if (error.code === 'auth/network-request-failed') {
                     message = "Network error. Check your internet connection.";
                 }
@@ -228,29 +214,30 @@
             }
         });
 
-        // ========== INSCRIPTION AVEC GOOGLE ==========
-        document.getElementById('googleBtn').addEventListener('click', async () => {
+        // ========== INSCRIPTION GOOGLE ==========
+        googleBtn.addEventListener('click', async () => {
             errorBox.style.display = 'none';
             successBox.style.display = 'none';
             
             console.log("🔍 Tentative de connexion Google...");
             
+            googleBtn.disabled = true;
+            
             try {
-                // ✅ CONNEXION GOOGLE (Crée le compte si nouveau, ou connecte si existe)
                 const result = await signInWithPopup(auth, provider);
                 console.log("✅ Connexion Google réussie:", result.user.email);
                 
                 successBox.innerText = "✅ Signed in with Google! Redirecting...";
                 successBox.style.display = 'block';
                 
-                // ⏳ REDIRECTION AUTOMATIQUE
-                // 🔥 CHANGE "dashboard.html" par la page où tu veux rediriger
                 setTimeout(() => {
-                    window.location.href = "webapp.html"; // 👈 CHANGE ICI
-                }, 1000);
+                    window.location.href = "webapp.html";
+                }, 1500);
                 
             } catch (error) {
                 console.error("❌ Erreur Google:", error.code, error.message);
+                
+                googleBtn.disabled = false;
                 
                 let message = "Error signing in with Google.";
                 
@@ -259,9 +246,9 @@
                 } else if (error.code === 'auth/popup-closed-by-user') {
                     message = "Sign-in cancelled.";
                 } else if (error.code === 'auth/unauthorized-domain') {
-                    message = "This domain is not authorized. Configure Firebase Console.";
+                    message = "This domain is not authorized. Please contact support.";
                 } else if (error.code === 'auth/operation-not-allowed') {
-                    message = "Google sign-in is not enabled. Activate it in Firebase Console.";
+                    message = "Google sign-in is not enabled. Please contact support.";
                 }
                 
                 errorBox.innerText = message;
@@ -271,3 +258,4 @@
     </script>
 </body>
 </html>
+
