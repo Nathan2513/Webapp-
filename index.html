@@ -24,10 +24,138 @@
         
         body {
             font-family: 'Inter', sans-serif;
-            background-color: var(--bg-white);
+            background: #0a0a0a;
             color: var(--text-dark);
             line-height: 1.5;
             overflow-x: hidden;
+            position: relative;
+        }
+
+        /* ================= FOND ANIMÉ AVEC PARTICULES ET GRADIENT ================= */
+        .animated-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+            overflow: hidden;
+        }
+
+        /* Orbes flottants */
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.4;
+            animation: float-orb 20s ease-in-out infinite;
+        }
+
+        .orb-1 {
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(255, 122, 0, 0.4) 0%, transparent 70%);
+            top: -200px;
+            left: -200px;
+            animation-delay: 0s;
+        }
+
+        .orb-2 {
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(255, 122, 0, 0.3) 0%, transparent 70%);
+            bottom: -150px;
+            right: -150px;
+            animation-delay: 5s;
+        }
+
+        .orb-3 {
+            width: 350px;
+            height: 350px;
+            background: radial-gradient(circle, rgba(255, 200, 100, 0.2) 0%, transparent 70%);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation-delay: 10s;
+        }
+
+        @keyframes float-orb {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(30px, -30px) scale(1.1); }
+            50% { transform: translate(-20px, 20px) scale(0.9); }
+            75% { transform: translate(20px, 30px) scale(1.05); }
+        }
+
+        /* Grille animée en fond */
+        .grid-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(255, 122, 0, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 122, 0, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: grid-scroll 20s linear infinite;
+        }
+
+        @keyframes grid-scroll {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(50px); }
+        }
+
+        /* Particules flottantes */
+        .particles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: rgba(255, 122, 0, 0.5);
+            border-radius: 50%;
+            animation: particle-float 15s linear infinite;
+        }
+
+        @keyframes particle-float {
+            0% {
+                transform: translateY(100vh) translateX(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) translateX(100px);
+                opacity: 0;
+            }
+        }
+
+        /* Génération de particules aléatoires */
+        .particle:nth-child(1) { left: 10%; animation-delay: 0s; }
+        .particle:nth-child(2) { left: 20%; animation-delay: 2s; }
+        .particle:nth-child(3) { left: 30%; animation-delay: 4s; }
+        .particle:nth-child(4) { left: 40%; animation-delay: 1s; }
+        .particle:nth-child(5) { left: 50%; animation-delay: 3s; }
+        .particle:nth-child(6) { left: 60%; animation-delay: 5s; }
+        .particle:nth-child(7) { left: 70%; animation-delay: 2.5s; }
+        .particle:nth-child(8) { left: 80%; animation-delay: 4.5s; }
+        .particle:nth-child(9) { left: 90%; animation-delay: 1.5s; }
+        .particle:nth-child(10) { left: 15%; animation-delay: 6s; }
+
+        /* ================= CONTENU AU-DESSUS DU FOND ================= */
+        .content-wrapper {
+            position: relative;
+            z-index: 1;
         }
 
         /* Conteneur central pour aligner le contenu */
@@ -42,11 +170,11 @@
             padding: 20px 0;
             position: sticky;
             top: 0;
-            background: rgba(255,255,255,0.98);
-            backdrop-filter: blur(10px);
+            background: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(20px);
             z-index: 100;
-            border-bottom: 1px solid var(--border-light);
-            box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+            border-bottom: 1px solid rgba(255, 122, 0, 0.1);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
         }
 
         .nav-container {
@@ -63,7 +191,12 @@
             font-family: 'Inter', sans-serif;
             font-weight: 800;
             font-size: 1.5rem;
-            color: var(--text-dark);
+            color: #FFFFFF;
+            transition: transform 0.3s ease;
+        }
+
+        .logo-wrapper:hover {
+            transform: scale(1.05);
         }
 
         .nav-center {
@@ -85,7 +218,7 @@
 
         .btn-ghost {
             background: transparent;
-            color: var(--text-dark);
+            color: #FFFFFF;
         }
         .btn-ghost:hover {
             color: var(--primary-orange);
@@ -96,6 +229,7 @@
             width: auto;
             border-radius: 50%;
             object-fit: cover;
+            box-shadow: 0 0 20px rgba(255, 122, 0, 0.4);
         }
 
         .nav-links {
@@ -106,52 +240,93 @@
 
         .nav-link {
             text-decoration: none;
-            color: var(--text-dark);
+            color: #E0E0E0;
             font-weight: 500;
             font-size: 1rem;
-            transition: color 0.2s;
+            transition: all 0.3s;
+            position: relative;
         }
-        .nav-link:hover { color: var(--primary-orange); }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary-orange);
+            transition: width 0.3s;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        .nav-link:hover { 
+            color: var(--primary-orange); 
+        }
 
         /* Boutons */
         .btn {
             padding: 12px 24px;
-            border-radius: 8px;
+            border-radius: 10px;
             font-weight: 600;
             font-size: 1rem;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.3s ease;
             border: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .btn:hover::before {
+            width: 300px;
+            height: 300px;
         }
 
         .btn-orange {
-            background-color: var(--primary-orange);
+            background: linear-gradient(135deg, var(--primary-orange) 0%, #ff9f40 100%);
             color: white;
+            box-shadow: 0 4px 20px rgba(255, 122, 0, 0.4);
         }
+
         .btn-orange:hover { 
-            background-color: #e06b00; 
-            transform: translateY(-2px); 
-            box-shadow: 0 4px 12px rgba(255, 122, 0, 0.3); 
+            transform: translateY(-3px); 
+            box-shadow: 0 8px 30px rgba(255, 122, 0, 0.6); 
         }
 
         .btn-outline {
             background-color: transparent;
-            border: 2px solid var(--border-light);
-            color: var(--text-dark);
+            border: 2px solid rgba(255, 122, 0, 0.5);
+            color: #FFFFFF;
         }
+
         .btn-outline:hover { 
-            border-color: var(--text-dark); 
-            background-color: #f9fafb; 
+            border-color: var(--primary-orange); 
+            background-color: rgba(255, 122, 0, 0.1); 
         }
         
         .hero-buttons-group .btn-orange {
-            width: 40%;
+            width: 50%;
             text-align: center;
         }
 
-        /* ================= SECTION HÉROS (LE BLOC PRINCIPAL) ================= */
+        /* ================= SECTION HÉROS ================= */
         .hero-section {
-            padding: 100px 0 80px 0;
+            padding: 120px 0 100px 0;
             position: relative;
         }
 
@@ -159,151 +334,228 @@
             display: grid;
             grid-template-columns: 1fr 1fr;
             align-items: center;
-            gap: 60px;
+            gap: 80px;
         }
 
-        /* TITRE AVEC GRADIENT ET ANIMATION BRILLANCE */
+        /* TITRE AVEC GRADIENT ANIMÉ ET BRILLANCE */
         .hero-content h1 {
-            font-size: 3.5rem;
-            font-weight: 800;
+            font-size: 4rem;
+            font-weight: 900;
             line-height: 1.1;
             margin-bottom: 24px;
             letter-spacing: -0.03em;
+            color: #FFFFFF;
             
-            /* Gradient animé */
-            background: linear-gradient(135deg, var(--text-dark) 0%, var(--primary-orange) 50%, var(--text-dark) 100%);
-            background-size: 200% auto;
+            /* Gradient animé avec brillance */
+            background: linear-gradient(135deg, 
+                #FFFFFF 0%, 
+                var(--primary-orange) 25%,
+                #FFFFFF 50%,
+                var(--primary-orange) 75%,
+                #FFFFFF 100%
+            );
+            background-size: 300% auto;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
             
-            /* Animation de brillance */
-            animation: shine 3s linear infinite;
+            animation: title-shine 4s linear infinite;
             
-            /* Effet de profondeur */
+            /* Effet 3D */
+            text-shadow: 
+                0 0 40px rgba(255, 122, 0, 0.5),
+                0 0 80px rgba(255, 122, 0, 0.3);
+            
             position: relative;
+            transform-style: preserve-3d;
         }
 
-        @keyframes shine {
-            0% {
-                background-position: 0% center;
+        @keyframes title-shine {
+            0% { background-position: 0% center; }
+            100% { background-position: 300% center; }
+        }
+
+        /* Animation d'apparition */
+        @keyframes fade-in-up {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
             }
-            100% {
-                background-position: 200% center;
+            to {
+                opacity: 1;
+                transform: translateY(0);
             }
         }
 
-        /* Effet d'ombre portée pour plus de profondeur */
-        .hero-content h1::after {
-            content: 'Analyse Better, Invest Better.';
-            position: absolute;
-            top: 0;
-            left: 0;
-            z-index: -1;
-            background: linear-gradient(135deg, rgba(17, 24, 39, 0.1) 0%, rgba(255, 122, 0, 0.1) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            filter: blur(8px);
-            opacity: 0.5;
+        .hero-content h1 {
+            animation: fade-in-up 1s ease-out;
         }
 
         .hero-content p {
-            font-size: 1.25rem;
-            color: var(--text-gray);
+            font-size: 1.3rem;
+            color: #B0B0B0;
             margin-bottom: 40px;
             max-width: 500px;
-            line-height: 1.6;
+            line-height: 1.7;
+            animation: fade-in-up 1s ease-out 0.2s both;
         }
 
         .hero-buttons-group {
             display: flex;
             gap: 16px;
+            animation: fade-in-up 1s ease-out 0.4s both;
         }
 
-        /* Colonne image à droite (Dashboard Mockup) */
+        /* Image Dashboard avec effet 3D */
         .hero-image-container {
-            box-shadow: var(--shadow-soft), 0 4px 6px -1px rgba(0,0,0,0.05);
-            border-radius: 16px;
+            box-shadow: 
+                0 30px 60px rgba(0, 0, 0, 0.5),
+                0 0 100px rgba(255, 122, 0, 0.2);
+            border-radius: 20px;
             overflow: hidden;
-            border: 1px solid var(--border-light);
-            background: #F3F4F6;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid rgba(255, 122, 0, 0.3);
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            transition: all 0.5s ease;
+            transform: perspective(1000px) rotateY(-5deg) rotateX(2deg);
+            animation: fade-in-up 1s ease-out 0.6s both;
         }
 
         .hero-image-container:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 40px -10px rgba(0,0,0,0.15);
+            transform: perspective(1000px) rotateY(0deg) rotateX(0deg) translateY(-10px);
+            box-shadow: 
+                0 40px 80px rgba(0, 0, 0, 0.6),
+                0 0 150px rgba(255, 122, 0, 0.4);
         }
         
         .dashboard-placeholder {
             width: 100%;
-            height: 400px;
-            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="%239CA3AF" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>') no-repeat center center;
-            background-size: 80px;
+            height: 450px;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="%23FF7A00" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>') no-repeat center center;
+            background-size: 100px;
+            position: relative;
         }
 
-        /* ================= SECTION FONCTIONNALITÉS (LES 3 CARTES) ================= */
+        /* Effet de scanline sur l'image */
+        .dashboard-placeholder::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                transparent 50%,
+                rgba(255, 122, 0, 0.03) 50%
+            );
+            background-size: 100% 4px;
+            animation: scanline 8s linear infinite;
+        }
+
+        @keyframes scanline {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(100%); }
+        }
+
+        /* ================= SECTION FONCTIONNALITÉS ================= */
         .features-section {
-            padding: 60px 0 100px 0;
-            background: linear-gradient(180deg, #ffffff 0%, #f9fafb 100%);
+            padding: 80px 0 120px 0;
+            background: linear-gradient(180deg, transparent 0%, rgba(255, 122, 0, 0.03) 100%);
         }
 
         .features-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 32px;
+            gap: 40px;
         }
 
         .feature-card {
-            background: var(--bg-white);
-            padding: 32px;
-            border-radius: 16px;
-            border: 1px solid var(--border-light);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            background: rgba(26, 26, 46, 0.6);
+            backdrop-filter: blur(10px);
+            padding: 40px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 122, 0, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            transition: all 0.5s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Effet de brillance au survol */
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                45deg,
+                transparent,
+                rgba(255, 122, 0, 0.1),
+                transparent
+            );
+            transform: rotate(45deg);
+            transition: all 0.6s;
+        }
+
+        .feature-card:hover::before {
+            left: 100%;
         }
         
         .feature-card:hover {
-            transform: translateY(-8px);
-            box-shadow: var(--shadow-soft);
-            border-color: rgba(255, 122, 0, 0.3);
+            transform: translateY(-15px) scale(1.02);
+            box-shadow: 
+                0 20px 60px rgba(0, 0, 0, 0.5),
+                0 0 40px rgba(255, 122, 0, 0.3);
+            border-color: var(--primary-orange);
         }
 
         .feature-icon-box {
-            width: 48px;
-            height: 48px;
-            background-color: var(--primary-orange);
-            border-radius: 10px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--primary-orange) 0%, #ff9f40 100%);
+            border-radius: 15px;
             display: flex;
             align-items: center;
             justify-content: center;
             margin-bottom: 24px;
             color: white;
-            font-size: 1.5rem;
+            font-size: 1.8rem;
+            box-shadow: 0 8px 20px rgba(255, 122, 0, 0.4);
+            transition: transform 0.3s;
+        }
+
+        .feature-card:hover .feature-icon-box {
+            transform: scale(1.1) rotate(5deg);
         }
 
         .feature-card h3 {
-            font-size: 1.25rem;
+            font-size: 1.4rem;
             font-weight: 700;
             margin-bottom: 12px;
+            color: #FFFFFF;
         }
 
         .feature-card p {
-            color: var(--text-gray);
-            line-height: 1.6;
-            font-size: 1rem;
+            color: #B0B0B0;
+            line-height: 1.7;
+            font-size: 1.05rem;
         }
 
-        /* ================= RESPONSIVE (Pour mobile et tablette) ================= */
+        /* ================= RESPONSIVE ================= */
         @media (max-width: 968px) {
             .hero-grid {
                 grid-template-columns: 1fr;
                 text-align: center;
-                gap: 40px;
+                gap: 60px;
             }
-            .hero-content p, .hero-buttons-group { margin-left: auto; margin-right: auto; }
-            .hero-buttons-group { justify-content: center; }
+            .hero-content p, .hero-buttons-group { 
+                margin-left: auto; 
+                margin-right: auto; 
+            }
+            .hero-buttons-group { 
+                justify-content: center; 
+            }
             
             .features-grid {
                 grid-template-columns: 1fr;
@@ -312,98 +564,131 @@
             }
 
             .hero-content h1 {
-                font-size: 2.5rem;
+                font-size: 2.8rem;
+            }
+
+            .hero-image-container {
+                transform: none;
             }
         }
+
         @media (max-width: 640px) {
             .nav-links { display: none; }
-            .hero-content h1 { font-size: 2rem; }
-            .hero-buttons-group { flex-direction: column; }
+            .hero-content h1 { font-size: 2.2rem; }
+            .hero-buttons-group { 
+                flex-direction: column; 
+            }
             .btn { width: 100%; }
+            .hero-buttons-group .btn-orange {
+                width: 100%;
+            }
         }
     </style>
 </head>
 <body>
 
-    <header class="site-header">
-        <div class="container nav-container">
-            <div class="logo-wrapper">
-                <img src="logo.png" alt="Logo" class="logo-img">
-                StockMaster.
-            </div>
-
-            <nav class="nav-center">
-                <a href="#features" class="nav-link">Features</a>
-                <a href="#faq" class="nav-link">FAQs</a>
-                <a href="#pricing" class="nav-link">Pricing</a>
-            </nav>
-
-            <div class="nav-right">
-                <div id="guest-buttons" style="display: flex; align-items: center; gap: 10px;">
-                    <a href="login.html" class="btn btn-ghost" style="text-decoration:none;">Login</a>
-                    <a href="signup.html" class="btn btn-orange" style="text-decoration:none;">Get Started for Free</a>
-                </div>
-
-                <div id="user-buttons" style="display: none; align-items: center; gap: 10px;">
-                    <a href="webapp.html" class="btn btn-orange" style="text-decoration:none;">
-                        Go to Dashboard
-                    </a>
-                    <button id="logoutBtn" class="btn btn-ghost" style="font-size: 0.9rem;">
-                        Sign Out
-                    </button>
-                </div>
-            </div>
+    <!-- FOND ANIMÉ -->
+    <div class="animated-background">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+        <div class="grid-overlay"></div>
+        <div class="particles">
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
         </div>
-    </header>
+    </div>
 
-    <main>
-        <section class="hero-section">
-            <div class="container hero-grid">
-                <div class="hero-content">
-                    <h1>Analyse Better,<br>Invest Better.</h1>
-                    <p>For you, we have created a tool to analyze any stock in the simplest way possible.</p>
-                    <div class="hero-buttons-group">
-                        <a href="signup.html" id="heroBtn" class="btn btn-orange" style="text-decoration:none; display:flex; justify-content:center; align-items:center;">Get Started for Free</a>
-                    </div>
+    <!-- CONTENU -->
+    <div class="content-wrapper">
+        <header class="site-header">
+            <div class="container nav-container">
+                <div class="logo-wrapper">
+                    <img src="logo.png" alt="Logo" class="logo-img">
+                    StockMaster.
                 </div>
-                
-                <div class="hero-image-container">
-                    <div style="background:#e5e7eb; padding: 8px 16px; display:flex; gap:6px; border-bottom:1px solid #d1d5db;">
-                         <div style="width:10px; height:10px; border-radius:50%; background:#ef4444;"></div>
-                         <div style="width:10px; height:10px; border-radius:50%; background:#f59e0b;"></div>
-                         <div style="width:10px; height:10px; border-radius:50%; background:#10b981;"></div>
+
+                <nav class="nav-center">
+                    <a href="#features" class="nav-link">Features</a>
+                    <a href="#faq" class="nav-link">FAQs</a>
+                    <a href="#pricing" class="nav-link">Pricing</a>
+                </nav>
+
+                <div class="nav-right">
+                    <div id="guest-buttons" style="display: flex; align-items: center; gap: 10px;">
+                        <a href="login.html" class="btn btn-ghost" style="text-decoration:none;">Login</a>
+                        <a href="signup.html" class="btn btn-orange" style="text-decoration:none;">Get Started for Free</a>
                     </div>
-                    <div class="dashboard-placeholder"></div>
+
+                    <div id="user-buttons" style="display: none; align-items: center; gap: 10px;">
+                        <a href="webapp.html" class="btn btn-orange" style="text-decoration:none;">
+                            Go to Dashboard
+                        </a>
+                        <button id="logoutBtn" class="btn btn-ghost" style="font-size: 0.9rem;">
+                            Sign Out
+                        </button>
+                    </div>
                 </div>
             </div>
-        </section>
+        </header>
 
-        <section class="features-section" id="features">
-            <div class="container features-grid">
-                <div class="feature-card">
-                    <div class="feature-icon-box">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+        <main>
+            <section class="hero-section">
+                <div class="container hero-grid">
+                    <div class="hero-content">
+                        <h1>Analyse Better,<br>Invest Better.</h1>
+                        <p>For you, we have created a tool to analyze any stock in the simplest way possible.</p>
+                        <div class="hero-buttons-group">
+                            <a href="signup.html" id="heroBtn" class="btn btn-orange" style="text-decoration:none; display:flex; justify-content:center; align-items:center;">Get Started for Free</a>
+                        </div>
                     </div>
-                    <h3>Analyse DCF</h3>
-                    <p>Analysez la valeur intrinsèque (DCF) en quelques clics. Fini les tableurs Excel complexes et les erreurs de calcul.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon-box">
-                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"></path><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"></path><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"></path><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"></path></svg>
+                    
+                    <div class="hero-image-container">
+                        <div style="background:rgba(229,231,235,0.1); padding: 8px 16px; display:flex; gap:6px; border-bottom:1px solid rgba(255,122,0,0.3);">
+                             <div style="width:10px; height:10px; border-radius:50%; background:#ef4444;"></div>
+                             <div style="width:10px; height:10px; border-radius:50%; background:#f59e0b;"></div>
+                             <div style="width:10px; height:10px; border-radius:50%; background:#10b981;"></div>
+                        </div>
+                        <div class="dashboard-placeholder"></div>
                     </div>
-                    <h3>Données TTM</h3>
-                    <p>Accédez aux données financières "Trailing Twelve Months" (12 derniers mois glissants) pour une analyse à jour.</p>
                 </div>
-                <div class="feature-card">
-                    <div class="feature-icon-box">
-                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg>
+            </section>
+
+            <section class="features-section" id="features">
+                <div class="container features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon-box">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+                        </div>
+                        <h3>Analyse DCF</h3>
+                        <p>Analysez la valeur intrinsèque (DCF) en quelques clics. Fini les tableurs Excel complexes et les erreurs de calcul.</p>
                     </div>
-                    <h3>Sauvegarde Cloud</h3>
-                    <p>Créez un compte sécurisé pour sauvegarder vos analyses et retrouver votre travail sur tous vos appareils.</p>
+                    <div class="feature-card">
+                        <div class="feature-icon-box">
+                             <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"></path><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"></path><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"></path><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"></path></svg>
+                        </div>
+                        <h3>Données TTM</h3>
+                        <p>Accédez aux données financières "Trailing Twelve Months" (12 derniers mois glissants) pour une analyse à jour.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon-box">
+                             <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg>
+                        </div>
+                        <h3>Sauvegarde Cloud</h3>
+                        <p>Créez un compte sécurisé pour sauvegarder vos analyses et retrouver votre travail sur tous vos appareils.</p>
+                    </div>
                 </div>
-            </div>
-        </section>
-    </main>
+            </section>
+        </main>
+    </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
