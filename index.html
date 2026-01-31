@@ -10,12 +10,12 @@
     <style>
         /* ================= DEFINITION DES COULEURS ET VARIABLES ================= */
         :root {
-            --primary-orange: #FF7A00; /* L'orange exact de votre maquette */
-            --text-dark: #111827;      /* Noir quasi total pour les titres */
-            --text-gray: #6B7280;      /* Gris pour les sous-titres */
+            --primary-orange: #FF7A00;
+            --text-dark: #111827;
+            --text-gray: #6B7280;
             --bg-white: #FFFFFF;
-            --border-light: #E5E7EB;   /* Gris très clair pour les bordures fines */
-            --shadow-soft: 0 10px 30px -10px rgba(0,0,0,0.1); /* Ombre douce */
+            --border-light: #E5E7EB;
+            --shadow-soft: 0 10px 30px -10px rgba(0,0,0,0.1);
             
             --container-width: 1200px;
         }
@@ -27,7 +27,7 @@
             background-color: var(--bg-white);
             color: var(--text-dark);
             line-height: 1.5;
-            overflow-x: hidden; /* Évite le scroll horizontal */
+            overflow-x: hidden;
         }
 
         /* Conteneur central pour aligner le contenu */
@@ -40,12 +40,13 @@
         /* ================= HEADER / NAVIGATION ================= */
         .site-header {
             padding: 20px 0;
-            /* Position sticky pour qu'il reste en haut si besoin */
             position: sticky;
             top: 0;
-            background: rgba(255,255,255,0.95);
-            backdrop-filter: blur(5px);
+            background: rgba(255,255,255,0.98);
+            backdrop-filter: blur(10px);
             z-index: 100;
+            border-bottom: 1px solid var(--border-light);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.03);
         }
 
         .nav-container {
@@ -53,58 +54,49 @@
             justify-content: space-between;
             align-items: center;
         }
-/* 1. On dit au logo de pousser vers la gauche */
-.logo-wrapper {
-    flex: 1; 
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    /* ... le reste de ton style logo ... */
-    
-    font-family: 'Inter', sans-serif;  /* Force la police Inter */
-    font-weight: 800;                  /* 800 = Extra Bold (Très gras) */
-    font-size: 1.5rem;                 /* Taille du texte */
-    color: var(--text-dark);
-}
 
-/* 2. On crée la classe pour le MILIEU (Centrage parfait) */
-.nav-center {
-    flex: 1; /* Prend 1 part d'espace */
-    display: flex;
-    justify-content: flex-end; /* C'est cette ligne qui CENTRE les liens */
-    align-items: center;
-    gap: 40px;
-    margin-right: 10px;/* Espace entre tes mots */
-}
+        .logo-wrapper {
+            flex: 1; 
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'Inter', sans-serif;
+            font-weight: 800;
+            font-size: 1.5rem;
+            color: var(--text-dark);
+        }
 
-/* 3. On crée la classe pour la DROITE (Alignement à droite) */
-.nav-right {
-    flex: 1; /* Prend 1 part d'espace */
-    display: flex;
-    justify-content: flex-end; /* Pousse les boutons tout au bout à droite */
-    align-items: center;
-    gap: 7px; /* Espace entre le bouton Login et le bouton Orange */
-}
+        .nav-center {
+            flex: 1;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 40px;
+            margin-right: 10px;
+        }
 
-/* 4. Le style du bouton "Login" (Optionnel : style transparent) */
-.btn-ghost {
-    background: transparent;
-    color: var(--text-dark);
-    /* Pas de bordure, juste du texte cliquable propre */
-}
-.btn-ghost:hover {
-    color: var(--primary-orange);
-}
+        .nav-right {
+            flex: 1;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 7px;
+        }
+
+        .btn-ghost {
+            background: transparent;
+            color: var(--text-dark);
+        }
+        .btn-ghost:hover {
+            color: var(--primary-orange);
+        }
         
-        
-        /* Placeholder pour l'icône du lion. 
-           À REMPLACER par votre vraie balise <img> : <img src="lion.svg" width="40"> */
         .logo-img {
-    height: 55px;       /* Règle la hauteur du logo */
-    width: auto;        /* Garde les proportions */
-    border-radius: 50%; /* S'assure que le cercle est bien net */
-    object-fit: cover;
-}
+            height: 55px;
+            width: auto;
+            border-radius: 50%;
+            object-fit: cover;
+        }
 
         .nav-links {
             display: flex;
@@ -124,7 +116,7 @@
         /* Boutons */
         .btn {
             padding: 12px 24px;
-            border-radius: 8px; /* Coins légèrement arrondis comme sur la maquette */
+            border-radius: 8px;
             font-weight: 600;
             font-size: 1rem;
             cursor: pointer;
@@ -136,42 +128,84 @@
             background-color: var(--primary-orange);
             color: white;
         }
-        .btn-orange:hover { background-color: #e06b00; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(255, 122, 0, 0.3); }
+        .btn-orange:hover { 
+            background-color: #e06b00; 
+            transform: translateY(-2px); 
+            box-shadow: 0 4px 12px rgba(255, 122, 0, 0.3); 
+        }
 
         .btn-outline {
             background-color: transparent;
             border: 2px solid var(--border-light);
             color: var(--text-dark);
         }
-        .btn-outline:hover { border-color: var(--text-dark); background-color: #f9fafb; }
+        .btn-outline:hover { 
+            border-color: var(--text-dark); 
+            background-color: #f9fafb; 
+        }
         
         .hero-buttons-group .btn-orange {
-    width: 40%;       /* <--- Force le bouton à prendre 100% de la largeur */
-    text-align: center;
-}
-
+            width: 40%;
+            text-align: center;
+        }
 
         /* ================= SECTION HÉROS (LE BLOC PRINCIPAL) ================= */
         .hero-section {
-            padding: 80px 0;
-            /* Fond avec une légère lueur orange diffuse derrière l'image (optionnel, pour l'effet "wow") */
-            background: radial-gradient(circle at 70% 50%, rgba(255, 122, 0, 0.08) 0%, rgba(255,255,255,0) 60%);
+            padding: 100px 0 80px 0;
+            position: relative;
         }
 
         .hero-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr; /* 2 colonnes égales */
+            grid-template-columns: 1fr 1fr;
             align-items: center;
             gap: 60px;
         }
 
-        /* Colonne de texte à gauche */
+        /* TITRE AVEC GRADIENT ET ANIMATION BRILLANCE */
         .hero-content h1 {
             font-size: 3.5rem;
             font-weight: 800;
             line-height: 1.1;
             margin-bottom: 24px;
             letter-spacing: -0.03em;
+            
+            /* Gradient animé */
+            background: linear-gradient(135deg, var(--text-dark) 0%, var(--primary-orange) 50%, var(--text-dark) 100%);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            
+            /* Animation de brillance */
+            animation: shine 3s linear infinite;
+            
+            /* Effet de profondeur */
+            position: relative;
+        }
+
+        @keyframes shine {
+            0% {
+                background-position: 0% center;
+            }
+            100% {
+                background-position: 200% center;
+            }
+        }
+
+        /* Effet d'ombre portée pour plus de profondeur */
+        .hero-content h1::after {
+            content: 'Analyse Better, Invest Better.';
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: -1;
+            background: linear-gradient(135deg, rgba(17, 24, 39, 0.1) 0%, rgba(255, 122, 0, 0.1) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: blur(8px);
+            opacity: 0.5;
         }
 
         .hero-content p {
@@ -189,32 +223,35 @@
 
         /* Colonne image à droite (Dashboard Mockup) */
         .hero-image-container {
-            /* Effet d'ombre portée et de bordure pour le style "fenêtre d'application" */
             box-shadow: var(--shadow-soft), 0 4px 6px -1px rgba(0,0,0,0.05);
             border-radius: 16px;
             overflow: hidden;
             border: 1px solid var(--border-light);
-            background: #F3F4F6; /* Gris très clair de fond de la fenêtre */
+            background: #F3F4F6;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .hero-image-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px -10px rgba(0,0,0,0.15);
         }
         
-        /* Placeholder pour l'image du dashboard. 
-           À remplacer par : <img src="dashboard.png" style="width:100%; height:auto;"> */
         .dashboard-placeholder {
             width: 100%;
-            height: 400px; /* Hauteur fixe pour le placeholder */
+            height: 400px;
             background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="%239CA3AF" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>') no-repeat center center;
             background-size: 80px;
         }
 
-
         /* ================= SECTION FONCTIONNALITÉS (LES 3 CARTES) ================= */
         .features-section {
             padding: 60px 0 100px 0;
+            background: linear-gradient(180deg, #ffffff 0%, #f9fafb 100%);
         }
 
         .features-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr); /* 3 colonnes */
+            grid-template-columns: repeat(3, 1fr);
             gap: 32px;
         }
 
@@ -223,15 +260,14 @@
             padding: 32px;
             border-radius: 16px;
             border: 1px solid var(--border-light);
-            /* Légère ombre comme sur la maquette */
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
-            transition: transform 0.2s, box-shadow 0.2s;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
         
         .feature-card:hover {
-            transform: translateY(-5px);
+            transform: translateY(-8px);
             box-shadow: var(--shadow-soft);
-            border-color: #fed7aa; /* Bordure orange très pâle au survol */
+            border-color: rgba(255, 122, 0, 0.3);
         }
 
         .feature-icon-box {
@@ -262,7 +298,7 @@
         /* ================= RESPONSIVE (Pour mobile et tablette) ================= */
         @media (max-width: 968px) {
             .hero-grid {
-                grid-template-columns: 1fr; /* Empile le héros en 1 colonne */
+                grid-template-columns: 1fr;
                 text-align: center;
                 gap: 40px;
             }
@@ -270,14 +306,18 @@
             .hero-buttons-group { justify-content: center; }
             
             .features-grid {
-                grid-template-columns: 1fr; /* Empile les fonctionnalités */
+                grid-template-columns: 1fr;
                 max-width: 500px;
                 margin: 0 auto;
             }
+
+            .hero-content h1 {
+                font-size: 2.5rem;
+            }
         }
         @media (max-width: 640px) {
-            .nav-links { display: none; } /* Cache le menu sur très petit écran (à gérer plus tard avec un menu burger) */
-            .hero-content h1 { font-size: 2.5rem; }
+            .nav-links { display: none; }
+            .hero-content h1 { font-size: 2rem; }
             .hero-buttons-group { flex-direction: column; }
             .btn { width: 100%; }
         }
@@ -288,33 +328,32 @@
     <header class="site-header">
         <div class="container nav-container">
             <div class="logo-wrapper">
-    <img src="logo.png" alt="Logo" class="logo-img">
-    StockMaster.
-</div>
+                <img src="logo.png" alt="Logo" class="logo-img">
+                StockMaster.
+            </div>
 
-<nav class="nav-center">
-    <a href="#features" class="nav-link">Features</a>
-    <a href="#faq" class="nav-link">FAQs</a>
-    <a href="#pricing" class="nav-link">Pricing</a>
-</nav>
+            <nav class="nav-center">
+                <a href="#features" class="nav-link">Features</a>
+                <a href="#faq" class="nav-link">FAQs</a>
+                <a href="#pricing" class="nav-link">Pricing</a>
+            </nav>
 
-<div class="nav-right">
-    <div id="guest-buttons" style="display: flex; align-items: center; gap: 10px;">
-        <a href="login.html" class="btn btn-ghost" style="text-decoration:none;">Login</a>
-        <a href="signup.html" class="btn btn-orange" style="text-decoration:none;">Get Started for Free</a>
-    </div>
+            <div class="nav-right">
+                <div id="guest-buttons" style="display: flex; align-items: center; gap: 10px;">
+                    <a href="login.html" class="btn btn-ghost" style="text-decoration:none;">Login</a>
+                    <a href="signup.html" class="btn btn-orange" style="text-decoration:none;">Get Started for Free</a>
+                </div>
 
-    <div id="user-buttons" style="display: none; align-items: center; gap: 10px;">
-        <a href="webapp.html" class="btn btn-orange" style="text-decoration:none;">
-            Go to Dashboard
-        </a>
-        <button id="logoutBtn" class="btn btn-ghost" style="font-size: 0.9rem;">
-            Sign Out
-        </button>
-    </div>
-</div>
-            
-      
+                <div id="user-buttons" style="display: none; align-items: center; gap: 10px;">
+                    <a href="webapp.html" class="btn btn-orange" style="text-decoration:none;">
+                        Go to Dashboard
+                    </a>
+                    <button id="logoutBtn" class="btn btn-ghost" style="font-size: 0.9rem;">
+                        Sign Out
+                    </button>
+                </div>
+            </div>
+        </div>
     </header>
 
     <main>
@@ -359,4 +398,65 @@
                     <div class="feature-icon-box">
                          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg>
                     </div>
-                    <h3>Sauvegarde
+                    <h3>Sauvegarde Cloud</h3>
+                    <p>Créez un compte sécurisé pour sauvegarder vos analyses et retrouver votre travail sur tous vos appareils.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyD4dkPbO1C-bZiSokalUnwNqOTpeAyrOU0",
+            authDomain: "stockmaster-30835.firebaseapp.com",
+            projectId: "stockmaster-30835",
+            storageBucket: "stockmaster-30835.firebasestorage.app",
+            messagingSenderId: "506097874613",
+            appId: "1:506097874613:web:0d15d2bd1575a55c8ab0fc",
+            measurementId: "G-2PG7Q471TR"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        const guestGroup = document.getElementById('guest-buttons');
+        const userGroup = document.getElementById('user-buttons');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const heroBtn = document.getElementById('heroBtn');
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                console.log("Connecté : " + user.email);
+                if(guestGroup) guestGroup.style.display = 'none';
+                if(userGroup) userGroup.style.display = 'flex';
+                
+                if(heroBtn) {
+                    heroBtn.textContent = 'Go to Dashboard';
+                    heroBtn.href = 'webapp.html';
+                }
+            } else {
+                console.log("Déconnecté");
+                if(guestGroup) guestGroup.style.display = 'flex';
+                if(userGroup) userGroup.style.display = 'none';
+                
+                if(heroBtn) {
+                    heroBtn.textContent = 'Get Started for Free';
+                    heroBtn.href = 'signup.html';
+                }
+            }
+        });
+
+        if(logoutBtn) {
+            logoutBtn.addEventListener('click', () => {
+                signOut(auth).then(() => {
+                    window.location.reload();
+                });
+            });
+        }
+    </script>
+    
+</body>
+</html>
