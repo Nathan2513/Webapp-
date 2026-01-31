@@ -12,15 +12,13 @@
             --text-dark: #111827; 
             --text-gray: #6B7280; 
             --border-color: #E5E7EB; 
-            --bg-gradient-start: #FFF5EB;
-            --bg-gradient-end: #FFE4CC;
         }
         
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
         body { 
             font-family: 'Inter', sans-serif; 
-            background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
+            background: #FFFFFF;
             color: var(--text-dark); 
             min-height: 100vh; 
             display: flex; 
@@ -28,100 +26,17 @@
             align-items: center; 
             justify-content: center;
             padding: 20px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        /* ANIMATED BACKGROUND CIRCLES */
-        body::before {
-            content: '';
-            position: absolute;
-            width: 500px;
-            height: 500px;
-            background: radial-gradient(circle, rgba(255, 122, 0, 0.15) 0%, rgba(255, 122, 0, 0) 70%);
-            border-radius: 50%;
-            top: -200px;
-            right: -200px;
-            animation: float 6s ease-in-out infinite;
-        }
-
-        body::after {
-            content: '';
-            position: absolute;
-            width: 400px;
-            height: 400px;
-            background: radial-gradient(circle, rgba(255, 122, 0, 0.1) 0%, rgba(255, 122, 0, 0) 70%);
-            border-radius: 50%;
-            bottom: -150px;
-            left: -150px;
-            animation: float 8s ease-in-out infinite reverse;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-30px); }
         }
         
-        /* LOGO BOX */
-        .logo-box {
-            width: 100%;
-            max-width: 480px;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(20px);
-            border-radius: 20px;
-            padding: 30px;
-            margin-bottom: 20px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.8);
-            z-index: 10;
-            animation: slideDown 0.6s ease-out;
-        }
-
-        @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .logo-link { 
-            display: flex; 
-            align-items: center; 
-            justify-content: center;
-            gap: 12px; 
-            text-decoration: none; 
-            color: var(--text-dark); 
-            font-weight: 800; 
-            font-size: 1.8rem;
-            transition: transform 0.3s ease;
-        }
-
-        .logo-link:hover {
-            transform: scale(1.02);
-        }
-
-        .logo-img { 
-            height: 50px; 
-            width: auto; 
-            border-radius: 50%;
-        }
-        
-        /* CONTAINER */
+        /* CONTAINER UNIQUE */
         .login-container { 
             width: 100%; 
             max-width: 480px; 
-            padding: 40px;
+            padding: 50px 40px 40px 40px;
             text-align: center;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(20px);
+            background: white;
             border-radius: 24px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.12), 0 0 1px rgba(0, 0, 0, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.8);
-            z-index: 10;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15), 0 0 1px rgba(0, 0, 0, 0.1);
             animation: slideUp 0.6s ease-out;
         }
 
@@ -134,6 +49,30 @@
                 opacity: 1;
                 transform: translateY(0);
             }
+        }
+
+        /* LOGO EN HAUT DE LA CARTE */
+        .logo-link { 
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            gap: 12px; 
+            text-decoration: none; 
+            color: var(--text-dark); 
+            font-weight: 800; 
+            font-size: 1.8rem;
+            margin-bottom: 40px;
+            transition: transform 0.3s ease;
+        }
+
+        .logo-link:hover {
+            transform: scale(1.05);
+        }
+
+        .logo-img { 
+            height: 50px; 
+            width: auto; 
+            border-radius: 50%;
         }
 
         h1 { 
@@ -281,7 +220,7 @@
             text-decoration: underline;
         }
 
-        /* ERROR & SUCCESS */
+        /* ERROR */
         .error-message { 
             color: #ef4444; 
             font-size: 0.9rem; 
@@ -312,7 +251,6 @@
             align-items: center;
             justify-content: center;
             z-index: 1000;
-            backdrop-filter: blur(5px);
         }
 
         .loading-overlay.active { display: flex; }
@@ -333,8 +271,8 @@
 
         /* RESPONSIVE */
         @media (max-width: 640px) {
-            .logo-box, .login-container {
-                padding: 25px;
+            .login-container {
+                padding: 40px 25px 30px 25px;
             }
 
             h1 {
@@ -349,20 +287,16 @@
 </head>
 <body>
 
-    <!-- LOADING OVERLAY -->
     <div class="loading-overlay" id="loadingOverlay">
         <div class="spinner"></div>
     </div>
 
-    <!-- LOGO BOX -->
-    <div class="logo-box">
+    <div class="login-container">
         <a href="index.html" class="logo-link">
             <img src="logo.png" alt="Logo" class="logo-img">
             StockMaster.
         </a>
-    </div>
 
-    <div class="login-container">
         <h1>Welcome Back</h1>
         <p class="subtitle">Enter your credentials to access your dashboard and continue analyzing stocks.</p>
 
