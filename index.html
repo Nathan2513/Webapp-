@@ -28,6 +28,45 @@
             color: var(--text-dark);
             line-height: 1.5;
             overflow-x: hidden;
+            position: relative;
+        }
+
+        /* ================= FOND SUBTIL ANIMÉ ================= */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(255, 122, 0, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(255, 200, 100, 0.04) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(255, 150, 50, 0.02) 0%, transparent 60%);
+            pointer-events: none;
+        }
+
+        /* Grille subtile en fond */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            background-image: 
+                linear-gradient(rgba(255, 122, 0, 0.015) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 122, 0, 0.015) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+        }
+
+        /* Conteneur pour le contenu au-dessus du fond */
+        .content-wrapper {
+            position: relative;
+            z-index: 1;
         }
 
         /* Conteneur central pour aligner le contenu */
@@ -155,6 +194,38 @@
             position: relative;
         }
 
+        /* Cercles décoratifs subtils */
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(255, 122, 0, 0.04) 0%, transparent 70%);
+            border-radius: 50%;
+            top: 10%;
+            right: -100px;
+            z-index: -1;
+            animation: float-slow 20s ease-in-out infinite;
+        }
+
+        .hero-section::after {
+            content: '';
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 200, 100, 0.03) 0%, transparent 70%);
+            border-radius: 50%;
+            bottom: 10%;
+            left: -50px;
+            z-index: -1;
+            animation: float-slow 25s ease-in-out infinite reverse;
+        }
+
+        @keyframes float-slow {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-30px); }
+        }
+
         .hero-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -229,6 +300,37 @@
             border: 1px solid var(--border-light);
             background: #F3F4F6;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+        }
+
+        /* Effet de brillance subtile sur l'image au hover */
+        .hero-image-container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                45deg,
+                transparent 30%,
+                rgba(255, 255, 255, 0.1) 50%,
+                transparent 70%
+            );
+            transform: rotate(45deg);
+            opacity: 0;
+            transition: opacity 0.5s;
+            pointer-events: none;
+        }
+
+        .hero-image-container:hover::before {
+            opacity: 1;
+            animation: shine-sweep 1.5s ease-in-out;
+        }
+
+        @keyframes shine-sweep {
+            0% { transform: translateX(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) rotate(45deg); }
         }
 
         .hero-image-container:hover {
@@ -247,12 +349,28 @@
         .features-section {
             padding: 60px 0 100px 0;
             background: linear-gradient(180deg, #ffffff 0%, #f9fafb 100%);
+            position: relative;
+        }
+
+        /* Petites décorations pour la section features */
+        .features-section::before {
+            content: '';
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(255, 122, 0, 0.02) 0%, transparent 70%);
+            border-radius: 50%;
+            top: 20%;
+            left: 5%;
+            z-index: 0;
         }
 
         .features-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 32px;
+            position: relative;
+            z-index: 1;
         }
 
         .feature-card {
@@ -262,6 +380,25 @@
             border: 1px solid var(--border-light);
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Petite ligne décorative au top de chaque card */
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary-orange), #ff9f40);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .feature-card:hover::before {
+            transform: scaleX(1);
         }
         
         .feature-card:hover {
@@ -281,6 +418,11 @@
             margin-bottom: 24px;
             color: white;
             font-size: 1.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .feature-card:hover .feature-icon-box {
+            transform: scale(1.1) rotate(5deg);
         }
 
         .feature-card h3 {
@@ -324,86 +466,87 @@
     </style>
 </head>
 <body>
-
-    <header class="site-header">
-        <div class="container nav-container">
-            <div class="logo-wrapper">
-                <img src="logo.png" alt="Logo" class="logo-img">
-                StockMaster.
-            </div>
-
-            <nav class="nav-center">
-                <a href="#features" class="nav-link">Features</a>
-                <a href="#faq" class="nav-link">FAQs</a>
-                <a href="#pricing" class="nav-link">Pricing</a>
-            </nav>
-
-            <div class="nav-right">
-                <div id="guest-buttons" style="display: flex; align-items: center; gap: 10px;">
-                    <a href="login.html" class="btn btn-ghost" style="text-decoration:none;">Login</a>
-                    <a href="signup.html" class="btn btn-orange" style="text-decoration:none;">Get Started for Free</a>
+    <div class="content-wrapper">
+        <header class="site-header">
+            <div class="container nav-container">
+                <div class="logo-wrapper">
+                    <img src="logo.png" alt="Logo" class="logo-img">
+                    StockMaster.
                 </div>
 
-                <div id="user-buttons" style="display: none; align-items: center; gap: 10px;">
-                    <a href="webapp.html" class="btn btn-orange" style="text-decoration:none;">
-                        Go to Dashboard
-                    </a>
-                    <button id="logoutBtn" class="btn btn-ghost" style="font-size: 0.9rem;">
-                        Sign Out
-                    </button>
-                </div>
-            </div>
-        </div>
-    </header>
+                <nav class="nav-center">
+                    <a href="#features" class="nav-link">Features</a>
+                    <a href="#faq" class="nav-link">FAQs</a>
+                    <a href="#pricing" class="nav-link">Pricing</a>
+                </nav>
 
-    <main>
-        <section class="hero-section">
-            <div class="container hero-grid">
-                <div class="hero-content">
-                    <h1>Analyse Better,<br>Invest Better.</h1>
-                    <p>For you, we have created a tool to analyze any stock in the simplest way possible.</p>
-                    <div class="hero-buttons-group">
-                        <a href="signup.html" id="heroBtn" class="btn btn-orange" style="text-decoration:none; display:flex; justify-content:center; align-items:center;">Get Started for Free</a>
+                <div class="nav-right">
+                    <div id="guest-buttons" style="display: flex; align-items: center; gap: 10px;">
+                        <a href="login.html" class="btn btn-ghost" style="text-decoration:none;">Login</a>
+                        <a href="signup.html" class="btn btn-orange" style="text-decoration:none;">Get Started for Free</a>
                     </div>
-                </div>
-                
-                <div class="hero-image-container">
-                    <div style="background:#e5e7eb; padding: 8px 16px; display:flex; gap:6px; border-bottom:1px solid #d1d5db;">
-                         <div style="width:10px; height:10px; border-radius:50%; background:#ef4444;"></div>
-                         <div style="width:10px; height:10px; border-radius:50%; background:#f59e0b;"></div>
-                         <div style="width:10px; height:10px; border-radius:50%; background:#10b981;"></div>
+
+                    <div id="user-buttons" style="display: none; align-items: center; gap: 10px;">
+                        <a href="webapp.html" class="btn btn-orange" style="text-decoration:none;">
+                            Go to Dashboard
+                        </a>
+                        <button id="logoutBtn" class="btn btn-ghost" style="font-size: 0.9rem;">
+                            Sign Out
+                        </button>
                     </div>
-                    <div class="dashboard-placeholder"></div>
                 </div>
             </div>
-        </section>
+        </header>
 
-        <section class="features-section" id="features">
-            <div class="container features-grid">
-                <div class="feature-card">
-                    <div class="feature-icon-box">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+        <main>
+            <section class="hero-section">
+                <div class="container hero-grid">
+                    <div class="hero-content">
+                        <h1>Analyse Better,<br>Invest Better.</h1>
+                        <p>For you, we have created a tool to analyze any stock in the simplest way possible.</p>
+                        <div class="hero-buttons-group">
+                            <a href="signup.html" id="heroBtn" class="btn btn-orange" style="text-decoration:none; display:flex; justify-content:center; align-items:center;">Get Started for Free</a>
+                        </div>
                     </div>
-                    <h3>Analyse DCF</h3>
-                    <p>Analysez la valeur intrinsèque (DCF) en quelques clics. Fini les tableurs Excel complexes et les erreurs de calcul.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon-box">
-                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"></path><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"></path><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"></path><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"></path></svg>
+                    
+                    <div class="hero-image-container">
+                        <div style="background:#e5e7eb; padding: 8px 16px; display:flex; gap:6px; border-bottom:1px solid #d1d5db;">
+                             <div style="width:10px; height:10px; border-radius:50%; background:#ef4444;"></div>
+                             <div style="width:10px; height:10px; border-radius:50%; background:#f59e0b;"></div>
+                             <div style="width:10px; height:10px; border-radius:50%; background:#10b981;"></div>
+                        </div>
+                        <div class="dashboard-placeholder"></div>
                     </div>
-                    <h3>Données TTM</h3>
-                    <p>Accédez aux données financières "Trailing Twelve Months" (12 derniers mois glissants) pour une analyse à jour.</p>
                 </div>
-                <div class="feature-card">
-                    <div class="feature-icon-box">
-                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg>
+            </section>
+
+            <section class="features-section" id="features">
+                <div class="container features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon-box">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+                        </div>
+                        <h3>Analyse DCF</h3>
+                        <p>Analysez la valeur intrinsèque (DCF) en quelques clics. Fini les tableurs Excel complexes et les erreurs de calcul.</p>
                     </div>
-                    <h3>Sauvegarde Cloud</h3>
-                    <p>Créez un compte sécurisé pour sauvegarder vos analyses et retrouver votre travail sur tous vos appareils.</p>
+                    <div class="feature-card">
+                        <div class="feature-icon-box">
+                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"></path><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"></path><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"></path><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"></path></svg>
+                        </div>
+                        <h3>Données TTM</h3>
+                        <p>Accédez aux données financières "Trailing Twelve Months" (12 derniers mois glissants) pour une analyse à jour.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon-box">
+                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg>
+                        </div>
+                        <h3>Sauvegarde Cloud</h3>
+                        <p>Créez un compte sécurisé pour sauvegarder vos analyses et retrouver votre travail sur tous vos appareils.</p>
+                    </div>
                 </div>
-            </div>
-        </section>
-    </main>
+            </section>
+        </main>
+    </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
