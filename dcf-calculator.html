@@ -22,7 +22,6 @@
             --danger-color: #EF4444;
             --warning-color: #F59E0B;
         }
-
         [data-theme="dark"] {
             /* COULEURS DARK MODE */
             --bg-main: #0F172A;
@@ -34,13 +33,11 @@
             --shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
             --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
         }
-
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-
         body {
             font-family: 'Inter', sans-serif;
             background-color: var(--bg-main);
@@ -48,14 +45,12 @@
             overflow-x: hidden;
             transition: background-color 0.3s ease;
         }
-
         /* ============= STRUCTURE PRINCIPALE ============= */
         .app-container {
             display: flex;
             flex-direction: column;
             height: 100vh;
         }
-
         /* ============= TOPBAR (BARRE SUPÉRIEURE) ============= */
         .topbar {
             background-color: var(--bg-topbar);
@@ -67,7 +62,6 @@
             align-items: center;
             justify-content: space-between;
         }
-
         .topbar-logo {
             display: flex;
             align-items: center;
@@ -77,13 +71,10 @@
             color: var(--text-primary);
             text-decoration: none;
         }
-
         .topbar-logo img {
             height: 45px;
             width: auto;
-            border-radius: 50%;
         }
-
         .topbar-nav {
             display: flex;
             gap: 10px;
@@ -91,7 +82,6 @@
             justify-content: center;
             align-items: center;
         }
-
         .nav-btn {
             padding: 10px 20px;
             border-radius: 10px;
@@ -108,7 +98,6 @@
             gap: 8px;
             box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
         }
-
         .nav-btn:hover {
             background-color: var(--hover-bg);
             color: var(--text-primary);
@@ -116,25 +105,21 @@
             transform: translateY(-2px);
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
-
         .nav-btn.active {
             background-color: var(--primary-orange);
             color: white;
             border-color: var(--primary-orange);
             box-shadow: 0 4px 10px rgba(255, 122, 0, 0.3);
         }
-
         .nav-btn svg {
             width: 18px;
             height: 18px;
         }
-
         .topbar-actions {
             display: flex;
             align-items: center;
             gap: 15px;
         }
-
         .theme-toggle {
             background-color: var(--hover-bg);
             border: 1px solid var(--border-color);
@@ -146,22 +131,18 @@
             justify-content: center;
             transition: all 0.2s ease;
         }
-
         .theme-toggle:hover {
             background-color: var(--border-color);
             transform: scale(1.05);
         }
-
         .theme-toggle svg {
             width: 20px;
             height: 20px;
             color: var(--text-primary);
         }
-
         .user-menu {
             position: relative;
         }
-
         .user-avatar {
             width: 40px;
             height: 40px;
@@ -176,12 +157,10 @@
             transition: transform 0.2s ease;
             border: 2px solid transparent;
         }
-
         .user-avatar:hover {
             transform: scale(1.1);
             border-color: var(--primary-orange);
         }
-
         .dropdown-menu {
             position: absolute;
             top: 55px;
@@ -197,13 +176,11 @@
             transition: all 0.3s ease;
             z-index: 1000;
         }
-
         .dropdown-menu.active {
             opacity: 1;
             visibility: visible;
             transform: translateY(0);
         }
-
         .dropdown-item {
             padding: 14px 20px;
             cursor: pointer;
@@ -216,83 +193,163 @@
             font-size: 0.95rem;
             font-weight: 500;
         }
-
         .dropdown-item:first-child {
             border-radius: 12px 12px 0 0;
         }
-
         .dropdown-item:last-child {
             border-radius: 0 0 12px 12px;
             border-top: 1px solid var(--border-color);
             color: #ef4444;
         }
-
         .dropdown-item:hover {
             background-color: var(--hover-bg);
         }
-
         .dropdown-item svg {
             width: 18px;
             height: 18px;
         }
-
         /* ============= MAIN CONTENT AREA ============= */
         .main-content {
             flex: 1;
             padding: 30px;
             overflow-y: auto;
         }
-
         .content-header {
             margin-bottom: 30px;
         }
-
         .content-header h1 {
             font-size: 2rem;
             font-weight: 800;
             margin-bottom: 8px;
         }
-
         .content-header p {
             color: var(--text-secondary);
             font-size: 1rem;
         }
-
-        /* ============= SEARCH BAR ============= */
-        .search-container {
-            max-width: 600px;
-            margin-bottom: 30px;
+        /* ============= WELCOME SECTION ============= */
+        .welcome-section {
+            max-width: 900px;
+            margin: 0 auto;
+            text-align: center;
+            padding: 60px 20px;
         }
-
+        .welcome-icon {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 30px;
+            background: linear-gradient(135deg, var(--primary-orange), #ff9f40);
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 15px 40px rgba(255, 122, 0, 0.25);
+        }
+        .welcome-icon svg {
+            width: 60px;
+            height: 60px;
+            color: white;
+        }
+        .welcome-section h2 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, var(--text-primary) 0%, var(--primary-orange) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .welcome-section p {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            margin-bottom: 40px;
+            line-height: 1.6;
+        }
+        /* ============= FEATURE CARDS ON LANDING ============= */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-top: 50px;
+            max-width: 1000px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .feature-card {
+            background: var(--bg-topbar);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: left;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow);
+        }
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary-orange);
+        }
+        .feature-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, rgba(255, 122, 0, 0.1), rgba(255, 122, 0, 0.2));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .feature-icon svg {
+            width: 26px;
+            height: 26px;
+            color: var(--primary-orange);
+        }
+        .feature-card h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: var(--text-primary);
+        }
+        .feature-card p {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+        /* ============= SEARCH BAR (BETTER DESIGN) ============= */
+        .search-container {
+            max-width: 700px;
+            margin: 0 auto 50px;
+        }
         .search-wrapper {
             position: relative;
         }
-
         .search-input {
             width: 100%;
-            padding: 14px 20px 14px 50px;
+            padding: 18px 60px 18px 60px;
             border: 2px solid var(--border-color);
-            border-radius: 12px;
-            font-size: 1rem;
+            border-radius: 16px;
+            font-size: 1.1rem;
             background-color: var(--bg-topbar);
             color: var(--text-primary);
             transition: all 0.3s ease;
+            box-shadow: var(--shadow);
         }
-
         .search-input:focus {
             outline: none;
             border-color: var(--primary-orange);
-            box-shadow: 0 0 0 3px rgba(255, 122, 0, 0.1);
+            box-shadow: 0 0 0 4px rgba(255, 122, 0, 0.1);
+            transform: translateY(-2px);
         }
-
         .search-icon {
             position: absolute;
-            left: 18px;
+            left: 22px;
             top: 50%;
             transform: translateY(-50%);
             color: var(--text-secondary);
         }
-
+        .search-icon svg {
+            width: 24px;
+            height: 24px;
+        }
         .search-results {
             position: absolute;
             top: calc(100% + 8px);
@@ -307,45 +364,45 @@
             z-index: 100;
             display: none;
         }
-
         .search-results.active {
             display: block;
         }
-
         .search-result-item {
-            padding: 12px 20px;
+            padding: 14px 20px;
             cursor: pointer;
             transition: background-color 0.2s ease;
             border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
-
         .search-result-item:last-child {
             border-bottom: none;
         }
-
         .search-result-item:hover {
             background-color: var(--hover-bg);
         }
-
         .result-symbol {
             font-weight: 700;
             color: var(--text-primary);
-            margin-right: 8px;
+            margin-right: 12px;
+            font-size: 1.05rem;
         }
-
         .result-name {
             color: var(--text-secondary);
             font-size: 0.9rem;
+            flex: 1;
         }
-
         /* ============= DCF CALCULATOR LAYOUT ============= */
         .dcf-layout {
             display: grid;
-            grid-template-columns: 1fr 400px;
+            grid-template-columns: 1fr 420px;
             gap: 30px;
             margin-top: 30px;
+            max-width: 1400px;
+            margin-left: auto;
+            margin-right: auto;
         }
-
         /* ============= CARDS ============= */
         .card {
             background-color: var(--bg-topbar);
@@ -355,361 +412,337 @@
             box-shadow: var(--shadow);
             transition: all 0.3s ease;
         }
-
         .card-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
         }
-
         .card-title {
             font-size: 1.25rem;
             font-weight: 700;
             color: var(--text-primary);
         }
-
         .card-subtitle {
             font-size: 0.9rem;
             color: var(--text-secondary);
             margin-top: 4px;
         }
-
         /* ============= STOCK INFO HEADER ============= */
         .stock-info-header {
             display: flex;
             align-items: center;
-            gap: 16px;
-            padding: 20px;
+            gap: 20px;
+            padding: 24px;
             background: linear-gradient(135deg, var(--primary-orange), #ff9f40);
-            border-radius: 12px;
+            border-radius: 16px;
             margin-bottom: 30px;
             color: white;
+            box-shadow: 0 10px 30px rgba(255, 122, 0, 0.25);
         }
-
         .stock-logo {
-            width: 60px;
-            height: 60px;
+            width: 70px;
+            height: 70px;
             background-color: white;
-            border-radius: 12px;
+            border-radius: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: 800;
-            font-size: 1.5rem;
+            font-size: 1.8rem;
             color: var(--primary-orange);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         }
-
         .stock-details h2 {
-            font-size: 1.5rem;
+            font-size: 1.6rem;
             font-weight: 800;
-            margin-bottom: 4px;
+            margin-bottom: 6px;
         }
-
         .stock-price {
-            font-size: 1.1rem;
-            opacity: 0.9;
+            font-size: 1.15rem;
+            opacity: 0.95;
+            font-weight: 600;
         }
-
+        /* ============= METRIC SELECTOR (DISCORD BOT STYLE) ============= */
+        .metric-selector {
+            margin-bottom: 25px;
+        }
+        .metric-options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+        .metric-option {
+            padding: 16px;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+            background: var(--bg-main);
+        }
+        .metric-option:hover {
+            border-color: var(--primary-orange);
+            background: rgba(255, 122, 0, 0.05);
+        }
+        .metric-option.selected {
+            border-color: var(--primary-orange);
+            background: rgba(255, 122, 0, 0.1);
+        }
+        .metric-option .emoji {
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+            display: block;
+        }
+        .metric-option .label {
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: var(--text-primary);
+        }
         /* ============= INPUT GROUPS ============= */
         .input-group {
             margin-bottom: 20px;
         }
-
         .input-label {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 8px;
-            font-size: 0.9rem;
+            margin-bottom: 10px;
+            font-size: 0.95rem;
             font-weight: 600;
             color: var(--text-primary);
         }
-
         .info-icon {
             color: var(--text-secondary);
             cursor: help;
             font-size: 0.85rem;
+            padding: 4px 8px;
+            background: var(--hover-bg);
+            border-radius: 6px;
+            transition: all 0.2s;
         }
-
+        .info-icon:hover {
+            background: var(--border-color);
+            color: var(--primary-orange);
+        }
         .input-field {
             width: 100%;
-            padding: 12px 16px;
+            padding: 14px 16px;
             border: 2px solid var(--border-color);
             border-radius: 10px;
             font-size: 1rem;
             background-color: var(--bg-main);
             color: var(--text-primary);
             transition: all 0.2s ease;
+            font-weight: 500;
         }
-
         .input-field:focus {
             outline: none;
             border-color: var(--primary-orange);
             box-shadow: 0 0 0 3px rgba(255, 122, 0, 0.1);
         }
-
         .input-field:disabled {
             opacity: 0.6;
             cursor: not-allowed;
         }
-
         .input-suffix {
             position: relative;
         }
-
         .input-suffix input {
-            padding-right: 40px;
+            padding-right: 50px;
         }
-
         .suffix-text {
             position: absolute;
             right: 16px;
             top: 50%;
             transform: translateY(-50%);
             color: var(--text-secondary);
-            font-weight: 600;
+            font-weight: 700;
+            font-size: 0.9rem;
         }
-
-        /* ============= TOGGLE SWITCH ============= */
-        .toggle-container {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .toggle-switch {
-            position: relative;
-            width: 50px;
-            height: 26px;
-            background-color: var(--border-color);
-            border-radius: 13px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        .toggle-switch.active {
-            background-color: var(--primary-orange);
-        }
-
-        .toggle-slider {
-            position: absolute;
-            top: 3px;
-            left: 3px;
-            width: 20px;
-            height: 20px;
-            background-color: white;
-            border-radius: 50%;
-            transition: transform 0.3s ease;
-        }
-
-        .toggle-switch.active .toggle-slider {
-            transform: translateX(24px);
-        }
-
         /* ============= PROJECTION TABLE ============= */
         .projection-table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
         }
-
         .projection-table th,
         .projection-table td {
-            padding: 12px;
+            padding: 14px 12px;
             text-align: right;
             border-bottom: 1px solid var(--border-color);
         }
-
         .projection-table th {
             font-weight: 700;
             color: var(--text-primary);
             background-color: var(--hover-bg);
+            font-size: 0.9rem;
         }
-
         .projection-table th:first-child,
         .projection-table td:first-child {
             text-align: left;
         }
-
         .projection-table tr:hover {
             background-color: var(--hover-bg);
         }
-
+        .projection-table td {
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
         /* ============= RESULT CARD ============= */
         .result-card {
             background: linear-gradient(135deg, #10B981, #059669);
             color: white;
-            padding: 30px;
+            padding: 32px;
             border-radius: 16px;
             margin-bottom: 20px;
-            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);
+            box-shadow: 0 10px 30px rgba(16, 185, 129, 0.3);
         }
-
         .result-label {
-            font-size: 0.9rem;
-            opacity: 0.9;
-            margin-bottom: 8px;
-        }
-
-        .result-value {
-            font-size: 2.5rem;
-            font-weight: 800;
-            margin-bottom: 12px;
-        }
-
-        .result-upside {
-            font-size: 1.1rem;
+            font-size: 0.95rem;
+            opacity: 0.95;
+            margin-bottom: 10px;
             font-weight: 600;
         }
-
+        .result-value {
+            font-size: 2.8rem;
+            font-weight: 800;
+            margin-bottom: 14px;
+        }
+        .result-upside {
+            font-size: 1.15rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
         .metric-row {
             display: flex;
             justify-content: space-between;
-            padding: 12px 0;
+            padding: 14px 0;
             border-bottom: 1px solid var(--border-color);
         }
-
         .metric-row:last-child {
             border-bottom: none;
         }
-
         .metric-label {
             color: var(--text-secondary);
-            font-size: 0.9rem;
+            font-size: 0.92rem;
+            font-weight: 500;
         }
-
         .metric-value {
             font-weight: 700;
             color: var(--text-primary);
+            font-size: 0.95rem;
         }
-
         /* ============= BUTTONS ============= */
         .btn-primary {
             width: 100%;
-            padding: 14px;
+            padding: 16px;
             background-color: var(--primary-orange);
             color: white;
             border: none;
-            border-radius: 10px;
+            border-radius: 12px;
             font-weight: 700;
-            font-size: 1rem;
+            font-size: 1.05rem;
             cursor: pointer;
             transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 122, 0, 0.25);
         }
-
         .btn-primary:hover {
             background-color: #e06b00;
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(255, 122, 0, 0.4);
         }
-
         .btn-secondary {
             width: 100%;
-            padding: 12px;
+            padding: 14px;
             background-color: transparent;
             color: var(--text-primary);
             border: 2px solid var(--border-color);
-            border-radius: 10px;
+            border-radius: 12px;
             font-weight: 600;
             font-size: 0.95rem;
             cursor: pointer;
             transition: all 0.2s ease;
-            margin-top: 10px;
+            margin-top: 12px;
         }
-
         .btn-secondary:hover {
             background-color: var(--hover-bg);
             border-color: var(--text-secondary);
         }
-
         /* ============= LOADING STATE ============= */
         .loading-state {
             text-align: center;
-            padding: 60px 20px;
+            padding: 80px 20px;
         }
-
         .spinner {
-            width: 50px;
-            height: 50px;
-            border: 4px solid var(--border-color);
+            width: 60px;
+            height: 60px;
+            border: 5px solid var(--border-color);
             border-top-color: var(--primary-orange);
             border-radius: 50%;
             animation: spin 1s linear infinite;
-            margin: 0 auto 20px;
+            margin: 0 auto 24px;
         }
-
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
-
-        /* ============= EMPTY STATE ============= */
-        .empty-state {
-            text-align: center;
-            padding: 80px 20px;
+        .loading-state p {
             color: var(--text-secondary);
+            font-size: 1.05rem;
+            font-weight: 500;
         }
-
-        .empty-state svg {
-            width: 80px;
-            height: 80px;
-            margin-bottom: 20px;
-            opacity: 0.5;
-        }
-
-        .empty-state h3 {
-            font-size: 1.25rem;
-            color: var(--text-primary);
-            margin-bottom: 8px;
-        }
-
         /* ============= RESPONSIVE ============= */
         @media (max-width: 1200px) {
             .dcf-layout {
                 grid-template-columns: 1fr;
             }
-
             .topbar-nav {
                 gap: 6px;
             }
-            
             .nav-btn {
                 padding: 8px 14px;
                 font-size: 0.85rem;
             }
         }
-
         @media (max-width: 968px) {
             .topbar-nav {
                 display: none;
             }
-
             .topbar {
                 padding: 0 15px;
             }
-
             .main-content {
                 padding: 20px;
             }
-
             .projection-table {
                 font-size: 0.85rem;
             }
+            .welcome-section h2 {
+                font-size: 2rem;
+            }
+            .welcome-section p {
+                font-size: 1.05rem;
+            }
+            .metric-options {
+                grid-template-columns: 1fr;
+            }
         }
-
         @media (max-width: 640px) {
             .theme-toggle {
                 display: none;
             }
-
             .result-value {
-                font-size: 2rem;
+                font-size: 2.2rem;
+            }
+            .features-grid {
+                grid-template-columns: 1fr;
             }
         }
     </style>
 </head>
 <body>
-
     <div class="app-container">
         <!-- ========== TOPBAR ========== -->
         <header class="topbar">
@@ -717,7 +750,6 @@
                 <img src="logo.png" alt="Logo">
                 StockMaster
             </a>
-
             <nav class="topbar-nav">
                 <a href="webapp.html" class="nav-btn">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -750,7 +782,6 @@
                     DCF Calculator
                 </a>
             </nav>
-
             <div class="topbar-actions">
                 <button class="theme-toggle" id="themeToggle">
                     <svg id="sunIcon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -760,7 +791,6 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
                     </svg>
                 </button>
-
                 <div class="user-menu">
                     <div class="user-avatar" id="userAvatar" title="User Profile">U</div>
                     
@@ -791,40 +821,71 @@
 
         <!-- ========== MAIN CONTENT ========== -->
         <main class="main-content">
-            <div class="content-header">
-                <h1>DCF Calculator</h1>
-                <p>Calculez la valeur intrinsèque d'une action avec la méthode des flux de trésorerie actualisés</p>
-            </div>
-
-            <!-- SEARCH BAR -->
-            <div class="search-container">
-                <div class="search-wrapper">
-                    <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            
+            <!-- WELCOME SECTION (Landing Page) -->
+            <div class="welcome-section" id="welcomeSection">
+                <div class="welcome-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
                     </svg>
-                    <input 
-                        type="text" 
-                        class="search-input" 
-                        id="stockSearch" 
-                        placeholder="Rechercher un ticker (ex: AAPL, MSFT, TSLA...)"
-                    >
-                    <div class="search-results" id="searchResults"></div>
                 </div>
-            </div>
+                <h2>Calculateur DCF Professionnel</h2>
+                <p>Analysez la valeur intrinsèque de n'importe quelle action en quelques clics. Choisissez votre métrique, définissez vos hypothèses et obtenez une valorisation détaillée.</p>
+                
+                <!-- SEARCH BAR -->
+                <div class="search-container">
+                    <div class="search-wrapper">
+                        <div class="search-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                        </div>
+                        <input 
+                            type="text" 
+                            class="search-input" 
+                            id="stockSearch" 
+                            placeholder="Recherchez une action (ex: AAPL, MSFT, TSLA...)"
+                        >
+                        <div class="search-results" id="searchResults"></div>
+                    </div>
+                </div>
 
-            <!-- EMPTY STATE (Displayed before search) -->
-            <div class="empty-state" id="emptyState">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                </svg>
-                <h3>Commencez par rechercher une action</h3>
-                <p>Utilisez la barre de recherche ci-dessus pour trouver une entreprise et calculer son DCF</p>
+                <!-- FEATURES GRID -->
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z" />
+                            </svg>
+                        </div>
+                        <h3>Multiples Métriques</h3>
+                        <p>Choisissez entre FCF, OCF, Operating Income ou Net Profit pour votre analyse.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                            </svg>
+                        </div>
+                        <h3>Projections sur 5 ans</h3>
+                        <p>Visualisez l'évolution des cash flows et leur valeur actualisée année par année.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                            </svg>
+                        </div>
+                        <h3>Analyse de Sensibilité</h3>
+                        <p>Testez l'impact des variations du WACC et du taux de croissance sur la valorisation.</p>
+                    </div>
+                </div>
             </div>
 
             <!-- LOADING STATE -->
             <div class="loading-state" id="loadingState" style="display: none;">
                 <div class="spinner"></div>
-                <p>Chargement des données...</p>
+                <p>Chargement des données financières...</p>
             </div>
 
             <!-- DCF CALCULATOR (Hidden initially) -->
@@ -843,63 +904,93 @@
                         </div>
                     </div>
 
-                    <!-- Parameters Card -->
+                    <!-- Metric Selector Card -->
                     <div class="card">
                         <div class="card-header">
                             <div>
-                                <h3 class="card-title">Paramètres du DCF</h3>
-                                <p class="card-subtitle">Ajustez les hypothèses pour le calcul</p>
+                                <h3 class="card-title">Choix de la Métrique</h3>
+                                <p class="card-subtitle">Sélectionnez la donnée financière à analyser</p>
                             </div>
                         </div>
+                        <div class="metric-selector">
+                            <div class="metric-options">
+                                <div class="metric-option selected" data-metric="fcf">
+                                    <span class="emoji">💰</span>
+                                    <div class="label">Free Cash Flow</div>
+                                </div>
+                                <div class="metric-option" data-metric="ocf">
+                                    <span class="emoji">📈</span>
+                                    <div class="label">Operating Cash Flow</div>
+                                </div>
+                                <div class="metric-option" data-metric="oi">
+                                    <span class="emoji">🎯</span>
+                                    <div class="label">Operating Income</div>
+                                </div>
+                                <div class="metric-option" data-metric="ni">
+                                    <span class="emoji">💎</span>
+                                    <div class="label">Net Profit</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
+                    <!-- Parameters Card -->
+                    <div class="card" style="margin-top: 20px;">
+                        <div class="card-header">
+                            <div>
+                                <h3 class="card-title">Paramètres du DCF</h3>
+                                <p class="card-subtitle">Ajustez vos hypothèses de croissance et valorisation</p>
+                            </div>
+                        </div>
+                        
                         <div class="input-group">
                             <div class="input-label">
-                                <span>Free Cash Flow Actuel (TTM)</span>
-                                <span class="info-icon" title="Free Cash Flow des 12 derniers mois">ⓘ</span>
+                                <span id="currentMetricLabel">Free Cash Flow Actuel (TTM)</span>
+                                <span class="info-icon" title="Valeur des 12 derniers mois">ⓘ</span>
                             </div>
                             <div class="input-suffix">
-                                <input type="number" class="input-field" id="currentFCF" value="100000">
+                                <input type="number" class="input-field" id="currentValue" value="100000">
                                 <span class="suffix-text">M$</span>
                             </div>
                         </div>
-
+                        
                         <div class="input-group">
                             <div class="input-label">
-                                <span>Taux de croissance (Années 1-5)</span>
-                                <span class="info-icon" title="Croissance annuelle du FCF sur 5 ans">ⓘ</span>
+                                <span>Taux de Croissance Annuel (5 ans)</span>
+                                <span class="info-icon" title="Croissance prévue sur les 5 prochaines années">ⓘ</span>
                             </div>
                             <div class="input-suffix">
-                                <input type="number" class="input-field" id="growthRate" value="10" step="0.1">
+                                <input type="number" class="input-field" id="growthRate" value="12" step="0.1">
                                 <span class="suffix-text">%</span>
                             </div>
                         </div>
 
                         <div class="input-group">
                             <div class="input-label">
-                                <span>Taux de croissance perpétuelle</span>
-                                <span class="info-icon" title="Croissance à long terme après l'année 5">ⓘ</span>
+                                <span id="exitMultipleLabel">Multiple Terminal</span>
+                                <span class="info-icon" title="Multiple de valorisation dans 5 ans">ⓘ</span>
                             </div>
                             <div class="input-suffix">
-                                <input type="number" class="input-field" id="terminalGrowth" value="3" step="0.1">
+                                <input type="number" class="input-field" id="exitMultiple" value="25" step="0.1">
+                                <span class="suffix-text">x</span>
+                            </div>
+                        </div>
+
+                        <div class="input-group">
+                            <div class="input-label">
+                                <span>Taux d'Actualisation (Discount Rate)</span>
+                                <span class="info-icon" title="Taux de rendement exigé (généralement 10%)">ⓘ</span>
+                            </div>
+                            <div class="input-suffix">
+                                <input type="number" class="input-field" id="discountRate" value="10" step="0.1">
                                 <span class="suffix-text">%</span>
                             </div>
                         </div>
 
                         <div class="input-group">
                             <div class="input-label">
-                                <span>Taux d'actualisation (WACC)</span>
-                                <span class="info-icon" title="Weighted Average Cost of Capital">ⓘ</span>
-                            </div>
-                            <div class="input-suffix">
-                                <input type="number" class="input-field" id="discountRate" value="9" step="0.1">
-                                <span class="suffix-text">%</span>
-                            </div>
-                        </div>
-
-                        <div class="input-group">
-                            <div class="input-label">
-                                <span>Actions en circulation</span>
-                                <span class="info-info" title="Nombre d'actions total">ⓘ</span>
+                                <span>Actions en Circulation</span>
+                                <span class="info-icon" title="Nombre total d'actions">ⓘ</span>
                             </div>
                             <div class="input-suffix">
                                 <input type="number" class="input-field" id="sharesOutstanding" value="16000">
@@ -907,31 +998,20 @@
                             </div>
                         </div>
 
-                        <div class="input-group">
-                            <div class="input-label">
-                                <span>Dette nette</span>
-                                <span class="info-icon" title="Dette totale - Trésorerie">ⓘ</span>
-                            </div>
-                            <div class="input-suffix">
-                                <input type="number" class="input-field" id="netDebt" value="50000">
-                                <span class="suffix-text">M$</span>
-                            </div>
-                        </div>
-
-                        <button class="btn-primary" id="calculateBtn">Calculer le DCF</button>
-                        <button class="btn-secondary" id="resetBtn">Réinitialiser</button>
+                        <button class="btn-primary" id="calculateBtn">💎 Calculer la Valorisation</button>
+                        <button class="btn-secondary" id="resetBtn">🔄 Réinitialiser</button>
                     </div>
 
                     <!-- Projections Table -->
-                    <div class="card" style="margin-top: 30px;">
+                    <div class="card" style="margin-top: 20px;">
                         <div class="card-header">
-                            <h3 class="card-title">Projections des Cash Flows</h3>
+                            <h3 class="card-title">📊 Projections sur 5 ans</h3>
                         </div>
                         <table class="projection-table">
                             <thead>
                                 <tr>
                                     <th>Année</th>
-                                    <th>FCF</th>
+                                    <th id="metricHeader">FCF Projeté</th>
                                     <th>Valeur Actualisée</th>
                                 </tr>
                             </thead>
@@ -946,76 +1026,71 @@
                 <div>
                     <!-- Result Card -->
                     <div class="result-card">
-                        <div class="result-label">Valeur Intrinsèque par Action</div>
-                        <div class="result-value" id="intrinsicValue">$0.00</div>
+                        <div class="result-label">💎 Fair Value (Aujourd'hui)</div>
+                        <div class="result-value" id="fairValue">$0.00</div>
                         <div class="result-upside">
                             <span id="upsideLabel">Potentiel:</span>
                             <span id="upsideValue">+0%</span>
                         </div>
                     </div>
 
-                    <!-- Metrics Card -->
-                    <div class="card">
+                    <!-- Future Price Card -->
+                    <div class="card" style="margin-bottom: 20px;">
                         <div class="card-header">
-                            <h3 class="card-title">Détails du Calcul</h3>
+                            <h3 class="card-title">🔮 Prix Cible (5 ans)</h3>
                         </div>
-
-                        <div class="metric-row">
-                            <span class="metric-label">Valeur des FCF (Années 1-5)</span>
-                            <span class="metric-value" id="pvFCF">$0</span>
-                        </div>
-
-                        <div class="metric-row">
-                            <span class="metric-label">Valeur Terminale</span>
-                            <span class="metric-value" id="terminalValue">$0</span>
-                        </div>
-
-                        <div class="metric-row">
-                            <span class="metric-label">Valeur d'Entreprise</span>
-                            <span class="metric-value" id="enterpriseValue">$0</span>
-                        </div>
-
-                        <div class="metric-row">
-                            <span class="metric-label">Dette Nette</span>
-                            <span class="metric-value" id="netDebtDisplay">$0</span>
-                        </div>
-
-                        <div class="metric-row">
-                            <span class="metric-label">Valeur des Capitaux Propres</span>
-                            <span class="metric-value" id="equityValue">$0</span>
-                        </div>
-
-                        <div class="metric-row">
-                            <span class="metric-label">Actions en Circulation</span>
-                            <span class="metric-value" id="sharesDisplay">0M</span>
+                        <div style="text-align: center; padding: 20px 0;">
+                            <div style="font-size: 2.5rem; font-weight: 800; color: var(--primary-orange); margin-bottom: 10px;" id="futurePrice">$0.00</div>
+                            <div style="font-size: 1.1rem; color: var(--text-secondary); font-weight: 600;">
+                                📈 CAGR: <span id="cagrValue" style="color: var(--success-color); font-weight: 700;">0%</span>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- Sensitivity Analysis Card -->
-                    <div class="card" style="margin-top: 20px;">
+                    <!-- Hypotheses Card -->
+                    <div class="card" style="margin-bottom: 20px;">
                         <div class="card-header">
-                            <h3 class="card-title">Analyse de Sensibilité</h3>
-                            <p class="card-subtitle">Impact des variations du WACC et de la croissance</p>
+                            <h3 class="card-title">📋 Hypothèses</h3>
                         </div>
-
                         <div class="metric-row">
-                            <span class="metric-label">WACC +1%</span>
-                            <span class="metric-value" id="waccPlus1">$0.00</span>
+                            <span class="metric-label">Métrique Analysée</span>
+                            <span class="metric-value" id="metricUsed">Free Cash Flow</span>
                         </div>
-
                         <div class="metric-row">
-                            <span class="metric-label">WACC -1%</span>
-                            <span class="metric-value" id="waccMinus1">$0.00</span>
+                            <span class="metric-label">Croissance Annuelle</span>
+                            <span class="metric-value" id="growthUsed">12.0%</span>
                         </div>
+                        <div class="metric-row">
+                            <span class="metric-label">Multiple Terminal</span>
+                            <span class="metric-value" id="multipleUsed">25.0x</span>
+                        </div>
+                        <div class="metric-row">
+                            <span class="metric-label">Taux d'Actualisation</span>
+                            <span class="metric-value" id="discountUsed">10.0%</span>
+                        </div>
+                    </div>
 
+                    <!-- Sensitivity Analysis -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">🎯 Analyse de Sensibilité</h3>
+                            <p class="card-subtitle">Impact des variations sur la Fair Value</p>
+                        </div>
                         <div class="metric-row">
                             <span class="metric-label">Croissance +1%</span>
                             <span class="metric-value" id="growthPlus1">$0.00</span>
                         </div>
-
                         <div class="metric-row">
                             <span class="metric-label">Croissance -1%</span>
                             <span class="metric-value" id="growthMinus1">$0.00</span>
+                        </div>
+                        <div class="metric-row">
+                            <span class="metric-label">Multiple +2x</span>
+                            <span class="metric-value" id="multiplePlus2">$0.00</span>
+                        </div>
+                        <div class="metric-row">
+                            <span class="metric-label">Multiple -2x</span>
+                            <span class="metric-value" id="multipleMinus2">$0.00</span>
                         </div>
                     </div>
                 </div>
@@ -1027,10 +1102,6 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        
-        // IMPORTANT: Import the mock data
-        // Replace this with your API call later
-        import { getStockData, searchStocks } from './mock-data.js';
 
         const firebaseConfig = {
             apiKey: "AIzaSyD4dkPbO1C-bZiSokalUnwNqOTpeAyrOU0",
@@ -1103,8 +1174,56 @@
             }
         });
 
+        // ========== MOCK DATA (Replace with API later) ==========
+        const mockStocks = [
+            { symbol: 'AAPL', name: 'Apple Inc.', price: 178.50, fcf: 110000, ocf: 115000, oi: 120000, ni: 100000, shares: 15500 },
+            { symbol: 'MSFT', name: 'Microsoft Corporation', price: 375.20, fcf: 72000, ocf: 88000, oi: 95000, ni: 72500, shares: 7430 },
+            { symbol: 'NVDA', name: 'NVIDIA Corporation', price: 495.00, fcf: 28000, ocf: 35000, oi: 42000, ni: 30000, shares: 2470 },
+            { symbol: 'GOOGL', name: 'Alphabet Inc.', price: 140.25, fcf: 69000, ocf: 82000, oi: 88000, ni: 74000, shares: 12500 },
+            { symbol: 'TSLA', name: 'Tesla Inc.', price: 245.00, fcf: 5000, ocf: 13000, oi: 8000, ni: 15000, shares: 3170 }
+        ];
+
+        function searchStocks(query) {
+            return mockStocks.filter(s => 
+                s.symbol.toLowerCase().includes(query.toLowerCase()) ||
+                s.name.toLowerCase().includes(query.toLowerCase())
+            );
+        }
+
+        function getStockData(symbol) {
+            return mockStocks.find(s => s.symbol === symbol);
+        }
+
         // ========== DCF CALCULATOR LOGIC ==========
         let currentStock = null;
+        let selectedMetric = 'fcf';
+
+        const metricLabels = {
+            fcf: { name: 'Free Cash Flow', label: 'P/FCF', header: 'FCF Projeté' },
+            ocf: { name: 'Operating Cash Flow', label: 'P/OCF', header: 'OCF Projeté' },
+            oi: { name: 'Operating Income', label: 'P/OI', header: 'OI Projeté' },
+            ni: { name: 'Net Profit', label: 'P/E', header: 'NI Projeté' }
+        };
+
+        // Metric Selection
+        document.querySelectorAll('.metric-option').forEach(option => {
+            option.addEventListener('click', () => {
+                document.querySelectorAll('.metric-option').forEach(o => o.classList.remove('selected'));
+                option.classList.add('selected');
+                selectedMetric = option.dataset.metric;
+                
+                // Update labels
+                const metric = metricLabels[selectedMetric];
+                document.getElementById('currentMetricLabel').textContent = `${metric.name} Actuel (TTM)`;
+                document.getElementById('exitMultipleLabel').textContent = `Multiple Terminal (${metric.label})`;
+                document.getElementById('metricHeader').textContent = metric.header;
+                
+                // Update value if stock loaded
+                if (currentStock) {
+                    document.getElementById('currentValue').value = currentStock[selectedMetric];
+                }
+            });
+        });
 
         // Search functionality
         const stockSearch = document.getElementById('stockSearch');
@@ -1118,19 +1237,20 @@
                 return;
             }
 
-            // Use mock data search function
             const results = searchStocks(query);
             
             if (results.length > 0) {
                 searchResults.innerHTML = results.map(stock => `
                     <div class="search-result-item" data-symbol="${stock.symbol}">
-                        <span class="result-symbol">${stock.symbol}</span>
-                        <span class="result-name">${stock.name}</span>
+                        <div>
+                            <span class="result-symbol">${stock.symbol}</span>
+                            <span class="result-name">${stock.name}</span>
+                        </div>
+                        <span style="font-weight:700; color: var(--text-primary);">$${stock.price.toFixed(2)}</span>
                     </div>
                 `).join('');
                 searchResults.classList.add('active');
-
-                // Add click handlers
+                
                 document.querySelectorAll('.search-result-item').forEach(item => {
                     item.addEventListener('click', () => {
                         const symbol = item.dataset.symbol;
@@ -1145,7 +1265,6 @@
             }
         });
 
-        // Close search results when clicking outside
         document.addEventListener('click', (e) => {
             if (!stockSearch.contains(e.target) && !searchResults.contains(e.target)) {
                 searchResults.classList.remove('active');
@@ -1154,93 +1273,58 @@
 
         // Load stock data
         function loadStock(symbol) {
-            // Show loading
-            document.getElementById('emptyState').style.display = 'none';
+            document.getElementById('welcomeSection').style.display = 'none';
             document.getElementById('dcfContent').style.display = 'none';
             document.getElementById('loadingState').style.display = 'block';
 
-            // Simulate API call delay
             setTimeout(() => {
-                // Get stock data from mock-data.js
                 currentStock = getStockData(symbol);
-
                 if (currentStock) {
-                    // Update UI with stock data
                     document.getElementById('stockLogo').textContent = currentStock.symbol.charAt(0);
                     document.getElementById('stockName').textContent = currentStock.name;
                     document.getElementById('stockSymbol').textContent = currentStock.symbol;
-                    document.getElementById('stockPrice').textContent = `$${currentStock.currentPrice.toFixed(2)}`;
+                    document.getElementById('stockPrice').textContent = `$${currentStock.price.toFixed(2)}`;
+                    
+                    document.getElementById('currentValue').value = currentStock[selectedMetric];
+                    document.getElementById('sharesOutstanding').value = currentStock.shares;
 
-                    // Populate inputs with data
-                    document.getElementById('currentFCF').value = currentStock.freeCashFlow;
-                    document.getElementById('growthRate').value = currentStock.growthRate;
-                    document.getElementById('terminalGrowth').value = currentStock.terminalGrowth;
-                    document.getElementById('discountRate').value = currentStock.discountRate;
-                    document.getElementById('sharesOutstanding').value = currentStock.sharesOutstanding;
-                    document.getElementById('netDebt').value = currentStock.netDebt;
-
-                    // Show DCF content
                     document.getElementById('loadingState').style.display = 'none';
                     document.getElementById('dcfContent').style.display = 'grid';
-
-                    // Auto-calculate
+                    
                     calculateDCF();
                 }
             }, 800);
         }
 
-        // DCF Calculation
+        // DCF Calculation (Discord Bot Style)
         function calculateDCF() {
-            const currentFCF = parseFloat(document.getElementById('currentFCF').value);
-            const growthRate = parseFloat(document.getElementById('growthRate').value) / 100;
-            const terminalGrowth = parseFloat(document.getElementById('terminalGrowth').value) / 100;
+            const currentValue = parseFloat(document.getElementById('currentValue').value);
+            const growth = parseFloat(document.getElementById('growthRate').value) / 100;
+            const exitMultiple = parseFloat(document.getElementById('exitMultiple').value);
             const discountRate = parseFloat(document.getElementById('discountRate').value) / 100;
-            const sharesOutstanding = parseFloat(document.getElementById('sharesOutstanding').value);
-            const netDebt = parseFloat(document.getElementById('netDebt').value);
+            const shares = parseFloat(document.getElementById('sharesOutstanding').value);
 
-            // Project FCF for 5 years
-            let projections = [];
-            let totalPVFCF = 0;
-
-            for (let year = 1; year <= 5; year++) {
-                const fcf = currentFCF * Math.pow(1 + growthRate, year);
-                const pv = fcf / Math.pow(1 + discountRate, year);
-                totalPVFCF += pv;
-                projections.push({
-                    year,
-                    fcf: fcf.toFixed(0),
-                    pv: pv.toFixed(0)
-                });
-            }
-
-            // Terminal Value
-            const year5FCF = currentFCF * Math.pow(1 + growthRate, 5);
-            const terminalValue = (year5FCF * (1 + terminalGrowth)) / (discountRate - terminalGrowth);
-            const pvTerminalValue = terminalValue / Math.pow(1 + discountRate, 5);
-
-            // Enterprise Value
-            const enterpriseValue = totalPVFCF + pvTerminalValue;
-
-            // Equity Value
-            const equityValue = enterpriseValue - netDebt;
-
-            // Intrinsic Value per Share
-            const intrinsicValue = equityValue / sharesOutstanding;
-
-            // Upside/Downside
-            const upside = ((intrinsicValue - currentStock.currentPrice) / currentStock.currentPrice) * 100;
+            // Year 5 Value
+            const futureValue = currentValue * Math.pow(1 + growth, 5);
+            
+            // Future Price (Year 5)
+            const futurePrice = (futureValue * exitMultiple) / shares;
+            
+            // Fair Value Today (Discounted)
+            const fairValue = futurePrice / Math.pow(1 + discountRate, 5);
+            
+            // CAGR
+            const cagr = (Math.pow(futurePrice / currentStock.price, 1/5) - 1) * 100;
+            
+            // Upside
+            const upside = ((fairValue - currentStock.price) / currentStock.price) * 100;
 
             // Update UI
-            document.getElementById('intrinsicValue').textContent = `$${intrinsicValue.toFixed(2)}`;
+            document.getElementById('fairValue').textContent = `$${fairValue.toFixed(2)}`;
+            document.getElementById('futurePrice').textContent = `$${futurePrice.toFixed(2)}`;
+            document.getElementById('cagrValue').textContent = `${cagr.toFixed(2)}%`;
             document.getElementById('upsideValue').textContent = `${upside > 0 ? '+' : ''}${upside.toFixed(1)}%`;
-            document.getElementById('upsideLabel').textContent = upside > 0 ? 'Potentiel haussier:' : 'Potentiel baissier:';
-
-            document.getElementById('pvFCF').textContent = `$${(totalPVFCF / 1000).toFixed(1)}B`;
-            document.getElementById('terminalValue').textContent = `$${(pvTerminalValue / 1000).toFixed(1)}B`;
-            document.getElementById('enterpriseValue').textContent = `$${(enterpriseValue / 1000).toFixed(1)}B`;
-            document.getElementById('netDebtDisplay').textContent = `$${(netDebt / 1000).toFixed(1)}B`;
-            document.getElementById('equityValue').textContent = `$${(equityValue / 1000).toFixed(1)}B`;
-            document.getElementById('sharesDisplay').textContent = `${sharesOutstanding.toFixed(0)}M`;
+            document.getElementById('upsideLabel').textContent = upside > 0 ? '🚀 Potentiel haussier:' : '⚠️ Surévalué:';
 
             // Update result card color
             const resultCard = document.querySelector('.result-card');
@@ -1250,60 +1334,52 @@
                 resultCard.style.background = 'linear-gradient(135deg, #EF4444, #DC2626)';
             }
 
-            // Populate projections table
+            // Update hypotheses
+            document.getElementById('metricUsed').textContent = metricLabels[selectedMetric].name;
+            document.getElementById('growthUsed').textContent = `${(growth * 100).toFixed(1)}%`;
+            document.getElementById('multipleUsed').textContent = `${exitMultiple.toFixed(1)}x`;
+            document.getElementById('discountUsed').textContent = `${(discountRate * 100).toFixed(1)}%`;
+
+            // Projections table
+            let projections = [];
+            for (let year = 1; year <= 5; year++) {
+                const val = currentValue * Math.pow(1 + growth, year);
+                const pv = val / Math.pow(1 + discountRate, year);
+                projections.push({ year, val: val.toFixed(0), pv: pv.toFixed(0) });
+            }
+
             const tbody = document.getElementById('projectionsTableBody');
             tbody.innerHTML = projections.map(p => `
                 <tr>
                     <td>Année ${p.year}</td>
-                    <td>$${Number(p.fcf).toLocaleString()}M</td>
+                    <td>$${Number(p.val).toLocaleString()}M</td>
                     <td>$${Number(p.pv).toLocaleString()}M</td>
                 </tr>
             `).join('');
 
-            // Sensitivity Analysis
-            calculateSensitivity(currentFCF, growthRate, terminalGrowth, discountRate, sharesOutstanding, netDebt);
+            // Sensitivity
+            const calcFairValue = (g, m) => {
+                const fv = currentValue * Math.pow(1 + g, 5);
+                const fp = (fv * m) / shares;
+                return fp / Math.pow(1 + discountRate, 5);
+            };
+
+            document.getElementById('growthPlus1').textContent = `$${calcFairValue(growth + 0.01, exitMultiple).toFixed(2)}`;
+            document.getElementById('growthMinus1').textContent = `$${calcFairValue(growth - 0.01, exitMultiple).toFixed(2)}`;
+            document.getElementById('multiplePlus2').textContent = `$${calcFairValue(growth, exitMultiple + 2).toFixed(2)}`;
+            document.getElementById('multipleMinus2').textContent = `$${calcFairValue(growth, exitMultiple - 2).toFixed(2)}`;
         }
 
-        function calculateSensitivity(fcf, growth, termGrowth, discount, shares, debt) {
-            // Helper function to calculate intrinsic value
-            function calcValue(fcf, growth, termGrowth, discount, shares, debt) {
-                let totalPV = 0;
-                for (let year = 1; year <= 5; year++) {
-                    const yearFCF = fcf * Math.pow(1 + growth, year);
-                    totalPV += yearFCF / Math.pow(1 + discount, year);
-                }
-                const year5FCF = fcf * Math.pow(1 + growth, 5);
-                const termVal = (year5FCF * (1 + termGrowth)) / (discount - termGrowth);
-                const pvTermVal = termVal / Math.pow(1 + discount, 5);
-                const ev = totalPV + pvTermVal;
-                const equity = ev - debt;
-                return equity / shares;
-            }
-
-            // Calculate variations
-            const waccPlus1 = calcValue(fcf, growth, termGrowth, discount + 0.01, shares, debt);
-            const waccMinus1 = calcValue(fcf, growth, termGrowth, discount - 0.01, shares, debt);
-            const growthPlus1 = calcValue(fcf, growth + 0.01, termGrowth, discount, shares, debt);
-            const growthMinus1 = calcValue(fcf, growth - 0.01, termGrowth, discount, shares, debt);
-
-            document.getElementById('waccPlus1').textContent = `$${waccPlus1.toFixed(2)}`;
-            document.getElementById('waccMinus1').textContent = `$${waccMinus1.toFixed(2)}`;
-            document.getElementById('growthPlus1').textContent = `$${growthPlus1.toFixed(2)}`;
-            document.getElementById('growthMinus1').textContent = `$${growthMinus1.toFixed(2)}`;
-        }
-
-        // Calculate button
+        // Buttons
         document.getElementById('calculateBtn').addEventListener('click', calculateDCF);
-
-        // Reset button
+        
         document.getElementById('resetBtn').addEventListener('click', () => {
             if (currentStock) {
-                document.getElementById('currentFCF').value = currentStock.freeCashFlow;
-                document.getElementById('growthRate').value = currentStock.growthRate;
-                document.getElementById('terminalGrowth').value = currentStock.terminalGrowth;
-                document.getElementById('discountRate').value = currentStock.discountRate;
-                document.getElementById('sharesOutstanding').value = currentStock.sharesOutstanding;
-                document.getElementById('netDebt').value = currentStock.netDebt;
+                document.getElementById('currentValue').value = currentStock[selectedMetric];
+                document.getElementById('growthRate').value = 12;
+                document.getElementById('exitMultiple').value = 25;
+                document.getElementById('discountRate').value = 10;
+                document.getElementById('sharesOutstanding').value = currentStock.shares;
                 calculateDCF();
             }
         });
@@ -1315,4 +1391,3 @@
     </script>
 </body>
 </html>
-
