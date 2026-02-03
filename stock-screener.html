@@ -1,1 +1,529 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Screener - StockMaster</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-orange: #FF7A00;
+            --bg-main: #F9FAFB;
+            --bg-topbar: #FFFFFF;
+            --text-primary: #111827;
+            --text-secondary: #6B7280;
+            --border-color: #E5E7EB;
+            --hover-bg: #F3F4F6;
+            --shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+            --success-color: #10B981;
+            --danger-color: #EF4444;
+        }
+        [data-theme="dark"] {
+            --bg-main: #0F172A;
+            --bg-topbar: #1E293B;
+            --text-primary: #F1F5F9;
+            --text-secondary: #94A3B8;
+            --border-color: #334155;
+            --hover-bg: #334155;
+            --shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+            --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            transition: background-color 0.3s ease;
+        }
+        .app-container { display: flex; flex-direction: column; height: 100vh; }
+        
+        /* TOPBAR */
+        .topbar {
+            background-color: var(--bg-topbar);
+            border-bottom: 1px solid var(--border-color);
+            padding: 0 30px;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .topbar-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 800;
+            font-size: 1.4rem;
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+        .topbar-logo img { height: 45px; width: auto; }
+        .topbar-nav { display: flex; gap: 10px; flex: 1; justify-content: center; }
+        .nav-btn {
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 2px solid var(--border-color);
+            background: var(--bg-topbar);
+            color: var(--text-secondary);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .nav-btn:hover {
+            background-color: var(--hover-bg);
+            color: var(--text-primary);
+            transform: translateY(-2px);
+        }
+        .nav-btn.active {
+            background-color: var(--primary-orange);
+            color: white;
+            border-color: var(--primary-orange);
+        }
+        .nav-btn svg { width: 18px; height: 18px; }
+        .topbar-actions { display: flex; align-items: center; gap: 15px; }
+        .theme-toggle {
+            background-color: var(--hover-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 10px 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .theme-toggle svg { width: 20px; height: 20px; color: var(--text-primary); }
+        .user-menu { position: relative; }
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-orange), #ff9f40);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .dropdown-menu {
+            position: absolute;
+            top: 55px;
+            right: 0;
+            background: var(--bg-topbar);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            box-shadow: var(--shadow-lg);
+            min-width: 220px;
+            opacity: 0;
+            visibility: hidden;
+            z-index: 1000;
+        }
+        .dropdown-menu.active { opacity: 1; visibility: visible; }
+        .dropdown-item {
+            padding: 14px 20px;
+            cursor: pointer;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .dropdown-item:hover { background-color: var(--hover-bg); }
+        .dropdown-item:last-child { color: #ef4444; border-top: 1px solid var(--border-color); }
+        .dropdown-item svg { width: 18px; height: 18px; }
+        
+        /* MAIN CONTENT */
+        .main-content { flex: 1; padding: 30px; overflow-y: auto; }
+        
+        /* WELCOME SECTION */
+        .welcome-section {
+            max-width: 1000px;
+            margin: 0 auto;
+            text-align: center;
+            padding: 60px 20px;
+        }
+        .welcome-icon {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 30px;
+            background: linear-gradient(135deg, var(--primary-orange), #ff9f40);
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 15px 40px rgba(255, 122, 0, 0.25);
+        }
+        .welcome-icon svg { width: 60px; height: 60px; color: white; }
+        .welcome-section h2 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, var(--text-primary) 0%, var(--primary-orange) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .welcome-section p {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            margin-bottom: 50px;
+            line-height: 1.6;
+        }
+        
+        /* FILTER PRESETS */
+        .filter-presets {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-top: 40px;
+        }
+        .preset-card {
+            background: var(--bg-topbar);
+            border: 2px solid var(--border-color);
+            border-radius: 16px;
+            padding: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+        }
+        .preset-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary-orange);
+            box-shadow: var(--shadow-lg);
+        }
+        .preset-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, rgba(255, 122, 0, 0.1), rgba(255, 122, 0, 0.2));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .preset-icon svg { width: 26px; height: 26px; color: var(--primary-orange); }
+        .preset-card h3 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--text-primary);
+        }
+        .preset-card p {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 16px;
+        }
+        .preset-tags {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .tag {
+            padding: 4px 12px;
+            background: var(--hover-bg);
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+        
+        /* ACTION BUTTON */
+        .cta-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 16px 32px;
+            background: linear-gradient(135deg, var(--primary-orange), #ff9f40);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 122, 0, 0.3);
+            margin-top: 20px;
+        }
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 122, 0, 0.4);
+        }
+        
+        /* RESPONSIVE */
+        @media (max-width: 968px) {
+            .topbar-nav { display: none; }
+            .welcome-section h2 { font-size: 2rem; }
+            .filter-presets { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <header class="topbar">
+            <a href="webapp.html" class="topbar-logo">
+                <img src="logo.png" alt="Logo">
+                StockMaster
+            </a>
+            <nav class="topbar-nav">
+                <a href="webapp.html" class="nav-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                    </svg>
+                    Home
+                </a>
+                <a href="watchlist.html" class="nav-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+                    </svg>
+                    Watchlist
+                </a>
+                <a href="stock-screener.html" class="nav-btn active">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                    Stock Screener
+                </a>
+                <a href="valorisation-analysis.html" class="nav-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                    </svg>
+                    Valorisation Analysis
+                </a>
+                <a href="dcf-calculator.html" class="nav-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                    </svg>
+                    DCF Calculator
+                </a>
+            </nav>
+            <div class="topbar-actions">
+                <button class="theme-toggle" id="themeToggle">
+                    <svg id="sunIcon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg>
+                    <svg id="moonIcon" style="display:none;" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                    </svg>
+                </button>
+                <div class="user-menu">
+                    <div class="user-avatar" id="userAvatar">U</div>
+                    <div class="dropdown-menu" id="dropdownMenu">
+                        <a href="settings.html" class="dropdown-item">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            </svg>
+                            Settings
+                        </a>
+                        <a href="billings-plans.html" class="dropdown-item">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                            </svg>
+                            Billings & Plans
+                        </a>
+                        <div class="dropdown-item" id="signOutBtn">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                            </svg>
+                            Sign Out
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="welcome-section">
+                <div class="welcome-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                </div>
+                <h2>Screener d'Actions Professionnel</h2>
+                <p>Filtrez des milliers d'actions selon vos critères précis. Trouvez les meilleures opportunités d'investissement en quelques clics.</p>
+
+                <button class="cta-button" id="customScreenBtn">
+                    🎯 Créer un Screener Personnalisé
+                </button>
+
+                <div class="filter-presets">
+                    <div class="preset-card" data-preset="value">
+                        <div class="preset-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                        <h3>💎 Value Stocks</h3>
+                        <p>Actions sous-évaluées avec fort potentiel de rebond. Idéal pour l'investissement long terme.</p>
+                        <div class="preset-tags">
+                            <span class="tag">P/E < 15</span>
+                            <span class="tag">P/B < 2</span>
+                            <span class="tag">Div > 3%</span>
+                        </div>
+                    </div>
+
+                    <div class="preset-card" data-preset="growth">
+                        <div class="preset-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                            </svg>
+                        </div>
+                        <h3>🚀 Growth Stocks</h3>
+                        <p>Entreprises à forte croissance avec momentum haussier. Pour les investisseurs agressifs.</p>
+                        <div class="preset-tags">
+                            <span class="tag">Rev +20%</span>
+                            <span class="tag">EPS +25%</span>
+                            <span class="tag">ROE > 15%</span>
+                        </div>
+                    </div>
+
+                    <div class="preset-card" data-preset="dividend">
+                        <div class="preset-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+                            </svg>
+                        </div>
+                        <h3>💰 Dividend Kings</h3>
+                        <p>Actions à dividendes élevés et stables. Parfait pour générer des revenus passifs.</p>
+                        <div class="preset-tags">
+                            <span class="tag">Div > 4%</span>
+                            <span class="tag">Payout < 60%</span>
+                            <span class="tag">5y+ hist</span>
+                        </div>
+                    </div>
+
+                    <div class="preset-card" data-preset="quality">
+                        <div class="preset-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+                            </svg>
+                        </div>
+                        <h3>⭐ Quality Stocks</h3>
+                        <p>Entreprises de qualité avec bilan solide et marges élevées. Le meilleur des deux mondes.</p>
+                        <div class="preset-tags">
+                            <span class="tag">ROE > 20%</span>
+                            <span class="tag">D/E < 0.5</span>
+                            <span class="tag">Margin > 15%</span>
+                        </div>
+                    </div>
+
+                    <div class="preset-card" data-preset="momentum">
+                        <div class="preset-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                            </svg>
+                        </div>
+                        <h3>⚡ Momentum Play</h3>
+                        <p>Actions avec forte dynamique technique. Pour le trading court/moyen terme.</p>
+                        <div class="preset-tags">
+                            <span class="tag">RSI 50-70</span>
+                            <span class="tag">+SMA 50</span>
+                            <span class="tag">Vol +20%</span>
+                        </div>
+                    </div>
+
+                    <div class="preset-card" data-preset="smallcap">
+                        <div class="preset-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                            </svg>
+                        </div>
+                        <h3>🌟 Small Cap Gems</h3>
+                        <p>Petites capitalisations avec fort potentiel. Risque élevé, récompense élevée.</p>
+                        <div class="preset-tags">
+                            <span class="tag">Cap < 2B</span>
+                            <span class="tag">Rev +30%</span>
+                            <span class="tag">Volume OK</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyD4dkPbO1C-bZiSokalUnwNqOTpeAyrOU0",
+            authDomain: "stockmaster-30835.firebaseapp.com",
+            projectId: "stockmaster-30835",
+            storageBucket: "stockmaster-30835.firebasestorage.app",
+            messagingSenderId: "506097874613",
+            appId: "1:506097874613:web:0d15d2bd1575a55c8ab0fc",
+            measurementId: "G-2PG7Q471TR"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        onAuthStateChanged(auth, (user) => {
+            if (!user) {
+                window.location.href = "login.html";
+            } else {
+                document.querySelector('.user-avatar').textContent = user.email.charAt(0).toUpperCase();
+            }
+        });
+
+        const userAvatar = document.getElementById('userAvatar');
+        const dropdownMenu = document.getElementById('dropdownMenu');
+        userAvatar.addEventListener('click', (e) => {
+            e.stopPropagation();
+            dropdownMenu.classList.toggle('active');
+        });
+        document.addEventListener('click', (e) => {
+            if (!userAvatar.contains(e.target) && !dropdownMenu.contains(e.target)) {
+                dropdownMenu.classList.remove('active');
+            }
+        });
+
+        document.getElementById('signOutBtn').addEventListener('click', async () => {
+            await signOut(auth);
+            window.location.href = "index.html";
+        });
+
+        const themeToggle = document.getElementById('themeToggle');
+        const sunIcon = document.getElementById('sunIcon');
+        const moonIcon = document.getElementById('moonIcon');
+        const html = document.documentElement;
+        const currentTheme = localStorage.getItem('theme') || 'light';
+        html.setAttribute('data-theme', currentTheme);
+        if (currentTheme === 'dark') {
+            sunIcon.style.display = 'none';
+            moonIcon.style.display = 'block';
+        }
+        themeToggle.addEventListener('click', () => {
+            const newTheme = html.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            if (newTheme === 'dark') {
+                sunIcon.style.display = 'none';
+                moonIcon.style.display = 'block';
+            } else {
+                sunIcon.style.display = 'block';
+                moonIcon.style.display = 'none';
+            }
+        });
+
+        // Preset cards click handlers (TODO: Implement screener logic)
+        document.querySelectorAll('.preset-card').forEach(card => {
+            card.addEventListener('click', () => {
+                const preset = card.dataset.preset;
+                console.log(`Preset selected: ${preset}`);
+                alert(`Screener "${preset}" sera bientôt disponible !`);
+            });
+        });
+
+        document.getElementById('customScreenBtn').addEventListener('click', () => {
+            alert('Interface de screener personnalisé en développement !');
+        });
+    </script>
+</body>
+</html>
 
