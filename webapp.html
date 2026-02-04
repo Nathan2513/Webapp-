@@ -3,69 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StockMaster - Dashboard</title>
+    <title>Home - StockMaster</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            /* COULEURS LIGHT MODE */
             --primary-orange: #FF7A00;
+            --bg-main: #0a0e1a;
+            --bg-card: #151923;
+            --text-primary: #F1F5F9;
+            --text-secondary: #94A3B8;
+            --border-color: #1e293b;
+            --hover-bg: #1e293b;
+            --success-color: #10B981;
+        }
+        [data-theme="light"] {
             --bg-main: #F9FAFB;
-            --bg-topbar: #FFFFFF;
+            --bg-card: #FFFFFF;
             --text-primary: #111827;
             --text-secondary: #6B7280;
             --border-color: #E5E7EB;
             --hover-bg: #F3F4F6;
-            --shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-            --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
         }
-
-        [data-theme="dark"] {
-            /* COULEURS DARK MODE */
-            --bg-main: #0F172A;
-            --bg-topbar: #1E293B;
-            --text-primary: #F1F5F9;
-            --text-secondary: #94A3B8;
-            --border-color: #334155;
-            --hover-bg: #334155;
-            --shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-            --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
         body {
             font-family: 'Inter', sans-serif;
             background-color: var(--bg-main);
             color: var(--text-primary);
             overflow-x: hidden;
-            transition: background-color 0.3s ease;
         }
-
-        /* ============= STRUCTURE PRINCIPALE ============= */
-        .app-container {
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-        }
-
-        /* ============= TOPBAR (BARRE SUPÉRIEURE) ============= */
+        
+        .app-container { display: flex; flex-direction: column; min-height: 100vh; }
+        
+        /* TOPBAR */
         .topbar {
-            background-color: var(--bg-topbar);
+            background-color: var(--bg-card);
             border-bottom: 1px solid var(--border-color);
             padding: 0 30px;
-            transition: background-color 0.3s ease;
             height: 70px;
             display: flex;
             align-items: center;
             justify-content: space-between;
         }
-
-        /* LOGO À GAUCHE */
         .topbar-logo {
             display: flex;
             align-items: center;
@@ -73,23 +54,10 @@
             font-weight: 800;
             font-size: 1.4rem;
             color: var(--text-primary);
+            text-decoration: none;
         }
-
-        .topbar-logo img {
-            height: 45px;
-            width: auto;
-            border-radius: 50%;
-        }
-
-        /* MENU NAVIGATION AU CENTRE */
-        .topbar-nav {
-            display: flex;
-            gap: 10px;
-            flex: 1;
-            justify-content: center;
-            align-items: center;
-        }
-
+        .topbar-logo img { height: 45px; width: auto; }
+        .topbar-nav { display: flex; gap: 10px; flex: 1; justify-content: center; }
         .nav-btn {
             padding: 10px 20px;
             border-radius: 10px;
@@ -98,48 +66,25 @@
             cursor: pointer;
             transition: all 0.2s ease;
             border: 2px solid var(--border-color);
-            background: var(--bg-topbar);
+            background: var(--bg-card);
             color: var(--text-secondary);
             text-decoration: none;
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
         }
-
         .nav-btn:hover {
             background-color: var(--hover-bg);
             color: var(--text-primary);
-            border-color: var(--text-secondary);
             transform: translateY(-2px);
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
-
         .nav-btn.active {
             background-color: var(--primary-orange);
             color: white;
             border-color: var(--primary-orange);
-            box-shadow: 0 4px 10px rgba(255, 122, 0, 0.3);
         }
-
-        .nav-btn.active:hover {
-            background-color: #e06b00;
-            border-color: #e06b00;
-        }
-
-        .nav-btn svg {
-            width: 18px;
-            height: 18px;
-        }
-
-        /* ACTIONS À DROITE */
-        .topbar-actions {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        /* THEME TOGGLE BUTTON */
+        .nav-btn svg { width: 18px; height: 18px; }
+        .topbar-actions { display: flex; align-items: center; gap: 15px; }
         .theme-toggle {
             background-color: var(--hover-bg);
             border: 1px solid var(--border-color);
@@ -149,25 +94,9 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.2s ease;
         }
-
-        .theme-toggle:hover {
-            background-color: var(--border-color);
-            transform: scale(1.05);
-        }
-
-        .theme-toggle svg {
-            width: 20px;
-            height: 20px;
-            color: var(--text-primary);
-        }
-
-        /* USER AVATAR AVEC DROPDOWN */
-        .user-menu {
-            position: relative;
-        }
-
+        .theme-toggle svg { width: 20px; height: 20px; color: var(--text-primary); }
+        .user-menu { position: relative; }
         .user-avatar {
             width: 40px;
             height: 40px;
@@ -179,153 +108,282 @@
             color: white;
             font-weight: 700;
             cursor: pointer;
-            transition: transform 0.2s ease;
-            border: 2px solid transparent;
         }
-
-        .user-avatar:hover {
-            transform: scale(1.1);
-            border-color: var(--primary-orange);
-        }
-
-        /* DROPDOWN MENU */
         .dropdown-menu {
             position: absolute;
             top: 55px;
             right: 0;
-            background: var(--bg-topbar);
+            background: var(--bg-card);
             border: 1px solid var(--border-color);
             border-radius: 12px;
-            box-shadow: var(--shadow-lg);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
             min-width: 220px;
             opacity: 0;
             visibility: hidden;
-            transform: translateY(-10px);
-            transition: all 0.3s ease;
             z-index: 1000;
         }
-
-        .dropdown-menu.active {
-            opacity: 1;
-            visibility: visible;
-            transform: translateY(0);
-        }
-
+        .dropdown-menu.active { opacity: 1; visibility: visible; }
         .dropdown-item {
             padding: 14px 20px;
             cursor: pointer;
-            transition: background-color 0.2s ease;
             color: var(--text-primary);
-            text-decoration: none;
             display: flex;
             align-items: center;
             gap: 12px;
-            font-size: 0.95rem;
-            font-weight: 500;
         }
-
-        .dropdown-item:first-child {
-            border-radius: 12px 12px 0 0;
-        }
-
-        .dropdown-item:last-child {
-            border-radius: 0 0 12px 12px;
-            border-top: 1px solid var(--border-color);
-            color: #ef4444;
-        }
-
-        .dropdown-item:hover {
-            background-color: var(--hover-bg);
-        }
-
-        .dropdown-item svg {
-            width: 18px;
-            height: 18px;
-        }
-
-        /* ============= MAIN CONTENT AREA ============= */
+        .dropdown-item:hover { background-color: var(--hover-bg); }
+        .dropdown-item:last-child { color: #ef4444; border-top: 1px solid var(--border-color); }
+        .dropdown-item svg { width: 18px; height: 18px; }
+        
+        /* MAIN CONTENT */
         .main-content {
             flex: 1;
-            padding: 30px;
-            overflow-y: auto;
+            padding: 40px 30px;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
         }
-
-        .content-header {
-            margin-bottom: 30px;
+        
+        /* HERO SECTION */
+        .hero-section {
+            text-align: center;
+            margin-bottom: 60px;
         }
-
-        .content-header h1 {
-            font-size: 2rem;
+        .hero-section h1 {
+            font-size: 3.5rem;
             font-weight: 800;
-            margin-bottom: 8px;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, var(--text-primary) 0%, var(--primary-orange) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
-
-        .content-header p {
+        .hero-section p {
+            font-size: 1.3rem;
             color: var(--text-secondary);
-            font-size: 1rem;
+            margin-bottom: 40px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
         }
-
-        /* PLACEHOLDER POUR LE CONTENU */
-        .placeholder-message {
-            background-color: var(--bg-topbar);
-            border: 2px dashed var(--border-color);
-            border-radius: 16px;
-            padding: 60px;
+        
+        /* SEARCH BLOCK */
+        .search-block {
+            max-width: 800px;
+            margin: 0 auto 80px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 50px rgba(255, 122, 0, 0.1);
+        }
+        .search-block h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--text-primary);
+            text-align: center;
+        }
+        .search-block p {
             text-align: center;
             color: var(--text-secondary);
+            margin-bottom: 30px;
+            font-size: 1rem;
         }
-
-        .placeholder-message h2 {
+        .search-wrapper {
+            position: relative;
+        }
+        .search-input {
+            width: 100%;
+            padding: 20px 60px 20px 60px;
+            border: 2px solid var(--border-color);
+            border-radius: 16px;
+            font-size: 1.1rem;
+            background-color: var(--bg-main);
             color: var(--text-primary);
-            margin-bottom: 10px;
+            transition: all 0.3s ease;
+        }
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary-orange);
+            box-shadow: 0 0 0 4px rgba(255, 122, 0, 0.1);
+        }
+        .search-icon {
+            position: absolute;
+            left: 24px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+        }
+        .search-icon svg {
+            width: 24px;
+            height: 24px;
+        }
+        .search-results {
+            position: absolute;
+            top: calc(100% + 12px);
+            left: 0;
+            right: 0;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+            max-height: 350px;
+            overflow-y: auto;
+            z-index: 100;
+            display: none;
+        }
+        .search-results.active {
+            display: block;
+        }
+        .search-result-item {
+            padding: 16px 24px;
+            cursor: pointer;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background-color 0.2s;
+        }
+        .search-result-item:last-child {
+            border-bottom: none;
+        }
+        .search-result-item:hover {
+            background-color: var(--hover-bg);
+        }
+        .result-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .result-symbol {
+            font-weight: 700;
+            font-size: 1.05rem;
+            color: var(--text-primary);
+        }
+        .result-name {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+        .result-price {
+            font-weight: 700;
+            color: var(--text-primary);
+            font-size: 1.05rem;
+        }
+        
+        /* FEATURE BLOCKS */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+        .feature-block {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 40px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: block;
+        }
+        .feature-block:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 50px rgba(255, 122, 0, 0.15);
+            border-color: var(--primary-orange);
+        }
+        .feature-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, var(--primary-orange), #ff9f40);
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 24px;
+            box-shadow: 0 10px 30px rgba(255, 122, 0, 0.3);
+        }
+        .feature-icon svg {
+            width: 36px;
+            height: 36px;
+            color: white;
+        }
+        .feature-block h3 {
             font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: var(--text-primary);
         }
-
-        /* ============= RESPONSIVE ============= */
+        .feature-block p {
+            color: var(--text-secondary);
+            line-height: 1.7;
+            font-size: 1rem;
+            margin-bottom: 20px;
+        }
+        .feature-tags {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .tag {
+            padding: 6px 14px;
+            background: var(--hover-bg);
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+        .feature-arrow {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--primary-orange);
+            font-weight: 600;
+            margin-top: 20px;
+            font-size: 0.95rem;
+        }
+        .feature-arrow svg {
+            width: 18px;
+            height: 18px;
+            transition: transform 0.3s;
+        }
+        .feature-block:hover .feature-arrow svg {
+            transform: translateX(5px);
+        }
+        
+        /* RESPONSIVE */
         @media (max-width: 1200px) {
-            .topbar-nav {
-                gap: 6px;
+            .features-grid {
+                grid-template-columns: 1fr;
+                max-width: 600px;
+                margin-left: auto;
+                margin-right: auto;
             }
-            
-            .nav-btn {
-                padding: 8px 14px;
-                font-size: 0.85rem;
-            }
-        }
-
-        @media (max-width: 968px) {
             .topbar-nav {
                 display: none;
             }
-
-            .topbar {
-                padding: 0 15px;
-            }
-
-            .main-content {
-                padding: 20px;
-            }
         }
-
-        @media (max-width: 640px) {
-            .theme-toggle {
-                display: none;
+        @media (max-width: 768px) {
+            .hero-section h1 {
+                font-size: 2.5rem;
+            }
+            .hero-section p {
+                font-size: 1.1rem;
+            }
+            .search-block {
+                padding: 30px 20px;
             }
         }
     </style>
 </head>
 <body>
-
     <div class="app-container">
-        <!-- ========== TOPBAR (BARRE SUPÉRIEURE) ========== -->
         <header class="topbar">
-            <!-- LOGO À GAUCHE -->
-            <div class="topbar-logo">
+            <a href="webapp.html" class="topbar-logo">
                 <img src="logo.png" alt="Logo">
                 StockMaster
-            </div>
-
-            <!-- NAVIGATION AU CENTRE (5 BOUTONS) -->
+            </a>
             <nav class="topbar-nav">
                 <a href="webapp.html" class="nav-btn active">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -358,10 +416,7 @@
                     DCF Calculator
                 </a>
             </nav>
-
-            <!-- ACTIONS À DROITE -->
             <div class="topbar-actions">
-                <!-- THEME TOGGLE BUTTON -->
                 <button class="theme-toggle" id="themeToggle">
                     <svg id="sunIcon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
@@ -370,14 +425,8 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
                     </svg>
                 </button>
-
-                <!-- USER MENU AVEC DROPDOWN -->
                 <div class="user-menu">
-                    <div class="user-avatar" id="userAvatar" title="User Profile">
-                        U
-                    </div>
-                    
-                    <!-- DROPDOWN MENU -->
+                    <div class="user-avatar" id="userAvatar">U</div>
                     <div class="dropdown-menu" id="dropdownMenu">
                         <a href="settings.html" class="dropdown-item">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -403,26 +452,111 @@
             </div>
         </header>
 
-        <!-- ========== MAIN CONTENT ========== -->
         <main class="main-content">
-            <div class="content-header">
-                <h1>Welcome Back</h1>
-                <p>Here's what's happening with your portfolio today.</p>
+            <!-- HERO SECTION -->
+            <div class="hero-section">
+                <h1>Analyse Better, Invest Better.</h1>
+                <p>Accédez aux outils d'analyse professionnels pour évaluer n'importe quelle action en quelques secondes.</p>
             </div>
 
-            <div class="placeholder-message">
-                <h2>🚀 Your content goes here</h2>
-                <p>Add your charts, tables, and analytics in this section.</p>
+            <!-- SEARCH BLOCK -->
+            <div class="search-block">
+                <h2>🔍 Rechercher une Action</h2>
+                <p>Commencez par rechercher un ticker pour accéder aux analyses</p>
+                <div class="search-wrapper">
+                    <div class="search-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                    </div>
+                    <input 
+                        type="text" 
+                        class="search-input" 
+                        id="stockSearch" 
+                        placeholder="Tapez un ticker (AAPL, NVDA, MSFT...)"
+                    >
+                    <div class="search-results" id="searchResults"></div>
+                </div>
+            </div>
+
+            <!-- FEATURE BLOCKS -->
+            <div class="features-grid">
+                <!-- STOCK SCREENER -->
+                <a href="stock-screener.html" class="feature-block">
+                    <div class="feature-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                    </div>
+                    <h3>📊 Stock Screener</h3>
+                    <p>Filtrez des milliers d'actions selon vos critères. Trouvez les meilleures opportunités avec nos presets prédéfinis.</p>
+                    <div class="feature-tags">
+                        <span class="tag">Value</span>
+                        <span class="tag">Growth</span>
+                        <span class="tag">Dividend</span>
+                        <span class="tag">Quality</span>
+                    </div>
+                    <div class="feature-arrow">
+                        Explorer le Screener
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </div>
+                </a>
+
+                <!-- VALORISATION ANALYSIS -->
+                <a href="valorisation-analysis.html" class="feature-block">
+                    <div class="feature-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                        </svg>
+                    </div>
+                    <h3>💰 Analyse de Valorisation</h3>
+                    <p>Comparez les multiples actuels avec l'historique 5 ans. Détectez les actions sous-évaluées instantanément.</p>
+                    <div class="feature-tags">
+                        <span class="tag">P/E</span>
+                        <span class="tag">P/FCF</span>
+                        <span class="tag">P/OCF</span>
+                        <span class="tag">P/OI</span>
+                    </div>
+                    <div class="feature-arrow">
+                        Analyser une Action
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </div>
+                </a>
+
+                <!-- DCF CALCULATOR -->
+                <a href="dcf-calculator.html" class="feature-block">
+                    <div class="feature-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                        </svg>
+                    </div>
+                    <h3>📈 DCF Calculator</h3>
+                    <p>Calculez la valeur intrinsèque avec le modèle DCF. Projections sur 5 ans avec graphiques interactifs.</p>
+                    <div class="feature-tags">
+                        <span class="tag">Fair Value</span>
+                        <span class="tag">CAGR</span>
+                        <span class="tag">Projections</span>
+                        <span class="tag">Charts</span>
+                    </div>
+                    <div class="feature-arrow">
+                        Calculer le DCF
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </div>
+                </a>
             </div>
         </main>
     </div>
 
-    <!-- ========== FIREBASE & SCRIPTS ========== -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-        // Configuration Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyD4dkPbO1C-bZiSokalUnwNqOTpeAyrOU0",
             authDomain: "stockmaster-30835.firebaseapp.com",
@@ -436,76 +570,109 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
 
-        // Vérifier si l'utilisateur est connecté
         onAuthStateChanged(auth, (user) => {
             if (!user) {
-                // Si pas connecté, rediriger vers login
                 window.location.href = "login.html";
             } else {
-                console.log("✅ Utilisateur connecté:", user.email);
-                // Afficher l'initiale de l'email dans l'avatar
-                const avatar = document.querySelector('.user-avatar');
-                avatar.textContent = user.email.charAt(0).toUpperCase();
+                document.querySelector('.user-avatar').textContent = user.email.charAt(0).toUpperCase();
             }
         });
 
-        // ========== DROPDOWN MENU ==========
         const userAvatar = document.getElementById('userAvatar');
         const dropdownMenu = document.getElementById('dropdownMenu');
-
-        // Toggle dropdown au clic sur l'avatar
         userAvatar.addEventListener('click', (e) => {
             e.stopPropagation();
             dropdownMenu.classList.toggle('active');
         });
-
-        // Fermer le dropdown si on clique ailleurs
         document.addEventListener('click', (e) => {
             if (!userAvatar.contains(e.target) && !dropdownMenu.contains(e.target)) {
                 dropdownMenu.classList.remove('active');
             }
         });
 
-        // ========== SIGN OUT ==========
         document.getElementById('signOutBtn').addEventListener('click', async () => {
-            try {
-                await signOut(auth);
-                window.location.href = "index.html";
-            } catch (error) {
-                console.error("Erreur de déconnexion:", error);
-            }
+            await signOut(auth);
+            window.location.href = "index.html";
         });
 
-        // ========== THEME TOGGLE (DARK/LIGHT MODE) ==========
+        // Theme toggle (start with dark)
         const themeToggle = document.getElementById('themeToggle');
         const sunIcon = document.getElementById('sunIcon');
         const moonIcon = document.getElementById('moonIcon');
         const html = document.documentElement;
-
-        // Charger le thème sauvegardé
-        const currentTheme = localStorage.getItem('theme') || 'light';
-        html.setAttribute('data-theme', currentTheme);
         
-        if (currentTheme === 'dark') {
-            sunIcon.style.display = 'none';
-            moonIcon.style.display = 'block';
-        }
-
-        // Toggle du thème
+        html.setAttribute('data-theme', 'dark');
+        sunIcon.style.display = 'block';
+        moonIcon.style.display = 'none';
+        
         themeToggle.addEventListener('click', () => {
-            const currentTheme = html.getAttribute('data-theme');
-            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-            
+            const newTheme = html.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
             html.setAttribute('data-theme', newTheme);
-            localStorage.setItem('theme', newTheme);
-            
-            // Switch des icônes
             if (newTheme === 'dark') {
-                sunIcon.style.display = 'none';
-                moonIcon.style.display = 'block';
-            } else {
                 sunIcon.style.display = 'block';
                 moonIcon.style.display = 'none';
+            } else {
+                sunIcon.style.display = 'none';
+                moonIcon.style.display = 'block';
+            }
+        });
+
+        // Search functionality
+        const mockStocks = [
+            { symbol: 'AAPL', name: 'Apple Inc.', price: 178.50 },
+            { symbol: 'MSFT', name: 'Microsoft Corporation', price: 375.20 },
+            { symbol: 'NVDA', name: 'NVIDIA Corporation', price: 180.34 },
+            { symbol: 'GOOGL', name: 'Alphabet Inc.', price: 140.25 },
+            { symbol: 'TSLA', name: 'Tesla Inc.', price: 245.00 },
+            { symbol: 'AMZN', name: 'Amazon.com Inc.', price: 175.80 },
+            { symbol: 'META', name: 'Meta Platforms Inc.', price: 485.30 },
+            { symbol: 'BRK.B', name: 'Berkshire Hathaway Inc.', price: 420.15 }
+        ];
+
+        const stockSearch = document.getElementById('stockSearch');
+        const searchResults = document.getElementById('searchResults');
+
+        stockSearch.addEventListener('input', (e) => {
+            const query = e.target.value.trim().toLowerCase();
+            
+            if (query.length < 1) {
+                searchResults.classList.remove('active');
+                return;
+            }
+
+            const results = mockStocks.filter(s => 
+                s.symbol.toLowerCase().includes(query) || 
+                s.name.toLowerCase().includes(query)
+            );
+            
+            if (results.length > 0) {
+                searchResults.innerHTML = results.map(stock => `
+                    <div class="search-result-item" data-symbol="${stock.symbol}">
+                        <div class="result-info">
+                            <div class="result-symbol">${stock.symbol}</div>
+                            <div class="result-name">${stock.name}</div>
+                        </div>
+                        <div class="result-price">$${stock.price.toFixed(2)}</div>
+                    </div>
+                `).join('');
+                searchResults.classList.add('active');
+                
+                document.querySelectorAll('.search-result-item').forEach(item => {
+                    item.addEventListener('click', () => {
+                        const symbol = item.dataset.symbol;
+                        // Redirect to DCF calculator with the stock
+                        window.location.href = `dcf-calculator.html?ticker=${symbol}`;
+                    });
+                });
+            } else {
+                searchResults.innerHTML = '<div class="search-result-item"><div class="result-info"><div class="result-symbol">Aucun résultat</div></div></div>';
+                searchResults.classList.add('active');
+            }
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!stockSearch.contains(e.target) && !searchResults.contains(e.target)) {
+                searchResults.classList.remove('active');
             }
         });
     </script>
