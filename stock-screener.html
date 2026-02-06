@@ -241,6 +241,63 @@
             font-size: 0.9rem;
         }
         
+        /* FILTER PRESETS */
+        .filter-presets {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-top: 40px;
+        }
+        .preset-card {
+            background: var(--bg-topbar);
+            border: 2px solid var(--border-color);
+            border-radius: 16px;
+            padding: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+        }
+        .preset-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary-orange);
+            box-shadow: var(--shadow-lg);
+        }
+        .preset-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, rgba(255, 122, 0, 0.1), rgba(255, 122, 0, 0.2));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .preset-icon svg { width: 26px; height: 26px; color: var(--primary-orange); }
+        .preset-card h3 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--text-primary);
+        }
+        .preset-card p {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 16px;
+        }
+        .preset-tags {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .tag {
+            padding: 4px 12px;
+            background: var(--hover-bg);
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+        
         /* STOCK DETAILS PAGE */
         .stock-details {
             display: none;
@@ -561,6 +618,98 @@
                             placeholder="Recherchez une action à analyser (ex: AAPL, MSFT, AJG...)"
                         >
                         <div class="search-results" id="searchResults"></div>
+                    </div>
+                </div>
+
+                <div class="filter-presets">
+                    <div class="preset-card" data-preset="value">
+                        <div class="preset-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                        <h3>💎 Value Stocks</h3>
+                        <p>Actions sous-évaluées avec fort potentiel de rebond. Idéal pour l'investissement long terme.</p>
+                        <div class="preset-tags">
+                            <span class="tag">P/E < 15</span>
+                            <span class="tag">P/B < 2</span>
+                            <span class="tag">Div > 3%</span>
+                        </div>
+                    </div>
+
+                    <div class="preset-card" data-preset="growth">
+                        <div class="preset-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                            </svg>
+                        </div>
+                        <h3>🚀 Growth Stocks</h3>
+                        <p>Entreprises à forte croissance avec momentum haussier. Pour les investisseurs agressifs.</p>
+                        <div class="preset-tags">
+                            <span class="tag">Rev +20%</span>
+                            <span class="tag">EPS +25%</span>
+                            <span class="tag">ROE > 15%</span>
+                        </div>
+                    </div>
+
+                    <div class="preset-card" data-preset="dividend">
+                        <div class="preset-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+                            </svg>
+                        </div>
+                        <h3>💰 Dividend Kings</h3>
+                        <p>Actions à dividendes élevés et stables. Parfait pour générer des revenus passifs.</p>
+                        <div class="preset-tags">
+                            <span class="tag">Div > 4%</span>
+                            <span class="tag">Payout < 60%</span>
+                            <span class="tag">5y+ hist</span>
+                        </div>
+                    </div>
+
+                    <div class="preset-card" data-preset="quality">
+                        <div class="preset-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+                            </svg>
+                        </div>
+                        <h3>⭐ Quality Stocks</h3>
+                        <p>Entreprises de qualité avec bilan solide et marges élevées. Le meilleur des deux mondes.</p>
+                        <div class="preset-tags">
+                            <span class="tag">ROE > 20%</span>
+                            <span class="tag">D/E < 0.5</span>
+                            <span class="tag">Margin > 15%</span>
+                        </div>
+                    </div>
+
+                    <div class="preset-card" data-preset="momentum">
+                        <div class="preset-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                            </svg>
+                        </div>
+                        <h3>⚡ Momentum Play</h3>
+                        <p>Actions avec forte dynamique technique. Pour le trading court/moyen terme.</p>
+                        <div class="preset-tags">
+                            <span class="tag">RSI 50-70</span>
+                            <span class="tag">+SMA 50</span>
+                            <span class="tag">Vol +20%</span>
+                        </div>
+                    </div>
+
+                    <div class="preset-card" data-preset="smallcap">
+                        <div class="preset-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                            </svg>
+                        </div>
+                        <h3>🌟 Small Cap Gems</h3>
+                        <p>Petites capitalisations avec fort potentiel. Risque élevé, récompense élevée.</p>
+                        <div class="preset-tags">
+                            <span class="tag">Cap < 2B</span>
+                            <span class="tag">Rev +30%</span>
+                            <span class="tag">Volume OK</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -983,6 +1132,15 @@
                 // Add active class to clicked
                 btn.classList.add('active');
                 document.getElementById(`${tabName}-tab`).classList.add('active');
+            });
+        });
+
+        // Preset cards click handlers
+        document.querySelectorAll('.preset-card').forEach(card => {
+            card.addEventListener('click', () => {
+                const preset = card.dataset.preset;
+                console.log(`Preset selected: ${preset}`);
+                alert(`Screener "${preset}" sera bientôt disponible !`);
             });
         });
     </script>
