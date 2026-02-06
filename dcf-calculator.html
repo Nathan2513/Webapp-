@@ -157,30 +157,37 @@
         
         /* SEARCH BAR */
         .search-container {
-            max-width: 500px;
-            margin-bottom: 30px;
+            max-width: 700px;
+            margin: 0 auto;
         }
         .search-wrapper { position: relative; }
         .search-input {
             width: 100%;
-            padding: 14px 20px 14px 50px;
+            padding: 18px 60px 18px 60px;
             border: 2px solid var(--border-color);
-            border-radius: 12px;
-            font-size: 1rem;
+            border-radius: 16px;
+            font-size: 1.1rem;
             background-color: var(--bg-card);
             color: var(--text-primary);
             transition: all 0.3s ease;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         }
         .search-input:focus {
             outline: none;
             border-color: var(--primary-orange);
+            box-shadow: 0 0 0 4px rgba(255, 122, 0, 0.1);
+            transform: translateY(-2px);
         }
         .search-icon {
             position: absolute;
-            left: 18px;
+            left: 22px;
             top: 50%;
             transform: translateY(-50%);
             color: var(--text-secondary);
+        }
+        .search-icon svg {
+            width: 24px;
+            height: 24px;
         }
         .search-results {
             position: absolute;
@@ -455,24 +462,43 @@
             height: 300px;
         }
         
-        /* EMPTY STATE */
-        .empty-state {
+        /* WELCOME SECTION */
+        .welcome-section {
+            max-width: 900px;
+            margin: 0 auto;
             text-align: center;
             padding: 80px 20px;
         }
-        .empty-state svg {
-            width: 80px;
-            height: 80px;
-            margin-bottom: 20px;
-            opacity: 0.3;
+        .welcome-icon {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 30px;
+            background: linear-gradient(135deg, var(--primary-orange), #ff9f40);
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 15px 40px rgba(255, 122, 0, 0.25);
         }
-        .empty-state h3 {
+        .welcome-icon svg {
+            width: 60px;
+            height: 60px;
+            color: white;
+        }
+        .welcome-section h2 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, var(--text-primary) 0%, var(--primary-orange) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .welcome-section p {
             font-size: 1.25rem;
-            color: var(--text-primary);
-            margin-bottom: 8px;
-        }
-        .empty-state p {
             color: var(--text-secondary);
+            margin-bottom: 50px;
+            line-height: 1.6;
         }
         
         /* RESPONSIVE */
@@ -562,33 +588,33 @@
         </header>
 
         <main class="main-content">
-            <div class="page-header">
-                <h1>Estimate Stock Fair Value (DCF Calculator)</h1>
-            </div>
-
-            <!-- SEARCH BAR -->
-            <div class="search-container">
-                <div class="search-wrapper">
-                    <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            <!-- WELCOME STATE -->
+            <div class="welcome-section" id="welcomeSection">
+                <div class="welcome-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
                     </svg>
-                    <input 
-                        type="text" 
-                        class="search-input" 
-                        id="stockSearch" 
-                        placeholder="Search global stocks & ETFs..."
-                    >
-                    <div class="search-results" id="searchResults"></div>
                 </div>
-            </div>
-
-            <!-- EMPTY STATE -->
-            <div class="empty-state" id="emptyState">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                </svg>
-                <h3>Start by searching for a stock</h3>
-                <p>Use the search bar above to find a company and calculate its DCF valuation</p>
+                <h2>Calculateur DCF Professionnel</h2>
+                <p>Analysez la valeur intrinsèque de n'importe quelle action en quelques clics. Choisissez votre métrique, définissez vos hypothèses et obtenez une valorisation détaillée.</p>
+                
+                <!-- SEARCH BAR -->
+                <div class="search-container">
+                    <div class="search-wrapper">
+                        <div class="search-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                        </div>
+                        <input 
+                            type="text" 
+                            class="search-input" 
+                            id="stockSearch" 
+                            placeholder="Recherchez une action (ex: AAPL, MSFT, TSLA...)"
+                        >
+                        <div class="search-results" id="searchResults"></div>
+                    </div>
+                </div>
             </div>
 
             <!-- DCF CONTENT -->
@@ -942,7 +968,7 @@
         });
 
         function loadStock(symbol) {
-            document.getElementById('emptyState').style.display = 'none';
+            document.getElementById('welcomeSection').style.display = 'none';
             document.getElementById('dcfContent').style.display = 'grid';
             
             // Update stock info
