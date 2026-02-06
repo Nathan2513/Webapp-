@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Test API FMP</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; }
+        .success { color: green; font-weight: bold; }
+        .error { color: red; font-weight: bold; }
+        pre { background: #f4f4f4; padding: 10px; border-radius: 5px; }
+    </style>
+</head>
+<body>
+
+    <h1>Test de connexion API (FMP)</h1>
+    <p>Statut : <span id="status">En attente...</span></p>
+    
+    <div id="result"></div>
+
+    <script>
+        // Ta clé API
+        const API_KEY = "d7RCA2PXp0NvD0PEnNwQA11pjkYeHwDV";
+        const SYMBOL = "AAPL"; // On teste avec Apple
+
+        async function testConnection() {
+            const statusSpan = document.getElementById('status');
+            const resultDiv = document.getElementById('result');
+
+            try {
+                console.log("Tentative de connexion...");
+                
+                // On appelle l'URL de FMP pour avoir le profil de l'entreprise
+                const response = await fetch(`https://financialmodelingprep.com/api/v3/profile/${SYMBOL}?apikey=${API_KEY}`);
+                
+                if (!response.ok) {
+                    throw new Error(`Erreur HTTP : ${response.status}`);
+                }
+
+                const data = await response.json();
+
+                // Vérification si l'API renvoie une erreur (clé invalide, quota dépassé...)
+                if (data["Error Message"]) {
+                    throw new Error(data["Error Message"]);
+                }
+
+                // Si on arrive ici, c'est que ça marche !
+                statusSpan.innerText = "SUCCÈS ! Connexion réussie.";
+                statusSpan.className = "success";
+                
+                // On affiche les données reçues
+                resultDiv.innerHTML = `
+                    <h3>Données reçues pour ${data[0].companyName} :</h3>
+                    <ul>
+                        <li><strong>Prix actuel :</strong> ${data[0].price} $</li>
+                        <li><strong>Secteur :</strong> ${data[0].sector}</li>
+                        <li><strong>Description :</strong> ${data[0].description.substring(0, 100)}...</li>
+                    </ul>
+                    <p>Voici le JSON brut reçu :</p>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                `;
+
+            } catch (error) {
+                statusSpan.innerText = "ÉCHEC : " + error.message;
+                statusSpan.className = "error";
+                console.error(error);
+            }
+        }
+
+        // On lance le test dès que la page s'ouvre
+        testConnection();
+    </script>
+
+</body>
+</html>
