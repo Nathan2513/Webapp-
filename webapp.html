@@ -391,12 +391,6 @@
                     </svg>
                     Home
                 </a>
-                <a href="watchlist.html" class="nav-btn">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
-                    </svg>
-                    Watchlist
-                </a>
                 <a href="stock-screener.html" class="nav-btn">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -556,6 +550,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import fmpAPI from './fmp-api.js';
 
         const firebaseConfig = {
             apiKey: "AIzaSyD4dkPbO1C-bZiSokalUnwNqOTpeAyrOU0",
@@ -617,57 +612,86 @@
             }
         });
 
-        // Search functionality
-        const mockStocks = [
-            { symbol: 'AAPL', name: 'Apple Inc.', price: 178.50 },
-            { symbol: 'MSFT', name: 'Microsoft Corporation', price: 375.20 },
-            { symbol: 'NVDA', name: 'NVIDIA Corporation', price: 180.34 },
-            { symbol: 'GOOGL', name: 'Alphabet Inc.', price: 140.25 },
-            { symbol: 'TSLA', name: 'Tesla Inc.', price: 245.00 },
-            { symbol: 'AMZN', name: 'Amazon.com Inc.', price: 175.80 },
-            { symbol: 'META', name: 'Meta Platforms Inc.', price: 485.30 },
-            { symbol: 'BRK.B', name: 'Berkshire Hathaway Inc.', price: 420.15 }
-        ];
-
+        // Search functionality with FMP API
         const stockSearch = document.getElementById('stockSearch');
         const searchResults = document.getElementById('searchResults');
+        let searchTimeout;
 
-        stockSearch.addEventListener('input', (e) => {
-            const query = e.target.value.trim().toLowerCase();
+        stockSearch.addEventListener('input', async (e) => {
+            const query = e.target.value.trim().toUpperCase();
             
             if (query.length < 1) {
                 searchResults.classList.remove('active');
                 return;
             }
 
-            const results = mockStocks.filter(s => 
-                s.symbol.toLowerCase().includes(query) || 
-                s.name.toLowerCase().includes(query)
-            );
-            
-            if (results.length > 0) {
-                searchResults.innerHTML = results.map(stock => `
-                    <div class="search-result-item" data-symbol="${stock.symbol}">
-                        <div class="result-info">
-                            <div class="result-symbol">${stock.symbol}</div>
-                            <div class="result-name">${stock.name}</div>
-                        </div>
-                        <div class="result-price">$${stock.price.toFixed(2)}</div>
-                    </div>
-                `).join('');
-                searchResults.classList.add('active');
-                
-                document.querySelectorAll('.search-result-item').forEach(item => {
-                    item.addEventListener('click', () => {
-                        const symbol = item.dataset.symbol;
-                        // Redirect to DCF calculator with the stock
-                        window.location.href = `dcf-calculator.html?ticker=${symbol}`;
-                    });
-                });
-            } else {
-                searchResults.innerHTML = '<div class="search-result-item"><div class="result-info"><div class="result-symbol">Aucun résultat</div></div></div>';
-                searchResults.classList.add('active');
-            }
+            // Debounce search
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(async () => {
+                try {
+                    searchResults.innerHTML = '<div class="search-result-item"><div class="result-info"><div class="result-symbol">Recherche...</div></div></div>';
+                    searchResults.classList.add('active');
+
+                    const results = await fmpAPI.searchStocks(query);
+                    
+                    if (results && results.length > 0) {
+                        // Filter to only stocks (not funds, ETFs unless specifically wanted)
+                        const stocks = results.filter(r => 
+                            r.exchangeShortName === 'NASDAQ' || 
+                            r.exchangeShortName === 'NYSE' ||
+                            r.exchangeShortName === 'AMEX'
+                        ).slice(0, 8);
+
+                        if (stocks.length > 0) {
+                            // Get quotes for the results
+                            const symbols = stocks.map(s => s.symbol).join(',');
+                            const quotes = await fmpAPI.makeRequest(`/quote/${symbols}`);
+                            
+                            const quotesMap = {};
+                            if (quotes) {
+                                quotes.forEach(q => {
+                                    quotesMap[q.symbol] = q;
+                                });
+                            }
+
+                            searchResults.innerHTML = stocks.map(stock => {
+                                const quote = quotesMap[stock.symbol];
+                                const price = quote ? quote.price : 'N/A';
+                                const priceDisplay = typeof price === 'number' ? `$${price.toFixed(2)}` : price;
+                                
+                                return `
+                                    <div class="search-result-item" data-symbol="${stock.symbol}">
+                                        <div class="result-info">
+                                            <div class="result-symbol">${stock.symbol}</div>
+                                            <div class="result-name">${stock.name}</div>
+                                        </div>
+                                        <div class="result-price">${priceDisplay}</div>
+                                    </div>
+                                `;
+                            }).join('');
+                            
+                            searchResults.classList.add('active');
+                            
+                            document.querySelectorAll('.search-result-item').forEach(item => {
+                                item.addEventListener('click', () => {
+                                    const symbol = item.dataset.symbol;
+                                    window.location.href = `dcf-calculator.html?ticker=${symbol}`;
+                                });
+                            });
+                        } else {
+                            searchResults.innerHTML = '<div class="search-result-item"><div class="result-info"><div class="result-symbol">Aucune action trouvée</div></div></div>';
+                            searchResults.classList.add('active');
+                        }
+                    } else {
+                        searchResults.innerHTML = '<div class="search-result-item"><div class="result-info"><div class="result-symbol">Aucun résultat</div></div></div>';
+                        searchResults.classList.add('active');
+                    }
+                } catch (error) {
+                    console.error('Search error:', error);
+                    searchResults.innerHTML = '<div class="search-result-item"><div class="result-info"><div class="result-symbol">Erreur de recherche</div></div></div>';
+                    searchResults.classList.add('active');
+                }
+            }, 300); // 300ms debounce
         });
 
         document.addEventListener('click', (e) => {
@@ -675,6 +699,9 @@
                 searchResults.classList.remove('active');
             }
         });
+
+        // Log cache stats on load
+        console.log('📊 FMP Cache Stats:', fmpAPI.getCacheStats());
     </script>
 </body>
 </html>
