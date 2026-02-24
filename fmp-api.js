@@ -3,7 +3,7 @@
 
 class FMPCache {
     constructor() {
-        this.API_KEY = 'd7RCA2PXp0NvD0PEnNwQA11pjkYeHwDV';
+        this.API_KEY = 'RxYKGPJbSbTuLhW15Bdrop3OxJ2tiXDf';
         this.BASE_URL = 'https://financialmodelingprep.com/api/v3';
         this.CACHE_DURATION = 3600000; // 1 hour in milliseconds
         this.requestQueue = [];
