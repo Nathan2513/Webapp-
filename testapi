@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagnostic FMP API</title>
+    <style>
+        body {
+            font-family: monospace;
+            background-color: #1e1e1e;
+            color: #d4d4d4;
+            padding: 30px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        h1 { color: #569cd6; }
+        .controls { margin-bottom: 20px; display: flex; gap: 10px; }
+        button {
+            padding: 10px 20px;
+            font-family: monospace;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+            border-radius: 4px;
+        }
+        #testBtn { background-color: #4CAF50; color: white; }
+        #clearBtn { background-color: #d16969; color: white; }
+        .status-box {
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            font-weight: bold;
+            background-color: #252526;
+            border: 1px solid #404040;
+        }
+        .success { color: #4CAF50; }
+        .error { color: #f44336; }
+        .warning { color: #ffeb3b; }
+        pre {
+            background-color: #000000;
+            padding: 20px;
+            border-radius: 4px;
+            overflow-x: auto;
+            border: 1px solid #404040;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>🔍 Testeur FMP API</h1>
+    
+    <div class="controls">
+        <button id="testBtn">Tester l'API (Profil AAPL)</button>
+        <button id="clearBtn">Vider le cache LocalStorage</button>
+    </div>
+
+    <div id="status" class="status-box">En attente d'action...</div>
+    
+    <h3>Résultat brut (JSON) :</h3>
+    <pre id="result">Les données apparaîtront ici...</pre>
+
+    <script type="module">
+        // Import de ton fichier (il DOIT être dans le même dossier)
+        import fmpAPI from './fmp-api.js';
+
+        const testBtn = document.getElementById('testBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const statusDiv = document.getElementById('status');
+        const resultDiv = document.getElementById('result');
+
+        // Bouton pour vider ton cache intelligent
+        clearBtn.addEventListener('click', () => {
+            try {
+                fmpAPI.clearAllCache();
+                statusDiv.innerHTML = '<span class="success">✅ Cache vidé avec succès ! (Tu peux relancer un test propre)</span>';
+                resultDiv.textContent = '';
+            } catch (err) {
+                statusDiv.innerHTML = `<span class="error">❌ Erreur lors du vidage du cache : ${err.message}</span>`;
+            }
+        });
+
+        // Bouton de test principal
+        testBtn.addEventListener('click', async () => {
+            statusDiv.innerHTML = '<span class="warning">⏳ Appel à l\'API en cours... patiente...</span>';
+            resultDiv.textContent = 'Chargement...';
+
+            try {
+                // On utilise ta méthode getCompanyProfile pour tester
+                const data = await fmpAPI.getCompanyProfile('AAPL');
+
+                // Analyse de la réponse
+                if (!data) {
+                    statusDiv.innerHTML = '<span class="error">❌ L\'API a renvoyé "null" ou "undefined". Regarde la console (F12).</span>';
+                    resultDiv.textContent = 'Aucune donnée retournée.';
+                } 
+                else if (data['Error Message']) {
+                    // FMP renvoie souvent un JSON avec "Error Message" si la clé est invalide ou le quota dépassé
+                    statusDiv.innerHTML = '<span class="error">❌ L\'API a répondu avec une erreur FMP (Clé invalide ou quota ?).</span>';
+                    resultDiv.textContent = JSON.stringify(data, null, 2);
+                } 
+                else if (Array.isArray(data) && data.length > 0) {
+                    statusDiv.innerHTML = '<span class="success">✅ SUCCÈS TOTAL ! L\'API communique parfaitement avec ton fichier.</span>';
+                    resultDiv.textContent = JSON.stringify(data[0], null, 2);
+                } 
+                else {
+                    statusDiv.innerHTML = '<span class="warning">⚠️ L\'API a répondu, mais le format est inattendu (tableau vide ?).</span>';
+                    resultDiv.textContent = JSON.stringify(data, null, 2);
+                }
+
+            } catch (error) {
+                // Si ça plante complètement (Erreur réseau, CORS, syntaxe...)
+                statusDiv.innerHTML = '<span class="error">❌ ERREUR FATALE (Réseau ou Code). Fichier introuvable ou CORS ?</span>';
+                resultDiv.textContent = `${error.name}: ${error.message}\n\nStack Trace:\n${error.stack}`;
+            }
+        });
+    </script>
+</body>
+</html>
