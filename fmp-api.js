@@ -1,8 +1,9 @@
 // FMP API Manager with Intelligent Caching
-// API Key: d7RCA2PXp0NvD0PEnNwQA11pjkYeHwDV
+// API Key updated to fix Legacy Endpoint 403 error
 
 class FMPCache {
     constructor() {
+        // Nouvelle clé API valide
         this.API_KEY = 'RxYKGPJbSbTuLhW15Bdrop3OxJ2tiXDf';
         this.BASE_URL = 'https://financialmodelingprep.com/api/v3';
         this.CACHE_DURATION = 3600000; // 1 hour in milliseconds
@@ -148,9 +149,22 @@ class FMPCache {
 
     // ===== STOCK DATA METHODS =====
 
-    // Get company profile
+    // Get company profile (MODIFIÉ: Utilise /quote au lieu de /profile pour contourner l'erreur Legacy)
     async getCompanyProfile(symbol) {
-        return this.makeRequest(`/profile/${symbol}`);
+        const quote = await this.makeRequest(`/quote/${symbol}`);
+        if (quote && quote.length > 0) {
+            // On recrée une structure similaire à profile pour ne pas casser l'UI
+            return [{
+                symbol: quote[0].symbol,
+                companyName: quote[0].name,
+                price: quote[0].price,
+                mktCap: quote[0].marketCap,
+                exchange: quote[0].exchange,
+                industry: "N/A", // Secteur indisponible via quote
+                sector: "N/A"
+            }];
+        }
+        return null;
     }
 
     // Get quote (current price, change, etc.)
@@ -208,18 +222,27 @@ class FMPCache {
     // Get all data for stock screener (optimized - single batch)
     async getScreenerData(symbol) {
         const requests = [
-            { endpoint: `/profile/${symbol}`, params: {} },
+            // L'endpoint /profile/ a été retiré ici
             { endpoint: `/quote/${symbol}`, params: {} },
             { endpoint: `/ratios-ttm/${symbol}`, params: {} },
             { endpoint: `/key-metrics-ttm/${symbol}`, params: {} },
             { endpoint: `/income-statement/${symbol}`, params: { limit: 5 } }
         ];
 
-        const [profile, quote, ratios, metrics, income] = await this.batchRequest(requests);
+        const [quote, ratios, metrics, income] = await this.batchRequest(requests);
+        const quoteData = quote?.[0] || {};
 
         return {
-            profile: profile?.[0] || null,
-            quote: quote?.[0] || null,
+            // On recrée manuellement l'objet profile attendu par le HTML
+            profile: {
+                symbol: quoteData.symbol || symbol,
+                companyName: quoteData.name || symbol,
+                sector: "N/A",
+                industry: "N/A",
+                mktCap: quoteData.marketCap || 0,
+                lastDiv: 0
+            },
+            quote: quoteData,
             ratios: ratios?.[0] || null,
             metrics: metrics?.[0] || null,
             income: income || []
@@ -229,7 +252,7 @@ class FMPCache {
     // Get all data for DCF calculator (optimized - single batch)
     async getDCFData(symbol) {
         const requests = [
-            { endpoint: `/profile/${symbol}`, params: {} },
+            // L'endpoint /profile/ a été retiré ici
             { endpoint: `/quote/${symbol}`, params: {} },
             { endpoint: `/cash-flow-statement/${symbol}`, params: { limit: 10 } },
             { endpoint: `/income-statement/${symbol}`, params: { limit: 10 } },
@@ -237,11 +260,16 @@ class FMPCache {
             { endpoint: `/discounted-cash-flow/${symbol}`, params: {} }
         ];
 
-        const [profile, quote, cashFlow, income, growth, dcf] = await this.batchRequest(requests);
+        const [quote, cashFlow, income, growth, dcf] = await this.batchRequest(requests);
+        const quoteData = quote?.[0] || {};
 
         return {
-            profile: profile?.[0] || null,
-            quote: quote?.[0] || null,
+            profile: {
+                symbol: quoteData.symbol || symbol,
+                companyName: quoteData.name || symbol,
+                sector: "N/A"
+            },
+            quote: quoteData,
             cashFlow: cashFlow || [],
             income: income || [],
             growth: growth || [],
@@ -252,7 +280,7 @@ class FMPCache {
     // Get all data for valorisation analysis (optimized - single batch)
     async getValorisationData(symbol) {
         const requests = [
-            { endpoint: `/profile/${symbol}`, params: {} },
+            // L'endpoint /profile/ a été retiré ici
             { endpoint: `/quote/${symbol}`, params: {} },
             { endpoint: `/ratios-ttm/${symbol}`, params: {} },
             { endpoint: `/key-metrics-ttm/${symbol}`, params: {} },
@@ -261,11 +289,16 @@ class FMPCache {
             { endpoint: `/cash-flow-statement/${symbol}`, params: { limit: 5 } }
         ];
 
-        const [profile, quote, ratiosTTM, metricsTTM, historicalRatios, income, cashFlow] = await this.batchRequest(requests);
+        const [quote, ratiosTTM, metricsTTM, historicalRatios, income, cashFlow] = await this.batchRequest(requests);
+        const quoteData = quote?.[0] || {};
 
         return {
-            profile: profile?.[0] || null,
-            quote: quote?.[0] || null,
+            profile: {
+                symbol: quoteData.symbol || symbol,
+                companyName: quoteData.name || symbol,
+                sector: "N/A"
+            },
+            quote: quoteData,
             ratiosTTM: ratiosTTM?.[0] || null,
             metricsTTM: metricsTTM?.[0] || null,
             historicalRatios: historicalRatios || [],
