@@ -143,73 +143,40 @@
         
         /* SCREENER HOME */
         .screener-home {
-            max-width: 1200px;
+            max-width: 860px;
             margin: 0 auto;
-            padding: 48px 24px 60px;
+            padding: 60px 24px 40px;
         }
-
-        /* HERO ROW */
-        .screener-hero {
+        .screener-logo-row {
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            gap: 40px;
-            margin-bottom: 48px;
+            gap: 14px;
+            justify-content: center;
+            margin-bottom: 28px;
         }
-        .screener-hero-left { flex: 1; }
-        .screener-eyebrow {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(255,122,0,0.1);
-            border: 1px solid rgba(255,122,0,0.25);
-            color: var(--primary-orange);
-            font-size: 0.78rem;
-            font-weight: 700;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-            padding: 5px 14px;
-            border-radius: 100px;
-            margin-bottom: 20px;
+        .screener-logo-icon {
+            width: 46px; height: 46px;
+            background: linear-gradient(135deg, var(--primary-orange), #ff9f40);
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
         }
-        .screener-hero h1 {
-            font-size: 2.8rem;
+        .screener-logo-icon svg { width: 26px; height: 26px; color: #fff; }
+        .screener-logo-text {
+            font-size: 1.5rem;
             font-weight: 800;
-            line-height: 1.15;
             color: var(--text-primary);
-            margin-bottom: 16px;
             letter-spacing: -0.03em;
         }
-        .screener-hero h1 span { color: var(--primary-orange); }
-        .screener-hero-desc {
-            font-size: 1.05rem;
+        .screener-logo-text span { color: var(--primary-orange); }
+        .screener-tagline {
+            text-align: center;
+            font-size: 0.95rem;
             color: var(--text-secondary);
-            line-height: 1.65;
-            max-width: 480px;
-            margin-bottom: 32px;
+            margin-bottom: 36px;
         }
-        .screener-stats {
-            display: flex;
-            gap: 32px;
-        }
-        .screener-stat { }
-        .screener-stat-value {
-            font-size: 1.6rem;
-            font-weight: 800;
-            color: var(--text-primary);
-            letter-spacing: -0.02em;
-        }
-        .screener-stat-label {
-            font-size: 0.8rem;
-            color: var(--text-secondary);
-            margin-top: 2px;
-        }
-        
+
         /* SEARCH BAR */
-        .search-bar-wrap {
-            position: relative;
-            max-width: 700px;
-        }
+        .search-bar-wrap { position: relative; }
         .search-bar-inner {
             display: flex;
             align-items: center;
@@ -219,17 +186,17 @@
             padding: 0 16px;
             gap: 12px;
             transition: all 0.2s;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
         }
         .search-bar-inner:focus-within {
             border-color: var(--primary-orange);
-            box-shadow: 0 0 0 3px rgba(255,122,0,0.12);
+            box-shadow: 0 0 0 3px rgba(255,122,0,0.1);
         }
         .search-bar-icon { color: var(--text-secondary); display:flex; flex-shrink:0; }
         .search-bar-icon svg { width: 20px; height: 20px; }
         .search-input {
             flex: 1;
-            padding: 15px 0;
+            padding: 16px 0;
             border: none;
             background: transparent;
             font-size: 1rem;
@@ -238,24 +205,10 @@
         }
         .search-input:focus { outline: none; }
         .search-input::placeholder { color: var(--text-secondary); }
-        .search-kbd {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            font-size: 0.75rem;
-            color: var(--text-secondary);
-            background: var(--hover-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 5px;
-            padding: 3px 8px;
-            white-space: nowrap;
-            flex-shrink: 0;
-        }
         .search-results {
             position: absolute;
             top: calc(100% + 6px);
-            left: 0;
-            right: 0;
+            left: 0; right: 0;
             background: var(--bg-topbar);
             border: 1px solid var(--border-color);
             border-radius: 12px;
@@ -277,207 +230,218 @@
         }
         .search-result-item:last-child { border-bottom: none; }
         .search-result-item:hover { background: var(--hover-bg); }
-        .result-symbol {
-            font-weight: 700;
-            color: var(--primary-orange);
-            font-size: 0.95rem;
-            min-width: 60px;
-        }
-        .result-name { color: var(--text-secondary); font-size: 0.88rem; flex:1; margin-left: 12px; }
-        .result-exchange {
-            font-size: 0.75rem;
-            color: var(--text-secondary);
-            background: var(--hover-bg);
-            padding: 2px 8px;
-            border-radius: 4px;
-        }
+        .result-symbol { font-weight: 700; color: var(--primary-orange); font-size: 0.92rem; min-width: 55px; }
+        .result-name { color: var(--text-secondary); font-size: 0.86rem; flex: 1; margin-left: 12px; }
 
-        /* SECTION LABEL */
-        .section-label {
-            font-size: 0.75rem;
-            font-weight: 700;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-            color: var(--text-secondary);
-            margin-bottom: 16px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .section-label::after {
-            content: '';
-            flex: 1;
-            height: 1px;
-            background: var(--border-color);
-        }
-
-        /* FILTER PRESETS GRID */
-        .filter-presets {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 14px;
-            margin-bottom: 48px;
-        }
-        @media (max-width: 900px) { .filter-presets { grid-template-columns: repeat(2,1fr); } }
-        @media (max-width: 580px) { .filter-presets { grid-template-columns: 1fr; } }
-
-        .preset-card {
+        /* FILTERS PANEL */
+        .filters-panel {
+            margin-top: 28px;
             background: var(--bg-topbar);
             border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 20px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            display: flex;
-            gap: 16px;
-            align-items: flex-start;
-            text-align: left;
-        }
-        .preset-card:hover {
-            border-color: var(--primary-orange);
-            background: rgba(255,122,0,0.03);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 16px rgba(255,122,0,0.1);
-        }
-        .preset-icon {
-            width: 42px;
-            height: 42px;
-            min-width: 42px;
-            background: rgba(255,122,0,0.1);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.3rem;
-        }
-        .preset-body { flex: 1; min-width: 0; }
-        .preset-card h3 {
-            font-size: 0.95rem;
-            font-weight: 700;
-            color: var(--text-primary);
-            margin-bottom: 4px;
-        }
-        .preset-card p {
-            font-size: 0.8rem;
-            color: var(--text-secondary);
-            line-height: 1.5;
-            margin-bottom: 10px;
-        }
-        .preset-tags {
-            display: flex;
-            gap: 6px;
-            flex-wrap: wrap;
-        }
-        .tag {
-            padding: 2px 8px;
-            background: var(--hover-bg);
-            border-radius: 4px;
-            font-size: 0.73rem;
-            font-weight: 600;
-            color: var(--text-secondary);
-            border: 1px solid var(--border-color);
-        }
-
-        /* POPULAR STOCKS TABLE */
-        .popular-section { margin-bottom: 48px; }
-        .popular-table-wrap {
-            background: var(--bg-topbar);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
+            border-radius: 14px;
             overflow: hidden;
         }
-        .popular-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        .popular-table th {
-            padding: 12px 16px;
-            text-align: left;
-            font-size: 0.78rem;
-            font-weight: 600;
-            color: var(--text-secondary);
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            border-bottom: 1px solid var(--border-color);
-            background: var(--hover-bg);
-        }
-        .popular-table th:not(:first-child) { text-align: right; }
-        .popular-table td {
-            padding: 13px 16px;
-            font-size: 0.88rem;
-            border-bottom: 1px solid var(--border-color);
-            color: var(--text-primary);
-        }
-        .popular-table td:not(:first-child) { text-align: right; }
-        .popular-table tr:last-child td { border-bottom: none; }
-        .popular-table tr { transition: background 0.15s; cursor: pointer; }
-        .popular-table tr:hover td { background: var(--hover-bg); }
-        .pop-symbol {
-            font-weight: 700;
-            color: var(--primary-orange);
-            font-size: 0.9rem;
-        }
-        .pop-name { color: var(--text-secondary); font-size: 0.82rem; margin-top: 1px; }
-        .pop-change-pos { color: #10b981; font-weight: 600; }
-        .pop-change-neg { color: #ef4444; font-weight: 600; }
-        .pop-mktcap { color: var(--text-secondary); }
-
-                /* FILTER PRESETS */
-        .filter-presets {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 24px;
-            margin-top: 40px;
-        }
-        .preset-card {
-            background: var(--bg-topbar);
-            border: 2px solid var(--border-color);
-            border-radius: 16px;
-            padding: 30px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-align: left;
-        }
-        .preset-card:hover {
-            transform: translateY(-5px);
-            border-color: var(--primary-orange);
-            box-shadow: var(--shadow-lg);
-        }
-        .preset-icon {
-            width: 50px;
-            height: 50px;
-            background: linear-gradient(135deg, rgba(255, 122, 0, 0.1), rgba(255, 122, 0, 0.2));
-            border-radius: 12px;
+        .filters-panel-header {
             display: flex;
             align-items: center;
-            justify-content: center;
-            margin-bottom: 20px;
+            justify-content: space-between;
+            padding: 14px 20px;
+            border-bottom: 1px solid var(--border-color);
+            background: var(--hover-bg);
         }
-        .preset-icon svg { width: 26px; height: 26px; color: var(--primary-orange); }
-        .preset-card h3 {
-            font-size: 1.3rem;
+        .filters-panel-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.88rem;
             font-weight: 700;
-            margin-bottom: 10px;
             color: var(--text-primary);
         }
-        .preset-card p {
-            color: var(--text-secondary);
-            line-height: 1.6;
-            margin-bottom: 16px;
+        .filters-panel-title svg { width: 16px; height: 16px; color: var(--primary-orange); }
+        .filters-count {
+            background: var(--primary-orange);
+            color: #fff;
+            font-size: 0.72rem;
+            font-weight: 700;
+            padding: 2px 7px;
+            border-radius: 20px;
+            display: none;
         }
-        .preset-tags {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-        .tag {
-            padding: 4px 12px;
-            background: var(--hover-bg);
-            border-radius: 6px;
+        .filters-count.visible { display: inline-block; }
+        .filters-reset-btn {
             font-size: 0.8rem;
+            color: var(--text-secondary);
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 4px 10px;
+            border-radius: 6px;
+            transition: all 0.15s;
+            display: none;
+        }
+        .filters-reset-btn:hover { background: var(--hover-bg); color: var(--text-primary); }
+        .filters-reset-btn.visible { display: block; }
+
+        .filters-body { padding: 16px 20px; }
+
+        /* FILTER ROW */
+        .filter-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+        .filter-row:last-child { margin-bottom: 0; }
+
+        /* FILTER CHIP */
+        .filter-chip {
+            display: flex;
+            align-items: center;
+            gap: 0;
+            border: 1.5px solid var(--border-color);
+            border-radius: 8px;
+            background: var(--bg-main);
+            overflow: hidden;
+            font-size: 0.82rem;
+            transition: border-color 0.15s;
+        }
+        .filter-chip:focus-within { border-color: var(--primary-orange); }
+        .filter-chip-label {
+            padding: 7px 12px;
             font-weight: 600;
             color: var(--text-secondary);
+            background: var(--hover-bg);
+            border-right: 1px solid var(--border-color);
+            white-space: nowrap;
+            font-size: 0.8rem;
         }
+        .filter-chip select,
+        .filter-chip input[type="number"] {
+            border: none;
+            background: transparent;
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 0.82rem;
+            padding: 7px 10px;
+            outline: none;
+            cursor: pointer;
+            -webkit-appearance: none;
+        }
+        .filter-chip select { padding-right: 28px; }
+        .filter-chip-select-wrap {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        .filter-chip-select-wrap::after {
+            content: '';
+            position: absolute;
+            right: 10px;
+            width: 0; height: 0;
+            border-left: 4px solid transparent;
+            border-right: 4px solid transparent;
+            border-top: 5px solid var(--text-secondary);
+            pointer-events: none;
+        }
+        .filter-chip input[type="number"] { width: 80px; }
+        .filter-chip input[type="number"]::-webkit-inner-spin-button { opacity: 0.5; }
+        .filter-chip-remove {
+            padding: 7px 10px;
+            background: none;
+            border: none;
+            border-left: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 1rem;
+            line-height: 1;
+            transition: all 0.15s;
+        }
+        .filter-chip-remove:hover { background: rgba(239,68,68,0.1); color: #ef4444; }
+
+        /* ADD FILTER BUTTON */
+        .add-filter-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 7px 14px;
+            background: none;
+            border: 1.5px dashed var(--border-color);
+            border-radius: 8px;
+            color: var(--text-secondary);
+            font-size: 0.82rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s;
+            font-family: inherit;
+        }
+        .add-filter-btn:hover {
+            border-color: var(--primary-orange);
+            color: var(--primary-orange);
+            background: rgba(255,122,0,0.05);
+        }
+        .add-filter-btn svg { width: 14px; height: 14px; }
+
+        /* FILTER DROPDOWN PICKER */
+        .filter-picker-overlay {
+            position: fixed; inset: 0; z-index: 200;
+            display: none;
+        }
+        .filter-picker-overlay.open { display: block; }
+        .filter-picker {
+            position: absolute;
+            background: var(--bg-topbar);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            box-shadow: var(--shadow-lg);
+            width: 280px;
+            max-height: 380px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            z-index: 201;
+        }
+        .filter-picker-search {
+            padding: 10px 14px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .filter-picker-search svg { width: 15px; height: 15px; color: var(--text-secondary); flex-shrink:0; }
+        .filter-picker-search input {
+            flex: 1; border: none; background: transparent;
+            font-size: 0.85rem; color: var(--text-primary);
+            font-family: inherit; outline: none;
+        }
+        .filter-picker-list { overflow-y: auto; flex: 1; }
+        .filter-picker-group-label {
+            padding: 8px 14px 4px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.07em;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+        }
+        .filter-picker-item {
+            padding: 9px 14px;
+            font-size: 0.85rem;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: background 0.12s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .filter-picker-item:hover { background: var(--hover-bg); }
+        .filter-picker-item.disabled { opacity: 0.4; pointer-events: none; }
+        .filter-picker-item-type {
+            font-size: 0.72rem;
+            color: var(--text-secondary);
+            background: var(--hover-bg);
+            padding: 2px 7px;
+            border-radius: 4px;
+        }
+
         
         /* STOCK DETAILS PAGE */
         .stock-details {
@@ -870,211 +834,76 @@
         <main class="main-content">
             <div class="screener-home" id="searchView">
 
-                <!-- HERO -->
-                <div class="screener-hero">
-                    <div class="screener-hero-left">
-                        <div class="screener-eyebrow">
-                            <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor"><circle cx="6" cy="6" r="6"/></svg>
-                            Professional Stock Screener
-                        </div>
-                        <h1>Find your next<br><span>great investment</span></h1>
-                        <p class="screener-hero-desc">Search and analyze thousands of stocks. Access detailed financial data, insight scores and key metrics — all in one place.</p>
-                        <div class="screener-stats">
-                            <div class="screener-stat">
-                                <div class="screener-stat-value">172K+</div>
-                                <div class="screener-stat-label">Stocks & ETFs</div>
-                            </div>
-                            <div class="screener-stat">
-                                <div class="screener-stat-value">6</div>
-                                <div class="screener-stat-label">Score categories</div>
-                            </div>
-                            <div class="screener-stat">
-                                <div class="screener-stat-value">Real-time</div>
-                                <div class="screener-stat-label">Market data</div>
-                            </div>
-                        </div>
+                <!-- LOGO + TAGLINE -->
+                <div class="screener-logo-row">
+                    <div class="screener-logo-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                        </svg>
                     </div>
+                    <div class="screener-logo-text">Stock<span>Master</span></div>
                 </div>
+                <div class="screener-tagline">Search and analyze any stock — financials, scores & key metrics in one place.</div>
 
                 <!-- SEARCH BAR -->
-                <div class="search-bar-wrap" style="margin-bottom:48px;">
+                <div class="search-bar-wrap">
                     <div class="search-bar-inner">
                         <div class="search-bar-icon">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                             </svg>
                         </div>
-                        <input 
-                            type="text" 
-                            class="search-input" 
-                            id="stockSearch" 
+                        <input
+                            type="text"
+                            class="search-input"
+                            id="stockSearch"
                             placeholder="Search a stock to analyze (e.g. AAPL, MSFT, NVDA...)"
                             autocomplete="off"
                         >
-                        <span class="search-kbd">/ to focus</span>
                     </div>
                     <div class="search-results" id="searchResults"></div>
                 </div>
 
-                <!-- POPULAR SCREENS -->
-                <div class="section-label">Popular Screens</div>
-                <div class="filter-presets">
-                    <div class="preset-card" data-preset="value">
-                        <div class="preset-icon">💎</div>
-                        <div class="preset-body">
-                            <h3>Value Stocks</h3>
-                            <p>Undervalued companies with strong fundamentals and recovery potential.</p>
-                            <div class="preset-tags">
-                                <span class="tag">P/E &lt; 15</span>
-                                <span class="tag">P/B &lt; 2</span>
-                                <span class="tag">Div &gt; 3%</span>
-                            </div>
+                <!-- FILTERS PANEL -->
+                <div class="filters-panel" id="filtersPanel">
+                    <div class="filters-panel-header">
+                        <div class="filters-panel-title">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-.293.707L13 13.414V19a1 1 0 01-.553.894l-4 2A1 1 0 017 21v-7.586L3.293 6.707A1 1 0 013 6V4z" />
+                            </svg>
+                            Filters
+                            <span class="filters-count" id="filtersCount">0</span>
                         </div>
+                        <button class="filters-reset-btn" id="filtersResetBtn" onclick="resetAllFilters()">Reset all</button>
                     </div>
-
-                    <div class="preset-card" data-preset="growth">
-                        <div class="preset-icon">🚀</div>
-                        <div class="preset-body">
-                            <h3>Growth Stocks</h3>
-                            <p>High-growth companies with strong revenue and earnings momentum.</p>
-                            <div class="preset-tags">
-                                <span class="tag">Rev +20%</span>
-                                <span class="tag">EPS +25%</span>
-                                <span class="tag">ROE &gt; 15%</span>
-                            </div>
+                    <div class="filters-body">
+                        <div class="filter-row" id="filterChipsRow">
+                            <!-- chips injected here by JS -->
                         </div>
-                    </div>
-
-                    <div class="preset-card" data-preset="dividend">
-                        <div class="preset-icon">💰</div>
-                        <div class="preset-body">
-                            <h3>Dividend Kings</h3>
-                            <p>High and consistent dividend payers, ideal for passive income.</p>
-                            <div class="preset-tags">
-                                <span class="tag">Yield &gt; 4%</span>
-                                <span class="tag">Payout &lt; 60%</span>
-                                <span class="tag">5yr+ history</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="preset-card" data-preset="quality">
-                        <div class="preset-icon">⭐</div>
-                        <div class="preset-body">
-                            <h3>Quality Stocks</h3>
-                            <p>Strong balance sheets, high margins, and durable competitive moats.</p>
-                            <div class="preset-tags">
-                                <span class="tag">ROE &gt; 20%</span>
-                                <span class="tag">D/E &lt; 0.5</span>
-                                <span class="tag">Margin &gt; 15%</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="preset-card" data-preset="momentum">
-                        <div class="preset-icon">⚡</div>
-                        <div class="preset-body">
-                            <h3>Momentum</h3>
-                            <p>Stocks with strong technical and fundamental upward momentum.</p>
-                            <div class="preset-tags">
-                                <span class="tag">Above SMA50</span>
-                                <span class="tag">Vol +20%</span>
-                                <span class="tag">RSI 50–70</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="preset-card" data-preset="smallcap">
-                        <div class="preset-icon">🌟</div>
-                        <div class="preset-body">
-                            <h3>Small Cap Gems</h3>
-                            <p>High-growth small caps with significant upside and manageable risk.</p>
-                            <div class="preset-tags">
-                                <span class="tag">Cap &lt; 2B</span>
-                                <span class="tag">Rev +30%</span>
-                                <span class="tag">Profitable</span>
-                            </div>
+                        <div class="filter-row">
+                            <button class="add-filter-btn" id="addFilterBtn" onclick="openFilterPicker(event)">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                                </svg>
+                                Add Filter
+                            </button>
                         </div>
                     </div>
                 </div>
 
-                <!-- POPULAR STOCKS TABLE -->
-                <div class="popular-section">
-                    <div class="section-label">Most Searched Stocks</div>
-                    <div class="popular-table-wrap">
-                        <table class="popular-table">
-                            <thead>
-                                <tr>
-                                    <th>Symbol</th>
-                                    <th>Sector</th>
-                                    <th>Market Cap</th>
-                                    <th>P/E Ratio</th>
-                                    <th>Change</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr onclick="showStockDetails('AAPL')">
-                                    <td><div class="pop-symbol">AAPL</div><div class="pop-name">Apple Inc.</div></td>
-                                    <td><span style="color:var(--text-secondary)">Technology</span></td>
-                                    <td class="pop-mktcap">3.48T</td>
-                                    <td>33.2</td>
-                                    <td class="pop-change-pos">+0.82%</td>
-                                </tr>
-                                <tr onclick="showStockDetails('MSFT')">
-                                    <td><div class="pop-symbol">MSFT</div><div class="pop-name">Microsoft Corporation</div></td>
-                                    <td><span style="color:var(--text-secondary)">Technology</span></td>
-                                    <td class="pop-mktcap">3.02T</td>
-                                    <td>37.8</td>
-                                    <td class="pop-change-neg">-0.34%</td>
-                                </tr>
-                                <tr onclick="showStockDetails('NVDA')">
-                                    <td><div class="pop-symbol">NVDA</div><div class="pop-name">NVIDIA Corporation</div></td>
-                                    <td><span style="color:var(--text-secondary)">Semiconductors</span></td>
-                                    <td class="pop-mktcap">2.74T</td>
-                                    <td>52.1</td>
-                                    <td class="pop-change-pos">+1.47%</td>
-                                </tr>
-                                <tr onclick="showStockDetails('AMZN')">
-                                    <td><div class="pop-symbol">AMZN</div><div class="pop-name">Amazon.com Inc.</div></td>
-                                    <td><span style="color:var(--text-secondary)">Consumer Cyclical</span></td>
-                                    <td class="pop-mktcap">2.21T</td>
-                                    <td>44.6</td>
-                                    <td class="pop-change-pos">+0.61%</td>
-                                </tr>
-                                <tr onclick="showStockDetails('META')">
-                                    <td><div class="pop-symbol">META</div><div class="pop-name">Meta Platforms Inc.</div></td>
-                                    <td><span style="color:var(--text-secondary)">Communication</span></td>
-                                    <td class="pop-mktcap">1.49T</td>
-                                    <td>28.3</td>
-                                    <td class="pop-change-neg">-0.21%</td>
-                                </tr>
-                                <tr onclick="showStockDetails('GOOGL')">
-                                    <td><div class="pop-symbol">GOOGL</div><div class="pop-name">Alphabet Inc.</div></td>
-                                    <td><span style="color:var(--text-secondary)">Communication</span></td>
-                                    <td class="pop-mktcap">2.08T</td>
-                                    <td>24.1</td>
-                                    <td class="pop-change-pos">+0.33%</td>
-                                </tr>
-                                <tr onclick="showStockDetails('BRK-B')">
-                                    <td><div class="pop-symbol">BRK-B</div><div class="pop-name">Berkshire Hathaway</div></td>
-                                    <td><span style="color:var(--text-secondary)">Financials</span></td>
-                                    <td class="pop-mktcap">1.07T</td>
-                                    <td>21.8</td>
-                                    <td class="pop-change-pos">+0.15%</td>
-                                </tr>
-                                <tr onclick="showStockDetails('JPM')">
-                                    <td><div class="pop-symbol">JPM</div><div class="pop-name">JPMorgan Chase & Co.</div></td>
-                                    <td><span style="color:var(--text-secondary)">Financials</span></td>
-                                    <td class="pop-mktcap">764B</td>
-                                    <td>13.4</td>
-                                    <td class="pop-change-neg">-0.44%</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                <!-- FILTER PICKER OVERLAY -->
+                <div class="filter-picker-overlay" id="filterPickerOverlay" onclick="closeFilterPicker()">
+                    <div class="filter-picker" id="filterPicker" onclick="event.stopPropagation()">
+                        <div class="filter-picker-search">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                            <input type="text" id="filterPickerSearch" placeholder="Search filters..." oninput="filterPickerSearch(this.value)" autocomplete="off">
+                        </div>
+                        <div class="filter-picker-list" id="filterPickerList"></div>
                     </div>
                 </div>
 
-            </div>
 
             <div class="stock-details" id="stockDetailsView">
                 <div class="stock-header">
@@ -2477,13 +2306,162 @@ window.scorePageGo = scorePageGo;
             });
         });
 
-        // Preset cards
-        document.querySelectorAll('.preset-card').forEach(card => {
-            card.addEventListener('click', () => {
-                const preset = card.dataset.preset;
-                alert(`Screener "${preset}" sera bientôt disponible !`);
+        // ============================================================
+        // FILTER ENGINE
+        // ============================================================
+        const FILTER_DEFINITIONS = [
+            // Valuation
+            { id: 'pe',       group: 'Valuation',    label: 'P/E Ratio',        type: 'range', unit: 'x' },
+            { id: 'pb',       group: 'Valuation',    label: 'P/B Ratio',        type: 'range', unit: 'x' },
+            { id: 'ps',       group: 'Valuation',    label: 'P/S Ratio',        type: 'range', unit: 'x' },
+            { id: 'pfcf',     group: 'Valuation',    label: 'P/FCF Ratio',      type: 'range', unit: 'x' },
+            { id: 'ev_ebitda',group: 'Valuation',    label: 'EV/EBITDA',        type: 'range', unit: 'x' },
+            // Profitability
+            { id: 'gross_m',  group: 'Profitability',label: 'Gross Margin',     type: 'min',   unit: '%' },
+            { id: 'op_m',     group: 'Profitability',label: 'Operating Margin', type: 'min',   unit: '%' },
+            { id: 'net_m',    group: 'Profitability',label: 'Net Margin',       type: 'min',   unit: '%' },
+            { id: 'fcf_m',    group: 'Profitability',label: 'FCF Margin',       type: 'min',   unit: '%' },
+            { id: 'roe',      group: 'Profitability',label: 'ROE',              type: 'min',   unit: '%' },
+            { id: 'roic',     group: 'Profitability',label: 'ROIC',             type: 'min',   unit: '%' },
+            // Growth
+            { id: 'rev_g',    group: 'Growth',       label: 'Revenue Growth',   type: 'min',   unit: '%' },
+            { id: 'eps_g',    group: 'Growth',       label: 'EPS Growth',       type: 'min',   unit: '%' },
+            { id: 'fcf_g',    group: 'Growth',       label: 'FCF Growth',       type: 'min',   unit: '%' },
+            { id: 'ocf_g',    group: 'Growth',       label: 'OCF Growth',       type: 'min',   unit: '%' },
+            // Financial Health
+            { id: 'cur_r',    group: 'Health',       label: 'Current Ratio',    type: 'min',   unit: 'x' },
+            { id: 'de',       group: 'Health',       label: 'Debt/Equity',      type: 'max',   unit: 'x' },
+            { id: 'debt_ebitda',group:'Health',      label: 'Debt/EBITDA',      type: 'max',   unit: 'x' },
+            // Dividends
+            { id: 'div_y',    group: 'Dividends',    label: 'Dividend Yield',   type: 'min',   unit: '%' },
+            { id: 'payout',   group: 'Dividends',    label: 'Payout Ratio',     type: 'max',   unit: '%' },
+            // Size
+            { id: 'mkt_cap',  group: 'Size',         label: 'Market Cap',       type: 'select', options: ['Any','> 300B','> 10B','> 2B','> 300M','< 2B','< 300M'] },
+            { id: 'sector',   group: 'Size',         label: 'Sector',           type: 'select', options: ['Any','Technology','Healthcare','Financials','Consumer Cyclical','Industrials','Energy','Utilities','Communication','Materials'] },
+        ];
+
+        let activeFilters = {}; // { id: { def, min, max, val } }
+
+        function openFilterPicker(e) {
+            const overlay = document.getElementById('filterPickerOverlay');
+            const picker  = document.getElementById('filterPicker');
+            overlay.classList.add('open');
+            document.getElementById('filterPickerSearch').value = '';
+            renderPickerList('');
+            // Position near button
+            const btn  = document.getElementById('addFilterBtn');
+            const rect = btn.getBoundingClientRect();
+            picker.style.top  = (rect.bottom + 8) + 'px';
+            picker.style.left = rect.left + 'px';
+            setTimeout(() => document.getElementById('filterPickerSearch').focus(), 50);
+        }
+
+        function closeFilterPicker() {
+            document.getElementById('filterPickerOverlay').classList.remove('open');
+        }
+
+        function filterPickerSearch(q) {
+            renderPickerList(q.toLowerCase());
+        }
+
+        function renderPickerList(q) {
+            const list = document.getElementById('filterPickerList');
+            const groups = {};
+            FILTER_DEFINITIONS.forEach(def => {
+                if (activeFilters[def.id]) return; // already added
+                if (q && !def.label.toLowerCase().includes(q) && !def.group.toLowerCase().includes(q)) return;
+                if (!groups[def.group]) groups[def.group] = [];
+                groups[def.group].push(def);
             });
-        });
+            let html = '';
+            Object.entries(groups).forEach(([group, defs]) => {
+                html += `<div class="filter-picker-group-label">${group}</div>`;
+                defs.forEach(def => {
+                    html += `<div class="filter-picker-item" onclick="addFilter('${def.id}')">
+                        <span>${def.label}</span>
+                        <span class="filter-picker-item-type">${def.type === 'select' ? 'dropdown' : def.type}</span>
+                    </div>`;
+                });
+            });
+            if (!html) html = '<div style="padding:20px;text-align:center;color:var(--text-secondary);font-size:0.85rem;">No filters found</div>';
+            list.innerHTML = html;
+        }
+
+        function addFilter(id) {
+            const def = FILTER_DEFINITIONS.find(d => d.id === id);
+            if (!def || activeFilters[id]) return;
+            activeFilters[id] = { def, min: '', max: '', val: def.options?.[0] || '' };
+            closeFilterPicker();
+            renderFilterChips();
+        }
+
+        function removeFilter(id) {
+            delete activeFilters[id];
+            renderFilterChips();
+        }
+
+        function resetAllFilters() {
+            activeFilters = {};
+            renderFilterChips();
+        }
+
+        function renderFilterChips() {
+            const row   = document.getElementById('filterChipsRow');
+            const count = Object.keys(activeFilters).length;
+
+            // Update count badge
+            const badge = document.getElementById('filtersCount');
+            const resetBtn = document.getElementById('filtersResetBtn');
+            badge.textContent = count;
+            badge.classList.toggle('visible', count > 0);
+            resetBtn.classList.toggle('visible', count > 0);
+
+            let html = '';
+            Object.entries(activeFilters).forEach(([id, state]) => {
+                const def = state.def;
+                if (def.type === 'select') {
+                    const opts = def.options.map(o => `<option value="${o}" ${state.val === o ? 'selected' : ''}>${o}</option>`).join('');
+                    html += `<div class="filter-chip">
+                        <span class="filter-chip-label">${def.label}</span>
+                        <div class="filter-chip-select-wrap">
+                            <select onchange="updateFilter('${id}','val',this.value)">${opts}</select>
+                        </div>
+                        <button class="filter-chip-remove" onclick="removeFilter('${id}')" title="Remove">×</button>
+                    </div>`;
+                } else if (def.type === 'min') {
+                    html += `<div class="filter-chip">
+                        <span class="filter-chip-label">${def.label}</span>
+                        <div style="display:flex;align-items:center;padding:0 4px;font-size:0.78rem;color:var(--text-secondary);">≥</div>
+                        <input type="number" placeholder="Min" value="${state.min}" onchange="updateFilter('${id}','min',this.value)" style="width:72px;">
+                        <span style="padding:0 6px;font-size:0.78rem;color:var(--text-secondary);">${def.unit}</span>
+                        <button class="filter-chip-remove" onclick="removeFilter('${id}')" title="Remove">×</button>
+                    </div>`;
+                } else if (def.type === 'max') {
+                    html += `<div class="filter-chip">
+                        <span class="filter-chip-label">${def.label}</span>
+                        <div style="display:flex;align-items:center;padding:0 4px;font-size:0.78rem;color:var(--text-secondary);">≤</div>
+                        <input type="number" placeholder="Max" value="${state.max}" onchange="updateFilter('${id}','max',this.value)" style="width:72px;">
+                        <span style="padding:0 6px;font-size:0.78rem;color:var(--text-secondary);">${def.unit}</span>
+                        <button class="filter-chip-remove" onclick="removeFilter('${id}')" title="Remove">×</button>
+                    </div>`;
+                } else { // range
+                    html += `<div class="filter-chip">
+                        <span class="filter-chip-label">${def.label}</span>
+                        <input type="number" placeholder="Min" value="${state.min}" onchange="updateFilter('${id}','min',this.value)" style="width:65px;">
+                        <span style="padding:0 6px;font-size:0.78rem;color:var(--text-secondary);">–</span>
+                        <input type="number" placeholder="Max" value="${state.max}" onchange="updateFilter('${id}','max',this.value)" style="width:65px;">
+                        <span style="padding:0 6px;font-size:0.78rem;color:var(--text-secondary);">${def.unit}</span>
+                        <button class="filter-chip-remove" onclick="removeFilter('${id}')" title="Remove">×</button>
+                    </div>`;
+                }
+            });
+
+            row.innerHTML = html;
+        }
+
+        function updateFilter(id, field, value) {
+            if (activeFilters[id]) activeFilters[id][field] = value;
+        }
 
         console.log('📊 FMP Cache Stats:', fmpAPI.getCacheStats());
     </script>
