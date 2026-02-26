@@ -437,65 +437,6 @@
             display: none;
         }
         .tab-content.active { display: block; }
-
-        /* NOUVEAU CSS POUR LES SOUS-ONGLETS FINANCIALS */
-        .financials-header-controls {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-            flex-wrap: wrap;
-            gap: 15px;
-        }
-        .financials-sub-nav {
-            display: flex;
-            gap: 10px;
-            overflow-x: auto;
-        }
-        .sub-tab-btn {
-            padding: 8px 16px;
-            border-radius: 8px;
-            background: transparent;
-            border: 1px solid transparent;
-            color: var(--text-secondary);
-            font-weight: 600;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-        .sub-tab-btn:hover {
-            color: var(--text-primary);
-            background: var(--hover-bg);
-        }
-        .sub-tab-btn.active {
-            color: var(--primary-orange);
-            background: rgba(255, 122, 0, 0.1);
-            border-color: rgba(255, 122, 0, 0.2);
-        }
-        
-        .period-toggle {
-            display: flex;
-            background: var(--hover-bg);
-            border-radius: 8px;
-            padding: 4px;
-            border: 1px solid var(--border-color);
-        }
-        .period-btn {
-            padding: 6px 16px;
-            background: transparent;
-            border: none;
-            border-radius: 6px;
-            color: var(--text-secondary);
-            font-weight: 600;
-            font-size: 0.85rem;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-        .period-btn.active {
-            background: var(--bg-topbar);
-            color: var(--text-primary);
-            box-shadow: var(--shadow);
-        }
         
         /* METRICS GRID */
         .metrics-grid {
@@ -524,17 +465,13 @@
             color: var(--text-primary);
         }
         
-        /* TABLE - PRO LOOK */
-        .table-container {
-            overflow-x: auto;
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            background: var(--bg-main);
-        }
+        /* TABLE - MIS A JOUR POUR LE LOOK PRO */
         .data-table {
             width: 100%;
             border-collapse: collapse;
-            min-width: 800px;
+            background: var(--bg-main);
+            border-radius: 12px;
+            overflow: hidden;
         }
         .data-table th {
             background: var(--hover-bg);
@@ -543,22 +480,19 @@
             font-weight: 600;
             color: var(--text-primary);
             border-bottom: 2px solid var(--border-color);
-            white-space: nowrap;
         }
         .data-table th:first-child {
             text-align: left;
         }
         .data-table td {
-            padding: 10px 15px;
+            padding: 12px 15px;
             border-bottom: 1px solid var(--border-color);
             color: var(--text-primary);
-            font-size: 0.92rem;
+            font-size: 0.95rem;
             text-align: right;
-            white-space: nowrap;
         }
         .data-table td:first-child {
             text-align: left;
-            white-space: normal;
         }
         .data-table tr:last-child td {
             border-bottom: none;
@@ -589,7 +523,6 @@
             .current-price { font-size: 2.2rem; }
             .tabs-nav { overflow-x: auto; }
             .tab-btn { white-space: nowrap; }
-            .financials-header-controls { flex-direction: column; align-items: flex-start; }
         }
     </style>
 </head>
@@ -831,7 +764,7 @@
                                     </svg>
                                     Market Cap
                                 </div>
-                                <div class="metric-value" id="general-mktcap">$0B</div>
+                                <div class="metric-value">$62.34B</div>
                             </div>
                             <div class="metric-card">
                                 <div class="metric-label">
@@ -840,7 +773,7 @@
                                     </svg>
                                     P/E (TTM)
                                 </div>
-                                <div class="metric-value" id="general-pe">N/A</div>
+                                <div class="metric-value">41.73</div>
                             </div>
                             <div class="metric-card">
                                 <div class="metric-label">
@@ -849,7 +782,7 @@
                                     </svg>
                                     Dividend Yield
                                 </div>
-                                <div class="metric-value" id="general-div">N/A</div>
+                                <div class="metric-value">1.15%</div>
                             </div>
                             <div class="metric-card">
                                 <div class="metric-label">
@@ -858,15 +791,15 @@
                                     </svg>
                                     EPS (TTM)
                                 </div>
-                                <div class="metric-value" id="general-eps">N/A</div>
+                                <div class="metric-value">$5.75</div>
                             </div>
                             <div class="metric-card">
                                 <div class="metric-label">Industry</div>
-                                <div class="metric-value" id="general-industry" style="font-size: 1.3rem;">N/A</div>
+                                <div class="metric-value" style="font-size: 1.3rem;">Insurance</div>
                             </div>
                             <div class="metric-card">
-                                <div class="metric-label">Shares Outstanding</div>
-                                <div class="metric-value" id="general-shares" style="font-size: 1.3rem;">N/A</div>
+                                <div class="metric-label">Diluted Shares</div>
+                                <div class="metric-value" style="font-size: 1.3rem;">260.26M</div>
                             </div>
                         </div>
                     </div>
@@ -897,30 +830,15 @@
                     </div>
 
                     <div class="tab-content" id="financials-tab">
-                        <div class="financials-header-controls">
-                            <div class="financials-sub-nav">
-                                <button class="sub-tab-btn active" data-subtab="income-statement">Income Statement</button>
-                                <button class="sub-tab-btn" data-subtab="balance-sheet-statement">Balance Sheet</button>
-                                <button class="sub-tab-btn" data-subtab="cash-flow-statement">Cash Flow</button>
-                                <button class="sub-tab-btn" data-subtab="ratios">Ratios</button>
-                                <button class="sub-tab-btn" data-subtab="key-metrics">KPIs</button>
-                            </div>
-                            <div class="period-toggle">
-                                <button class="period-btn active" data-period="annual">Annual</button>
-                                <button class="period-btn" data-period="quarter">Quarterly</button>
-                                <button class="period-btn" data-period="ttm">TTM</button>
-                            </div>
-                        </div>
-
-                        <div class="table-container">
-                            <table class="data-table" id="financials-data-table">
-                                <thead>
-                                    </thead>
-                                <tbody>
-                                    <tr><td colspan="6" style="text-align:center;">Chargement des données...</td></tr>
+                        <h3 style="margin-bottom: 20px; font-size: 1.5rem;">Données Financières</h3>
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    </tr>
+                            </thead>
+                            <tbody>
                                 </tbody>
-                            </table>
-                        </div>
+                        </table>
                     </div>
 
                     <div class="tab-content" id="dividends-tab">
@@ -928,37 +846,35 @@
                         <div class="metrics-grid" style="margin-bottom: 30px;">
                             <div class="metric-card">
                                 <div class="metric-label">Dividend Yield</div>
-                                <div class="metric-value" id="div-yield">N/A</div>
+                                <div class="metric-value">1.15%</div>
                             </div>
                             <div class="metric-card">
                                 <div class="metric-label">Annual Dividend</div>
-                                <div class="metric-value" id="div-annual">N/A</div>
+                                <div class="metric-value">$2.80</div>
                             </div>
                             <div class="metric-card">
                                 <div class="metric-label">Payout Ratio</div>
-                                <div class="metric-value" id="div-payout">N/A</div>
+                                <div class="metric-value">46.17%</div>
                             </div>
                             <div class="metric-card">
                                 <div class="metric-label">Dividend Growth</div>
-                                <div class="metric-value" id="div-growth" style="color: var(--success-color);">N/A</div>
+                                <div class="metric-value" style="color: var(--success-color);">8.16%</div>
                             </div>
                         </div>
                         
                         <h3 style="margin-bottom: 20px; font-size: 1.3rem;">Historique des Dividendes</h3>
-                        <div class="table-container">
-                            <table class="data-table" id="dividends-table">
-                                <thead>
-                                    <tr>
-                                        <th>Ex-Dividend Date</th>
-                                        <th>Cash Amount</th>
-                                        <th>Record Date</th>
-                                        <th>Pay Date</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    </tbody>
-                            </table>
-                        </div>
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Ex-Dividend Date</th>
+                                    <th>Cash Amount</th>
+                                    <th>Record Date</th>
+                                    <th>Pay Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -1033,19 +949,17 @@
             }
         });
 
-        // -----------------------------------------
-        // LOGIQUE DE RECHERCHE ET NAVIGATION
-        // -----------------------------------------
         const stockSearch = document.getElementById('stockSearch');
         const searchResults = document.getElementById('searchResults');
         const searchView = document.getElementById('searchView');
         const stockDetailsView = document.getElementById('stockDetailsView');
         const backBtn = document.getElementById('backBtn');
         let searchTimeout;
-        let currentLoadedSymbol = ''; 
 
+        // Search functionality with FMP API (Updated for Stable API)
         stockSearch.addEventListener('input', async (e) => {
             const query = e.target.value.trim().toUpperCase();
+            
             if (query.length < 1) {
                 searchResults.classList.remove('active');
                 return;
@@ -1058,6 +972,7 @@
                     searchResults.classList.add('active');
 
                     const results = await fmpAPI.searchStocks(query);
+                    
                     if (results && results.length > 0) {
                         const stocks = results.filter(r => {
                             const exch = (r.exchangeShortName || r.exchange || '').toUpperCase();
@@ -1067,17 +982,17 @@
                         if (stocks.length > 0) {
                             const symbols = stocks.map(s => s.symbol).join(',');
                             const quotes = await fmpAPI.getQuote(symbols);
-                            const quotesMap = {};
                             
-                            // SECURITE : Vérifier que 'quotes' est bien un tableau (évite crash si FMP bloque)
-                            if (Array.isArray(quotes)) {
+                            const quotesMap = {};
+                            if (quotes) {
                                 quotes.forEach(q => quotesMap[q.symbol] = q);
                             }
 
                             searchResults.innerHTML = stocks.map(stock => {
                                 const quote = quotesMap[stock.symbol];
-                                const price = quote?.price;
-                                const priceDisplay = typeof price === 'number' ? `$${price.toFixed(2)}` : 'N/A';
+                                const price = quote?.price || 'N/A';
+                                const priceDisplay = typeof price === 'number' ? `$${price.toFixed(2)}` : price;
+                                
                                 return `
                                     <div class="search-result-item" data-symbol="${stock.symbol}">
                                         <div>
@@ -1106,6 +1021,7 @@
                         searchResults.innerHTML = '<div class="search-result-item">Aucun résultat</div>';
                     }
                 } catch (error) {
+                    console.error('Search error:', error);
                     searchResults.innerHTML = '<div class="search-result-item">Erreur de recherche</div>';
                 }
             }, 300);
@@ -1117,31 +1033,36 @@
             }
         });
 
-        // -----------------------------------------
-        // AFFICHAGE DES DONNEES (GENERAL / HEADER)
-        // -----------------------------------------
+        // Show stock details with REAL DATA from FMP
         async function showStockDetails(symbol) {
             try {
-                currentLoadedSymbol = symbol;
+                // Show loading state
                 searchView.style.display = 'none';
                 stockDetailsView.classList.add('active');
                 document.getElementById('stockLogo').textContent = symbol.substring(0, 3);
                 document.getElementById('stockFullName').textContent = 'Chargement...';
                 
+                // Fetch all data in one batch
+                console.log('🔍 Fetching data for:', symbol);
                 const data = await fmpAPI.getScreenerData(symbol);
                 
+                console.log('📊 Data received:', data);
+
+                // Update header
                 if (data.profile) {
-                    document.getElementById('stockLogo').textContent = data.profile.symbol ? data.profile.symbol.substring(0, 3) : 'N/A';
+                    document.getElementById('stockLogo').textContent = data.profile.symbol.substring(0, 3);
                     document.getElementById('stockFullName').textContent = data.profile.companyName || symbol;
-                    document.getElementById('stockSymbol').textContent = `${data.profile.symbol || symbol}`;
+                    document.getElementById('stockSymbol').textContent = `${data.profile.symbol} - ${data.profile.sector || 'N/A'}`;
                 }
 
-                // SECURITE : Vérifier que FMP a bien renvoyé un prix valide (sinon "N/A" au lieu de crasher)
-                if (data.quote && typeof data.quote.price === 'number') {
+                // Update price
+                if (data.quote) {
                     document.getElementById('currentPrice').textContent = `$${data.quote.price.toFixed(2)}`;
+                    
                     const change = data.quote.change || 0;
                     const changePercent = data.quote.changesPercentage || 0;
                     const priceChangeEl = document.getElementById('priceChange');
+                    
                     if (change >= 0) {
                         priceChangeEl.className = 'price-change positive';
                         priceChangeEl.textContent = `↑ $${Math.abs(change).toFixed(2)} (+${Math.abs(changePercent).toFixed(2)}%)`;
@@ -1149,112 +1070,117 @@
                         priceChangeEl.className = 'price-change negative';
                         priceChangeEl.textContent = `↓ $${Math.abs(change).toFixed(2)} (-${Math.abs(changePercent).toFixed(2)}%)`;
                     }
-                } else {
-                    document.getElementById('currentPrice').textContent = `N/A`;
-                    document.getElementById('priceChange').textContent = `Quota API atteint ou erreur.`;
                 }
 
+                // Update score (calculate from metrics)
                 if (data.metrics) {
                     const score = calculateScore(data.metrics, data.ratios);
                     document.getElementById('scoreValue').textContent = `${score}/5`;
                 }
 
+                // Update General Tab - Key Metrics
                 updateGeneralTab(data);
-                updateDividendsTab(symbol);
-                loadFinancialData();
+                
+                // Update Financials Tab
+                updateFinancialsTab(data);
+                
+                // Update Dividends Tab
+                updateDividendsTab(data);
                 
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             } catch (error) {
-                console.error('CRASH dans showStockDetails :', error);
-                alert('Erreur lors du chargement des données. L\'API est peut-être bloquée (limite atteinte).');
+                console.error('Error loading stock details:', error);
+                alert('Erreur lors du chargement des données. Veuillez réessayer.');
                 backBtn.click();
             }
         }
 
+        // Calculate overall score
         function calculateScore(metrics, ratios) {
-            let score = 2.5; 
+            let score = 2.5; // Base score
+            
             if (metrics && ratios) {
+                // ROE bonus
                 if (metrics.returnOnEquityTTM > 0.15) score += 0.5;
                 if (metrics.returnOnEquityTTM > 0.25) score += 0.3;
+                
+                // P/E penalty if too high
                 if (ratios.priceEarningsRatioTTM < 20) score += 0.3;
                 if (ratios.priceEarningsRatioTTM > 40) score -= 0.3;
+                
+                // Debt ratio bonus
                 if (metrics.debtToEquityTTM < 0.5) score += 0.4;
+                
+                // Profit margin bonus
                 if (metrics.netProfitMarginTTM > 0.15) score += 0.3;
             }
+            
             return Math.min(Math.max(score, 1), 5).toFixed(2);
         }
 
+        // Update General Tab
         function updateGeneralTab(data) {
-            document.getElementById('general-mktcap').textContent = formatMarketCap(data.profile?.mktCap);
-            document.getElementById('general-pe').textContent = data.ratios?.priceEarningsRatioTTM?.toFixed(2) || 'N/A';
-            document.getElementById('general-div').textContent = (data.profile?.lastDiv || 0).toFixed(2) + '%';
-            document.getElementById('general-eps').textContent = data.metrics?.earningsPerShareTTM ? '$' + data.metrics.earningsPerShareTTM.toFixed(2) : 'N/A';
-            document.getElementById('general-shares').textContent = formatShares(data.metrics?.sharesMilTTM);
+            const generalTab = document.getElementById('general-tab');
+            const metricsGrid = generalTab.querySelector('.metrics-grid');
+            
+            metricsGrid.innerHTML = `
+                <div class="metric-card">
+                    <div class="metric-label">Market Cap</div>
+                    <div class="metric-value">${formatMarketCap(data.profile?.mktCap)}</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">P/E (TTM)</div>
+                    <div class="metric-value">${data.ratios?.priceEarningsRatioTTM?.toFixed(2) || 'N/A'}</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Dividend Yield</div>
+                    <div class="metric-value">${(data.profile?.lastDiv || 0).toFixed(2)}%</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">EPS (TTM)</div>
+                    <div class="metric-value">$${data.metrics?.earningsPerShareTTM?.toFixed(2) || 'N/A'}</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Industry</div>
+                    <div class="metric-value" style="font-size: 1.3rem;">${data.profile?.industry || 'N/A'}</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Shares Outstanding</div>
+                    <div class="metric-value" style="font-size: 1.3rem;">${formatShares(data.metrics?.sharesMilTTM)}</div>
+                </div>
+            `;
         }
 
-        async function updateDividendsTab(symbol) {
-            try {
-                const dividendData = await fmpAPI.getDividendHistory(symbol);
-                const tbody = document.querySelector('#dividends-table tbody');
-                
-                if (!dividendData || !dividendData.historical || dividendData.historical.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Aucun historique de dividende disponible</td></tr>';
-                    return;
-                }
-                
-                const hist = dividendData.historical;
-                if (hist.length > 0) {
-                    const divValue = hist[0].dividend || 0;
-                    document.getElementById('div-annual').textContent = '$' + (divValue * 4).toFixed(2); 
-                }
-
-                const recent = hist.slice(0, 5);
-                tbody.innerHTML = recent.map(div => `
-                    <tr>
-                        <td>${new Date(div.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</td>
-                        <td>$${div.dividend?.toFixed(3) || 'N/A'}</td>
-                        <td>${new Date(div.recordDate || div.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</td>
-                        <td>${new Date(div.paymentDate || div.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</td>
-                    </tr>
-                `).join('');
-            } catch (error) {
-                console.error(error);
+        // Update Financials Tab (Version Pro détaillée)
+        function updateFinancialsTab(data) {
+            if (!data.income || data.income.length === 0) {
+                document.querySelector('#financials-tab table tbody').innerHTML = '<tr><td colspan="5">Données non disponibles</td></tr>';
+                return;
             }
-        }
 
-        // -----------------------------------------
-        // FINANCIALS & KPIs : LOGIQUE DES ONGLETS ET PERIODES
-        // -----------------------------------------
-        let currentSubTab = 'income-statement';
-        let currentPeriod = 'annual';
+            // On prend les 5 dernières années
+            const years = data.income.slice(0, 5);
+            const tbody = document.querySelector('#financials-tab table tbody');
+            const thead = document.querySelector('#financials-tab table thead tr');
+            
+            // Mise à jour de l'en-tête (Fiscal Year)
+            thead.innerHTML = `
+                <th>Fiscal Year</th>
+                ${years.map(y => `<th>FY ${new Date(y.date).getFullYear()}</th>`).join('')}
+            `;
 
-        const subTabBtns = document.querySelectorAll('.sub-tab-btn');
-        subTabBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                subTabBtns.forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                currentSubTab = btn.dataset.subtab;
-                loadFinancialData();
-            });
-        });
+            // Ligne spéciale : Period Ending (Date exacte)
+            let html = `
+                <tr style="font-size: 0.85rem; border-bottom: 2px solid var(--border-color); background-color: var(--bg-main);">
+                    <td><strong>Period Ending</strong></td>
+                    ${years.map(y => `<td><strong>${new Date(y.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</strong></td>`).join('')}
+                </tr>
+            `;
 
-        const periodBtns = document.querySelectorAll('.period-btn');
-        periodBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                periodBtns.forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                currentPeriod = btn.dataset.period;
-                loadFinancialData();
-            });
-        });
-
-        // -----------------------------------------
-        // BLUEPRINTS (Basé sur les captures d'écran StockAnalysis)
-        // -----------------------------------------
-        const blueprints = {
-            'income-statement': [
+            // Le "Blueprint" de ton tableau (comme sur StockAnalysis)
+            const rowsConfig = [
                 { label: "Revenue", key: "revenue", bold: true },
-                { label: "Revenue Growth (YoY)", key: "revenue_growth", isPercent: true },
+                { label: "Revenue Growth (YoY)", key: "growth", isPercent: true },
                 { label: "Cost of Revenue", key: "costOfRevenue" },
                 { label: "Gross Profit", key: "grossProfit", bold: true },
                 { label: "Selling, General & Admin", key: "sellingGeneralAndAdministrativeExpenses", indent: true },
@@ -1263,233 +1189,138 @@
                 { label: "Operating Expenses", key: "operatingExpenses", bold: true },
                 { label: "Operating Income", key: "operatingIncome", bold: true },
                 { label: "Interest Expense", key: "interestExpense" },
-                { label: "Interest & Investment Income", key: "interestIncome" },
-                { label: "Earnings From Equity Investments", key: "incomeFromEquity", fallback: "-" },
-                { label: "Currency Exchange Gain (Loss)", key: "foreignCurrencyTranslation", fallback: "-" },
-                { label: "EBT Excluding Unusual Items", key: "incomeBeforeTax", bold: true },
-                { label: "Gain (Loss) on Sale of Investments", key: "gainLossOnSale", fallback: "-" },
-                { label: "Asset Writedown", key: "assetWritedown", fallback: "-" },
-                { label: "Other Unusual Items", key: "otherUnusualItems", fallback: "-" },
-                { label: "Pretax Income", key: "incomeBeforeTax", bold: true },
+                { label: "Income Before Tax", key: "incomeBeforeTax", bold: true },
                 { label: "Income Tax Expense", key: "incomeTaxExpense" },
                 { label: "Net Income", key: "netIncome", bold: true },
-                { label: "Net Income to Common", key: "netIncome", bold: true },
-                { label: "Net Income Growth", key: "netIncome_growth", isPercent: true },
-                { label: "Shares Outstanding (Basic)", key: "weightedAverageShsOut" },
-                { label: "Shares Outstanding (Diluted)", key: "weightedAverageShsOutDil", bold: true },
-                { label: "EPS (Basic)", key: "eps", isCurrency: true },
-                { label: "EPS (Diluted)", key: "epsdiluted", isCurrency: true, bold: true },
-                { label: "Gross Margin", key: "grossMarginRatio", isPercent: true },
-                { label: "Operating Margin", key: "operatingMarginRatio", isPercent: true },
-                { label: "Profit Margin", key: "netIncomeMarginRatio", isPercent: true },
-                { label: "EBITDA", key: "ebitda", bold: true },
-                { label: "D&A For EBITDA", key: "depreciationAndAmortization" },
-                { label: "EBIT", key: "operatingIncome", bold: true }
-            ],
-            'balance-sheet-statement': [
-                { label: "Cash & Equivalents", key: "cashAndCashEquivalents" },
-                { label: "Short-Term Investments", key: "shortTermInvestments" },
-                { label: "Trading Asset Securities", key: "tradingAssetSecurities", fallback: "-" },
-                { label: "Cash & Short-Term Investments", key: "cashAndShortTermInvestments", bold: true },
-                { label: "Accounts Receivable", key: "netReceivables" },
-                { label: "Other Receivables", key: "otherReceivables", fallback: "-" },
-                { label: "Receivables", key: "netReceivables", bold: true },
-                { label: "Inventory", key: "inventory" },
-                { label: "Prepaid Expenses", key: "prepaidExpenses", fallback: "-" },
-                { label: "Restricted Cash", key: "restrictedCash", fallback: "-" },
-                { label: "Other Current Assets", key: "otherCurrentAssets" },
-                { label: "Total Current Assets", key: "totalCurrentAssets", bold: true },
-                { label: "Property, Plant & Equipment", key: "propertyPlantEquipmentNet" },
-                { label: "Long-Term Investments", key: "longTermInvestments" },
-                { label: "Goodwill", key: "goodwill" },
-                { label: "Other Intangible Assets", key: "intangibleAssets" },
-                { label: "Total Assets", key: "totalAssets", bold: true },
-                { label: "Accounts Payable", key: "accountPayables" },
-                { label: "Short-Term Debt", key: "shortTermDebt" },
-                { label: "Total Current Liabilities", key: "totalCurrentLiabilities", bold: true },
-                { label: "Long-Term Debt", key: "longTermDebt" },
-                { label: "Total Liabilities", key: "totalLiabilities", bold: true },
-                { label: "Retained Earnings", key: "retainedEarnings" },
-                { label: "Total Common Equity", key: "totalStockholdersEquity", bold: true },
-                { label: "Total Debt", key: "totalDebt" },
-                { label: "Net Cash (Debt)", key: "netDebt" }
-            ],
-            'cash-flow-statement': [
-                { label: "Net Income", key: "netIncome" },
-                { label: "Depreciation & Amortization", key: "depreciationAndAmortization" },
-                { label: "Stock-Based Compensation", key: "stockBasedCompensation" },
-                { label: "Provision & Write-off of Bad Debts", key: "badDebts", fallback: "-" },
-                { label: "Change in Accounts Receivable", key: "accountsReceivables" },
-                { label: "Change in Inventory", key: "inventory" },
-                { label: "Change in Accounts Payable", key: "accountsPayables" },
-                { label: "Operating Cash Flow", key: "netCashProvidedByOperatingActivities", bold: true },
-                { label: "Capital Expenditures", key: "investmentsInPropertyPlantAndEquipment" },
-                { label: "Cash Acquisitions", key: "acquisitionsNet" },
-                { label: "Investing Cash Flow", key: "netCashUsedForInvestingActivites", bold: true },
-                { label: "Long-Term Debt Issued", key: "debtRepayment" },
-                { label: "Repurchase of Common Stock", key: "commonStockRepurchased" },
-                { label: "Financing Cash Flow", key: "netCashUsedProvidedByFinancingActivities", bold: true },
-                { label: "Net Cash Flow", key: "netChangeInCash", bold: true },
-                { label: "Free Cash Flow", key: "freeCashFlow", bold: true }
-            ],
-            'ratios': [
-                { label: "PE Ratio", key: "priceEarningsRatio", isRaw: true },
-                { label: "PS Ratio", key: "priceToSalesRatio", isRaw: true },
-                { label: "PB Ratio", key: "priceToBookRatio", isRaw: true },
-                { label: "P/FCF Ratio", key: "priceToFreeCashFlowsRatio", isRaw: true },
-                { label: "P/OCF Ratio", key: "priceToOperatingCashFlowsRatio", isRaw: true },
-                { label: "EV/Sales Ratio", key: "enterpriseValueMultiple", isRaw: true },
-                { label: "Debt / Equity Ratio", key: "debtEquityRatio", isRaw: true },
-                { label: "Current Ratio", key: "currentRatio", isRaw: true },
-                { label: "Quick Ratio", key: "quickRatio", isRaw: true },
-                { label: "Return on Equity (ROE)", key: "returnOnEquity", isPercent: true },
-                { label: "Return on Assets (ROA)", key: "returnOnAssets", isPercent: true },
-                { label: "Return on Capital Employed (ROCE)", key: "returnOnCapitalEmployed", isPercent: true },
-                { label: "Gross Profit Margin", key: "grossProfitMargin", isPercent: true },
-                { label: "Net Profit Margin", key: "netProfitMargin", isPercent: true }
-            ],
-            'key-metrics': [
-                { label: "Revenue per Share", key: "revenuePerShare", isCurrency: true },
-                { label: "Net Income per Share", key: "netIncomePerShare", isCurrency: true },
-                { label: "Operating Cash Flow per Share", key: "operatingCashFlowPerShare", isCurrency: true },
-                { label: "Free Cash Flow per Share", key: "freeCashFlowPerShare", isCurrency: true },
-                { label: "Cash per Share", key: "cashPerShare", isCurrency: true },
-                { label: "Book Value per Share", key: "bookValuePerShare", isCurrency: true },
-                { label: "Tangible Book Value per Share", key: "tangibleBookValuePerShare", isCurrency: true },
-                { label: "Shareholders Equity per Share", key: "shareholdersEquityPerShare", isCurrency: true },
-                { label: "Interest Debt per Share", key: "interestDebtPerShare", isCurrency: true },
-                { label: "Market Cap", key: "marketCap", bold: true },
-                { label: "Enterprise Value", key: "enterpriseValue" },
-                { label: "Dividend Yield", key: "dividendYield", isPercent: true }
-            ]
-        };
+                { label: "EPS", key: "eps", isCurrency: true }
+            ];
 
-        async function loadFinancialData() {
-            if (!currentLoadedSymbol) return;
-            
-            const tbody = document.querySelector('#financials-data-table tbody');
-            const thead = document.querySelector('#financials-data-table thead');
-            
-            tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Chargement...</td></tr>';
-            
-            try {
-                let data = [];
+            // On génère le tableau dynamiquement
+            rowsConfig.forEach(row => {
+                let nameStyle = "";
+                if (row.bold) nameStyle += "font-weight: 700; ";
+                if (row.indent) nameStyle += "padding-left: 30px; color: var(--text-secondary); ";
+
+                let rowHtml = `<tr><td style="${nameStyle}">${row.label}</td>`;
                 
-                if (currentPeriod === 'ttm') {
-                    const endpoint = currentSubTab === 'ratios' ? '/ratios-ttm' : 
-                                     currentSubTab === 'key-metrics' ? '/key-metrics-ttm' : 
-                                     currentSubTab === 'income-statement' ? '/income-statement-ttm' : null;
-                    
-                    if (endpoint) {
-                        const res = await fmpAPI.makeRequest(endpoint, { symbol: currentLoadedSymbol });
-                        data = res ? (Array.isArray(res) ? res : [res]) : [];
-                    } else {
-                        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Données TTM non disponibles pour cet onglet.</td></tr>';
-                        return;
-                    }
-                } else {
-                    const params = { symbol: currentLoadedSymbol, limit: 5 };
-                    if (currentPeriod === 'quarter') params.period = 'quarter';
-                    data = await fmpAPI.makeRequest(`/${currentSubTab}`, params);
-                }
+                years.forEach((yearData, index) => {
+                    let value;
+                    let formattedValue = "N/A";
+                    let colorStyle = "";
 
-                // SECURITE: Si FMP bloque ou renvoie vide (ex: limite atteinte)
-                if (!data || !Array.isArray(data) || data.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color: var(--danger-color);">Données non disponibles (Limite API atteinte ou ticker non supporté).</td></tr>';
+                    if (row.key === "growth") {
+                        if (index < years.length - 1) {
+                            const current = yearData.revenue;
+                            const previous = years[index + 1].revenue;
+                            if (previous && previous !== 0) {
+                                value = ((current - previous) / previous) * 100;
+                                formattedValue = value.toFixed(2) + "%";
+                                colorStyle = value > 0 ? 'color: var(--success-color);' : 'color: var(--danger-color);';
+                            }
+                        }
+                    } else {
+                        value = yearData[row.key];
+                        if (value !== undefined && value !== null) {
+                            if (row.isCurrency) {
+                                formattedValue = "$" + value.toFixed(2);
+                            } else {
+                                // Affiche en millions sans décimales, ex: 416,160
+                                formattedValue = (value / 1000000).toLocaleString('en-US', { maximumFractionDigits: 0 });
+                            }
+                        }
+                    }
+
+                    rowHtml += `<td style="${row.bold ? 'font-weight: 600;' : ''} ${colorStyle}">${formattedValue}</td>`;
+                });
+                
+                rowHtml += '</tr>';
+                html += rowHtml;
+            });
+
+            tbody.innerHTML = html;
+        }
+
+        // Update Dividends Tab
+        async function updateDividendsTab(data) {
+            try {
+                const dividendData = await fmpAPI.getDividendHistory(data.profile.symbol);
+                
+                if (!dividendData || !dividendData.historical || dividendData.historical.length === 0) {
+                    document.querySelector('#dividends-tab table tbody').innerHTML = '<tr><td colspan="4">Aucun dividende</td></tr>';
                     return;
                 }
 
-                const config = blueprints[currentSubTab] || blueprints['income-statement'];
+                const recent = dividendData.historical.slice(0, 5);
+                const tbody = document.querySelector('#dividends-tab table tbody');
                 
-                let headerHtml = '<tr><th>Period Ending</th>';
-                data.forEach(col => {
-                    const dateStr = col.date ? new Date(col.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'TTM';
-                    headerHtml += `<th>${dateStr}</th>`;
-                });
-                headerHtml += '</tr>';
-                thead.innerHTML = headerHtml;
-
-                let bodyHtml = '';
-                config.forEach(row => {
-                    let nameStyle = "";
-                    if (row.bold) nameStyle += "font-weight: 700; ";
-                    if (row.indent) nameStyle += "padding-left: 30px; color: var(--text-secondary); ";
-
-                    let trHtml = `<tr><td style="${nameStyle}">${row.label}</td>`;
-                    
-                    data.forEach((colData, index) => {
-                        let value;
-                        let formattedValue = row.fallback || "-";
-                        let colorStyle = "";
-
-                        if (row.key.includes("_growth")) {
-                            const baseKey = row.key.split('_')[0];
-                            if (index < data.length - 1) {
-                                const current = colData[baseKey];
-                                const previous = data[index + 1]?.[baseKey];
-                                if (previous && previous !== 0) {
-                                    value = ((current - previous) / previous) * 100;
-                                    formattedValue = value.toFixed(2) + "%";
-                                    colorStyle = value > 0 ? 'color: var(--success-color);' : 'color: var(--danger-color);';
-                                }
-                            }
-                        } else {
-                            value = colData[row.key];
-                            if (value !== undefined && value !== null) {
-                                if (row.isPercent) {
-                                    let pct = value;
-                                    if (currentSubTab === 'ratios' && Math.abs(pct) < 10) pct = pct * 100; 
-                                    formattedValue = pct.toFixed(2) + "%";
-                                } else if (row.isCurrency) {
-                                    formattedValue = "$" + value.toFixed(2);
-                                } else if (row.isRaw) {
-                                    formattedValue = value.toFixed(2);
-                                } else {
-                                    formattedValue = (value / 1000000).toLocaleString('en-US', { maximumFractionDigits: 0 });
-                                }
-                            }
-                        }
-                        trHtml += `<td style="${row.bold ? 'font-weight: 600;' : ''} ${colorStyle}">${formattedValue}</td>`;
-                    });
-                    
-                    trHtml += '</tr>';
-                    bodyHtml += trHtml;
-                });
-
-                tbody.innerHTML = bodyHtml;
-
+                tbody.innerHTML = recent.map(div => `
+                    <tr>
+                        <td>${new Date(div.date).toLocaleDateString('fr-FR', { month: 'short', day: 'numeric', year: 'numeric' })}</td>
+                        <td>$${div.dividend?.toFixed(3) || 'N/A'}</td>
+                        <td>${new Date(div.recordDate || div.date).toLocaleDateString('fr-FR', { month: 'short', day: 'numeric', year: 'numeric' })}</td>
+                        <td>${new Date(div.paymentDate || div.date).toLocaleDateString('fr-FR', { month: 'short', day: 'numeric', year: 'numeric' })}</td>
+                    </tr>
+                `).join('');
             } catch (error) {
-                console.error("Erreur de chargement du tableau financier :", error);
-                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Erreur de communication avec l\'API.</td></tr>';
+                console.error('Error loading dividends:', error);
             }
         }
 
-        const tabBtns = document.querySelectorAll('.tab-btn');
-        const tabContents = document.querySelectorAll('.tab-content');
+        // Helper functions
+        function formatMarketCap(value) {
+            if (!value) return 'N/A';
+            if (value >= 1e12) return `$${(value / 1e12).toFixed(2)}T`;
+            if (value >= 1e9) return `$${(value / 1e9).toFixed(2)}B`;
+            if (value >= 1e6) return `$${(value / 1e6).toFixed(2)}M`;
+            return `$${value.toFixed(2)}`;
+        }
 
-        tabBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                const tabName = btn.dataset.tab;
-                tabBtns.forEach(b => b.classList.remove('active'));
-                tabContents.forEach(c => c.classList.remove('active'));
-                btn.classList.add('active');
-                document.getElementById(`${tabName}-tab`).classList.add('active');
-            });
-        });
+        function formatShares(value) {
+            if (!value) return 'N/A';
+            return `${value.toFixed(2)}M`;
+        }
 
+        function formatNumber(value) {
+            if (!value) return 'N/A';
+            if (value >= 1e9) return `${(value / 1e9).toFixed(2)}B`;
+            if (value >= 1e6) return `${(value / 1e6).toFixed(2)}M`;
+            if (value >= 1e3) return `${(value / 1e3).toFixed(2)}K`;
+            return value.toFixed(2);
+        }
+
+        // Back button
         backBtn.addEventListener('click', () => {
             searchView.style.display = 'block';
             stockDetailsView.classList.remove('active');
             window.scrollTo({ top: 0, behavior: 'smooth' });
         });
 
+        // Tab switching
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        const tabContents = document.querySelectorAll('.tab-content');
+
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const tabName = btn.dataset.tab;
+                
+                tabBtns.forEach(b => b.classList.remove('active'));
+                tabContents.forEach(c => c.classList.remove('active'));
+                
+                btn.classList.add('active');
+                document.getElementById(`${tabName}-tab`).classList.add('active');
+            });
+        });
+
+        // Preset cards click handlers
         document.querySelectorAll('.preset-card').forEach(card => {
             card.addEventListener('click', () => {
                 const preset = card.dataset.preset;
+                console.log(`Preset selected: ${preset}`);
                 alert(`Screener "${preset}" sera bientôt disponible !`);
             });
         });
 
+        // Log cache stats on load
         console.log('📊 FMP Cache Stats:', fmpAPI.getCacheStats());
     </script>
 </body>
