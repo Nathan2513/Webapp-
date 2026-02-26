@@ -29,7 +29,6 @@ class FMPCache {
         try {
             const cached = localStorage.getItem(key);
             if (!cached) return null;
-            
             const data = JSON.parse(cached);
             if (this.isCacheValid(data)) {
                 console.log(`✅ Cache hit for ${key}`);
@@ -47,10 +46,7 @@ class FMPCache {
 
     saveToCache(key, value) {
         try {
-            const cacheData = {
-                value: value,
-                timestamp: Date.now()
-            };
+            const cacheData = { value: value, timestamp: Date.now() };
             localStorage.setItem(key, JSON.stringify(cacheData));
             console.log(`💾 Cached: ${key}`);
         } catch (error) {
@@ -70,7 +66,6 @@ class FMPCache {
         console.log('🧹 Clearing old cache...');
         const now = Date.now();
         const keysToRemove = [];
-        
         for (let i = 0; i < localStorage.length; i++) {
             const key = localStorage.key(i);
             if (key && key.startsWith('fmp_')) {
@@ -84,36 +79,25 @@ class FMPCache {
                 }
             }
         }
-        
         keysToRemove.forEach(key => localStorage.removeItem(key));
     }
 
     // Make API request with the new parameter format (?symbol=XYZ)
     async makeRequest(endpoint, params = {}) {
         const cacheKey = this.getCacheKey(endpoint, params);
-        
         const cached = this.getFromCache(cacheKey);
         if (cached) return cached;
 
-        const queryParams = new URLSearchParams({
-            ...params,
-            apikey: this.API_KEY
-        });
-        
+        const queryParams = new URLSearchParams({ ...params, apikey: this.API_KEY });
         const url = `${this.BASE_URL}${endpoint}?${queryParams}`;
 
         console.log(`🌐 API Request: ${url}`);
 
         try {
             const response = await fetch(url);
-            
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
             const data = await response.json();
             this.saveToCache(cacheKey, data);
-            
             return data;
         } catch (error) {
             console.error('API Request failed:', error);
@@ -123,7 +107,7 @@ class FMPCache {
 
     async batchRequest(requests) {
         console.log(`📦 Batch request: ${requests.length} items`);
-        const promises = requests.map(req => 
+        const promises = requests.map(req =>
             this.makeRequest(req.endpoint, req.params)
                 .catch(error => {
                     console.error(`Failed request for ${req.endpoint}:`, error);
@@ -133,7 +117,7 @@ class FMPCache {
         return await Promise.all(promises);
     }
 
-    // ===== STOCK DATA METHODS =====
+    // ===== INDIVIDUAL DATA METHODS (kept for backward compatibility) =====
 
     async getQuote(symbol) {
         return this.makeRequest(`/quote`, { symbol });
@@ -169,83 +153,166 @@ class FMPCache {
 
     // ===== COMPOSITE DATA METHODS =====
 
-    async getScreenerData(symbol) {
+    /**
+     * ANNUAL - Full screener data in ONE batch (7 requests total)
+     * Called once per symbol. Results cached for 1h.
+     * - quote (price, change, mktCap)
+     * - ratios-ttm (current valuation ratios)
+     * - key-metrics-ttm (ROE, EPS, etc.)
+     * - income-statement (5 years)
+     * - balance-sheet-statement (5 years)
+     * - cash-flow-statement (5 years)
+     * - ratios (historical ratios, 5 years, for Ratios tab)
+     */
+    async getFullScreenerData(symbol) {
         const requests = [
-            { endpoint: `/quote`, params: { symbol } },
-            { endpoint: `/ratios-ttm`, params: { symbol } },
-            { endpoint: `/key-metrics-ttm`, params: { symbol } },
-            { endpoint: `/income-statement`, params: { symbol, limit: 5 } }
+            { endpoint: `/quote`,                       params: { symbol } },
+            { endpoint: `/ratios-ttm`,                  params: { symbol } },
+            { endpoint: `/key-metrics-ttm`,             params: { symbol } },
+            { endpoint: `/income-statement`,             params: { symbol, limit: 5 } },
+            { endpoint: `/balance-sheet-statement`,      params: { symbol, limit: 5 } },
+            { endpoint: `/cash-flow-statement`,          params: { symbol, limit: 5 } },
+            { endpoint: `/ratios`,                       params: { symbol, limit: 5 } },
         ];
 
-        const [quote, ratios, metrics, income] = await this.batchRequest(requests);
-        const quoteData = quote?.[0] || {};
+        const [quote, ratios, metrics, income, balance, cashflow, ratiosHistory] =
+            await this.batchRequest(requests);
+
+        const quoteData = Array.isArray(quote) ? quote[0] : (quote || {});
 
         return {
             profile: {
-                symbol: quoteData.symbol || symbol,
-                companyName: quoteData.name || symbol,
-                sector: "N/A",
-                industry: "N/A",
-                mktCap: quoteData.marketCap || 0,
-                lastDiv: 0
+                symbol:      quoteData.symbol    || symbol,
+                companyName: quoteData.name       || symbol,
+                sector:      quoteData.sector     || 'N/A',
+                industry:    quoteData.industry   || 'N/A',
+                mktCap:      quoteData.marketCap  || 0,
+                lastDiv:     quoteData.lastAnnualDividend || 0,
             },
-            quote: quoteData,
-            ratios: ratios?.[0] || null,
-            metrics: metrics?.[0] || null,
-            income: income || []
+            quote:         quoteData,
+            ratios:        Array.isArray(ratios) ? ratios[0] : (ratios || null),
+            metrics:       Array.isArray(metrics) ? metrics[0] : (metrics || null),
+            income:        income        || [],
+            balance:       balance       || [],
+            cashflow:      cashflow      || [],
+            ratiosHistory: ratiosHistory || [],
         };
+    }
+
+    /**
+     * QUARTERLY - Same structure, quarterly period, 8 quarters shown.
+     * Called only when user clicks "Quarterly". Results cached separately.
+     * Total: 5 requests (no ratios-ttm / key-metrics-ttm re-fetched — already cached from annual)
+     */
+    async getFullScreenerDataQuarterly(symbol) {
+        const requests = [
+            { endpoint: `/income-statement`,        params: { symbol, period: 'quarter', limit: 8 } },
+            { endpoint: `/balance-sheet-statement`, params: { symbol, period: 'quarter', limit: 8 } },
+            { endpoint: `/cash-flow-statement`,     params: { symbol, period: 'quarter', limit: 8 } },
+            { endpoint: `/ratios`,                  params: { symbol, period: 'quarter', limit: 8 } },
+        ];
+
+        const [income, balance, cashflow, ratiosHistory] = await this.batchRequest(requests);
+
+        // Reuse already-cached annual data for profile/quote/ratios/metrics
+        const annualCacheKey = this.getCacheKey(`/quote`, { symbol });
+        const quoteData = (() => {
+            const c = this.getFromCache(annualCacheKey);
+            return Array.isArray(c) ? c[0] : (c || {});
+        })();
+
+        const ratiosCacheKey = this.getCacheKey(`/ratios-ttm`, { symbol });
+        const ratios = (() => {
+            const c = this.getFromCache(ratiosCacheKey);
+            return Array.isArray(c) ? c[0] : (c || null);
+        })();
+
+        const metricsCacheKey = this.getCacheKey(`/key-metrics-ttm`, { symbol });
+        const metrics = (() => {
+            const c = this.getFromCache(metricsCacheKey);
+            return Array.isArray(c) ? c[0] : (c || null);
+        })();
+
+        return {
+            profile: {
+                symbol:      quoteData.symbol    || symbol,
+                companyName: quoteData.name       || symbol,
+                sector:      quoteData.sector     || 'N/A',
+                industry:    quoteData.industry   || 'N/A',
+                mktCap:      quoteData.marketCap  || 0,
+                lastDiv:     quoteData.lastAnnualDividend || 0,
+            },
+            quote:         quoteData,
+            ratios:        ratios,
+            metrics:       metrics,
+            income:        income        || [],
+            balance:       balance       || [],
+            cashflow:      cashflow      || [],
+            ratiosHistory: ratiosHistory || [],
+        };
+    }
+
+    // ===== LEGACY METHODS (kept for DCF & Valorisation pages) =====
+
+    async getScreenerData(symbol) {
+        return this.getFullScreenerData(symbol);
     }
 
     async getDCFData(symbol) {
         const requests = [
-            { endpoint: `/quote`, params: { symbol } },
-            { endpoint: `/cash-flow-statement`, params: { symbol, limit: 10 } },
-            { endpoint: `/income-statement`, params: { symbol, limit: 10 } },
-            { endpoint: `/financial-growth`, params: { symbol, limit: 5 } },
-            { endpoint: `/discounted-cash-flow`, params: { symbol } }
+            { endpoint: `/quote`,                   params: { symbol } },
+            { endpoint: `/cash-flow-statement`,     params: { symbol, limit: 10 } },
+            { endpoint: `/income-statement`,        params: { symbol, limit: 10 } },
+            { endpoint: `/financial-growth`,        params: { symbol, limit: 5 } },
+            { endpoint: `/discounted-cash-flow`,    params: { symbol } },
         ];
-
         const [quote, cashFlow, income, growth, dcf] = await this.batchRequest(requests);
-        const quoteData = quote?.[0] || {};
-
+        const quoteData = Array.isArray(quote) ? quote[0] : (quote || {});
         return {
             profile: { symbol: quoteData.symbol || symbol, companyName: quoteData.name || symbol },
             quote: quoteData,
             cashFlow: cashFlow || [],
-            income: income || [],
-            growth: growth || [],
-            dcf: dcf?.[0] || null
+            income:   income   || [],
+            growth:   growth   || [],
+            dcf:      Array.isArray(dcf) ? dcf[0] : (dcf || null),
         };
     }
 
     async getValorisationData(symbol) {
         const requests = [
-            { endpoint: `/quote`, params: { symbol } },
-            { endpoint: `/ratios-ttm`, params: { symbol } },
-            { endpoint: `/key-metrics-ttm`, params: { symbol } },
-            { endpoint: `/ratios`, params: { symbol, limit: 5 } },
-            { endpoint: `/income-statement`, params: { symbol, limit: 5 } },
-            { endpoint: `/cash-flow-statement`, params: { symbol, limit: 5 } }
+            { endpoint: `/quote`,                   params: { symbol } },
+            { endpoint: `/ratios-ttm`,              params: { symbol } },
+            { endpoint: `/key-metrics-ttm`,         params: { symbol } },
+            { endpoint: `/ratios`,                  params: { symbol, limit: 5 } },
+            { endpoint: `/income-statement`,        params: { symbol, limit: 5 } },
+            { endpoint: `/cash-flow-statement`,     params: { symbol, limit: 5 } },
         ];
-
-        const [quote, ratiosTTM, metricsTTM, historicalRatios, income, cashFlow] = await this.batchRequest(requests);
-        const quoteData = quote?.[0] || {};
-
+        const [quote, ratiosTTM, metricsTTM, historicalRatios, income, cashFlow] =
+            await this.batchRequest(requests);
+        const quoteData = Array.isArray(quote) ? quote[0] : (quote || {});
         return {
-            profile: { symbol: quoteData.symbol || symbol, companyName: quoteData.name || symbol },
-            quote: quoteData,
-            ratiosTTM: ratiosTTM?.[0] || null,
-            metricsTTM: metricsTTM?.[0] || null,
+            profile:          { symbol: quoteData.symbol || symbol, companyName: quoteData.name || symbol },
+            quote:            quoteData,
+            ratiosTTM:        Array.isArray(ratiosTTM) ? ratiosTTM[0] : (ratiosTTM || null),
+            metricsTTM:       Array.isArray(metricsTTM) ? metricsTTM[0] : (metricsTTM || null),
             historicalRatios: historicalRatios || [],
-            income: income || [],
-            cashFlow: cashFlow || []
+            income:           income    || [],
+            cashFlow:         cashFlow  || [],
         };
     }
 
-    // Le nouvel endpoint de recherche de FMP
+    // Search
     async searchStocks(query) {
         if (query.length < 1) return [];
         return this.makeRequest(`/search-symbol`, { query, limit: 10 });
+    }
+
+    getCacheStats() {
+        let count = 0;
+        for (let i = 0; i < localStorage.length; i++) {
+            if (localStorage.key(i)?.startsWith('fmp_')) count++;
+        }
+        return { cachedEntries: count };
     }
 
     clearAllCache() {
@@ -253,9 +320,7 @@ class FMPCache {
         const keysToRemove = [];
         for (let i = 0; i < localStorage.length; i++) {
             const key = localStorage.key(i);
-            if (key && key.startsWith('fmp_')) {
-                keysToRemove.push(key);
-            }
+            if (key && key.startsWith('fmp_')) keysToRemove.push(key);
         }
         keysToRemove.forEach(key => localStorage.removeItem(key));
     }
