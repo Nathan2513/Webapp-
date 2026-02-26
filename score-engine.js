@@ -164,9 +164,9 @@ function scoreAnalyste(data) {
     const ebitdaG = growthPct(inc[0]?.ebitda,      inc[1]?.ebitda);
 
     const metrics = [
-        { label: 'BPA projeté pour l'année prochaine',    value: epsG,    format: 'pct', score: scoreByThreshold(epsG,    [0, 5, 15, 30]) },
-        { label: 'Revenus projetés pour l'année prochaine', value: revG,  format: 'pct', score: scoreByThreshold(revG,    [0, 5, 10, 20]) },
-        { label: 'EBITDA projeté pour l'année prochaine',  value: ebitdaG,format: 'pct', score: scoreByThreshold(ebitdaG, [0, 5, 15, 30]) },
+        { label: "BPA projeté pour l'année prochaine",    value: epsG,    format: 'pct', score: scoreByThreshold(epsG,    [0, 5, 15, 30]) },
+        { label: "Revenus projetés pour l'année prochaine", value: revG,  format: 'pct', score: scoreByThreshold(revG,    [0, 5, 10, 20]) },
+        { label: "EBITDA projeté pour l'année prochaine",  value: ebitdaG,format: 'pct', score: scoreByThreshold(ebitdaG, [0, 5, 15, 30]) },
     ];
 
     return buildCategory('Analyste', '🔭', metrics);
@@ -241,7 +241,7 @@ function calculateScore(metrics, ratios) {
 const _scorePages = {};
 const SCORE_PAGE_SIZE = 5;
 
-window.scorePageGo = function scorePageGo(id, delta) {
+function scorePageGo(id, delta) {
     if (!_scorePages[id]) return;
     const state = _scorePages[id];
     const maxPage = Math.ceil(state.metrics.length / SCORE_PAGE_SIZE) - 1;
@@ -410,5 +410,8 @@ function renderScoresTab(result) {
 }
 
 
+
+// Expose scorePageGo globally for onclick handlers in generated HTML
+if (typeof window !== 'undefined') window.scorePageGo = scorePageGo;
 
 export { computeAllScores, renderScoresTab };
