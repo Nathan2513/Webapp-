@@ -502,7 +502,7 @@
             color: white;
         }
 
-        /* PERIOD TOGGLE (Annual / Quarterly / TTM) */
+        /* PERIOD TOGGLE (Annual / Quarterly) */
         .period-toggle {
             display: flex;
             gap: 4px;
@@ -904,7 +904,7 @@
 
                     <!-- FINANCIALS & KPIs TAB -->
                     <div class="tab-content" id="financials-tab">
-                        <!-- Sub-nav: Income / Balance / Cash Flow / Ratios / KPIs + Annual/Quarterly/TTM -->
+                        <!-- Sub-nav: Income / Balance / Cash Flow / Ratios / KPIs + Annual/Quarterly -->
                         <div class="financials-sub-nav">
                             <div class="financials-sub-tabs">
                                 <button class="fin-sub-btn active" data-fin="income">Income Statement</button>
@@ -916,7 +916,6 @@
                             <div class="period-toggle">
                                 <button class="period-btn active" data-period="annual">Annual</button>
                                 <button class="period-btn" data-period="quarterly">Quarterly</button>
-                                <button class="period-btn" data-period="ttm">TTM</button>
                             </div>
                         </div>
 
@@ -1164,7 +1163,8 @@
                 document.getElementById('stockLogo').textContent = symbol.substring(0, 3);
                 document.getElementById('stockFullName').textContent = 'Chargement...';
 
-                const data = await fmpAPI.getScreenerData(symbol);
+                // Single batch call — fetches everything needed (quote, ratios, metrics, income, balance, cashflow, ratiosHistory)
+                const data = await fmpAPI.getFullScreenerData(symbol);
                 cachedData['annual'] = data;
 
                 if (data.profile) {
@@ -1216,28 +1216,22 @@
 
                 if (!currentSymbol) return;
 
-                // For TTM we use annual data (TTM = most recent 12 months, same API call)
-                const periodKey = period === 'quarterly' ? 'quarterly' : 'annual';
+                if (!cachedData[period]) {
+                    // Show loading state on current visible table
+                    const activeTable = document.querySelector(`#fin-${currentFinTab} tbody`);
+                    if (activeTable) activeTable.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:30px;color:var(--text-secondary);">⏳ Chargement...</td></tr>';
 
-                if (!cachedData[periodKey]) {
-                    // Show loading
-                    const activeFinContent = document.querySelector('.fin-content[style=""]') || document.getElementById(`fin-${currentFinTab}`);
                     try {
-                        let data;
-                        if (period === 'quarterly') {
-                            data = await fmpAPI.getScreenerDataQuarterly(currentSymbol);
-                        } else {
-                            data = cachedData['annual'];
-                        }
-                        cachedData[periodKey] = data;
+                        // One single batch call — all quarterly data at once
+                        cachedData[period] = await fmpAPI.getFullScreenerDataQuarterly(currentSymbol);
                     } catch(e) {
-                        console.error('Error fetching period data:', e);
+                        console.error('Error fetching quarterly data:', e);
+                        if (activeTable) activeTable.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:30px;color:var(--danger-color);">Erreur de chargement</td></tr>';
                         return;
                     }
                 }
 
-                const data = cachedData[periodKey];
-                renderAllFinancialTables(data, period);
+                renderAllFinancialTables(cachedData[period], period);
             });
         });
 
@@ -1261,27 +1255,36 @@
         // RENDER ALL FINANCIAL TABLES
         // ============================================================
         function renderAllFinancialTables(data, period) {
-            const isTTM = period === 'ttm';
-            renderIncomeTable(data, isTTM);
-            renderBalanceTable(data, isTTM);
-            renderCashflowTable(data, isTTM);
-            renderRatiosTable(data, isTTM);
-            renderKPIsTable(data, isTTM);
+            renderIncomeTable(data, period);
+            renderBalanceTable(data, period);
+            renderCashflowTable(data, period);
+            renderRatiosTable(data, period);
+            renderKPIsTable(data, period);
+        }
+
+        function periodLabel(item, period) {
+            if (!item?.date) return 'N/A';
+            const d = new Date(item.date);
+            if (period === 'quarterly') {
+                const q = Math.floor(d.getMonth() / 3) + 1;
+                return `Q${q} ${d.getFullYear()}`;
+            }
+            return 'FY ' + d.getFullYear();
         }
 
         // ============================================================
         // INCOME STATEMENT
         // ============================================================
-        function renderIncomeTable(data, isTTM) {
+        function renderIncomeTable(data, period) {
             if (!data.income || data.income.length === 0) {
-                document.querySelector('#incomeTable tbody').innerHTML = '<tr><td colspan="6">Données non disponibles</td></tr>';
+                document.querySelector('#incomeTable tbody').innerHTML = '<tr><td colspan="6" style="text-align:center;padding:20px;color:var(--text-secondary);">Données non disponibles</td></tr>';
                 return;
             }
-            const years = isTTM ? data.income.slice(0, 1) : data.income.slice(0, 5);
+            const limit = period === 'quarterly' ? 8 : 5;
+            const years = data.income.slice(0, limit);
             const thead = document.querySelector('#incomeTable thead tr');
             const tbody = document.querySelector('#incomeTable tbody');
-
-            thead.innerHTML = `<th>Fiscal Year</th>${years.map(y => `<th>${isTTM ? 'TTM' : 'FY ' + new Date(y.date).getFullYear()}</th>`).join('')}`;
+            thead.innerHTML = `<th>Fiscal Year</th>${years.map(y => `<th>${periodLabel(y, period)}</th>`).join('')}`;
 
             const rows = [
                 { label: 'Period Ending', key: '_date', bold: true },
@@ -1326,16 +1329,16 @@
         // ============================================================
         // BALANCE SHEET
         // ============================================================
-        function renderBalanceTable(data, isTTM) {
+        function renderBalanceTable(data, period) {
             if (!data.balance || data.balance.length === 0) {
-                document.querySelector('#balanceTable tbody').innerHTML = '<tr><td colspan="6">Données non disponibles</td></tr>';
+                document.querySelector('#balanceTable tbody').innerHTML = '<tr><td colspan="6" style="text-align:center;padding:20px;color:var(--text-secondary);">Données non disponibles</td></tr>';
                 return;
             }
-            const years = isTTM ? data.balance.slice(0, 1) : data.balance.slice(0, 5);
+            const limit = period === 'quarterly' ? 8 : 5;
+            const years = data.balance.slice(0, limit);
             const thead = document.querySelector('#balanceTable thead tr');
             const tbody = document.querySelector('#balanceTable tbody');
-
-            thead.innerHTML = `<th>Fiscal Year</th>${years.map(y => `<th>${isTTM ? 'TTM' : 'FY ' + new Date(y.date).getFullYear()}</th>`).join('')}`;
+            thead.innerHTML = `<th>Fiscal Year</th>${years.map(y => `<th>${periodLabel(y, period)}</th>`).join('')}`;
 
             const rows = [
                 { label: 'Period Ending', key: '_date', bold: true },
@@ -1367,7 +1370,7 @@
                 { label: '— EQUITY —', isSection: true },
                 { label: 'Additional Paid-In Capital', key: 'additionalPaidInCapital' },
                 { label: 'Retained Earnings', key: 'retainedEarnings' },
-                { label: 'Treasury Stock', key: 'othertotalStockholdersEquity' },
+                { label: 'Treasury Stock', key: 'treasuryStock' },
                 { label: 'Total Common Equity', key: 'totalStockholdersEquity', bold: true },
                 { label: "Shareholders' Equity", key: 'totalStockholdersEquity', bold: true },
                 { label: 'Total Liabilities & Equity', key: 'totalLiabilitiesAndStockholdersEquity' },
@@ -1388,43 +1391,48 @@
         // ============================================================
         // CASH FLOW
         // ============================================================
-        function renderCashflowTable(data, isTTM) {
+        function renderCashflowTable(data, period) {
             if (!data.cashflow || data.cashflow.length === 0) {
-                document.querySelector('#cashflowTable tbody').innerHTML = '<tr><td colspan="6">Données non disponibles</td></tr>';
+                document.querySelector('#cashflowTable tbody').innerHTML = '<tr><td colspan="6" style="text-align:center;padding:20px;color:var(--text-secondary);">Données non disponibles</td></tr>';
                 return;
             }
-            const years = isTTM ? data.cashflow.slice(0, 1) : data.cashflow.slice(0, 5);
+            const limit = period === 'quarterly' ? 8 : 5;
+            const years = data.cashflow.slice(0, limit);
             const thead = document.querySelector('#cashflowTable thead tr');
             const tbody = document.querySelector('#cashflowTable tbody');
-
-            thead.innerHTML = `<th>Fiscal Year</th>${years.map(y => `<th>${isTTM ? 'TTM' : 'FY ' + new Date(y.date).getFullYear()}</th>`).join('')}`;
+            thead.innerHTML = `<th>Fiscal Year</th>${years.map(y => `<th>${periodLabel(y, period)}</th>`).join('')}`;
 
             const rows = [
                 { label: 'Period Ending', key: '_date', bold: true },
                 { label: '— OPERATING ACTIVITIES —', isSection: true },
                 { label: 'Net Income', key: 'netIncome' },
                 { label: 'Depreciation & Amortization', key: 'depreciationAndAmortization' },
+                { label: 'Loss (Gain) on Equity Investments', key: 'deferredIncomeTax' },
                 { label: 'Stock-Based Compensation', key: 'stockBasedCompensation' },
+                { label: 'Provision & Write-off of Bad Debts', key: 'otherWorkingCapital' },
+                { label: 'Other Operating Activities', key: 'otherNonCashItems' },
                 { label: 'Change in Accounts Receivable', key: 'changeInWorkingCapital' },
-                { label: 'Change in Inventory', key: 'changeInInventory' },
-                { label: 'Change in Accounts Payable', key: 'changesInWorkingCapital' },
-                { label: 'Other Operating Activities', key: 'otherWorkingCapital' },
+                { label: 'Change in Inventory', key: 'inventory' },
+                { label: 'Change in Accounts Payable', key: 'accountsPayables' },
+                { label: 'Change in Other Net Operating Assets', key: 'otherWorkingCapital' },
                 { label: 'Operating Cash Flow', key: 'operatingCashFlow', bold: true },
                 { label: 'Operating Cash Flow Growth', key: '_ocfGrowth', isGrowth: true, indent: true },
                 { label: '— INVESTING ACTIVITIES —', isSection: true },
                 { label: 'Capital Expenditures', key: 'capitalExpenditure' },
                 { label: 'Cash Acquisitions', key: 'acquisitionsNet' },
+                { label: 'Sale (Purchase) of Intangibles', key: 'salePurchaseOfStock' },
                 { label: 'Investment in Securities', key: 'purchasesOfInvestments' },
                 { label: 'Other Investing Activities', key: 'otherInvestingActivites' },
                 { label: 'Investing Cash Flow', key: 'investingCashFlow', bold: true },
                 { label: '— FINANCING ACTIVITIES —', isSection: true },
-                { label: 'Long-Term Debt Issued', key: 'debtRepayment' },
-                { label: 'Long-Term Debt Repaid', key: 'debtRepayment' },
+                { label: 'Long-Term Debt Issued', key: 'longTermDebtIssued' },
+                { label: 'Long-Term Debt Repaid', key: 'longTermDebtRepaid' },
                 { label: 'Net Debt Issued (Repaid)', key: 'debtRepayment' },
-                { label: 'Repurchase of Common Stock', key: 'commonStockRepurchased' },
                 { label: 'Issuance of Common Stock', key: 'commonStockIssued' },
+                { label: 'Repurchase of Common Stock', key: 'commonStockRepurchased' },
                 { label: 'Other Financing Activities', key: 'otherFinancingActivites' },
                 { label: 'Financing Cash Flow', key: 'financingCashFlow', bold: true },
+                { label: 'Foreign Exchange Rate Adjustment', key: 'effectOfForexChangesOnCash' },
                 { label: 'Net Cash Flow', key: 'netChangeInCash', bold: true },
                 { label: 'Free Cash Flow', key: 'freeCashFlow', bold: true },
                 { label: 'Free Cash Flow Growth', key: '_fcfGrowth', isGrowth: true, indent: true },
@@ -1432,29 +1440,30 @@
                 { label: 'Free Cash Flow Per Share', key: '_fcfPerShare', indent: true },
                 { label: 'Cash Interest Paid', key: 'interestPaid' },
                 { label: 'Cash Income Tax Paid', key: 'incomeTaxesPaid' },
+                { label: 'Levered Free Cash Flow', key: '_fcf' },
+                { label: 'Change in Working Capital', key: 'changeInWorkingCapital' },
             ];
 
-            tbody.innerHTML = buildTableRows(rows, years, null, data.income);
+            tbody.innerHTML = buildTableRows(rows, years, null, data.income || []);
         }
 
         // ============================================================
         // RATIOS
         // ============================================================
-        function renderRatiosTable(data, isTTM) {
+        function renderRatiosTable(data, period) {
+            // For ratios we use ratiosHistory (annual) or ratios (TTM fallback)
             const ratiosData = data.ratiosHistory || [];
-            const years = isTTM ? ratiosData.slice(0, 1) : ratiosData.slice(0, 5);
+            const limit = period === 'quarterly' ? 8 : 5;
+            const years = ratiosData.slice(0, limit);
             const thead = document.querySelector('#ratiosTable thead tr');
             const tbody = document.querySelector('#ratiosTable tbody');
 
-            // If we have ratios history
             if (years.length === 0) {
-                // Fallback: show single column with current ratios
-                thead.innerHTML = `<th>Metric</th><th>Current (TTM)</th>`;
+                // Fallback: single TTM column from ratios-ttm
                 const r = data.ratios || {};
-                const m = data.metrics || {};
                 const q = data.quote || {};
                 const p = data.profile || {};
-
+                thead.innerHTML = `<th>Metric</th><th>Current</th>`;
                 const rows = [
                     ['Market Capitalization', formatLarge(p.mktCap)],
                     ['Last Close Price', q.price ? `$${q.price.toFixed(2)}` : 'N/A'],
@@ -1484,38 +1493,37 @@
                     ['Buyback Yield / Dilution', 'N/A'],
                     ['Total Shareholder Return', 'N/A'],
                 ];
-
-                tbody.innerHTML = rows.map(([label, value]) => `
-                    <tr><td>${label}</td><td>${value}</td></tr>
-                `).join('');
+                tbody.innerHTML = rows.map(([label, value]) => `<tr><td>${label}</td><td>${value}</td></tr>`).join('');
                 return;
             }
 
-            // Multi-year ratios
-            thead.innerHTML = `<th>Fiscal Year</th>${years.map(y => `<th>${isTTM ? 'TTM' : 'FY ' + new Date(y.date).getFullYear()}</th>`).join('')}`;
+            thead.innerHTML = `<th>Fiscal Year</th>${years.map(y => `<th>${periodLabel(y, period)}</th>`).join('')}`;
             const ratioRows = [
                 { label: 'Period Ending', key: '_date', bold: true },
-                { label: 'Market Capitalization', key: 'marketCapTTM' },
-                { label: 'Last Close Price', key: 'priceEarningsRatioTTM' },
-                { label: 'PE Ratio', key: 'priceEarningsRatioTTM', bold: true },
-                { label: 'PS Ratio', key: 'priceToSalesRatioTTM' },
-                { label: 'PB Ratio', key: 'priceToBookRatioTTM' },
-                { label: 'P/FCF Ratio', key: 'priceToFreeCashFlowsRatioTTM' },
-                { label: 'P/OCF Ratio', key: 'priceToOperatingCashFlowsRatioTTM' },
-                { label: 'PEG Ratio', key: 'priceEarningsToGrowthRatioTTM' },
-                { label: 'EV/Sales Ratio', key: 'enterpriseValueOverEBITDATTM' },
-                { label: 'EV/EBITDA Ratio', key: 'enterpriseValueMultipleTTM' },
-                { label: 'Debt / Equity Ratio', key: 'debtEquityRatioTTM' },
-                { label: 'Debt / EBITDA Ratio', key: 'debtToEquityTTM' },
-                { label: 'Quick Ratio', key: 'quickRatioTTM' },
-                { label: 'Current Ratio', key: 'currentRatioTTM' },
-                { label: 'Return on Equity (ROE)', key: 'returnOnEquityTTM', isPercent: true },
-                { label: 'Return on Assets (ROA)', key: 'returnOnAssetsTTM', isPercent: true },
-                { label: 'Return on Invested Capital (ROIC)', key: 'roicTTM', isPercent: true },
-                { label: 'Asset Turnover', key: 'assetTurnoverTTM' },
-                { label: 'Inventory Turnover', key: 'inventoryTurnoverTTM' },
-                { label: 'Earnings Yield', key: 'earningsYieldTTM', isPercent: true },
-                { label: 'FCF Yield', key: 'freeCashFlowYieldTTM', isPercent: true },
+                { label: 'Market Capitalization', key: 'marketCapitalization' },
+                { label: 'Last Close Price', key: 'stockPrice' },
+                { label: 'PE Ratio', key: 'priceEarningsRatio', bold: true },
+                { label: 'Forward PE', key: 'priceEarningsRatio' },
+                { label: 'PS Ratio', key: 'priceToSalesRatio' },
+                { label: 'PB Ratio', key: 'priceToBookRatio' },
+                { label: 'P/FCF Ratio', key: 'priceToFreeCashFlowsRatio' },
+                { label: 'P/OCF Ratio', key: 'priceToOperatingCashFlowsRatio' },
+                { label: 'PEG Ratio', key: 'priceEarningsToGrowthRatio' },
+                { label: 'EV/Sales Ratio', key: 'enterpriseValueOverEBITDA' },
+                { label: 'EV/EBITDA Ratio', key: 'enterpriseValueMultiple' },
+                { label: 'Debt / Equity Ratio', key: 'debtEquityRatio' },
+                { label: 'Debt / EBITDA Ratio', key: 'debtToEquity' },
+                { label: 'Net Debt / Equity Ratio', key: 'netDebtToEquity' },
+                { label: 'Net Debt / EBITDA Ratio', key: 'netDebtToEBITDA' },
+                { label: 'Asset Turnover', key: 'assetTurnover' },
+                { label: 'Inventory Turnover', key: 'inventoryTurnover' },
+                { label: 'Quick Ratio', key: 'quickRatio' },
+                { label: 'Current Ratio', key: 'currentRatio' },
+                { label: 'Return on Equity (ROE)', key: 'returnOnEquity', isPercent: true },
+                { label: 'Return on Assets (ROA)', key: 'returnOnAssets', isPercent: true },
+                { label: 'Return on Invested Capital (ROIC)', key: 'returnOnCapitalEmployed', isPercent: true },
+                { label: 'Earnings Yield', key: 'earningsYield', isPercent: true },
+                { label: 'FCF Yield', key: 'freeCashFlowYield', isPercent: true },
             ];
             tbody.innerHTML = buildTableRows(ratioRows, years, null);
         }
@@ -1523,12 +1531,12 @@
         // ============================================================
         // KPIs
         // ============================================================
-        function renderKPIsTable(data, isTTM) {
-            const years = isTTM ? (data.income || []).slice(0, 1) : (data.income || []).slice(0, 5);
+        function renderKPIsTable(data, period) {
+            const limit = period === 'quarterly' ? 8 : 5;
+            const years = (data.income || []).slice(0, limit);
             const thead = document.querySelector('#kpisTable thead tr');
             const tbody = document.querySelector('#kpisTable tbody');
-
-            thead.innerHTML = `<th>Fiscal Year</th>${years.map(y => `<th>${isTTM ? 'TTM' : 'FY ' + new Date(y.date).getFullYear()}</th>`).join('')}`;
+            thead.innerHTML = `<th>Fiscal Year</th>${years.map(y => `<th>${periodLabel(y, period)}</th>`).join('')}`;
 
             const rows = [
                 { label: 'Period Ending', key: '_date', bold: true },
@@ -1622,9 +1630,10 @@
                         if (v != null) displayVal = formatMillion(v);
                     } else if (row.key === '_fcfPerShare') {
                         const cf = cashflowData ? cashflowData[index] : yearData;
-                        const shares = yearData.weightedAverageSharesOutDil || 1;
+                        const incRef = incomeDataAux ? incomeDataAux[index] : yearData;
+                        const shares = (incRef?.weightedAverageSharesOutDil || yearData.weightedAverageSharesOutDil || 0);
                         const fcf = cf?.freeCashFlow;
-                        if (fcf != null && shares) displayVal = '$' + (fcf / shares).toFixed(2);
+                        if (fcf != null && shares > 0) displayVal = '$' + (fcf / shares).toFixed(2);
                     } else if (row.key === '_fcfMargin' || row.key === '_fcfMarginIncome') {
                         const cf = cashflowData ? cashflowData[index] : yearData;
                         const incRef = incomeDataAux ? incomeDataAux[index] : yearData;
@@ -1641,31 +1650,32 @@
                     } else if (row.key === '_netCashPerShare') {
                         const cash = yearData.cashAndShortTermInvestments;
                         const debt = yearData.totalDebt;
-                        const shares = yearData.commonStock || 1;
-                        if (cash != null && debt != null) {
-                            const v = (cash - debt) / (shares || 1);
+                        const shares = yearData.commonStock || yearData.totalCommonShares || 0;
+                        if (cash != null && debt != null && shares > 0) {
+                            const v = (cash - debt) / shares;
                             displayVal = '$' + v.toFixed(2);
                         }
                     } else if (row.key === '_shares') {
-                        const v = yearData.commonStock || yearData.weightedAverageSharesOutDil;
-                        if (v != null) displayVal = formatMillion(v);
+                        // FMP balance sheet uses commonStock or totalCommonShares
+                        const v = yearData.commonStock || yearData.totalCommonShares || yearData.weightedAverageSharesOutDil;
+                        if (v != null) displayVal = (v / 1_000_000).toFixed(2);
                     } else if (row.key === '_workingCapital') {
                         const v = yearData.totalCurrentAssets && yearData.totalCurrentLiabilities
                             ? yearData.totalCurrentAssets - yearData.totalCurrentLiabilities : null;
                         if (v != null) displayVal = formatMillion(v);
                     } else if (row.key === '_bookValuePS') {
                         const bv = yearData.totalStockholdersEquity;
-                        const shares = yearData.commonStock || 1;
-                        if (bv != null && shares) displayVal = '$' + (bv / shares).toFixed(2);
+                        const shares = (yearData.commonStock || yearData.totalCommonShares || 0);
+                        if (bv != null && shares > 0) displayVal = '$' + (bv / shares).toFixed(2);
                     } else if (row.key === '_tangibleBV') {
-                        const v = yearData.totalStockholdersEquity && yearData.goodwillAndIntangibleAssets
-                            ? yearData.totalStockholdersEquity - yearData.goodwillAndIntangibleAssets : yearData.totalStockholdersEquity;
+                        const gi = (yearData.goodwillAndIntangibleAssets || yearData.goodwill || 0) + (yearData.intangibleAssets || 0);
+                        const v = yearData.totalStockholdersEquity != null ? yearData.totalStockholdersEquity - gi : null;
                         if (v != null) displayVal = formatMillion(v);
                     } else if (row.key === '_tangibleBVPS') {
                         const bv = yearData.totalStockholdersEquity;
-                        const gi = yearData.goodwillAndIntangibleAssets || 0;
-                        const shares = yearData.commonStock || 1;
-                        if (bv != null) displayVal = '$' + ((bv - gi) / shares).toFixed(2);
+                        const gi = (yearData.goodwillAndIntangibleAssets || yearData.goodwill || 0) + (yearData.intangibleAssets || 0);
+                        const shares = yearData.commonStock || yearData.totalCommonShares || 0;
+                        if (bv != null && shares > 0) displayVal = '$' + ((bv - gi) / shares).toFixed(2);
                     } else if (row.isGrowth) {
                         if (index < years.length - 1) {
                             const curr = yearData[row.key];
