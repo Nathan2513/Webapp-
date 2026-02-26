@@ -1042,7 +1042,7 @@
         const stockDetailsView = document.getElementById('stockDetailsView');
         const backBtn = document.getElementById('backBtn');
         let searchTimeout;
-        let currentLoadedSymbol = ''; // Stocke le symbole actuellement affiché
+        let currentLoadedSymbol = ''; 
 
         stockSearch.addEventListener('input', async (e) => {
             const query = e.target.value.trim().toUpperCase();
@@ -1068,12 +1068,16 @@
                             const symbols = stocks.map(s => s.symbol).join(',');
                             const quotes = await fmpAPI.getQuote(symbols);
                             const quotesMap = {};
-                            if (quotes) quotes.forEach(q => quotesMap[q.symbol] = q);
+                            
+                            // SECURITE : Vérifier que 'quotes' est bien un tableau (évite crash si FMP bloque)
+                            if (Array.isArray(quotes)) {
+                                quotes.forEach(q => quotesMap[q.symbol] = q);
+                            }
 
                             searchResults.innerHTML = stocks.map(stock => {
                                 const quote = quotesMap[stock.symbol];
-                                const price = quote?.price || 'N/A';
-                                const priceDisplay = typeof price === 'number' ? `$${price.toFixed(2)}` : price;
+                                const price = quote?.price;
+                                const priceDisplay = typeof price === 'number' ? `$${price.toFixed(2)}` : 'N/A';
                                 return `
                                     <div class="search-result-item" data-symbol="${stock.symbol}">
                                         <div>
@@ -1124,16 +1128,16 @@
                 document.getElementById('stockLogo').textContent = symbol.substring(0, 3);
                 document.getElementById('stockFullName').textContent = 'Chargement...';
                 
-                // On récupère les données de base pour le header et l'onglet General
                 const data = await fmpAPI.getScreenerData(symbol);
                 
                 if (data.profile) {
-                    document.getElementById('stockLogo').textContent = data.profile.symbol.substring(0, 3);
+                    document.getElementById('stockLogo').textContent = data.profile.symbol ? data.profile.symbol.substring(0, 3) : 'N/A';
                     document.getElementById('stockFullName').textContent = data.profile.companyName || symbol;
-                    document.getElementById('stockSymbol').textContent = `${data.profile.symbol}`;
+                    document.getElementById('stockSymbol').textContent = `${data.profile.symbol || symbol}`;
                 }
 
-                if (data.quote) {
+                // SECURITE : Vérifier que FMP a bien renvoyé un prix valide (sinon "N/A" au lieu de crasher)
+                if (data.quote && typeof data.quote.price === 'number') {
                     document.getElementById('currentPrice').textContent = `$${data.quote.price.toFixed(2)}`;
                     const change = data.quote.change || 0;
                     const changePercent = data.quote.changesPercentage || 0;
@@ -1145,6 +1149,9 @@
                         priceChangeEl.className = 'price-change negative';
                         priceChangeEl.textContent = `↓ $${Math.abs(change).toFixed(2)} (-${Math.abs(changePercent).toFixed(2)}%)`;
                     }
+                } else {
+                    document.getElementById('currentPrice').textContent = `N/A`;
+                    document.getElementById('priceChange').textContent = `Quota API atteint ou erreur.`;
                 }
 
                 if (data.metrics) {
@@ -1154,13 +1161,12 @@
 
                 updateGeneralTab(data);
                 updateDividendsTab(symbol);
-                
-                // Charge le tableau financier par défaut (Income Statement / Annual)
                 loadFinancialData();
                 
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             } catch (error) {
-                alert('Erreur lors du chargement des données. Veuillez réessayer.');
+                console.error('CRASH dans showStockDetails :', error);
+                alert('Erreur lors du chargement des données. L\'API est peut-être bloquée (limite atteinte).');
                 backBtn.click();
             }
         }
@@ -1196,10 +1202,10 @@
                     return;
                 }
                 
-                // Calculs basiques pour les KPI du haut de l'onglet
                 const hist = dividendData.historical;
                 if (hist.length > 0) {
-                    document.getElementById('div-annual').textContent = '$' + (hist[0].dividend * 4).toFixed(2); // Approximatif
+                    const divValue = hist[0].dividend || 0;
+                    document.getElementById('div-annual').textContent = '$' + (divValue * 4).toFixed(2); 
                 }
 
                 const recent = hist.slice(0, 5);
@@ -1222,7 +1228,6 @@
         let currentSubTab = 'income-statement';
         let currentPeriod = 'annual';
 
-        // Gestion des boutons sous-onglets (Income, Balance, CashFlow...)
         const subTabBtns = document.querySelectorAll('.sub-tab-btn');
         subTabBtns.forEach(btn => {
             btn.addEventListener('click', () => {
@@ -1233,7 +1238,6 @@
             });
         });
 
-        // Gestion des boutons de période (Annual, Quarter, TTM)
         const periodBtns = document.querySelectorAll('.period-btn');
         periodBtns.forEach(btn => {
             btn.addEventListener('click', () => {
@@ -1245,7 +1249,7 @@
         });
 
         // -----------------------------------------
-        // BLUEPRINTS : DÉFINITION DES LIGNES DU TABLEAU
+        // BLUEPRINTS (Basé sur les captures d'écran StockAnalysis)
         // -----------------------------------------
         const blueprints = {
             'income-statement': [
@@ -1262,7 +1266,6 @@
                 { label: "Interest & Investment Income", key: "interestIncome" },
                 { label: "Earnings From Equity Investments", key: "incomeFromEquity", fallback: "-" },
                 { label: "Currency Exchange Gain (Loss)", key: "foreignCurrencyTranslation", fallback: "-" },
-                { label: "Other Non Operating Income", key: "totalOtherIncomeExpensesNet" },
                 { label: "EBT Excluding Unusual Items", key: "incomeBeforeTax", bold: true },
                 { label: "Gain (Loss) on Sale of Investments", key: "gainLossOnSale", fallback: "-" },
                 { label: "Asset Writedown", key: "assetWritedown", fallback: "-" },
@@ -1271,28 +1274,23 @@
                 { label: "Income Tax Expense", key: "incomeTaxExpense" },
                 { label: "Net Income", key: "netIncome", bold: true },
                 { label: "Net Income to Common", key: "netIncome", bold: true },
-                { label: "Net Income Growth", key: "netincome_growth", isPercent: true },
+                { label: "Net Income Growth", key: "netIncome_growth", isPercent: true },
                 { label: "Shares Outstanding (Basic)", key: "weightedAverageShsOut" },
                 { label: "Shares Outstanding (Diluted)", key: "weightedAverageShsOutDil", bold: true },
-                { label: "Shares Change (YoY)", key: "shares_growth", isPercent: true },
                 { label: "EPS (Basic)", key: "eps", isCurrency: true },
                 { label: "EPS (Diluted)", key: "epsdiluted", isCurrency: true, bold: true },
-                { label: "EPS Growth", key: "eps_growth", isPercent: true },
                 { label: "Gross Margin", key: "grossMarginRatio", isPercent: true },
                 { label: "Operating Margin", key: "operatingMarginRatio", isPercent: true },
                 { label: "Profit Margin", key: "netIncomeMarginRatio", isPercent: true },
                 { label: "EBITDA", key: "ebitda", bold: true },
-                { label: "EBITDA Margin", key: "ebitdaMarginRatio", isPercent: true },
                 { label: "D&A For EBITDA", key: "depreciationAndAmortization" },
-                { label: "EBIT", key: "operatingIncome", bold: true },
-                { label: "EBIT Margin", key: "operatingMarginRatio", isPercent: true }
+                { label: "EBIT", key: "operatingIncome", bold: true }
             ],
             'balance-sheet-statement': [
                 { label: "Cash & Equivalents", key: "cashAndCashEquivalents" },
                 { label: "Short-Term Investments", key: "shortTermInvestments" },
                 { label: "Trading Asset Securities", key: "tradingAssetSecurities", fallback: "-" },
                 { label: "Cash & Short-Term Investments", key: "cashAndShortTermInvestments", bold: true },
-                { label: "Cash Growth", key: "cash_growth", isPercent: true },
                 { label: "Accounts Receivable", key: "netReceivables" },
                 { label: "Other Receivables", key: "otherReceivables", fallback: "-" },
                 { label: "Receivables", key: "netReceivables", bold: true },
@@ -1305,69 +1303,36 @@
                 { label: "Long-Term Investments", key: "longTermInvestments" },
                 { label: "Goodwill", key: "goodwill" },
                 { label: "Other Intangible Assets", key: "intangibleAssets" },
-                { label: "Long-Term Accounts Receivable", key: "longTermReceivables", fallback: "-" },
-                { label: "Long-Term Deferred Tax Assets", key: "deferredTaxAssets", fallback: "-" },
-                { label: "Other Long-Term Assets", key: "otherNonCurrentAssets" },
                 { label: "Total Assets", key: "totalAssets", bold: true },
                 { label: "Accounts Payable", key: "accountPayables" },
-                { label: "Accrued Expenses", key: "accruedExpenses", fallback: "-" },
                 { label: "Short-Term Debt", key: "shortTermDebt" },
-                { label: "Current Portion of Long-Term Debt", key: "currentPortionOfLongTermDebt", fallback: "-" },
-                { label: "Current Portion of Leases", key: "capitalLeaseObligations", fallback: "-" },
-                { label: "Current Income Taxes Payable", key: "taxPayables" },
-                { label: "Current Unearned Revenue", key: "deferredRevenue" },
-                { label: "Other Current Liabilities", key: "otherCurrentLiabilities" },
                 { label: "Total Current Liabilities", key: "totalCurrentLiabilities", bold: true },
                 { label: "Long-Term Debt", key: "longTermDebt" },
-                { label: "Long-Term Leases", key: "longTermLeases", fallback: "-" },
-                { label: "Long-Term Deferred Tax Liabilities", key: "deferredTaxLiabilitiesNonCurrent" },
-                { label: "Other Long-Term Liabilities", key: "otherNonCurrentLiabilities" },
                 { label: "Total Liabilities", key: "totalLiabilities", bold: true },
-                { label: "Additional Paid-In Capital", key: "accountPayables", fallback: "-" },
                 { label: "Retained Earnings", key: "retainedEarnings" },
-                { label: "Treasury Stock", key: "commonStock" },
-                { label: "Comprehensive Income & Other", key: "accumulatedOtherComprehensiveIncomeLoss" },
                 { label: "Total Common Equity", key: "totalStockholdersEquity", bold: true },
-                { label: "Shareholders' Equity", key: "totalStockholdersEquity", bold: true },
-                { label: "Total Liabilities & Equity", key: "totalLiabilitiesAndStockholdersEquity" },
                 { label: "Total Debt", key: "totalDebt" },
-                { label: "Net Cash (Debt)", key: "netDebt" },
-                { label: "Working Capital", key: "workingCapital", fallback: "-" },
+                { label: "Net Cash (Debt)", key: "netDebt" }
             ],
             'cash-flow-statement': [
                 { label: "Net Income", key: "netIncome" },
                 { label: "Depreciation & Amortization", key: "depreciationAndAmortization" },
-                { label: "Loss (Gain) on Equity Investments", key: "lossGainEquity", fallback: "-" },
                 { label: "Stock-Based Compensation", key: "stockBasedCompensation" },
                 { label: "Provision & Write-off of Bad Debts", key: "badDebts", fallback: "-" },
-                { label: "Other Operating Activities", key: "otherWorkingCapital" },
                 { label: "Change in Accounts Receivable", key: "accountsReceivables" },
                 { label: "Change in Inventory", key: "inventory" },
                 { label: "Change in Accounts Payable", key: "accountsPayables" },
-                { label: "Change in Other Net Operating Assets", key: "changeInWorkingCapital" },
                 { label: "Operating Cash Flow", key: "netCashProvidedByOperatingActivities", bold: true },
-                { label: "Operating Cash Flow Growth", key: "ocf_growth", isPercent: true },
                 { label: "Capital Expenditures", key: "investmentsInPropertyPlantAndEquipment" },
                 { label: "Cash Acquisitions", key: "acquisitionsNet" },
-                { label: "Sale (Purchase) of Intangibles", key: "purchasesOfIntangibles", fallback: "-" },
-                { label: "Investment in Securities", key: "purchasesOfInvestments" },
-                { label: "Other Investing Activities", key: "otherInvestingActivites" },
                 { label: "Investing Cash Flow", key: "netCashUsedForInvestingActivites", bold: true },
                 { label: "Long-Term Debt Issued", key: "debtRepayment" },
-                { label: "Long-Term Debt Repaid", key: "debtRepayment" },
-                { label: "Net Debt Issued (Repaid)", key: "netDebt", fallback: "-" },
-                { label: "Issuance of Common Stock", key: "commonStockIssued" },
                 { label: "Repurchase of Common Stock", key: "commonStockRepurchased" },
-                { label: "Other Financing Activities", key: "otherFinancingActivites" },
                 { label: "Financing Cash Flow", key: "netCashUsedProvidedByFinancingActivities", bold: true },
-                { label: "Foreign Exchange Rate Adjustments", key: "effectOfForexChangesOnCash" },
                 { label: "Net Cash Flow", key: "netChangeInCash", bold: true },
-                { label: "Free Cash Flow", key: "freeCashFlow", bold: true },
-                { label: "Free Cash Flow Growth", key: "fcf_growth", isPercent: true },
+                { label: "Free Cash Flow", key: "freeCashFlow", bold: true }
             ],
             'ratios': [
-                { label: "Market Capitalization", key: "marketCap", bold: true },
-                { label: "Enterprise Value", key: "enterpriseValue" },
                 { label: "PE Ratio", key: "priceEarningsRatio", isRaw: true },
                 { label: "PS Ratio", key: "priceToSalesRatio", isRaw: true },
                 { label: "PB Ratio", key: "priceToBookRatio", isRaw: true },
@@ -1384,7 +1349,6 @@
                 { label: "Net Profit Margin", key: "netProfitMargin", isPercent: true }
             ],
             'key-metrics': [
-                // Fallback KPIs since Geographic Segments are often Premium API in FMP
                 { label: "Revenue per Share", key: "revenuePerShare", isCurrency: true },
                 { label: "Net Income per Share", key: "netIncomePerShare", isCurrency: true },
                 { label: "Operating Cash Flow per Share", key: "operatingCashFlowPerShare", isCurrency: true },
@@ -1396,14 +1360,10 @@
                 { label: "Interest Debt per Share", key: "interestDebtPerShare", isCurrency: true },
                 { label: "Market Cap", key: "marketCap", bold: true },
                 { label: "Enterprise Value", key: "enterpriseValue" },
-                { label: "PE Ratio", key: "peRatio", isRaw: true },
-                { label: "Price to Sales Ratio", key: "pfcfRatio", isRaw: true },
-                { label: "POCF Ratio", key: "pocfratio", isRaw: true },
                 { label: "Dividend Yield", key: "dividendYield", isPercent: true }
             ]
         };
 
-        // Fonction principale pour charger et afficher le tableau
         async function loadFinancialData() {
             if (!currentLoadedSymbol) return;
             
@@ -1415,9 +1375,7 @@
             try {
                 let data = [];
                 
-                // Si TTM, l'API utilise des endpoints différents qui finissent par -ttm
                 if (currentPeriod === 'ttm') {
-                    // Les endpoints TTM renvoient un objet unique ou tableau d'1 element, on le met dans un tableau
                     const endpoint = currentSubTab === 'ratios' ? '/ratios-ttm' : 
                                      currentSubTab === 'key-metrics' ? '/key-metrics-ttm' : 
                                      currentSubTab === 'income-statement' ? '/income-statement-ttm' : null;
@@ -1430,21 +1388,19 @@
                         return;
                     }
                 } else {
-                    // Annual ou Quarterly
                     const params = { symbol: currentLoadedSymbol, limit: 5 };
                     if (currentPeriod === 'quarter') params.period = 'quarter';
-                    
                     data = await fmpAPI.makeRequest(`/${currentSubTab}`, params);
                 }
 
-                if (!data || data.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Aucune donnée disponible.</td></tr>';
+                // SECURITE: Si FMP bloque ou renvoie vide (ex: limite atteinte)
+                if (!data || !Array.isArray(data) || data.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color: var(--danger-color);">Données non disponibles (Limite API atteinte ou ticker non supporté).</td></tr>';
                     return;
                 }
 
                 const config = blueprints[currentSubTab] || blueprints['income-statement'];
                 
-                // HEADER
                 let headerHtml = '<tr><th>Period Ending</th>';
                 data.forEach(col => {
                     const dateStr = col.date ? new Date(col.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'TTM';
@@ -1453,7 +1409,6 @@
                 headerHtml += '</tr>';
                 thead.innerHTML = headerHtml;
 
-                // BODY
                 let bodyHtml = '';
                 config.forEach(row => {
                     let nameStyle = "";
@@ -1467,12 +1422,11 @@
                         let formattedValue = row.fallback || "-";
                         let colorStyle = "";
 
-                        // Calcul de croissance à la volée (ex: "revenue_growth")
                         if (row.key.includes("_growth")) {
                             const baseKey = row.key.split('_')[0];
                             if (index < data.length - 1) {
                                 const current = colData[baseKey];
-                                const previous = data[index + 1][baseKey];
+                                const previous = data[index + 1]?.[baseKey];
                                 if (previous && previous !== 0) {
                                     value = ((current - previous) / previous) * 100;
                                     formattedValue = value.toFixed(2) + "%";
@@ -1480,11 +1434,9 @@
                                 }
                             }
                         } else {
-                            // Extraction normale
                             value = colData[row.key];
                             if (value !== undefined && value !== null) {
                                 if (row.isPercent) {
-                                    // FMP donne parfois les % en base 1 (ex: 0.15 pour 15%). Si la valeur est très petite, on la x100.
                                     let pct = value;
                                     if (currentSubTab === 'ratios' && Math.abs(pct) < 10) pct = pct * 100; 
                                     formattedValue = pct.toFixed(2) + "%";
@@ -1493,7 +1445,6 @@
                                 } else if (row.isRaw) {
                                     formattedValue = value.toFixed(2);
                                 } else {
-                                    // Format en millions (ex: 416,160)
                                     formattedValue = (value / 1000000).toLocaleString('en-US', { maximumFractionDigits: 0 });
                                 }
                             }
@@ -1509,11 +1460,10 @@
 
             } catch (error) {
                 console.error("Erreur de chargement du tableau financier :", error);
-                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Erreur réseau FMP.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Erreur de communication avec l\'API.</td></tr>';
             }
         }
 
-        // Tab switching (General / Scores / Financials...)
         const tabBtns = document.querySelectorAll('.tab-btn');
         const tabContents = document.querySelectorAll('.tab-content');
 
@@ -1527,14 +1477,12 @@
             });
         });
 
-        // Back button
         backBtn.addEventListener('click', () => {
             searchView.style.display = 'block';
             stockDetailsView.classList.remove('active');
             window.scrollTo({ top: 0, behavior: 'smooth' });
         });
 
-        // Preset cards click handlers
         document.querySelectorAll('.preset-card').forEach(card => {
             card.addEventListener('click', () => {
                 const preset = card.dataset.preset;
