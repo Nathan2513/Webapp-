@@ -465,7 +465,7 @@
             color: var(--text-primary);
         }
         
-        /* TABLE */
+        /* TABLE - MIS A JOUR POUR LE LOOK PRO */
         .data-table {
             width: 100%;
             border-collapse: collapse;
@@ -476,15 +476,23 @@
         .data-table th {
             background: var(--hover-bg);
             padding: 15px;
-            text-align: left;
+            text-align: right;
             font-weight: 600;
             color: var(--text-primary);
             border-bottom: 2px solid var(--border-color);
         }
+        .data-table th:first-child {
+            text-align: left;
+        }
         .data-table td {
-            padding: 15px;
+            padding: 12px 15px;
             border-bottom: 1px solid var(--border-color);
             color: var(--text-primary);
+            font-size: 0.95rem;
+            text-align: right;
+        }
+        .data-table td:first-child {
+            text-align: left;
         }
         .data-table tr:last-child td {
             border-bottom: none;
@@ -588,7 +596,6 @@
         </header>
 
         <main class="main-content">
-            <!-- SEARCH VIEW -->
             <div class="search-section" id="searchView">
                 <div class="search-icon-header">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -708,7 +715,6 @@
                 </div>
             </div>
 
-            <!-- STOCK DETAILS VIEW -->
             <div class="stock-details" id="stockDetailsView">
                 <div class="stock-header">
                     <div class="stock-title-row">
@@ -740,14 +746,10 @@
                     <div class="tabs-nav">
                         <button class="tab-btn active" data-tab="general">General</button>
                         <button class="tab-btn" data-tab="scores">Scores</button>
-                        <button class="tab-btn" data-tab="income">Income Statement</button>
-                        <button class="tab-btn" data-tab="balance">Balance Sheet</button>
-                        <button class="tab-btn" data-tab="cashflow">Cash Flow</button>
-                        <button class="tab-btn" data-tab="ratios">Ratios & KPIs</button>
+                        <button class="tab-btn" data-tab="financials">Financials & KPIs</button>
                         <button class="tab-btn" data-tab="dividends">Dividends</button>
                     </div>
 
-                    <!-- GENERAL TAB -->
                     <div class="tab-content active" id="general-tab">
                         <div class="chart-container">
                             <p>📈 Graphique du cours de l'action (intégration à venir)</p>
@@ -802,7 +804,6 @@
                         </div>
                     </div>
 
-                    <!-- SCORES TAB -->
                     <div class="tab-content" id="scores-tab">
                         <h3 style="margin-bottom: 20px; font-size: 1.5rem;">Analyse des Scores</h3>
                         <div class="chart-container">
@@ -828,67 +829,18 @@
                         </div>
                     </div>
 
-                    <!-- FINANCIALS TAB -->
                     <div class="tab-content" id="financials-tab">
                         <h3 style="margin-bottom: 20px; font-size: 1.5rem;">Données Financières</h3>
                         <table class="data-table">
                             <thead>
                                 <tr>
-                                    <th>Metric</th>
-                                    <th>FY 2025</th>
-                                    <th>FY 2024</th>
-                                    <th>FY 2023</th>
-                                    <th>FY 2022</th>
-                                </tr>
+                                    </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td><strong>Revenue</strong></td>
-                                    <td>$13,009M</td>
-                                    <td>$10,927M</td>
-                                    <td>$9,559M</td>
-                                    <td>$8,270M</td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Revenue Growth (YoY)</strong></td>
-                                    <td style="color: var(--success-color);">19.05%</td>
-                                    <td style="color: var(--success-color);">14.31%</td>
-                                    <td style="color: var(--success-color);">15.59%</td>
-                                    <td style="color: var(--success-color);">3.72%</td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Gross Profit</strong></td>
-                                    <td>$5,663M</td>
-                                    <td>$4,773M</td>
-                                    <td>$4,153M</td>
-                                    <td>$3,447M</td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Operating Income</strong></td>
-                                    <td>$2,427M</td>
-                                    <td>$2,334M</td>
-                                    <td>$1,910M</td>
-                                    <td>$1,519M</td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Net Income</strong></td>
-                                    <td>$1,832M</td>
-                                    <td>$1,598M</td>
-                                    <td>$1,245M</td>
-                                    <td>$982M</td>
-                                </tr>
-                                <tr>
-                                    <td><strong>EPS</strong></td>
-                                    <td>$7.04</td>
-                                    <td>$6.21</td>
-                                    <td>$4.89</td>
-                                    <td>$3.87</td>
-                                </tr>
-                            </tbody>
+                                </tbody>
                         </table>
                     </div>
 
-                    <!-- DIVIDENDS TAB -->
                     <div class="tab-content" id="dividends-tab">
                         <h3 style="margin-bottom: 20px; font-size: 1.5rem;">Informations sur les Dividendes</h3>
                         <div class="metrics-grid" style="margin-bottom: 30px;">
@@ -921,37 +873,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>Mar 6, 2026</td>
-                                    <td>$0.700</td>
-                                    <td>Mar 6, 2026</td>
-                                    <td>Mar 20, 2026</td>
-                                </tr>
-                                <tr>
-                                    <td>Dec 5, 2025</td>
-                                    <td>$0.650</td>
-                                    <td>Dec 5, 2025</td>
-                                    <td>Dec 19, 2025</td>
-                                </tr>
-                                <tr>
-                                    <td>Sep 5, 2025</td>
-                                    <td>$0.650</td>
-                                    <td>Sep 5, 2025</td>
-                                    <td>Sep 19, 2025</td>
-                                </tr>
-                                <tr>
-                                    <td>Jun 6, 2025</td>
-                                    <td>$0.650</td>
-                                    <td>Jun 6, 2025</td>
-                                    <td>Jun 20, 2025</td>
-                                </tr>
-                                <tr>
-                                    <td>Mar 7, 2025</td>
-                                    <td>$0.650</td>
-                                    <td>Mar 7, 2025</td>
-                                    <td>Mar 21, 2025</td>
-                                </tr>
-                            </tbody>
+                                </tbody>
                         </table>
                     </div>
                 </div>
@@ -1034,7 +956,7 @@
         const backBtn = document.getElementById('backBtn');
         let searchTimeout;
 
-        // Search functionality with FMP API
+        // Search functionality with FMP API (Updated for Stable API)
         stockSearch.addEventListener('input', async (e) => {
             const query = e.target.value.trim().toUpperCase();
             
@@ -1052,15 +974,14 @@
                     const results = await fmpAPI.searchStocks(query);
                     
                     if (results && results.length > 0) {
-                        const stocks = results.filter(r => 
-                            r.exchangeShortName === 'NASDAQ' || 
-                            r.exchangeShortName === 'NYSE' ||
-                            r.exchangeShortName === 'AMEX'
-                        ).slice(0, 8);
+                        const stocks = results.filter(r => {
+                            const exch = (r.exchangeShortName || r.exchange || '').toUpperCase();
+                            return exch.includes('NASDAQ') || exch.includes('NYSE') || exch.includes('AMEX');
+                        }).slice(0, 8);
 
                         if (stocks.length > 0) {
                             const symbols = stocks.map(s => s.symbol).join(',');
-                            const quotes = await fmpAPI.makeRequest(`/quote/${symbols}`);
+                            const quotes = await fmpAPI.getQuote(symbols);
                             
                             const quotesMap = {};
                             if (quotes) {
@@ -1076,7 +997,7 @@
                                     <div class="search-result-item" data-symbol="${stock.symbol}">
                                         <div>
                                             <span class="result-symbol">${stock.symbol}</span>
-                                            <span class="result-name">${stock.name}</span>
+                                            <span class="result-name">${stock.name || stock.companyName || ''}</span>
                                         </div>
                                         <span style="font-weight:700;">${priceDisplay}</span>
                                     </div>
@@ -1230,54 +1151,93 @@
             `;
         }
 
-        // Update Financials Tab
+        // Update Financials Tab (Version Pro détaillée)
         function updateFinancialsTab(data) {
             if (!data.income || data.income.length === 0) {
                 document.querySelector('#financials-tab table tbody').innerHTML = '<tr><td colspan="5">Données non disponibles</td></tr>';
                 return;
             }
 
-            const years = data.income.slice(0, 4);
+            // On prend les 5 dernières années
+            const years = data.income.slice(0, 5);
             const tbody = document.querySelector('#financials-tab table tbody');
-            
-            tbody.innerHTML = `
-                <tr>
-                    <td><strong>Revenue</strong></td>
-                    ${years.map(y => `<td>$${formatNumber(y.revenue)}</td>`).join('')}
-                </tr>
-                <tr>
-                    <td><strong>Revenue Growth (YoY)</strong></td>
-                    ${years.map((y, i) => {
-                        if (i === years.length - 1) return '<td>N/A</td>';
-                        const growth = ((years[i].revenue - years[i + 1].revenue) / years[i + 1].revenue * 100).toFixed(2);
-                        const color = growth > 0 ? 'var(--success-color)' : 'var(--danger-color)';
-                        return `<td style="color: ${color};">${growth}%</td>`;
-                    }).join('')}
-                </tr>
-                <tr>
-                    <td><strong>Gross Profit</strong></td>
-                    ${years.map(y => `<td>$${formatNumber(y.grossProfit)}</td>`).join('')}
-                </tr>
-                <tr>
-                    <td><strong>Operating Income</strong></td>
-                    ${years.map(y => `<td>$${formatNumber(y.operatingIncome)}</td>`).join('')}
-                </tr>
-                <tr>
-                    <td><strong>Net Income</strong></td>
-                    ${years.map(y => `<td>$${formatNumber(y.netIncome)}</td>`).join('')}
-                </tr>
-                <tr>
-                    <td><strong>EPS</strong></td>
-                    ${years.map(y => `<td>$${y.eps?.toFixed(2) || 'N/A'}</td>`).join('')}
-                </tr>
-            `;
-            
-            // Update table headers with actual years
             const thead = document.querySelector('#financials-tab table thead tr');
+            
+            // Mise à jour de l'en-tête (Fiscal Year)
             thead.innerHTML = `
-                <th>Metric</th>
+                <th>Fiscal Year</th>
                 ${years.map(y => `<th>FY ${new Date(y.date).getFullYear()}</th>`).join('')}
             `;
+
+            // Ligne spéciale : Period Ending (Date exacte)
+            let html = `
+                <tr style="font-size: 0.85rem; border-bottom: 2px solid var(--border-color); background-color: var(--bg-main);">
+                    <td><strong>Period Ending</strong></td>
+                    ${years.map(y => `<td><strong>${new Date(y.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</strong></td>`).join('')}
+                </tr>
+            `;
+
+            // Le "Blueprint" de ton tableau (comme sur StockAnalysis)
+            const rowsConfig = [
+                { label: "Revenue", key: "revenue", bold: true },
+                { label: "Revenue Growth (YoY)", key: "growth", isPercent: true },
+                { label: "Cost of Revenue", key: "costOfRevenue" },
+                { label: "Gross Profit", key: "grossProfit", bold: true },
+                { label: "Selling, General & Admin", key: "sellingGeneralAndAdministrativeExpenses", indent: true },
+                { label: "Research & Development", key: "researchAndDevelopmentExpenses", indent: true },
+                { label: "Other Operating Expenses", key: "otherExpenses", indent: true },
+                { label: "Operating Expenses", key: "operatingExpenses", bold: true },
+                { label: "Operating Income", key: "operatingIncome", bold: true },
+                { label: "Interest Expense", key: "interestExpense" },
+                { label: "Income Before Tax", key: "incomeBeforeTax", bold: true },
+                { label: "Income Tax Expense", key: "incomeTaxExpense" },
+                { label: "Net Income", key: "netIncome", bold: true },
+                { label: "EPS", key: "eps", isCurrency: true }
+            ];
+
+            // On génère le tableau dynamiquement
+            rowsConfig.forEach(row => {
+                let nameStyle = "";
+                if (row.bold) nameStyle += "font-weight: 700; ";
+                if (row.indent) nameStyle += "padding-left: 30px; color: var(--text-secondary); ";
+
+                let rowHtml = `<tr><td style="${nameStyle}">${row.label}</td>`;
+                
+                years.forEach((yearData, index) => {
+                    let value;
+                    let formattedValue = "N/A";
+                    let colorStyle = "";
+
+                    if (row.key === "growth") {
+                        if (index < years.length - 1) {
+                            const current = yearData.revenue;
+                            const previous = years[index + 1].revenue;
+                            if (previous && previous !== 0) {
+                                value = ((current - previous) / previous) * 100;
+                                formattedValue = value.toFixed(2) + "%";
+                                colorStyle = value > 0 ? 'color: var(--success-color);' : 'color: var(--danger-color);';
+                            }
+                        }
+                    } else {
+                        value = yearData[row.key];
+                        if (value !== undefined && value !== null) {
+                            if (row.isCurrency) {
+                                formattedValue = "$" + value.toFixed(2);
+                            } else {
+                                // Affiche en millions sans décimales, ex: 416,160
+                                formattedValue = (value / 1000000).toLocaleString('en-US', { maximumFractionDigits: 0 });
+                            }
+                        }
+                    }
+
+                    rowHtml += `<td style="${row.bold ? 'font-weight: 600;' : ''} ${colorStyle}">${formattedValue}</td>`;
+                });
+                
+                rowHtml += '</tr>';
+                html += rowHtml;
+            });
+
+            tbody.innerHTML = html;
         }
 
         // Update Dividends Tab
