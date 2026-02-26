@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,23 +8,23 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
     <style>
-        /* ================= DEFINITION DES COULEURS ET VARIABLES ================= */
+        /* ================= VARIABLES ================= */
         :root {
             --primary-orange: #FF7A00;
+            --primary-orange-light: #ff9f40;
             --text-dark: #111827;
             --text-gray: #6B7280;
             --bg-white: #FFFFFF;
             --border-light: #E5E7EB;
-            --shadow-soft: 0 10px 30px -10px rgba(0,0,0,0.1);
-            
             --container-width: 1200px;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
+        html { scroll-behavior: smooth; }
+
         body {
             font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #FFFFFF 0%, #FFF9F5 50%, #FFF5EB 100%);
             color: var(--text-dark);
             line-height: 1.5;
             overflow-x: hidden;
@@ -32,29 +32,31 @@
             min-height: 100vh;
         }
 
-        /* ================= FOND AVEC QUADRILLAGE SUBTIL ================= */
+        /* ================= HERO BACKGROUND ================= */
+        .hero-bg {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: linear-gradient(135deg, #FFFFFF 0%, #FFF9F5 50%, #FFF5EB 100%);
+            z-index: 0;
+        }
+
         .grid-background {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
             z-index: 0;
             pointer-events: none;
             background-image: 
                 linear-gradient(rgba(255, 122, 0, 0.03) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(255, 122, 0, 0.03) 1px, transparent 1px);
             background-size: 60px 60px;
-            opacity: 0.5;
         }
 
-        /* Particules flottantes subtiles */
         .particles-container {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
             z-index: 0;
             pointer-events: none;
             overflow: hidden;
@@ -62,8 +64,7 @@
 
         .particle {
             position: absolute;
-            width: 3px;
-            height: 3px;
+            width: 3px; height: 3px;
             background: linear-gradient(135deg, rgba(255, 122, 0, 0.4), rgba(255, 180, 100, 0.6));
             border-radius: 50%;
             box-shadow: 0 0 6px rgba(255, 122, 0, 0.3);
@@ -71,24 +72,12 @@
         }
 
         @keyframes float-particle {
-            0% {
-                transform: translateY(100vh) translateX(0) scale(0);
-                opacity: 0;
-            }
-            10% {
-                opacity: 1;
-                transform: scale(1);
-            }
-            90% {
-                opacity: 1;
-            }
-            100% {
-                transform: translateY(-10vh) translateX(100px) scale(0);
-                opacity: 0;
-            }
+            0% { transform: translateY(100vh) translateX(0) scale(0); opacity: 0; }
+            10% { opacity: 1; transform: scale(1); }
+            90% { opacity: 1; }
+            100% { transform: translateY(-10vh) translateX(100px) scale(0); opacity: 0; }
         }
 
-        /* Distribution aléatoire des particules */
         .particle:nth-child(1) { left: 5%; animation-delay: 0s; animation-duration: 28s; }
         .particle:nth-child(2) { left: 15%; animation-delay: 4s; animation-duration: 32s; }
         .particle:nth-child(3) { left: 25%; animation-delay: 8s; animation-duration: 26s; }
@@ -105,7 +94,6 @@
         .particle:nth-child(14) { left: 70%; animation-delay: 12s; animation-duration: 30s; }
         .particle:nth-child(15) { left: 90%; animation-delay: 14s; animation-duration: 28s; }
 
-        /* Orbes décoratifs en fond */
         .orb {
             position: fixed;
             border-radius: 50%;
@@ -117,20 +105,15 @@
         }
 
         .orb-1 {
-            width: 500px;
-            height: 500px;
+            width: 500px; height: 500px;
             background: radial-gradient(circle, rgba(255, 122, 0, 0.3) 0%, transparent 70%);
-            top: -150px;
-            left: -100px;
-            animation-delay: 0s;
+            top: -150px; left: -100px;
         }
 
         .orb-2 {
-            width: 400px;
-            height: 400px;
+            width: 400px; height: 400px;
             background: radial-gradient(circle, rgba(255, 180, 100, 0.25) 0%, transparent 70%);
-            bottom: -100px;
-            right: -80px;
+            bottom: -100px; right: -80px;
             animation-delay: 10s;
         }
 
@@ -140,20 +123,18 @@
             66% { transform: translate(-20px, 20px) scale(0.95); }
         }
 
-        /* Conteneur pour le contenu au-dessus du fond */
         .content-wrapper {
             position: relative;
             z-index: 1;
         }
 
-        /* Conteneur central pour aligner le contenu */
         .container {
             max-width: var(--container-width);
             margin: 0 auto;
             padding: 0 24px;
         }
 
-        /* ================= HEADER / NAVIGATION ================= */
+        /* ================= HEADER ================= */
         .site-header {
             padding: 20px 0;
             position: sticky;
@@ -172,14 +153,19 @@
         }
 
         .logo-wrapper {
-            flex: 1; 
+            flex: 1;
             display: flex;
             align-items: center;
             gap: 8px;
-            font-family: 'Inter', sans-serif;
             font-weight: 800;
             font-size: 1.5rem;
             color: var(--text-dark);
+        }
+
+        .logo-img {
+            height: 55px;
+            width: auto;
+            object-fit: cover;
         }
 
         .nav-center {
@@ -199,26 +185,6 @@
             gap: 7px;
         }
 
-        .btn-ghost {
-            background: transparent;
-            color: var(--text-dark);
-        }
-        .btn-ghost:hover {
-            color: var(--primary-orange);
-        }
-        
-        .logo-img {
-            height: 55px;
-            width: auto;
-            object-fit: cover;
-        }
-
-        .nav-links {
-            display: flex;
-            align-items: center;
-            gap: 40px;
-        }
-
         .nav-link {
             text-decoration: none;
             color: var(--text-dark);
@@ -231,21 +197,15 @@
         .nav-link::after {
             content: '';
             position: absolute;
-            bottom: -5px;
-            left: 0;
-            width: 0;
-            height: 2px;
+            bottom: -5px; left: 0;
+            width: 0; height: 2px;
             background: var(--primary-orange);
             transition: width 0.3s;
         }
 
-        .nav-link:hover::after {
-            width: 100%;
-        }
-
+        .nav-link:hover::after { width: 100%; }
         .nav-link:hover { color: var(--primary-orange); }
 
-        /* Boutons */
         .btn {
             padding: 12px 24px;
             border-radius: 8px;
@@ -261,30 +221,24 @@
             color: white;
             box-shadow: 0 4px 15px rgba(255, 122, 0, 0.25);
         }
-        .btn-orange:hover { 
-            transform: translateY(-2px); 
-            box-shadow: 0 6px 20px rgba(255, 122, 0, 0.35); 
+
+        .btn-orange:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 122, 0, 0.35);
         }
 
-        .btn-outline {
-            background-color: transparent;
-            border: 2px solid var(--border-light);
+        .btn-ghost {
+            background: transparent;
             color: var(--text-dark);
         }
-        .btn-outline:hover { 
-            border-color: var(--text-dark); 
-            background-color: rgba(255, 122, 0, 0.05); 
-        }
-        
-        .hero-buttons-group .btn-orange {
-            width: 40%;
-            text-align: center;
-        }
 
-        /* ================= SECTION HÉROS (LE BLOC PRINCIPAL) ================= */
+        .btn-ghost:hover { color: var(--primary-orange); }
+
+        /* ================= HERO SECTION ================= */
         .hero-section {
-            padding: 100px 0 80px 0;
+            padding: 100px 0 0 0;
             position: relative;
+            background: linear-gradient(135deg, #FFFFFF 0%, #FFF9F5 50%, #FFF5EB 100%);
         }
 
         .hero-grid {
@@ -294,54 +248,36 @@
             gap: 60px;
         }
 
-        /* TITRE AVEC GRADIENT ET ANIMATION BRILLANCE */
         .hero-content h1 {
             font-size: 3.5rem;
             font-weight: 800;
             line-height: 1.1;
             margin-bottom: 24px;
             letter-spacing: -0.03em;
-            
-            /* Gradient animé */
+        }
+
+        .hero-content h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 24px;
+            letter-spacing: -0.03em;
             background: linear-gradient(135deg, var(--text-dark) 0%, var(--primary-orange) 50%, var(--text-dark) 100%);
             background-size: 200% auto;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            
-            /* Animation de brillance */
             animation: shine 3s linear infinite;
-            
-            /* Effet de profondeur */
             position: relative;
         }
 
         @keyframes shine {
-            0% {
-                background-position: 0% center;
-            }
-            100% {
-                background-position: 200% center;
-            }
-        }
-
-        /* Effet d'ombre portée pour plus de profondeur */
-        .hero-content h1::after {
-            content: 'Analyse Better, Invest Better.';
-            position: absolute;
-            top: 0;
-            left: 0;
-            z-index: -1;
-            background: linear-gradient(135deg, rgba(17, 24, 39, 0.1) 0%, rgba(255, 122, 0, 0.1) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            filter: blur(8px);
-            opacity: 0.5;
+            0% { background-position: 0% center; }
+            100% { background-position: 200% center; }
         }
 
         .hero-content p {
-            font-size: 1.25rem;
+            font-size: 1.15rem;
             color: var(--text-gray);
             margin-bottom: 40px;
             max-width: 500px;
@@ -353,7 +289,6 @@
             gap: 16px;
         }
 
-        /* Colonne image à droite (Dashboard Mockup) */
         .hero-image-container {
             box-shadow: 0 20px 50px rgba(255, 122, 0, 0.12), 0 5px 15px rgba(0,0,0,0.08);
             border-radius: 16px;
@@ -362,159 +297,309 @@
             background: rgba(255, 255, 255, 0.9);
             backdrop-filter: blur(10px);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
-            position: relative;
         }
 
         .hero-image-container:hover {
             transform: translateY(-8px) scale(1.01);
             box-shadow: 0 30px 60px rgba(255, 122, 0, 0.18), 0 10px 25px rgba(0,0,0,0.12);
         }
-        
+
         .dashboard-placeholder {
             width: 100%;
             height: 400px;
-            background: linear-gradient(135deg, #FAFAFA 0%, #F5F5F5 100%),
-                        url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="%23FF7A00" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>') no-repeat center center;
-            background-size: auto, 100px;
+            background: linear-gradient(135deg, #FAFAFA 0%, #F5F5F5 100%);
         }
 
-        /* ================= SECTION FONCTIONNALITÉS (LES 3 CARTES) ================= */
+        /* ================= TRANSITION WAVE ================= */
+        .wave-transition {
+            position: relative;
+            height: 120px;
+            background: linear-gradient(135deg, #FFFFFF 0%, #FFF9F5 50%, #FFF5EB 100%);
+            margin-bottom: -2px;
+            overflow: hidden;
+        }
+
+        .wave-transition svg {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* ================= FEATURES SECTION ================= */
         .features-section {
-            padding: 60px 0 100px 0;
-            background: linear-gradient(180deg, rgba(255, 249, 245, 0.5) 0%, rgba(255, 245, 235, 0.8) 100%);
+            padding: 80px 0 100px 0;
+            background: linear-gradient(180deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
             position: relative;
         }
 
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 32px;
+        /* Subtil grain sur le fond features */
+        .features-section::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .features-section .container {
             position: relative;
             z-index: 1;
         }
 
+        .features-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .features-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 16px;
+            background: rgba(255, 122, 0, 0.15);
+            border: 1px solid rgba(255, 122, 0, 0.3);
+            border-radius: 20px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--primary-orange);
+            margin-bottom: 20px;
+        }
+
+        .features-label::before {
+            content: '';
+            width: 7px; height: 7px;
+            background: var(--primary-orange);
+            border-radius: 50%;
+            animation: pulse-dot 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(1.3); }
+        }
+
+        .features-header h2 {
+            font-size: 2.6rem;
+            font-weight: 800;
+            color: #ffffff;
+            letter-spacing: -0.03em;
+            line-height: 1.15;
+        }
+
+        .features-header h2 span {
+            color: var(--primary-orange);
+        }
+
+        .features-header p {
+            margin-top: 16px;
+            font-size: 1.05rem;
+            color: rgba(255, 255, 255, 0.5);
+            max-width: 520px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* ================= FEATURE CARDS ================= */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 28px;
+        }
+
         .feature-card {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            padding: 32px;
-            border-radius: 16px;
-            border: 1px solid rgba(255, 122, 0, 0.12);
-            box-shadow: 0 8px 25px rgba(255, 122, 0, 0.08);
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 36px 32px;
+            display: flex;
+            flex-direction: column;
             transition: all 0.4s ease;
             position: relative;
             overflow: hidden;
+            cursor: pointer;
         }
 
-        /* Effet de brillance au survol */
+        /* Ligne orange en haut au hover */
+        .feature-card::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary-orange), #ff9f40);
+            transform: scaleX(0);
+            transition: transform 0.4s ease;
+            transform-origin: left;
+        }
+
+        .feature-card:hover::after {
+            transform: scaleX(1);
+        }
+
+        /* Glow de fond au hover */
         .feature-card::before {
             content: '';
             position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 122, 0, 0.1), transparent);
-            transition: left 0.5s;
+            top: -50%; left: -50%;
+            width: 200%; height: 200%;
+            background: radial-gradient(circle at center, rgba(255, 122, 0, 0.06) 0%, transparent 60%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
         }
 
         .feature-card:hover::before {
-            left: 100%;
+            opacity: 1;
         }
-        
+
         .feature-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 40px rgba(255, 122, 0, 0.15);
-            border-color: rgba(255, 122, 0, 0.25);
+            transform: translateY(-8px);
+            border-color: rgba(255, 122, 0, 0.3);
+            background: rgba(255, 255, 255, 0.07);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 122, 0, 0.15);
         }
 
         .feature-icon-box {
-            width: 56px;
-            height: 56px;
+            width: 60px; height: 60px;
             background: linear-gradient(135deg, var(--primary-orange) 0%, #ff9f40 100%);
-            border-radius: 12px;
+            border-radius: 14px;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: 24px;
+            margin-bottom: 28px;
             color: white;
-            font-size: 1.6rem;
-            box-shadow: 0 6px 20px rgba(255, 122, 0, 0.3);
-            transition: transform 0.3s ease;
+            box-shadow: 0 8px 24px rgba(255, 122, 0, 0.35);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            flex-shrink: 0;
         }
 
         .feature-card:hover .feature-icon-box {
             transform: scale(1.1) rotate(-5deg);
+            box-shadow: 0 12px 30px rgba(255, 122, 0, 0.5);
         }
 
         .feature-card h3 {
-            font-size: 1.3rem;
+            font-size: 1.25rem;
             font-weight: 700;
             margin-bottom: 12px;
-            color: var(--text-dark);
+            color: #ffffff;
         }
 
         .feature-card p {
-            color: var(--text-gray);
-            line-height: 1.7;
-            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.55);
+            line-height: 1.75;
+            font-size: 0.95rem;
+            flex-grow: 1;
         }
 
-        /* ================= RESPONSIVE (Pour mobile et tablette) ================= */
+        .feature-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 7px;
+            margin-top: 20px;
+        }
+
+        .feature-tag {
+            padding: 4px 10px;
+            background: rgba(255, 122, 0, 0.12);
+            border: 1px solid rgba(255, 122, 0, 0.2);
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: rgba(255, 122, 0, 0.9);
+        }
+
+        .feature-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            margin-top: 24px;
+            color: var(--primary-orange);
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: gap 0.2s ease;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .feature-link svg {
+            transition: transform 0.2s ease;
+        }
+
+        .feature-link:hover {
+            gap: 10px;
+        }
+
+        .feature-link:hover svg {
+            transform: translateX(3px);
+        }
+
+        /* ================= RESPONSIVE ================= */
         @media (max-width: 968px) {
             .hero-grid {
                 grid-template-columns: 1fr;
                 text-align: center;
                 gap: 40px;
             }
-            .hero-content p, .hero-buttons-group { margin-left: auto; margin-right: auto; }
+
+            .hero-subtitle-line { justify-content: center; }
+            .hero-content p { margin-left: auto; margin-right: auto; }
             .hero-buttons-group { justify-content: center; }
-            
+
             .features-grid {
                 grid-template-columns: 1fr;
-                max-width: 500px;
+                max-width: 480px;
                 margin: 0 auto;
             }
 
-            .hero-content h1 {
-                font-size: 2.5rem;
-            }
+            .hero-content h1 { font-size: 2.5rem; }
+            .features-header h2 { font-size: 2rem; }
         }
+
         @media (max-width: 640px) {
-            .nav-links { display: none; }
+            .nav-center { display: none; }
             .hero-content h1 { font-size: 2rem; }
             .hero-buttons-group { flex-direction: column; }
             .btn { width: 100%; }
         }
+
+        /* ================= SCROLL REVEAL ANIMATIONS ================= */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .reveal-delay-1 { transition-delay: 0.1s; }
+        .reveal-delay-2 { transition-delay: 0.2s; }
+        .reveal-delay-3 { transition-delay: 0.3s; }
     </style>
 </head>
 <body>
-    <!-- FOND AVEC QUADRILLAGE -->
     <div class="grid-background"></div>
-
-    <!-- ORBES FLOTTANTS -->
     <div class="orb orb-1"></div>
     <div class="orb orb-2"></div>
 
-    <!-- PARTICULES FLOTTANTES -->
     <div class="particles-container">
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
+        <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+        <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+        <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+        <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+        <div class="particle"></div><div class="particle"></div><div class="particle"></div>
     </div>
 
     <div class="content-wrapper">
+
+        <!-- HEADER -->
         <header class="site-header">
             <div class="container nav-container">
                 <div class="logo-wrapper">
@@ -533,63 +618,138 @@
                         <a href="login.html" class="btn btn-ghost" style="text-decoration:none;">Login</a>
                         <a href="signup.html" class="btn btn-orange" style="text-decoration:none;">Get Started for Free</a>
                     </div>
-
                     <div id="user-buttons" style="display: none; align-items: center; gap: 10px;">
-                        <a href="webapp.html" class="btn btn-orange" style="text-decoration:none;">
-                            Go to Dashboard
-                        </a>
-                        <button id="logoutBtn" class="btn btn-ghost" style="font-size: 0.9rem;">
-                            Sign Out
-                        </button>
+                        <a href="webapp.html" class="btn btn-orange" style="text-decoration:none;">Go to Dashboard</a>
+                        <button id="logoutBtn" class="btn btn-ghost" style="font-size: 0.9rem;">Sign Out</button>
                     </div>
                 </div>
             </div>
         </header>
 
         <main>
+            <!-- HERO SECTION -->
             <section class="hero-section">
                 <div class="container hero-grid">
                     <div class="hero-content">
                         <h1>Analyse Better,<br>Invest Better.</h1>
+
                         <p>For you, we have created a tool to analyze any stock in the simplest way possible.</p>
+
                         <div class="hero-buttons-group">
-                            <a href="signup.html" id="heroBtn" class="btn btn-orange" style="text-decoration:none; display:flex; justify-content:center; align-items:center;">Get Started for Free</a>
+                            <a href="signup.html" id="heroBtn" class="btn btn-orange" style="text-decoration:none; display:flex; justify-content:center; align-items:center;">
+                                Get Started for Free
+                            </a>
                         </div>
                     </div>
-                    
+
                     <div class="hero-image-container">
                         <div style="background:rgba(255,122,0,0.08); padding: 8px 16px; display:flex; gap:6px; border-bottom:1px solid rgba(255,122,0,0.15);">
-                             <div style="width:10px; height:10px; border-radius:50%; background:#ef4444;"></div>
-                             <div style="width:10px; height:10px; border-radius:50%; background:#f59e0b;"></div>
-                             <div style="width:10px; height:10px; border-radius:50%; background:#10b981;"></div>
+                            <div style="width:10px;height:10px;border-radius:50%;background:#ef4444;"></div>
+                            <div style="width:10px;height:10px;border-radius:50%;background:#f59e0b;"></div>
+                            <div style="width:10px;height:10px;border-radius:50%;background:#10b981;"></div>
                         </div>
                         <div class="dashboard-placeholder"></div>
                     </div>
                 </div>
             </section>
 
+            <!-- WAVE TRANSITION -->
+            <div class="wave-transition">
+                <svg viewBox="0 0 1440 120" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="waveGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <stop offset="0%" style="stop-color:#FFF5EB;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#1a1a2e;stop-opacity:1" />
+                        </linearGradient>
+                    </defs>
+                    <!-- Fond qui se transforme -->
+                    <rect width="1440" height="120" fill="url(#waveGrad)"/>
+                    <!-- Vague principale sombre -->
+                    <path d="M0,60 C200,110 400,20 600,70 C800,120 1000,30 1200,65 C1320,85 1400,55 1440,60 L1440,120 L0,120 Z" fill="#1a1a2e" opacity="1"/>
+                    <!-- Vague secondaire pour profondeur -->
+                    <path d="M0,80 C180,40 360,100 540,75 C720,50 900,95 1080,70 C1260,45 1380,80 1440,72 L1440,120 L0,120 Z" fill="#16213e" opacity="0.7"/>
+                </svg>
+            </div>
+
+            <!-- FEATURES SECTION -->
             <section class="features-section" id="features">
-                <div class="container features-grid">
-                    <div class="feature-card">
-                        <div class="feature-icon-box">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
-                        </div>
-                        <h3>Analyse DCF</h3>
-                        <p>Analysez la valeur intrinsèque (DCF) en quelques clics. Fini les tableurs Excel complexes et les erreurs de calcul.</p>
+                <div class="container">
+
+                    <div class="features-header">
+                        <div class="features-label">Our Tools</div>
+                        <h2>Find your next<br><span>great investment</span></h2>
+                        <p>Our tools are built to give you a real edge — screen thousands of stocks, assess their true value, and run detailed cash flow models, so every decision you make is backed by data, not guesswork.</p>
                     </div>
-                    <div class="feature-card">
-                        <div class="feature-icon-box">
-                             <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"></path><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"></path><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"></path><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"></path></svg>
+
+                    <div class="features-grid">
+
+                        <!-- Card 1: Stock Screener -->
+                        <div class="feature-card reveal">
+                            <div class="feature-icon-box">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="11" cy="11" r="8"/>
+                                    <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                                </svg>
+                            </div>
+                            <h3>Stock Screener</h3>
+                            <p>Filter and discover stocks across 172K+ equities and ETFs using 50+ financial criteria. Narrow down your universe in seconds with pre-built screens or fully custom filters tailored to your strategy.</p>
+                            <div class="feature-tags">
+                                <span class="feature-tag">172K+ Stocks & ETFs</span>
+                                <span class="feature-tag">50+ Filters</span>
+                                <span class="feature-tag">Real-time data</span>
+                            </div>
+                            <a href="webapp.html" class="feature-link">
+                                Explore the Screener
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                            </a>
                         </div>
-                        <h3>Données TTM</h3>
-                        <p>Accédez aux données financières "Trailing Twelve Months" (12 derniers mois glissants) pour une analyse à jour.</p>
-                    </div>
-                    <div class="feature-card">
-                        <div class="feature-icon-box">
-                             <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg>
+
+                        <!-- Card 2: Valuation Analysis -->
+                        <div class="feature-card reveal reveal-delay-1">
+                            <div class="feature-icon-box">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <line x1="18" y1="20" x2="18" y2="10"/>
+                                    <line x1="12" y1="20" x2="12" y2="4"/>
+                                    <line x1="6" y1="20" x2="6" y2="14"/>
+                                </svg>
+                            </div>
+                            <h3>Valuation Analysis</h3>
+                            <p>Get a comprehensive valuation score for any stock. We aggregate P/E, P/B, EV/EBITDA, TTM data and more into a single actionable insight score — so you can identify overvalued or undervalued opportunities instantly.</p>
+                            <div class="feature-tags">
+                                <span class="feature-tag">6 Score categories</span>
+                                <span class="feature-tag">TTM Financials</span>
+                                <span class="feature-tag">Peer Comparison</span>
+                            </div>
+                            <a href="webapp.html" class="feature-link">
+                                Analyse a Stock
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                            </a>
                         </div>
-                        <h3>Sauvegarde Cloud</h3>
-                        <p>Créez un compte sécurisé pour sauvegarder vos analyses et retrouver votre travail sur tous vos appareils.</p>
+
+                        <!-- Card 3: DCF Calculator -->
+                        <div class="feature-card reveal reveal-delay-2">
+                            <div class="feature-icon-box">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="4" y="2" width="16" height="20" rx="2" ry="2"/>
+                                    <line x1="8" y1="6" x2="16" y2="6"/>
+                                    <line x1="8" y1="10" x2="16" y2="10"/>
+                                    <line x1="8" y1="14" x2="12" y2="14"/>
+                                    <line x1="8" y1="18" x2="12" y2="18"/>
+                                </svg>
+                            </div>
+                            <h3>DCF Calculator</h3>
+                            <p>Compute the intrinsic value of any stock using a Discounted Cash Flow model — no Excel needed. Customize growth rates, discount rates, and terminal values to stress-test your assumptions in real time.</p>
+                            <div class="feature-tags">
+                                <span class="feature-tag">Custom Assumptions</span>
+                                <span class="feature-tag">Instant Results</span>
+                                <span class="feature-tag">Cloud Saved</span>
+                            </div>
+                            <a href="webapp.html" class="feature-link">
+                                Try the DCF Tool
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                            </a>
+                        </div>
+
                     </div>
                 </div>
             </section>
@@ -620,34 +780,32 @@
 
         onAuthStateChanged(auth, (user) => {
             if (user) {
-                console.log("Connecté : " + user.email);
                 if(guestGroup) guestGroup.style.display = 'none';
                 if(userGroup) userGroup.style.display = 'flex';
-                
-                if(heroBtn) {
-                    heroBtn.textContent = 'Go to Dashboard';
-                    heroBtn.href = 'webapp.html';
-                }
+                if(heroBtn) { heroBtn.textContent = 'Go to Dashboard'; heroBtn.href = 'webapp.html'; }
             } else {
-                console.log("Déconnecté");
                 if(guestGroup) guestGroup.style.display = 'flex';
                 if(userGroup) userGroup.style.display = 'none';
-                
-                if(heroBtn) {
-                    heroBtn.textContent = 'Get Started for Free';
-                    heroBtn.href = 'signup.html';
-                }
+                if(heroBtn) { heroBtn.textContent = 'Get Started for Free'; heroBtn.href = 'signup.html'; }
             }
         });
 
         if(logoutBtn) {
-            logoutBtn.addEventListener('click', () => {
-                signOut(auth).then(() => {
-                    window.location.reload();
-                });
-            });
+            logoutBtn.addEventListener('click', () => { signOut(auth).then(() => window.location.reload()); });
         }
     </script>
-    
+
+    <script>
+        // Scroll reveal pour les feature cards
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.15 });
+
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+    </script>
 </body>
 </html>
