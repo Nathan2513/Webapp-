@@ -41,7 +41,6 @@
         .back-btn svg { width:16px; height:16px; }
         .breadcrumb { font-size:0.85rem; color:var(--text-secondary); }
         .breadcrumb a { color:var(--primary-orange); text-decoration:none; }
-
         .page-loading { display:flex; flex-direction:column; align-items:center; justify-content:center; padding:120px 20px; gap:16px; color:var(--text-secondary); }
         .spinner { width:40px; height:40px; border:3px solid var(--border-color); border-top-color:var(--primary-orange); border-radius:50%; animation:spin 0.7s linear infinite; }
         @keyframes spin { to { transform:rotate(360deg); } }
@@ -76,110 +75,92 @@
         .metric-label { font-size:0.8rem; font-weight:600; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.05em; margin-bottom:10px; }
         .metric-value { font-size:1.6rem; font-weight:800; letter-spacing:-0.03em; }
 
-        /* FINANCIALS */
-        .fin-toolbar { display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; gap:16px; flex-wrap:wrap; }
-        .fin-tabs { display:flex; gap:4px; flex-wrap:wrap; }
-        .fin-btn { padding:8px 18px; background:var(--hover-bg); border:1px solid var(--border-color); border-radius:8px; font-family:inherit; font-size:0.88rem; font-weight:600; color:var(--text-secondary); cursor:pointer; transition:all 0.2s; }
-        .fin-btn:hover { color:var(--text-primary); }
-        .fin-btn.active { background:var(--primary-orange); color:white; border-color:var(--primary-orange); }
-        .period-toggle { display:flex; gap:4px; }
-        .period-btn { padding:8px 16px; background:var(--hover-bg); border:1px solid var(--border-color); border-radius:8px; font-family:inherit; font-size:0.85rem; font-weight:600; color:var(--text-secondary); cursor:pointer; transition:all 0.2s; }
-        .period-btn.active { background:var(--text-primary); color:var(--bg-topbar); border-color:var(--text-primary); }
-        .fin-panel { display:none; }
-        .fin-panel.active { display:block; }
+        /* FINANCIALS sub-nav */
+        .financials-sub-nav { display:flex; align-items:center; justify-content:space-between; margin-bottom:24px; flex-wrap:wrap; gap:12px; }
+        .financials-sub-tabs { display:flex; gap:4px; background:var(--bg-main); border:1px solid var(--border-color); border-radius:10px; padding:4px; }
+        .fin-sub-btn { padding:8px 18px; border-radius:8px; font-weight:600; font-size:0.9rem; cursor:pointer; transition:all 0.2s; border:none; background:transparent; color:var(--text-secondary); font-family:inherit; }
+        .fin-sub-btn:hover { background:var(--hover-bg); color:var(--text-primary); }
+        .fin-sub-btn.active { background:var(--primary-orange); color:white; }
+        .period-toggle { display:flex; gap:4px; background:var(--bg-main); border:1px solid var(--border-color); border-radius:10px; padding:4px; }
+        .period-btn { padding:8px 16px; border-radius:8px; font-weight:600; font-size:0.9rem; cursor:pointer; transition:all 0.2s; border:none; background:transparent; color:var(--text-secondary); font-family:inherit; }
+        .period-btn:hover { background:var(--hover-bg); color:var(--text-primary); }
+        .period-btn.active { background:var(--bg-topbar); color:var(--primary-orange); border:1px solid var(--primary-orange); }
 
-        /* TABLES */
-        .table-wrap { overflow-x:auto; border-radius:12px; border:1px solid var(--border-color); }
-        .data-table { width:100%; border-collapse:collapse; font-size:0.88rem; min-width:600px; }
-        .data-table th { padding:12px 16px; text-align:right; font-size:0.78rem; font-weight:700; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.05em; border-bottom:1px solid var(--border-color); background:var(--hover-bg); white-space:nowrap; }
-        .data-table th:first-child { text-align:left; }
-        .data-table td { padding:12px 16px; border-bottom:1px solid var(--border-color); text-align:right; white-space:nowrap; }
-        .data-table td:first-child { text-align:left; font-weight:600; color:var(--text-secondary); font-size:0.82rem; }
+        /* TABLE */
+        .table-wrapper { overflow-x:auto; border-radius:12px; border:1px solid var(--border-color); }
+        .data-table { width:100%; border-collapse:collapse; background:var(--bg-main); font-size:0.9rem; }
+        .data-table th { background:var(--hover-bg); padding:12px 14px; text-align:right; font-weight:600; color:var(--text-primary); border-bottom:2px solid var(--border-color); white-space:nowrap; }
+        .data-table th:first-child { text-align:left; min-width:260px; }
+        .data-table td { padding:10px 14px; border-bottom:1px solid var(--border-color); color:var(--text-primary); font-size:0.88rem; text-align:right; white-space:nowrap; }
+        .data-table td:first-child { text-align:left; }
         .data-table tr:last-child td { border-bottom:none; }
-        .data-table tr:hover td { background:var(--hover-bg); }
-        .pos { color:var(--success-color); } .neg { color:var(--danger-color); }
-        .row-sep td { padding:8px 16px; font-weight:700; color:var(--text-primary); background:var(--hover-bg); font-size:0.78rem; text-transform:uppercase; letter-spacing:0.05em; }
+        .data-table tr:hover { background:var(--hover-bg); }
+        .data-table .row-bold td { font-weight:700; background:rgba(0,0,0,0.02); }
+        .data-table .row-indent td:first-child { padding-left:28px; color:var(--text-secondary); }
+        .data-table .row-section td { background:var(--hover-bg); font-weight:700; font-size:0.85rem; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.05em; padding:8px 14px; }
+        .positive { color:var(--success-color) !important; }
+        .negative { color:var(--danger-color) !important; }
 
-        .chart-placeholder { background:var(--bg-topbar); border:1px solid var(--border-color); border-radius:12px; padding:40px; text-align:center; color:var(--text-secondary); margin-bottom:24px; }
+        .chart-placeholder { background:var(--bg-topbar); border:1px solid var(--border-color); border-radius:12px; padding:40px; text-align:center; color:var(--text-secondary); margin-bottom:24px; min-height:200px; display:flex; align-items:center; justify-content:center; }
     </style>
 </head>
 <body>
 <div class="app-container">
-        <header class="topbar">
-            <a href="webapp.html" class="topbar-logo">
-                <img src="logo.png" alt="Logo">
-                StockMaster
+    <header class="topbar">
+        <a href="webapp.html" class="topbar-logo">
+            <img src="logo.png" alt="Logo">
+            StockMaster
+        </a>
+        <nav class="topbar-nav">
+            <a href="webapp.html" class="nav-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>
+                Home
             </a>
-            <nav class="topbar-nav">
-                <a href="webapp.html" class="nav-btn">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                    </svg>
-                    Home
-                </a>
-                <a href="stock-screener.html" class="nav-btn">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                    </svg>
-                    Stock Screener
-                </a>
-                <a href="valorisation-analysis.html" class="nav-btn">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                    </svg>
-                    Valorisation Analysis
-                </a>
-                <a href="dcf-calculator.html" class="nav-btn">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                    </svg>
-                    DCF Calculator
-                </a>
-            </nav>
-            <div class="topbar-actions">
-                <button class="theme-toggle" id="themeToggle">
-                    <svg id="sunIcon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-                    </svg>
-                    <svg id="moonIcon" style="display:none;" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-                    </svg>
-                </button>
-                <div class="user-menu">
-                    <div class="user-avatar" id="userAvatar">U</div>
-                    <div class="dropdown-menu" id="dropdownMenu">
-                        <a href="settings.html" class="dropdown-item">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                            </svg>
-                            Settings
-                        </a>
-                        <a href="billings-plans.html" class="dropdown-item">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
-                            </svg>
-                            Billings & Plans
-                        </a>
-                        <div class="dropdown-item" id="signOutBtn">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                            </svg>
-                            Sign Out
-                        </div>
+            <a href="stock-screener.html" class="nav-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                Stock Screener
+            </a>
+            <a href="valorisation-analysis.html" class="nav-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
+                Valorisation Analysis
+            </a>
+            <a href="dcf-calculator.html" class="nav-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg>
+                DCF Calculator
+            </a>
+        </nav>
+        <div class="topbar-actions">
+            <button class="theme-toggle" id="themeToggle">
+                <svg id="sunIcon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
+                <svg id="moonIcon" style="display:none;" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg>
+            </button>
+            <div class="user-menu">
+                <div class="user-avatar" id="userAvatar">U</div>
+                <div class="dropdown-menu" id="dropdownMenu">
+                    <a href="settings.html" class="dropdown-item">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                        Settings
+                    </a>
+                    <a href="billings-plans.html" class="dropdown-item">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" /></svg>
+                        Billings &amp; Plans
+                    </a>
+                    <div class="dropdown-item" id="signOutBtn">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
+                        Sign Out
                     </div>
                 </div>
             </div>
-        </header>
+        </div>
+    </header>
+
     <main class="main-content">
         <div class="back-bar">
             <button class="back-btn" id="backBtn">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
                 Back
             </button>
-            <span class="breadcrumb">
-                <a href="stock-screener.html">Stock Screener</a> / <span id="breadcrumb">—</span>
-            </span>
+            <span class="breadcrumb"><a href="stock-screener.html">Stock Screener</a> / <span id="breadcrumb">—</span></span>
         </div>
 
         <div id="loadingDiv" class="page-loading">
@@ -187,812 +168,543 @@
             Loading stock data...
         </div>
 
-        <div id="pageContent" style="display:none"></div>
-    </main>
-</div>
+        <div id="pageContent" style="display:none">
 
-<script>
-
-
-// score-engine.js
-// Système de scoring StockUnlock — 6 catégories, 26 métriques
-// Import dans stock-screener.html via: import { computeAllScores, renderScoresTab } from './score-engine.js';
-
-// ============================================================
-// SCORE ENGINE — Full StockUnlock-style scoring system
-// ============================================================
-
-const SCORE_LABELS = {
-    5: { label: 'Très bien',    color: '#22c55e', bg: 'rgba(34,197,94,0.15)' },
-    4: { label: 'Bien',         color: '#86efac', bg: 'rgba(134,239,172,0.15)' },
-    3: { label: 'Moyenne',      color: '#f59e0b', bg: 'rgba(245,158,11,0.15)' },
-    2: { label: 'Mauvais',      color: '#f97316', bg: 'rgba(249,115,22,0.15)' },
-    1: { label: 'Très mauvais', color: '#ef4444', bg: 'rgba(239,68,68,0.15)' },
-};
-
-function getScoreLabel(score) {
-    if (score == null) return { label: 'N/A', color: 'var(--text-secondary)', bg: 'var(--hover-bg)' };
-    return SCORE_LABELS[Math.round(Math.max(1, Math.min(5, score)))];
-}
-
-function scoreByThreshold(value, [t1, t2, t3, t4], higherIsBetter = true) {
-    if (value == null || isNaN(value)) return null;
-    if (higherIsBetter) {
-        if (value >= t4) return 5;
-        if (value >= t3) return 4;
-        if (value >= t2) return 3;
-        if (value >= t1) return 2;
-        return 1;
-    } else {
-        if (value <= t1) return 5;
-        if (value <= t2) return 4;
-        if (value <= t3) return 3;
-        if (value <= t4) return 2;
-        return 1;
-    }
-}
-
-function pctVal(v) { return v != null ? v * 100 : null; }
-
-function growthPct(curr, prev) {
-    if (curr == null || prev == null || prev === 0) return null;
-    return ((curr - prev) / Math.abs(prev)) * 100;
-}
-
-function avgArr(arr) {
-    const v = arr.filter(x => x != null);
-    return v.length ? v.reduce((a, b) => a + b, 0) / v.length : null;
-}
-
-// ── Category: Rentabilité ──
-function scoreRentabilite(data) {
-    const r   = data.ratios   || {};
-    const inc = data.income   || [];
-    const cf  = data.cashflow || [];
-
-    const rev = inc[0]?.revenue;
-    const gp  = inc[0]?.grossProfit;
-    const op  = inc[0]?.operatingIncome;
-    const ni  = inc[0]?.netIncome;
-    const fcf = cf[0]?.freeCashFlow;
-    const ocf = cf[0]?.operatingCashFlow;
-
-    const grossM = rev ? (gp  / rev) * 100 : pctVal(r.grossProfitMarginTTM);
-    const opM    = rev ? (op  / rev) * 100 : pctVal(r.operatingProfitMarginTTM);
-    const netM   = rev ? (ni  / rev) * 100 : pctVal(r.netProfitMarginTTM);
-    const fcfM   = (fcf != null && rev) ? (fcf / rev) * 100 : null;
-    const cashConv = (fcf != null && ni && ni !== 0) ? (fcf / ni) * 100 : null;
-
-    const metrics = [
-        { label: 'Marge brute',           value: grossM,   format: 'pct', score: scoreByThreshold(grossM,   [20, 35, 50, 65]) },
-        { label: 'Marge opérationnelle',   value: opM,      format: 'pct', score: scoreByThreshold(opM,      [5, 10, 15, 25]) },
-        { label: 'Marge nette',            value: netM,     format: 'pct', score: scoreByThreshold(netM,     [3, 7, 12, 20]) },
-        { label: 'Marge FCF',              value: fcfM,     format: 'pct', score: scoreByThreshold(fcfM,     [2, 5, 10, 18]) },
-        { label: 'Conversion trésorerie',  value: cashConv, format: 'pct', score: scoreByThreshold(cashConv, [20, 40, 60, 80]) },
-    ];
-
-    return buildCategory('Rentabilité', '📈', metrics);
-}
-
-// ── Category: Gestion ──
-function scoreGestion(data) {
-    const r   = data.ratios   || {};
-    const inc = data.income   || [];
-    const cf  = data.cashflow || [];
-
-    const rev = inc[0]?.revenue;
-    const ocf = cf[0]?.operatingCashFlow;
-    const fcf = cf[0]?.freeCashFlow;
-    const sbc = cf[0]?.stockBasedCompensation;
-
-    const sbcRev = (sbc != null && rev) ? (sbc / rev) * 100 : null;
-    const sbcOcf = (sbc != null && ocf && ocf > 0) ? (sbc / ocf) * 100 : null;
-    const sbcFcf = (sbc != null && fcf && fcf > 0) ? (sbc / fcf) * 100 : null;
-    const roic   = pctVal(r.roicTTM);
-    const roce   = pctVal(r.returnOnCapitalEmployedTTM);
-
-    const metrics = [
-        { label: "SBC en % du chiffre d'affaires",                   value: sbcRev, format: 'pct', score: scoreByThreshold(sbcRev, [1, 3, 5, 10],   false) },
-        { label: "SBC en % du flux de trésorerie d'exploitation",    value: sbcOcf, format: 'pct', score: scoreByThreshold(sbcOcf, [5, 10, 20, 35],  false) },
-        { label: "SBC en % du flux de trésorerie disponible",        value: sbcFcf, format: 'pct', score: scoreByThreshold(sbcFcf, [10, 25, 50, 100], false) },
-        { label: 'ROIC',                                              value: roic,   format: 'pct', score: scoreByThreshold(roic,   [5, 10, 15, 25]) },
-        { label: 'ROCE',                                              value: roce,   format: 'pct', score: scoreByThreshold(roce,   [5, 10, 15, 25]) },
-    ];
-
-    return buildCategory('Gestion', '⚙️', metrics);
-}
-
-// ── Category: Croissance ──
-function scoreCroissance(data) {
-    const inc = data.income   || [];
-    const cf  = data.cashflow || [];
-
-    const revG  = growthPct(inc[0]?.revenue,        inc[1]?.revenue);
-    const gpG   = growthPct(inc[0]?.grossProfit,    inc[1]?.grossProfit);
-    const opG   = growthPct(inc[0]?.operatingIncome,inc[1]?.operatingIncome);
-    const niG   = growthPct(inc[0]?.netIncome,      inc[1]?.netIncome);
-    const ocfG  = growthPct(cf[0]?.operatingCashFlow, cf[1]?.operatingCashFlow);
-
-    const metrics = [
-        { label: 'Augmentation des revenus',                           value: revG, format: 'pct', score: scoreByThreshold(revG, [0, 5, 10, 20]) },
-        { label: 'Augmentation du bénéfice brut',                      value: gpG,  format: 'pct', score: scoreByThreshold(gpG,  [0, 5, 10, 20]) },
-        { label: "Augmentation du résultat d'exploitation",            value: opG,  format: 'pct', score: scoreByThreshold(opG,  [0, 5, 15, 30]) },
-        { label: 'Augmentation du revenu net',                         value: niG,  format: 'pct', score: scoreByThreshold(niG,  [0, 5, 15, 30]) },
-        { label: "Augmentation des flux de trésorerie d'exploitation", value: ocfG, format: 'pct', score: scoreByThreshold(ocfG, [-5, 0, 10, 25]) },
-    ];
-
-    return buildCategory('Croissance', '🚀', metrics);
-}
-
-// ── Category: Santé financière ──
-function scoreSanteFinanciere(data) {
-    const r   = data.ratios   || {};
-    const b   = data.balance  || [];
-    const inc = data.income   || [];
-    const cf  = data.cashflow || [];
-
-    const curRatio = r.currentRatioTTM ?? (b[0] ? (b[0].totalCurrentAssets || 0) / Math.max(b[0].totalCurrentLiabilities || 1, 1) : null);
-    const intang   = b[0] ? ((b[0].goodwill || 0) + (b[0].intangibleAssets || 0)) : null;
-    const totA     = b[0]?.totalAssets;
-    const intangPct = (intang != null && totA) ? (intang / totA) * 100 : null;
-    const shareG   = growthPct(inc[0]?.weightedAverageSharesOutDil, inc[1]?.weightedAverageSharesOutDil);
-    const ebitda   = inc[0]?.ebitda;
-    const debt     = b[0]?.totalDebt;
-    const debtEbitda = (debt != null && ebitda && ebitda > 0) ? debt / ebitda : null;
-
-    const metrics = [
-        { label: 'Ratio actuel',                              value: curRatio,   format: 'ratio', score: scoreByThreshold(curRatio,   [0.5, 0.8, 1.2, 2.0]) },
-        { label: 'Actifs incorporels en % du total des actifs', value: intangPct, format: 'pct',   score: scoreByThreshold(intangPct,  [5, 15, 30, 50], false) },
-        { label: 'Les actions augmentent',                    value: shareG,     format: 'pct',   score: scoreByThreshold(shareG,     [-2, 0, 1, 3], false) },
-        { label: 'Ratio dette/EBITDA',                        value: debtEbitda, format: 'ratio', score: scoreByThreshold(debtEbitda, [0.5, 1.0, 2.0, 4.0], false) },
-    ];
-
-    return buildCategory('Santé financière', '🏦', metrics);
-}
-
-// ── Category: Analyste (proxy via croissance historique) ──
-function scoreAnalyste(data) {
-    const inc = data.income   || [];
-    const cf  = data.cashflow || [];
-
-    const epsG    = growthPct(inc[0]?.epsdiluted,  inc[1]?.epsdiluted);
-    const revG    = growthPct(inc[0]?.revenue,     inc[1]?.revenue);
-    const ebitdaG = growthPct(inc[0]?.ebitda,      inc[1]?.ebitda);
-
-    const metrics = [
-        { label: "BPA projeté pour l'année prochaine",    value: epsG,    format: 'pct', score: scoreByThreshold(epsG,    [0, 5, 15, 30]) },
-        { label: "Revenus projetés pour l'année prochaine", value: revG,  format: 'pct', score: scoreByThreshold(revG,    [0, 5, 10, 20]) },
-        { label: "EBITDA projeté pour l'année prochaine",  value: ebitdaG,format: 'pct', score: scoreByThreshold(ebitdaG, [0, 5, 15, 30]) },
-    ];
-
-    return buildCategory('Analyste', '🔭', metrics);
-}
-
-// ── Category: Évaluation ──
-function scoreEvaluation(data) {
-    const r  = data.ratios        || {};
-    const rh = data.ratiosHistory || [];
-
-    const pe   = r.priceEarningsRatioTTM;
-    const pfcf = r.priceToFreeCashFlowsRatioTTM;
-    const ps   = r.priceToSalesRatioTTM;
-
-    const last5 = rh.slice(0, 5);
-    const safe  = (arr) => arr.filter(v => v != null && v > 0 && v < 500);
-    const avg5  = (arr) => { const a = safe(arr); return a.length ? a.reduce((s, v) => s + v, 0) / a.length : null; };
-
-    const avgPE5   = avg5(last5.map(y => y.priceEarningsRatio));
-    const avgPFCF5 = avg5(last5.map(y => y.priceToFreeCashFlowsRatio));
-    const avgPS5   = avg5(last5.map(y => y.priceToSalesRatio));
-
-    const peVs5    = (pe   && avgPE5)   ? ((pe   - avgPE5)   / avgPE5)   * 100 : null;
-    const pfcfVs5  = (pfcf && avgPFCF5) ? ((pfcf - avgPFCF5) / avgPFCF5) * 100 : null;
-    const psVs5    = (ps   && avgPS5)   ? ((ps   - avgPS5)   / avgPS5)   * 100 : null;
-    const RFREE    = 4.5;
-    const fcfPrime = pfcf ? ((1 / pfcf) * 100) - RFREE : null;
-    const fcfYield = pfcf ? (1 / pfcf) * 100 : null;
-
-    const peLabel   = `Le P/E de ${pe?.toFixed(2) || '?'} est ${peVs5 != null ? (peVs5 < 0 ? 'inférieur' : 'supérieur') : '?'} à la moyenne sur 5 ans de ${avgPE5?.toFixed(2) || '?'}`;
-    const pfcfLabel = `Le P/FCF de ${pfcf?.toFixed(2) || '?'} est ${pfcfVs5 != null ? (pfcfVs5 < 0 ? 'inférieur' : 'supérieur') : '?'} à la moyenne sur 5 ans de ${avgPFCF5?.toFixed(2) || '?'}`;
-    const psLabel   = `Le P/S de ${ps?.toFixed(2) || '?'} est ${psVs5 != null ? (psVs5 < 0 ? 'inférieur' : 'supérieur') : '?'} à la moyenne sur 5 ans de ${avgPS5?.toFixed(2) || '?'}`;
-
-    const metrics = [
-        { label: peLabel,            value: peVs5,    format: 'pct',   score: scoreByThreshold(peVs5,   [-30, -10, 10, 30], false) },
-        { label: pfcfLabel,          value: pfcfVs5,  format: 'pct',   score: scoreByThreshold(pfcfVs5, [-30, -10, 10, 30], false) },
-        { label: psLabel,            value: psVs5,    format: 'pct',   score: scoreByThreshold(psVs5,   [-30, -10, 10, 30], false) },
-        { label: 'Prime de risque FCF', value: fcfPrime, format: 'pct', score: scoreByThreshold(fcfPrime, [-2, 0, 2, 5]) },
-        { label: 'Rendement FCF',    value: fcfYield, format: 'pct',   score: scoreByThreshold(fcfYield, [1, 2, 4, 7]) },
-    ];
-
-    return buildCategory('Évaluation', '💰', metrics);
-}
-
-function buildCategory(name, icon, metrics) {
-    const scores = metrics.filter(m => m.score != null).map(m => m.score);
-    const categoryScore = scores.length ? avgArr(scores) : null;
-    return { name, icon, score: categoryScore, metrics };
-}
-
-function computeAllScores(data) {
-    const categories = [
-        scoreRentabilite(data),
-        scoreGestion(data),
-        scoreCroissance(data),
-        scoreSanteFinanciere(data),
-        scoreAnalyste(data),
-        scoreEvaluation(data),
-    ];
-    const valid = categories.filter(c => c.score != null);
-    const globalScore = valid.length ? avgArr(valid.map(c => c.score)) : null;
-    return { globalScore, categories };
-}
-
-// ── Score badge color helper for top badge ──
-function calculateScore(metrics, ratios) {
-    // kept for backward compat — now replaced by computeAllScores
-    return '—';
-}
-
-// ── Pagination state ──
-const _scorePages = {};
-const SCORE_PAGE_SIZE = 5;
-
-function scorePageGo(id, delta) {
-    if (!_scorePages[id]) return;
-    const state = _scorePages[id];
-    const maxPage = Math.ceil(state.metrics.length / SCORE_PAGE_SIZE) - 1;
-    state.page = Math.max(0, Math.min(maxPage, state.page + delta));
-    _updateScorePage(id);
-}
-
-function _updateScorePage(id) {
-    const state  = _scorePages[id];
-    const start  = state.page * SCORE_PAGE_SIZE;
-    const end    = Math.min(start + SCORE_PAGE_SIZE, state.metrics.length);
-    const total  = Math.ceil(state.metrics.length / SCORE_PAGE_SIZE);
-    const tbody  = document.getElementById('stbody-' + id);
-    const lbl    = document.getElementById('spglbl-' + id);
-    const cnt    = document.getElementById('spcnt-'  + id);
-    if (tbody) tbody.innerHTML = _buildMetricRows(state.metrics, start, SCORE_PAGE_SIZE);
-    if (lbl)   lbl.textContent = `Page ${state.page + 1} sur ${total}`;
-    if (cnt)   cnt.textContent = `Affichage de ${start + 1} à ${end} sur ${state.metrics.length}`;
-}
-
-function _buildMetricRows(metrics, startIdx, pageSize) {
-    return metrics.slice(startIdx, startIdx + pageSize).map(m => {
-        const lbl = getScoreLabel(m.score);
-        const pill = `<span class="sc-pill" style="background:${lbl.bg};color:${lbl.color};">${lbl.label}</span>`;
-        const val  = m.value != null ? (m.format === 'pct' ? m.value.toFixed(2) + '%' : m.value.toFixed(2)) : 'N/A';
-        return `<tr class="sc-row"><td class="sc-td-m"><span class="sc-icon">ⓘ</span>${m.label}</td><td class="sc-td-v">${val}</td><td class="sc-td-s">${pill}</td></tr>`;
-    }).join('');
-}
-
-function _buildCategoryCard(cat) {
-    const id  = cat.name.replace(/[^a-z]/gi, '').toLowerCase() + 'card';
-    const lbl = getScoreLabel(cat.score);
-    const scoreStr = cat.score != null ? cat.score.toFixed(2) : '—';
-    _scorePages[id] = { page: 0, metrics: cat.metrics };
-
-    const totalPages = Math.ceil(cat.metrics.length / SCORE_PAGE_SIZE);
-    const showCount  = Math.min(SCORE_PAGE_SIZE, cat.metrics.length);
-
-    return `
-    <div class="sc-card">
-        <div class="sc-card-header">
-            <div>
-                <div class="sc-card-title">${cat.icon} ${cat.name}</div>
-                <div class="sc-card-sub">Cliquez sur n'importe quelle métrique pour une analyse approfondie</div>
-            </div>
-            <div class="sc-badge" style="background:${lbl.bg};color:${lbl.color};border-color:${lbl.color};">${scoreStr}</div>
-        </div>
-        <table class="sc-table">
-            <thead><tr>
-                <th class="sc-th sc-th-m">⚡ Métrique</th>
-                <th class="sc-th sc-th-v">Valeur</th>
-                <th class="sc-th sc-th-s">🚀 Score de perspicacité</th>
-            </tr></thead>
-            <tbody id="stbody-${id}">${_buildMetricRows(cat.metrics, 0, SCORE_PAGE_SIZE)}</tbody>
-        </table>
-        <div class="sc-pagination">
-            <button class="sc-pg-btn" onclick="scorePageGo('${id}',-1)">◀ Précédent</button>
-            <span id="spglbl-${id}" class="sc-pg-lbl">Page 1 sur ${totalPages}</span>
-            <button class="sc-pg-btn" onclick="scorePageGo('${id}',1)">Suivant ▶</button>
-            <span id="spcnt-${id}" class="sc-pg-cnt">Affichage de 1 à ${showCount} sur ${cat.metrics.length}</span>
-        </div>
-    </div>`;
-}
-
-function _buildDonutSVG(globalScore, categories) {
-    const SZ = 170, CX = 85, CY = 85, R = 65;
-    const count = categories.length;
-    const segDeg = 360 / count;
-    const GAP = 3;
-    let paths = '';
-
-    function polar(cx, cy, r, deg) {
-        const rad = (deg * Math.PI) / 180;
-        return { x: cx + r * Math.cos(rad), y: cy + r * Math.sin(rad) };
-    }
-    function arc(cx, cy, r, s, e) {
-        const p1 = polar(cx, cy, r, s), p2 = polar(cx, cy, r, e);
-        return `M ${p1.x} ${p1.y} A ${r} ${r} 0 ${(e - s) > 180 ? 1 : 0} 1 ${p2.x} ${p2.y}`;
-    }
-
-    categories.forEach((cat, i) => {
-        const lbl  = getScoreLabel(cat.score);
-        const fill = cat.score != null ? (cat.score - 1) / 4 : 0.08;
-        const sA   = i * segDeg - 90 + GAP / 2;
-        const eA   = sA + segDeg - GAP;
-        const fillEnd = sA + (segDeg - GAP) * fill;
-        paths += `<path d="${arc(CX, CY, R, sA, eA)}" fill="none" stroke="var(--border-color)" stroke-width="14" stroke-linecap="butt"/>`;
-        if (fill > 0.01) {
-            paths += `<path d="${arc(CX, CY, R, sA, fillEnd)}" fill="none" stroke="${lbl.color}" stroke-width="14" stroke-linecap="butt"/>`;
-        }
-    });
-
-    const gl = getScoreLabel(globalScore);
-    const gs = globalScore != null ? globalScore.toFixed(2) : '—';
-    return `<svg width="${SZ}" height="${SZ}" viewBox="0 0 ${SZ} ${SZ}">
-        ${paths}
-        <text x="${CX}" y="${CY - 10}" text-anchor="middle" style="fill:${gl.color};font-size:26px;font-weight:800;font-family:Inter,sans-serif;">${gs}</text>
-        <text x="${CX}" y="${CY + 14}" text-anchor="middle" style="fill:${gl.color};font-size:12px;font-weight:600;font-family:Inter,sans-serif;">${gl.label}</text>
-    </svg>`;
-}
-
-function renderScoresTab(result) {
-    const { globalScore, categories } = result;
-    const gl = getScoreLabel(globalScore);
-
-    // Update top score badge color
-    const scoreValueEl = document.getElementById('scoreValue');
-    if (scoreValueEl) {
-        scoreValueEl.textContent = globalScore != null ? `${globalScore.toFixed(2)}/5` : 'N/A';
-        scoreValueEl.style.color = gl.color;
-    }
-
-    const donut   = _buildDonutSVG(globalScore, categories);
-    const breakdown = categories.map(cat => {
-        const l = getScoreLabel(cat.score);
-        return `<div class="sc-breakdown-item"><span class="sc-dot" style="background:${l.color};"></span>${cat.name} — <strong style="color:${l.color}">${cat.score != null ? cat.score.toFixed(2) : 'N/A'}</strong></div>`;
-    }).join('');
-
-    const cards = categories.map(_buildCategoryCard).join('');
-
-    document.getElementById('scores-content').innerHTML = `
-    <style>
-        .sc-global { display:flex; align-items:center; gap:28px; background:var(--bg-topbar); border:1px solid var(--border-color); border-radius:14px; padding:28px 32px; margin-bottom:28px; flex-wrap:wrap; }
-        .sc-breakdown { display:flex; flex-wrap:wrap; gap:10px 24px; flex:1; }
-        .sc-breakdown-item { display:flex; align-items:center; gap:8px; font-size:0.9rem; font-weight:500; color:var(--text-secondary); }
-        .sc-dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
-        .sc-global-right { text-align:right; }
-        .sc-global-num { font-size:3.2rem; font-weight:800; line-height:1; }
-        .sc-global-lbl { font-size:1rem; font-weight:600; margin-top:4px; }
-        .sc-grid { display:grid; grid-template-columns:1fr 1fr; gap:24px; }
-        @media(max-width:860px) { .sc-grid { grid-template-columns:1fr; } .sc-global { flex-direction:column; text-align:center; } }
-        .sc-card { background:var(--bg-topbar); border:1px solid var(--border-color); border-radius:14px; padding:24px; }
-        .sc-card-header { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:18px; gap:16px; }
-        .sc-card-title { font-size:1.25rem; font-weight:700; color:var(--text-primary); margin-bottom:4px; }
-        .sc-card-sub { font-size:0.78rem; color:var(--text-secondary); }
-        .sc-badge { min-width:58px; height:58px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:1.45rem; font-weight:800; border-width:2px; border-style:solid; flex-shrink:0; }
-        .sc-table { width:100%; border-collapse:collapse; }
-        .sc-th { font-size:0.8rem; color:var(--text-secondary); font-weight:600; padding:10px 12px; border-bottom:1px solid var(--border-color); text-align:left; white-space:nowrap; }
-        .sc-th-v, .sc-th-s { text-align:right; }
-        .sc-row { border-bottom:1px solid var(--border-color); transition:background 0.12s; }
-        .sc-row:hover { background:var(--hover-bg); cursor:pointer; }
-        .sc-row:last-child { border-bottom:none; }
-        .sc-td-m { padding:12px; font-size:0.86rem; color:var(--text-primary); display:flex; align-items:flex-start; gap:8px; }
-        .sc-td-v { padding:12px; text-align:right; font-weight:600; font-size:0.86rem; white-space:nowrap; }
-        .sc-td-s { padding:12px; text-align:right; white-space:nowrap; }
-        .sc-icon { color:var(--text-secondary); font-size:0.85rem; flex-shrink:0; margin-top:1px; }
-        .sc-pill { display:inline-block; padding:4px 14px; border-radius:6px; font-weight:600; font-size:0.82rem; }
-        .sc-pagination { display:flex; align-items:center; gap:12px; padding-top:14px; margin-top:4px; border-top:1px solid var(--border-color); flex-wrap:wrap; }
-        .sc-pg-btn { padding:6px 14px; background:var(--hover-bg); border:1px solid var(--border-color); border-radius:8px; color:var(--text-primary); font-weight:600; font-size:0.8rem; cursor:pointer; transition:all 0.15s; }
-        .sc-pg-btn:hover { background:var(--primary-orange); color:#fff; border-color:var(--primary-orange); }
-        .sc-pg-lbl { font-size:0.84rem; font-weight:600; color:var(--text-primary); }
-        .sc-pg-cnt { font-size:0.8rem; color:var(--text-secondary); margin-left:auto; }
-    </style>
-
-    <div class="sc-global">
-        <div>${donut}</div>
-        <div class="sc-breakdown">${breakdown}</div>
-        <div class="sc-global-right">
-            <div class="sc-global-num" style="color:${gl.color};">${globalScore != null ? globalScore.toFixed(2) : '—'}</div>
-            <div class="sc-global-lbl" style="color:${gl.color};">${gl.label}</div>
-            <div style="font-size:0.78rem;color:var(--text-secondary);margin-top:6px;">Score global /5</div>
-        </div>
-    </div>
-
-    <div class="sc-grid">${cards}</div>`;
-}
-
-
-
-window.scorePageGo = scorePageGo;
-
-
-
-    
-
-</script>
-
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-    import fmpAPI from './fmp-api.js';
-
-    // ── Firebase ────────────────────────────────────────────────────
-    initializeApp({ apiKey:"AIzaSyD4dkPbO1C-bZiSokalUnwNqOTpeAyrOU0", authDomain:"stockmaster-30835.firebaseapp.com", projectId:"stockmaster-30835", storageBucket:"stockmaster-30835.firebasestorage.app", messagingSenderId:"506097874613", appId:"1:506097874613:web:0d15d2bd1575a55c8ab0fc" });
-    const auth = getAuth();
-    onAuthStateChanged(auth, u => {
-        if (!u) window.location.href = 'login.html';
-        else document.getElementById('userAvatar').textContent = u.email[0].toUpperCase();
-    });
-
-    // ── User menu ───────────────────────────────────────────────────
-    const avatar = document.getElementById('userAvatar');
-    const menu   = document.getElementById('dropdownMenu');
-    avatar.addEventListener('click', e => { e.stopPropagation(); menu.classList.toggle('active'); });
-    document.addEventListener('click', () => menu.classList.remove('active'));
-    document.getElementById('signOutBtn').addEventListener('click', async () => { await signOut(auth); window.location.href = 'index.html'; });
-
-    // ── Theme ───────────────────────────────────────────────────────
-    const html = document.documentElement;
-    const sun  = document.getElementById('sunIcon');
-    const moon = document.getElementById('moonIcon');
-    const applyTheme = t => { html.setAttribute('data-theme',t); sun.style.display = t==='dark'?'none':'block'; moon.style.display = t==='dark'?'block':'none'; };
-    applyTheme(localStorage.getItem('theme') || 'light');
-    document.getElementById('themeToggle').addEventListener('click', () => {
-        const t = html.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
-        localStorage.setItem('theme', t); applyTheme(t);
-    });
-
-    // ── Back button ─────────────────────────────────────────────────
-    document.getElementById('backBtn').addEventListener('click', () => {
-        if (document.referrer) history.back(); else window.location.href = 'stock-screener.html';
-    });
-
-    // ── State ───────────────────────────────────────────────────────
-    let currentPeriod = 'annual';
-    let cachedData    = {};
-
-    // ── Init: read ?symbol= ─────────────────────────────────────────
-    const sym = (new URLSearchParams(window.location.search).get('symbol') || '').toUpperCase().trim();
-
-    if (!sym) {
-        document.getElementById('loadingDiv').innerHTML = `
-            <div style="text-align:center">
-                <div style="font-size:3rem;margin-bottom:16px">🔍</div>
-                <p style="font-weight:600;font-size:1.1rem;color:var(--text-primary)">No stock specified.</p>
-                <p style="margin-top:10px"><a href="stock-screener.html" style="color:var(--primary-orange)">← Back to Screener</a></p>
-            </div>`;
-    } else {
-        document.title = sym + ' — StockMaster';
-        document.getElementById('breadcrumb').textContent = sym;
-        loadStock();
-    }
-
-    // ── Load ────────────────────────────────────────────────────────
-    async function loadStock() {
-        try {
-            const data = await fmpAPI.getFullScreenerData(sym);
-            cachedData['annual'] = data;
-            renderPage(data);
-        } catch(err) {
-            console.error(err);
-            document.getElementById('loadingDiv').innerHTML = `
-                <div style="text-align:center">
-                    <div style="font-size:2rem;margin-bottom:12px">⚠️</div>
-                    <p>Could not load <strong>${sym}</strong>.</p>
-                    <p style="margin-top:10px"><a href="stock-screener.html" style="color:var(--primary-orange)">← Back to Screener</a></p>
-                </div>`;
-        }
-    }
-
-    // ── Render page ─────────────────────────────────────────────────
-    function renderPage(data) {
-        const { profile={}, quote={}, ratios={} } = data;
-
-        const scoreResult = computeAllScores(data);
-        const gs = scoreResult.globalScore;
-        const gsColor = gs == null ? 'var(--text-secondary)' : gs >= 4 ? '#22c55e' : gs >= 3 ? '#f59e0b' : '#ef4444';
-
-        const change = quote.change || 0;
-        const changePct = quote.changesPercentage || 0;
-        const changeClass = change >= 0 ? 'positive' : 'negative';
-        const changeStr = `${change>=0?'↑':'↓'} $${Math.abs(change).toFixed(2)} (${change>=0?'+':''}${changePct.toFixed(2)}%)`;
-
-        const cap = v => {
-            if (!v) return '—';
-            if (v>=1e12) return '$'+(v/1e12).toFixed(2)+'T';
-            if (v>=1e9)  return '$'+(v/1e9).toFixed(2)+'B';
-            if (v>=1e6)  return '$'+(v/1e6).toFixed(0)+'M';
-            return '$'+v;
-        };
-        const pct = v => v!=null && !isNaN(v) ? (v*100).toFixed(2)+'%' : '—';
-        const num = (v,d=2) => v!=null && !isNaN(v) ? parseFloat(v).toFixed(d) : '—';
-
-        document.getElementById('pageContent').innerHTML = `
+            <!-- Stock Header -->
             <div class="stock-header">
                 <div class="stock-title-row">
                     <div class="stock-title">
-                        <div class="stock-logo">${sym.substring(0,3)}</div>
+                        <div class="stock-logo" id="stockLogo">—</div>
                         <div class="stock-name">
-                            <h1>${profile.companyName || sym}</h1>
-                            <p>${sym} · ${profile.sector||'—'} · ${profile.exchangeShortName||''}</p>
+                            <h1 id="stockFullName">—</h1>
+                            <p id="stockSymbolSub">—</p>
                         </div>
                     </div>
                     <div class="score-badge">
                         <span class="score-label">Score</span>
-                        <span class="score-value" style="color:${gsColor}">${gs!=null ? gs.toFixed(2)+'/5' : 'N/A'}</span>
+                        <span class="score-value" id="scoreValue">—</span>
                     </div>
                 </div>
                 <div class="stock-price-row">
-                    <span class="current-price">${quote.price ? '$'+quote.price.toFixed(2) : '—'}</span>
-                    <span class="price-change ${changeClass}">${changeStr}</span>
+                    <span class="current-price" id="currentPrice">—</span>
+                    <span class="price-change" id="priceChange">—</span>
                 </div>
             </div>
 
+            <!-- Tabs nav -->
             <div class="tabs-nav">
                 <button class="tab-btn active" data-tab="general">General</button>
                 <button class="tab-btn" data-tab="scores">Scores</button>
-                <button class="tab-btn" data-tab="financials">Financials & KPIs</button>
+                <button class="tab-btn" data-tab="financials">Financials &amp; KPIs</button>
                 <button class="tab-btn" data-tab="dividends">Dividends</button>
             </div>
 
+            <!-- GENERAL -->
             <div class="tab-content active" id="tab-general">
                 <div class="chart-placeholder">📈 Price Chart (coming soon)</div>
                 <h3 style="margin-bottom:20px;font-size:1.2rem;font-weight:700">Key Metrics</h3>
-                <div class="metrics-grid">
-                    <div class="metric-card"><div class="metric-label">Market Cap</div><div class="metric-value">${cap(profile.mktCap)}</div></div>
-                    <div class="metric-card"><div class="metric-label">P/E (TTM)</div><div class="metric-value">${num(ratios.peRatioTTM,1)}</div></div>
-                    <div class="metric-card"><div class="metric-label">EPS (TTM)</div><div class="metric-value">${quote.eps ? '$'+num(quote.eps) : '—'}</div></div>
-                    <div class="metric-card"><div class="metric-label">Dividend Yield</div><div class="metric-value">${pct(ratios.dividendYieldTTM)}</div></div>
-                    <div class="metric-card"><div class="metric-label">Gross Margin</div><div class="metric-value">${pct(ratios.grossProfitMarginTTM)}</div></div>
-                    <div class="metric-card"><div class="metric-label">Net Margin</div><div class="metric-value">${pct(ratios.netProfitMarginTTM)}</div></div>
-                    <div class="metric-card"><div class="metric-label">ROE</div><div class="metric-value">${pct(ratios.returnOnEquityTTM)}</div></div>
-                    <div class="metric-card"><div class="metric-label">Industry</div><div class="metric-value" style="font-size:1rem">${profile.industry||'—'}</div></div>
+                <div class="metrics-grid" id="metricsGrid"></div>
+            </div>
+
+            <!-- SCORES -->
+            <div class="tab-content" id="tab-scores">
+                <div id="scores-content">
+                    <div style="text-align:center;padding:60px 20px;color:var(--text-secondary);">
+                        <div style="font-size:2rem;margin-bottom:12px;">📊</div>
+                        <div>Load a stock to view the score analysis</div>
+                    </div>
                 </div>
             </div>
 
-            <div class="tab-content" id="tab-scores">
-                <div id="scores-content"></div>
-            </div>
-
+            <!-- FINANCIALS -->
             <div class="tab-content" id="tab-financials">
-                <div class="fin-toolbar">
-                    <div class="fin-tabs">
-                        <button class="fin-btn active" data-fin="income">Income</button>
-                        <button class="fin-btn" data-fin="balance">Balance Sheet</button>
-                        <button class="fin-btn" data-fin="cashflow">Cash Flow</button>
-                        <button class="fin-btn" data-fin="ratios">Ratios</button>
-                        <button class="fin-btn" data-fin="kpis">KPIs</button>
+                <div class="financials-sub-nav">
+                    <div class="financials-sub-tabs">
+                        <button class="fin-sub-btn active" data-fin="income">Income Statement</button>
+                        <button class="fin-sub-btn" data-fin="balance">Balance Sheet</button>
+                        <button class="fin-sub-btn" data-fin="cashflow">Cash Flow</button>
+                        <button class="fin-sub-btn" data-fin="ratios">Ratios</button>
+                        <button class="fin-sub-btn" data-fin="kpis">KPIs</button>
                     </div>
                     <div class="period-toggle">
                         <button class="period-btn active" data-period="annual">Annual</button>
                         <button class="period-btn" data-period="quarterly">Quarterly</button>
                     </div>
                 </div>
-                <div id="fin-income" class="fin-panel active"><div class="table-wrap"><table class="data-table" id="tIncome"><thead><tr></tr></thead><tbody></tbody></table></div></div>
-                <div id="fin-balance" class="fin-panel"><div class="table-wrap"><table class="data-table" id="tBalance"><thead><tr></tr></thead><tbody></tbody></table></div></div>
-                <div id="fin-cashflow" class="fin-panel"><div class="table-wrap"><table class="data-table" id="tCashflow"><thead><tr></tr></thead><tbody></tbody></table></div></div>
-                <div id="fin-ratios" class="fin-panel"><div class="table-wrap"><table class="data-table" id="tRatios"><thead><tr></tr></thead><tbody></tbody></table></div></div>
-                <div id="fin-kpis" class="fin-panel"><div class="table-wrap"><table class="data-table" id="tKpis"><thead><tr></tr></thead><tbody></tbody></table></div></div>
+                <div class="fin-content active" id="fin-income">
+                    <div class="table-wrapper"><table class="data-table" id="incomeTable"><thead><tr></tr></thead><tbody></tbody></table></div>
+                </div>
+                <div class="fin-content" id="fin-balance" style="display:none">
+                    <div class="table-wrapper"><table class="data-table" id="balanceTable"><thead><tr></tr></thead><tbody></tbody></table></div>
+                </div>
+                <div class="fin-content" id="fin-cashflow" style="display:none">
+                    <div class="table-wrapper"><table class="data-table" id="cashflowTable"><thead><tr></tr></thead><tbody></tbody></table></div>
+                </div>
+                <div class="fin-content" id="fin-ratios" style="display:none">
+                    <div class="table-wrapper"><table class="data-table" id="ratiosTable"><thead><tr></tr></thead><tbody></tbody></table></div>
+                </div>
+                <div class="fin-content" id="fin-kpis" style="display:none">
+                    <div class="table-wrapper"><table class="data-table" id="kpisTable"><thead><tr></tr></thead><tbody></tbody></table></div>
+                </div>
             </div>
 
+            <!-- DIVIDENDS -->
             <div class="tab-content" id="tab-dividends">
                 <h3 style="margin-bottom:20px;font-size:1.2rem;font-weight:700">Dividend Information</h3>
-                <div class="metrics-grid" style="margin-bottom:28px">
-                    <div class="metric-card"><div class="metric-label">Dividend Yield</div><div class="metric-value">${pct(ratios.dividendYieldTTM)}</div></div>
-                    <div class="metric-card"><div class="metric-label">Annual Dividend</div><div class="metric-value">${quote.lastAnnualDividend ? '$'+num(quote.lastAnnualDividend) : '—'}</div></div>
-                    <div class="metric-card"><div class="metric-label">Payout Ratio</div><div class="metric-value">${pct(ratios.payoutRatioTTM)}</div></div>
-                    <div class="metric-card"><div class="metric-label">Ex-Dividend Date</div><div class="metric-value" style="font-size:1rem">${quote.exDividendDate||'—'}</div></div>
-                </div>
-                <div class="table-wrap">
+                <div class="metrics-grid" id="divMetricsGrid" style="margin-bottom:28px"></div>
+                <h3 style="margin-bottom:20px;font-size:1.1rem;font-weight:700">Dividend History</h3>
+                <div class="table-wrapper">
                     <table class="data-table">
-                        <thead><tr><th>Ex-Date</th><th>Amount</th><th>Record Date</th><th>Pay Date</th></tr></thead>
-                        <tbody id="divTableBody"><tr><td colspan="4" style="text-align:center;color:var(--text-secondary);padding:20px">Loading...</td></tr></tbody>
+                        <thead><tr><th>Ex-Dividend Date</th><th>Cash Amount</th><th>Record Date</th><th>Pay Date</th></tr></thead>
+                        <tbody id="dividendsTableBody"><tr><td colspan="4" style="text-align:center;color:var(--text-secondary);padding:20px">Loading...</td></tr></tbody>
                     </table>
                 </div>
             </div>
-        `;
 
-        // Show content
-        document.getElementById('loadingDiv').style.display = 'none';
-        document.getElementById('pageContent').style.display = 'block';
+        </div><!-- #pageContent -->
+    </main>
+</div>
 
-        // Scores
-        renderScoresTab(scoreResult);
+<!-- ═══════════════════════════ SCORE ENGINE ═══════════════════════════ -->
+<script>
+const SCORE_LABELS={5:{label:'Très bien',color:'#22c55e',bg:'rgba(34,197,94,0.15)'},4:{label:'Bien',color:'#86efac',bg:'rgba(134,239,172,0.15)'},3:{label:'Moyenne',color:'#f59e0b',bg:'rgba(245,158,11,0.15)'},2:{label:'Mauvais',color:'#f97316',bg:'rgba(249,115,22,0.15)'},1:{label:'Très mauvais',color:'#ef4444',bg:'rgba(239,68,68,0.15)'}};
+function getScoreLabel(s){if(s==null)return{label:'N/A',color:'var(--text-secondary)',bg:'var(--hover-bg)'};return SCORE_LABELS[Math.round(Math.max(1,Math.min(5,s)))];}
+function scoreByThreshold(v,[t1,t2,t3,t4],hib=true){if(v==null||isNaN(v))return null;if(hib){if(v>=t4)return 5;if(v>=t3)return 4;if(v>=t2)return 3;if(v>=t1)return 2;return 1;}else{if(v<=t1)return 5;if(v<=t2)return 4;if(v<=t3)return 3;if(v<=t4)return 2;return 1;}}
+function pctVal(v){return v!=null?v*100:null;}
+function growthPct(c,p){if(c==null||p==null||p===0)return null;return((c-p)/Math.abs(p))*100;}
+function avgArr(a){const v=a.filter(x=>x!=null);return v.length?v.reduce((a,b)=>a+b,0)/v.length:null;}
+function buildCategory(name,icon,metrics){const s=metrics.filter(m=>m.score!=null).map(m=>m.score);return{name,icon,score:s.length?avgArr(s):null,metrics};}
+function scoreRentabilite(d){const r=d.ratios||{},inc=d.income||[],cf=d.cashflow||[];const rev=inc[0]?.revenue,gp=inc[0]?.grossProfit,op=inc[0]?.operatingIncome,ni=inc[0]?.netIncome,fcf=cf[0]?.freeCashFlow;const gM=rev?(gp/rev)*100:pctVal(r.grossProfitMarginTTM),oM=rev?(op/rev)*100:pctVal(r.operatingProfitMarginTTM),nM=rev?(ni/rev)*100:pctVal(r.netProfitMarginTTM),fM=(fcf!=null&&rev)?(fcf/rev)*100:null,cc=(fcf!=null&&ni&&ni!==0)?(fcf/ni)*100:null;return buildCategory('Rentabilité','📈',[{label:'Marge brute',value:gM,format:'pct',score:scoreByThreshold(gM,[20,35,50,65])},{label:'Marge opérationnelle',value:oM,format:'pct',score:scoreByThreshold(oM,[5,10,15,25])},{label:'Marge nette',value:nM,format:'pct',score:scoreByThreshold(nM,[3,7,12,20])},{label:'Marge FCF',value:fM,format:'pct',score:scoreByThreshold(fM,[2,5,10,18])},{label:'Conversion trésorerie',value:cc,format:'pct',score:scoreByThreshold(cc,[20,40,60,80])}]);}
+function scoreGestion(d){const r=d.ratios||{},inc=d.income||[],cf=d.cashflow||[];const rev=inc[0]?.revenue,ocf=cf[0]?.operatingCashFlow,fcf=cf[0]?.freeCashFlow,sbc=cf[0]?.stockBasedCompensation;const sR=(sbc!=null&&rev)?(sbc/rev)*100:null,sO=(sbc!=null&&ocf&&ocf>0)?(sbc/ocf)*100:null,sF=(sbc!=null&&fcf&&fcf>0)?(sbc/fcf)*100:null,roic=pctVal(r.roicTTM),roce=pctVal(r.returnOnCapitalEmployedTTM);return buildCategory('Gestion','⚙️',[{label:"SBC en % du chiffre d'affaires",value:sR,format:'pct',score:scoreByThreshold(sR,[1,3,5,10],false)},{label:"SBC en % du flux de trésorerie d'exploitation",value:sO,format:'pct',score:scoreByThreshold(sO,[5,10,20,35],false)},{label:"SBC en % du flux de trésorerie disponible",value:sF,format:'pct',score:scoreByThreshold(sF,[10,25,50,100],false)},{label:'ROIC',value:roic,format:'pct',score:scoreByThreshold(roic,[5,10,15,25])},{label:'ROCE',value:roce,format:'pct',score:scoreByThreshold(roce,[5,10,15,25])}]);}
+function scoreCroissance(d){const inc=d.income||[],cf=d.cashflow||[];return buildCategory('Croissance','🚀',[{label:'Augmentation des revenus',value:growthPct(inc[0]?.revenue,inc[1]?.revenue),format:'pct',score:scoreByThreshold(growthPct(inc[0]?.revenue,inc[1]?.revenue),[0,5,10,20])},{label:'Augmentation du bénéfice brut',value:growthPct(inc[0]?.grossProfit,inc[1]?.grossProfit),format:'pct',score:scoreByThreshold(growthPct(inc[0]?.grossProfit,inc[1]?.grossProfit),[0,5,10,20])},{label:"Augmentation du résultat d'exploitation",value:growthPct(inc[0]?.operatingIncome,inc[1]?.operatingIncome),format:'pct',score:scoreByThreshold(growthPct(inc[0]?.operatingIncome,inc[1]?.operatingIncome),[0,5,15,30])},{label:'Augmentation du revenu net',value:growthPct(inc[0]?.netIncome,inc[1]?.netIncome),format:'pct',score:scoreByThreshold(growthPct(inc[0]?.netIncome,inc[1]?.netIncome),[0,5,15,30])},{label:"Augmentation des flux de trésorerie d'exploitation",value:growthPct(cf[0]?.operatingCashFlow,cf[1]?.operatingCashFlow),format:'pct',score:scoreByThreshold(growthPct(cf[0]?.operatingCashFlow,cf[1]?.operatingCashFlow),[-5,0,10,25])}]);}
+function scoreSanteFinanciere(d){const r=d.ratios||{},b=d.balance||[],inc=d.income||[];const cr=r.currentRatioTTM??(b[0]?(b[0].totalCurrentAssets||0)/Math.max(b[0].totalCurrentLiabilities||1,1):null),int=b[0]?((b[0].goodwill||0)+(b[0].intangibleAssets||0)):null,tA=b[0]?.totalAssets,iP=(int!=null&&tA)?(int/tA)*100:null,sG=growthPct(inc[0]?.weightedAverageSharesOutDil,inc[1]?.weightedAverageSharesOutDil),eb=inc[0]?.ebitda,dt=b[0]?.totalDebt,dE=(dt!=null&&eb&&eb>0)?dt/eb:null;return buildCategory('Santé financière','🏦',[{label:'Ratio actuel',value:cr,format:'ratio',score:scoreByThreshold(cr,[0.5,0.8,1.2,2.0])},{label:'Actifs incorporels en % du total des actifs',value:iP,format:'pct',score:scoreByThreshold(iP,[5,15,30,50],false)},{label:'Les actions augmentent',value:sG,format:'pct',score:scoreByThreshold(sG,[-2,0,1,3],false)},{label:'Ratio dette/EBITDA',value:dE,format:'ratio',score:scoreByThreshold(dE,[0.5,1.0,2.0,4.0],false)}]);}
+function scoreAnalyste(d){const inc=d.income||[];const eG=growthPct(inc[0]?.epsdiluted,inc[1]?.epsdiluted),rG=growthPct(inc[0]?.revenue,inc[1]?.revenue),ebG=growthPct(inc[0]?.ebitda,inc[1]?.ebitda);return buildCategory('Analyste','🔭',[{label:"BPA projeté pour l'année prochaine",value:eG,format:'pct',score:scoreByThreshold(eG,[0,5,15,30])},{label:"Revenus projetés pour l'année prochaine",value:rG,format:'pct',score:scoreByThreshold(rG,[0,5,10,20])},{label:"EBITDA projeté pour l'année prochaine",value:ebG,format:'pct',score:scoreByThreshold(ebG,[0,5,15,30])}]);}
+function scoreEvaluation(d){const r=d.ratios||{},rh=d.ratiosHistory||[];const pe=r.priceEarningsRatioTTM,pfcf=r.priceToFreeCashFlowsRatioTTM,ps=r.priceToSalesRatioTTM,l5=rh.slice(0,5),safe=a=>a.filter(v=>v!=null&&v>0&&v<500),avg5=a=>{const s=safe(a);return s.length?s.reduce((x,v)=>x+v,0)/s.length:null};const aP=avg5(l5.map(y=>y.priceEarningsRatio)),aPF=avg5(l5.map(y=>y.priceToFreeCashFlowsRatio)),aPS=avg5(l5.map(y=>y.priceToSalesRatio)),pV=(pe&&aP)?((pe-aP)/aP)*100:null,pfV=(pfcf&&aPF)?((pfcf-aPF)/aPF)*100:null,psV=(ps&&aPS)?((ps-aPS)/aPS)*100:null,fP=pfcf?((1/pfcf)*100)-4.5:null,fY=pfcf?(1/pfcf)*100:null;return buildCategory('Évaluation','💰',[{label:`Le P/E de ${pe?.toFixed(2)||'?'} est ${pV!=null?(pV<0?'inférieur':'supérieur'):'?'} à la moyenne sur 5 ans de ${aP?.toFixed(2)||'?'}`,value:pV,format:'pct',score:scoreByThreshold(pV,[-30,-10,10,30],false)},{label:`Le P/FCF de ${pfcf?.toFixed(2)||'?'} est ${pfV!=null?(pfV<0?'inférieur':'supérieur'):'?'} à la moyenne sur 5 ans de ${aPF?.toFixed(2)||'?'}`,value:pfV,format:'pct',score:scoreByThreshold(pfV,[-30,-10,10,30],false)},{label:`Le P/S de ${ps?.toFixed(2)||'?'} est ${psV!=null?(psV<0?'inférieur':'supérieur'):'?'} à la moyenne sur 5 ans de ${aPS?.toFixed(2)||'?'}`,value:psV,format:'pct',score:scoreByThreshold(psV,[-30,-10,10,30],false)},{label:'Prime de risque FCF',value:fP,format:'pct',score:scoreByThreshold(fP,[-2,0,2,5])},{label:'Rendement FCF',value:fY,format:'pct',score:scoreByThreshold(fY,[1,2,4,7])}]);}
+function computeAllScores(data){const cats=[scoreRentabilite(data),scoreGestion(data),scoreCroissance(data),scoreSanteFinanciere(data),scoreAnalyste(data),scoreEvaluation(data)];const v=cats.filter(c=>c.score!=null);return{globalScore:v.length?avgArr(v.map(c=>c.score)):null,categories:cats};}
 
-        // Financials
-        renderTables(data, 'annual');
+const _scorePages={};const SCORE_PAGE_SIZE=5;
+function scorePageGo(id,delta){if(!_scorePages[id])return;const s=_scorePages[id];const mp=Math.ceil(s.metrics.length/SCORE_PAGE_SIZE)-1;s.page=Math.max(0,Math.min(mp,s.page+delta));_updateScorePage(id);}
+function _updateScorePage(id){const s=_scorePages[id];const st=s.page*SCORE_PAGE_SIZE,en=Math.min(st+SCORE_PAGE_SIZE,s.metrics.length),tot=Math.ceil(s.metrics.length/SCORE_PAGE_SIZE);const tb=document.getElementById('stbody-'+id),lb=document.getElementById('spglbl-'+id),cn=document.getElementById('spcnt-'+id);if(tb)tb.innerHTML=_buildMetricRows(s.metrics,st,SCORE_PAGE_SIZE);if(lb)lb.textContent=`Page ${s.page+1} sur ${tot}`;if(cn)cn.textContent=`Affichage de ${st+1} à ${en} sur ${s.metrics.length}`;}
+function _buildMetricRows(metrics,si,ps){return metrics.slice(si,si+ps).map(m=>{const l=getScoreLabel(m.score);const pill=`<span class="sc-pill" style="background:${l.bg};color:${l.color};">${l.label}</span>`;const val=m.value!=null?(m.format==='pct'?m.value.toFixed(2)+'%':m.value.toFixed(2)):'N/A';return`<tr class="sc-row"><td class="sc-td-m"><span class="sc-icon">ⓘ</span>${m.label}</td><td class="sc-td-v">${val}</td><td class="sc-td-s">${pill}</td></tr>`;}).join('');}
+function _buildCategoryCard(cat){const id=cat.name.replace(/[^a-z]/gi,'').toLowerCase()+'card';const l=getScoreLabel(cat.score);const ss=cat.score!=null?cat.score.toFixed(2):'—';_scorePages[id]={page:0,metrics:cat.metrics};const tp=Math.ceil(cat.metrics.length/SCORE_PAGE_SIZE),sc=Math.min(SCORE_PAGE_SIZE,cat.metrics.length);return`<div class="sc-card"><div class="sc-card-header"><div><div class="sc-card-title">${cat.icon} ${cat.name}</div><div class="sc-card-sub">Cliquez sur n'importe quelle métrique pour une analyse approfondie</div></div><div class="sc-badge" style="background:${l.bg};color:${l.color};border-color:${l.color};">${ss}</div></div><table class="sc-table"><thead><tr><th class="sc-th sc-th-m">⚡ Métrique</th><th class="sc-th sc-th-v">Valeur</th><th class="sc-th sc-th-s">🚀 Score de perspicacité</th></tr></thead><tbody id="stbody-${id}">${_buildMetricRows(cat.metrics,0,SCORE_PAGE_SIZE)}</tbody></table><div class="sc-pagination"><button class="sc-pg-btn" onclick="scorePageGo('${id}',-1)">◀ Précédent</button><span id="spglbl-${id}" class="sc-pg-lbl">Page 1 sur ${tp}</span><button class="sc-pg-btn" onclick="scorePageGo('${id}',1)">Suivant ▶</button><span id="spcnt-${id}" class="sc-pg-cnt">Affichage de 1 à ${sc} sur ${cat.metrics.length}</span></div></div>`;}
+function _buildDonutSVG(gs,cats){const SZ=170,CX=85,CY=85,R=65,cnt=cats.length,seg=360/cnt,GAP=3;let p='';function pol(cx,cy,r,d){const rd=(d*Math.PI)/180;return{x:cx+r*Math.cos(rd),y:cy+r*Math.sin(rd)};}function arc(cx,cy,r,s,e){const p1=pol(cx,cy,r,s),p2=pol(cx,cy,r,e);return`M ${p1.x} ${p1.y} A ${r} ${r} 0 ${(e-s)>180?1:0} 1 ${p2.x} ${p2.y}`;}cats.forEach((c,i)=>{const l=getScoreLabel(c.score),f=c.score!=null?(c.score-1)/4:0.08,sA=i*seg-90+GAP/2,eA=sA+seg-GAP,fe=sA+(seg-GAP)*f;p+=`<path d="${arc(CX,CY,R,sA,eA)}" fill="none" stroke="var(--border-color)" stroke-width="14" stroke-linecap="butt"/>`;if(f>0.01)p+=`<path d="${arc(CX,CY,R,sA,fe)}" fill="none" stroke="${l.color}" stroke-width="14" stroke-linecap="butt"/>`;});const gl=getScoreLabel(gs),gss=gs!=null?gs.toFixed(2):'—';return`<svg width="${SZ}" height="${SZ}" viewBox="0 0 ${SZ} ${SZ}">${p}<text x="${CX}" y="${CY-10}" text-anchor="middle" style="fill:${gl.color};font-size:26px;font-weight:800;font-family:Inter,sans-serif;">${gss}</text><text x="${CX}" y="${CY+14}" text-anchor="middle" style="fill:${gl.color};font-size:12px;font-weight:600;font-family:Inter,sans-serif;">${gl.label}</text></svg>`;}
+function renderScoresTab(result){const{globalScore:gs,categories}=result;const gl=getScoreLabel(gs);const el=document.getElementById('scoreValue');if(el){el.textContent=gs!=null?`${gs.toFixed(2)}/5`:'N/A';el.style.color=gl.color;}const donut=_buildDonutSVG(gs,categories);const bd=categories.map(c=>{const l=getScoreLabel(c.score);return`<div class="sc-breakdown-item"><span class="sc-dot" style="background:${l.color};"></span>${c.name} — <strong style="color:${l.color}">${c.score!=null?c.score.toFixed(2):'N/A'}</strong></div>`;}).join('');const cards=categories.map(_buildCategoryCard).join('');document.getElementById('scores-content').innerHTML=`<style>.sc-global{display:flex;align-items:center;gap:28px;background:var(--bg-topbar);border:1px solid var(--border-color);border-radius:14px;padding:28px 32px;margin-bottom:28px;flex-wrap:wrap;}.sc-breakdown{display:flex;flex-wrap:wrap;gap:10px 24px;flex:1;}.sc-breakdown-item{display:flex;align-items:center;gap:8px;font-size:0.9rem;font-weight:500;color:var(--text-secondary);}.sc-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}.sc-global-right{text-align:right;}.sc-global-num{font-size:3.2rem;font-weight:800;line-height:1;}.sc-global-lbl{font-size:1rem;font-weight:600;margin-top:4px;}.sc-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;}@media(max-width:860px){.sc-grid{grid-template-columns:1fr;}.sc-global{flex-direction:column;text-align:center;}}.sc-card{background:var(--bg-topbar);border:1px solid var(--border-color);border-radius:14px;padding:24px;}.sc-card-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:18px;gap:16px;}.sc-card-title{font-size:1.25rem;font-weight:700;color:var(--text-primary);margin-bottom:4px;}.sc-card-sub{font-size:0.78rem;color:var(--text-secondary);}.sc-badge{min-width:58px;height:58px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.45rem;font-weight:800;border-width:2px;border-style:solid;flex-shrink:0;}.sc-table{width:100%;border-collapse:collapse;}.sc-th{font-size:0.8rem;color:var(--text-secondary);font-weight:600;padding:10px 12px;border-bottom:1px solid var(--border-color);text-align:left;white-space:nowrap;}.sc-th-v,.sc-th-s{text-align:right;}.sc-row{border-bottom:1px solid var(--border-color);transition:background 0.12s;}.sc-row:hover{background:var(--hover-bg);cursor:pointer;}.sc-row:last-child{border-bottom:none;}.sc-td-m{padding:12px;font-size:0.86rem;color:var(--text-primary);display:flex;align-items:flex-start;gap:8px;}.sc-td-v{padding:12px;text-align:right;font-weight:600;font-size:0.86rem;white-space:nowrap;}.sc-td-s{padding:12px;text-align:right;white-space:nowrap;}.sc-icon{color:var(--text-secondary);font-size:0.85rem;flex-shrink:0;margin-top:1px;}.sc-pill{display:inline-block;padding:4px 14px;border-radius:6px;font-weight:600;font-size:0.82rem;}.sc-pagination{display:flex;align-items:center;gap:12px;padding-top:14px;margin-top:4px;border-top:1px solid var(--border-color);flex-wrap:wrap;}.sc-pg-btn{padding:6px 14px;background:var(--hover-bg);border:1px solid var(--border-color);border-radius:8px;color:var(--text-primary);font-weight:600;font-size:0.8rem;cursor:pointer;transition:all 0.15s;}.sc-pg-btn:hover{background:var(--primary-orange);color:#fff;border-color:var(--primary-orange);}.sc-pg-lbl{font-size:0.84rem;font-weight:600;color:var(--text-primary);}.sc-pg-cnt{font-size:0.8rem;color:var(--text-secondary);margin-left:auto;}</style><div class="sc-global"><div>${donut}</div><div class="sc-breakdown">${bd}</div><div class="sc-global-right"><div class="sc-global-num" style="color:${gl.color};">${gs!=null?gs.toFixed(2):'—'}</div><div class="sc-global-lbl" style="color:${gl.color};">${gl.label}</div><div style="font-size:0.78rem;color:var(--text-secondary);margin-top:6px;">Score global /5</div></div></div><div class="sc-grid">${cards}</div>`;}
+window.scorePageGo=scorePageGo;
+</script>
 
-        // Dividends async
-        fmpAPI.getDividendHistory(sym).then(raw => {
-            const divs = raw?.historical || [];
-            const tbody = document.getElementById('divTableBody');
-            if (!tbody) return;
-            tbody.innerHTML = !divs.length
-                ? '<tr><td colspan="4" style="text-align:center;color:var(--text-secondary);padding:24px">No dividends recorded</td></tr>'
-                : divs.slice(0,20).map(d => `<tr>
-                    <td>${d.date||'—'}</td>
-                    <td>$${(d.dividend||0).toFixed(4)}</td>
-                    <td>${d.recordDate||'—'}</td>
-                    <td>${d.paymentDate||'—'}</td>
-                  </tr>`).join('');
-        }).catch(() => {});
+<!-- ═══════════════════════════ MAIN MODULE ═══════════════════════════ -->
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    import fmpAPI from './fmp-api.js';
 
-        // Wire up main tabs
-        document.querySelectorAll('.tab-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-                btn.classList.add('active');
-                document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
-            });
-        });
+    initializeApp({apiKey:"AIzaSyD4dkPbO1C-bZiSokalUnwNqOTpeAyrOU0",authDomain:"stockmaster-30835.firebaseapp.com",projectId:"stockmaster-30835",storageBucket:"stockmaster-30835.firebasestorage.app",messagingSenderId:"506097874613",appId:"1:506097874613:web:0d15d2bd1575a55c8ab0fc"});
+    const auth=getAuth();
+    onAuthStateChanged(auth,u=>{if(!u)window.location.href='login.html';else document.getElementById('userAvatar').textContent=u.email[0].toUpperCase();});
 
-        // Wire up financial sub-tabs
-        document.querySelectorAll('.fin-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                document.querySelectorAll('.fin-btn').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                document.querySelectorAll('.fin-panel').forEach(p => p.classList.remove('active'));
-                document.getElementById('fin-' + btn.dataset.fin).classList.add('active');
-            });
-        });
+    /* User menu */
+    const avatar=document.getElementById('userAvatar'),menu=document.getElementById('dropdownMenu');
+    avatar.addEventListener('click',e=>{e.stopPropagation();menu.classList.toggle('active');});
+    document.addEventListener('click',()=>menu.classList.remove('active'));
+    document.getElementById('signOutBtn').addEventListener('click',async()=>{await signOut(auth);window.location.href='index.html';});
 
-        // Wire up period toggle
-        document.querySelectorAll('.period-btn').forEach(btn => {
-            btn.addEventListener('click', async () => {
-                document.querySelectorAll('.period-btn').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                currentPeriod = btn.dataset.period;
-                if (currentPeriod === 'quarterly' && !cachedData['quarterly']) {
-                    try { cachedData['quarterly'] = await fmpAPI.getFullScreenerDataQuarterly(sym); }
-                    catch(e) { console.error(e); }
-                }
-                renderTables(cachedData[currentPeriod] || cachedData['annual'], currentPeriod);
-            });
-        });
+    /* Theme */
+    const html=document.documentElement,sun=document.getElementById('sunIcon'),moon=document.getElementById('moonIcon');
+    const applyTheme=t=>{html.setAttribute('data-theme',t);sun.style.display=t==='dark'?'none':'block';moon.style.display=t==='dark'?'block':'none';};
+    applyTheme(localStorage.getItem('theme')||'light');
+    document.getElementById('themeToggle').addEventListener('click',()=>{const t=html.getAttribute('data-theme')==='light'?'dark':'light';localStorage.setItem('theme',t);applyTheme(t);});
+
+    /* Back */
+    document.getElementById('backBtn').addEventListener('click',()=>{if(document.referrer)history.back();else window.location.href='stock-screener.html';});
+
+    /* State */
+    let currentSymbol=null,currentPeriod='annual',currentFinTab='income',cachedData={};
+
+    /* Symbol from URL */
+    const sym=(new URLSearchParams(window.location.search).get('symbol')||'').toUpperCase().trim();
+    if(!sym){
+        document.getElementById('loadingDiv').innerHTML=`<div style="text-align:center"><div style="font-size:3rem;margin-bottom:16px">🔍</div><p style="font-weight:600;font-size:1.1rem">No stock specified.</p><p style="margin-top:10px"><a href="stock-screener.html" style="color:var(--primary-orange)">← Back to Screener</a></p></div>`;
+    }else{
+        document.title=sym+' — StockMaster';
+        document.getElementById('breadcrumb').textContent=sym;
+        loadStock();
     }
 
-    // ── Financial table builder ──────────────────────────────────────
-    function renderTables(data, period) {
-        const inc = data.income    || [];
-        const bal = data.balance   || [];
-        const cf  = data.cashflow  || [];
-        const rat = data.ratiosHistory || [];
-        // metrics is a single object in this API, wrap it
-        const met = data.metrics ? [data.metrics] : [];
-
-        buildTable('tIncome',   incRows(),   inc, period);
-        buildTable('tBalance',  balRows(),   bal, period);
-        buildTable('tCashflow', cfRows(),    cf,  period);
-        buildTable('tRatios',   ratRows(),   rat, period);
-        buildTable('tKpis',     kpiRows(),   met, period);
+    async function loadStock(){
+        try{
+            currentSymbol=sym;cachedData={};
+            const data=await fmpAPI.getFullScreenerData(sym);
+            cachedData['annual']=data;
+            renderPage(data);
+        }catch(err){
+            console.error(err);
+            document.getElementById('loadingDiv').innerHTML=`<div style="text-align:center"><div style="font-size:2rem;margin-bottom:12px">⚠️</div><p>Could not load <strong>${sym}</strong>.</p><p style="margin-top:10px"><a href="stock-screener.html" style="color:var(--primary-orange)">← Back to Screener</a></p></div>`;
+        }
     }
 
-    function colLabel(item, period) {
-        if (!item) return '';
-        if (period === 'quarterly') return item.period ? `${item.period} ${item.calendarYear||''}` : (item.date||'').substring(0,7);
-        return item.calendarYear || (item.date||'').substring(0,4);
+    function renderPage(data){
+        /* Header */
+        if(data.profile){
+            document.getElementById('stockLogo').textContent=sym.substring(0,3);
+            document.getElementById('stockFullName').textContent=data.profile.companyName||sym;
+            document.getElementById('stockSymbolSub').textContent=`${sym} · ${data.profile.sector||'—'} · ${data.profile.exchangeShortName||''}`;
+        }
+        if(data.quote){
+            document.getElementById('currentPrice').textContent=`$${data.quote.price.toFixed(2)}`;
+            const ch=data.quote.change||0,cp=data.quote.changesPercentage||0,el=document.getElementById('priceChange');
+            el.className='price-change '+(ch>=0?'positive':'negative');
+            el.textContent=ch>=0?`↑ $${Math.abs(ch).toFixed(2)} (+${Math.abs(cp).toFixed(2)}%)`:`↓ $${Math.abs(ch).toFixed(2)} (-${Math.abs(cp).toFixed(2)}%)`;
+        }
+
+        /* Scores */
+        const sr=computeAllScores(data);
+        renderScoresTab(sr);
+
+        /* General */
+        updateGeneralTab(data);
+
+        /* Financials */
+        renderAllFinancialTables(data,'annual');
+
+        /* Dividends */
+        updateDividendsTab(data);
+
+        /* Show */
+        document.getElementById('loadingDiv').style.display='none';
+        document.getElementById('pageContent').style.display='block';
+
+        /* Wire main tabs */
+        document.querySelectorAll('.tab-btn').forEach(btn=>btn.addEventListener('click',()=>{
+            document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById('tab-'+btn.dataset.tab).classList.add('active');
+        }));
+
+        /* Wire fin sub-tabs */
+        document.querySelectorAll('.fin-sub-btn').forEach(btn=>btn.addEventListener('click',()=>{
+            const fin=btn.dataset.fin;currentFinTab=fin;
+            document.querySelectorAll('.fin-sub-btn').forEach(b=>b.classList.remove('active'));
+            btn.classList.add('active');
+            document.querySelectorAll('.fin-content').forEach(c=>c.style.display='none');
+            document.getElementById(`fin-${fin}`).style.display='block';
+        }));
+
+        /* Wire period toggle */
+        document.querySelectorAll('.period-btn').forEach(btn=>btn.addEventListener('click',async()=>{
+            const period=btn.dataset.period;
+            if(period===currentPeriod)return;
+            currentPeriod=period;
+            document.querySelectorAll('.period-btn').forEach(b=>b.classList.remove('active'));
+            btn.classList.add('active');
+            if(!cachedData[period]){
+                const at=document.querySelector(`#fin-${currentFinTab} tbody`);
+                if(at)at.innerHTML='<tr><td colspan="8" style="text-align:center;padding:30px;color:var(--text-secondary);">⏳ Loading...</td></tr>';
+                try{cachedData[period]=await fmpAPI.getFullScreenerDataQuarterly(currentSymbol);}
+                catch(e){console.error(e);if(at)at.innerHTML='<tr><td colspan="8" style="text-align:center;padding:30px;color:var(--danger-color);">Loading error</td></tr>';return;}
+            }
+            renderAllFinancialTables(cachedData[period],period);
+        }));
+
+        window.scrollTo({top:0,behavior:'smooth'});
     }
 
-    function buildTable(id, rows, arr, period) {
-        const t = document.getElementById(id);
-        if (!t) return;
-        if (!arr.length) {
-            t.querySelector('tbody').innerHTML = '<tr><td colspan="2" style="text-align:center;color:var(--text-secondary);padding:24px">No data</td></tr>';
+    /* ── Helpers ── */
+    function formatLarge(v){if(!v)return'—';if(v>=1e12)return'$'+(v/1e12).toFixed(2)+'T';if(v>=1e9)return'$'+(v/1e9).toFixed(2)+'B';if(v>=1e6)return'$'+(v/1e6).toFixed(0)+'M';return'$'+v;}
+    function formatMillion(v){if(v==null)return'N/A';return(v/1_000_000).toLocaleString('en-US',{maximumFractionDigits:0});}
+
+    function updateGeneralTab(data){
+        const r=data.ratios||{},p=data.profile||{},m=data.metrics||{};
+        document.getElementById('metricsGrid').innerHTML=`
+            <div class="metric-card"><div class="metric-label">Market Cap</div><div class="metric-value">${formatLarge(p.mktCap)}</div></div>
+            <div class="metric-card"><div class="metric-label">P/E (TTM)</div><div class="metric-value">${r.priceEarningsRatioTTM?.toFixed(2)||'—'}</div></div>
+            <div class="metric-card"><div class="metric-label">Dividend Yield</div><div class="metric-value">${(p.lastDiv||0).toFixed(2)}%</div></div>
+            <div class="metric-card"><div class="metric-label">EPS (TTM)</div><div class="metric-value">$${m.earningsPerShareTTM?.toFixed(2)||'—'}</div></div>
+            <div class="metric-card"><div class="metric-label">Industry</div><div class="metric-value" style="font-size:1rem">${p.industry||'—'}</div></div>
+            <div class="metric-card"><div class="metric-label">Shares Outstanding</div><div class="metric-value" style="font-size:1rem">${m.sharesMilTTM?m.sharesMilTTM.toFixed(2)+'M':'—'}</div></div>`;
+    }
+
+    async function updateDividendsTab(data){
+        const r=data.ratios||{},q=data.quote||{};
+        document.getElementById('divMetricsGrid').innerHTML=`
+            <div class="metric-card"><div class="metric-label">Dividend Yield</div><div class="metric-value">${r.dividendYieldTTM?(r.dividendYieldTTM*100).toFixed(2)+'%':'—'}</div></div>
+            <div class="metric-card"><div class="metric-label">Annual Dividend</div><div class="metric-value">${q.lastAnnualDividend?'$'+parseFloat(q.lastAnnualDividend).toFixed(2):'—'}</div></div>
+            <div class="metric-card"><div class="metric-label">Payout Ratio</div><div class="metric-value">${r.payoutRatioTTM?(r.payoutRatioTTM*100).toFixed(2)+'%':'—'}</div></div>
+            <div class="metric-card"><div class="metric-label">Ex-Dividend Date</div><div class="metric-value" style="font-size:1rem">${q.exDividendDate||'—'}</div></div>`;
+        try{
+            const dd=await fmpAPI.getDividendHistory(sym);
+            const h=dd?.historical||[];
+            const tb=document.getElementById('dividendsTableBody');
+            tb.innerHTML=!h.length?'<tr><td colspan="4" style="text-align:center;color:var(--text-secondary);padding:20px">No dividends recorded</td></tr>':h.slice(0,20).map(d=>`<tr><td>${new Date(d.date).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}</td><td>$${(d.dividend||0).toFixed(4)}</td><td>${d.recordDate?new Date(d.recordDate).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}):'—'}</td><td>${d.paymentDate?new Date(d.paymentDate).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}):'—'}</td></tr>`).join('');
+        }catch(e){console.error(e);}
+    }
+
+    /* ══════════════════════════════════════════════════════════════
+       FINANCIAL TABLES — exact logic from stock-screener.html
+    ══════════════════════════════════════════════════════════════ */
+    function renderAllFinancialTables(data,period){
+        renderIncomeTable(data,period);
+        renderBalanceTable(data,period);
+        renderCashflowTable(data,period);
+        renderRatiosTable(data,period);
+        renderKPIsTable(data,period);
+    }
+
+    function periodLabel(item,period){
+        if(!item?.date)return'N/A';
+        const d=new Date(item.date);
+        if(period==='quarterly'){const q=Math.floor(d.getMonth()/3)+1;return`Q${q} ${d.getFullYear()}`;}
+        return'FY '+d.getFullYear();
+    }
+
+    function renderIncomeTable(data,period){
+        if(!data.income?.length){document.querySelector('#incomeTable tbody').innerHTML='<tr><td colspan="6" style="text-align:center;padding:20px;color:var(--text-secondary);">Data unavailable</td></tr>';return;}
+        const years=data.income.slice(0,period==='quarterly'?8:5);
+        document.querySelector('#incomeTable thead tr').innerHTML=`<th>Fiscal Year</th>${years.map(y=>`<th>${periodLabel(y,period)}</th>`).join('')}`;
+        document.querySelector('#incomeTable tbody').innerHTML=buildTableRows([
+            {label:'Period Ending',key:'_date',bold:true},
+            {label:'Revenue',key:'revenue',bold:true},
+            {label:'Revenue Growth (YoY)',key:'_revGrowth',isGrowth:true,indent:true},
+            {label:'Cost of Revenue',key:'costOfRevenue'},
+            {label:'Gross Profit',key:'grossProfit',bold:true},
+            {label:'Selling, General & Admin',key:'sellingGeneralAndAdministrativeExpenses',indent:true},
+            {label:'Research & Development',key:'researchAndDevelopmentExpenses',indent:true},
+            {label:'Other Operating Expenses',key:'otherExpenses',indent:true},
+            {label:'Operating Expenses',key:'operatingExpenses',bold:true},
+            {label:'Operating Income',key:'operatingIncome',bold:true},
+            {label:'Interest Expense',key:'interestExpense'},
+            {label:'Interest & Investment Income',key:'interestIncome'},
+            {label:'Currency Exchange Gain (Loss)',key:'otherNonOperatingIncome'},
+            {label:'Pretax Income',key:'incomeBeforeTax',bold:true},
+            {label:'Income Tax Expense',key:'incomeTaxExpense'},
+            {label:'Net Income',key:'netIncome',bold:true},
+            {label:'Net Income Growth',key:'_netIncGrowth',isGrowth:true,indent:true},
+            {label:'Shares Outstanding (Basic)',key:'weightedAverageSharesOut'},
+            {label:'Shares Outstanding (Diluted)',key:'weightedAverageSharesOutDil',bold:true},
+            {label:'Shares Change (YoY)',key:'_sharesGrowth',isGrowth:true,indent:true},
+            {label:'EPS (Basic)',key:'eps'},
+            {label:'EPS (Diluted)',key:'epsdiluted',bold:true},
+            {label:'EPS Growth',key:'_epsGrowth',isGrowth:true,indent:true},
+            {label:'Free Cash Flow',key:'_fcf'},
+            {label:'Free Cash Flow Per Share',key:'_fcfPerShare'},
+            {label:'Gross Margin',key:'_grossMargin',isPercent:true},
+            {label:'Operating Margin',key:'_opMargin',isPercent:true},
+            {label:'Profit Margin',key:'_netMargin',isPercent:true},
+            {label:'EBITDA',key:'ebitda',bold:true},
+            {label:'EBITDA Margin',key:'_ebitdaMargin',isPercent:true,indent:true},
+            {label:'D&A For EBITDA',key:'depreciationAndAmortization',indent:true},
+            {label:'EBIT',key:'operatingIncome',bold:true},
+            {label:'Effective Tax Rate',key:'_taxRate',isPercent:true},
+        ],years,data.cashflow);
+    }
+
+    function renderBalanceTable(data,period){
+        if(!data.balance?.length){document.querySelector('#balanceTable tbody').innerHTML='<tr><td colspan="6" style="text-align:center;padding:20px;color:var(--text-secondary);">Data unavailable</td></tr>';return;}
+        const years=data.balance.slice(0,period==='quarterly'?8:5);
+        document.querySelector('#balanceTable thead tr').innerHTML=`<th>Fiscal Year</th>${years.map(y=>`<th>${periodLabel(y,period)}</th>`).join('')}`;
+        document.querySelector('#balanceTable tbody').innerHTML=buildTableRows([
+            {label:'Period Ending',key:'_date',bold:true},
+            {label:'— ASSETS —',isSection:true},
+            {label:'Cash & Equivalents',key:'cashAndCashEquivalents'},
+            {label:'Short-Term Investments',key:'shortTermInvestments'},
+            {label:'Cash & Short-Term Investments',key:'cashAndShortTermInvestments',bold:true},
+            {label:'Cash Growth',key:'_cashGrowth',isGrowth:true,indent:true},
+            {label:'Accounts Receivable',key:'netReceivables'},
+            {label:'Inventory',key:'inventory'},
+            {label:'Prepaid Expenses',key:'otherCurrentAssets'},
+            {label:'Total Current Assets',key:'totalCurrentAssets',bold:true},
+            {label:'Property, Plant & Equipment',key:'propertyPlantEquipmentNet'},
+            {label:'Long-Term Investments',key:'longTermInvestments'},
+            {label:'Goodwill',key:'goodwill'},
+            {label:'Other Intangible Assets',key:'intangibleAssets'},
+            {label:'Other Long-Term Assets',key:'otherNonCurrentAssets'},
+            {label:'Total Assets',key:'totalAssets',bold:true},
+            {label:'— LIABILITIES —',isSection:true},
+            {label:'Accounts Payable',key:'accountPayables'},
+            {label:'Accrued Expenses',key:'otherCurrentLiabilities'},
+            {label:'Short-Term Debt',key:'shortTermDebt'},
+            {label:'Total Current Liabilities',key:'totalCurrentLiabilities',bold:true},
+            {label:'Long-Term Debt',key:'longTermDebt'},
+            {label:'Other Long-Term Liabilities',key:'otherNonCurrentLiabilities'},
+            {label:'Total Liabilities',key:'totalLiabilities',bold:true},
+            {label:'— EQUITY —',isSection:true},
+            {label:'Additional Paid-In Capital',key:'additionalPaidInCapital'},
+            {label:'Retained Earnings',key:'retainedEarnings'},
+            {label:'Treasury Stock',key:'treasuryStock'},
+            {label:'Total Common Equity',key:'totalStockholdersEquity',bold:true},
+            {label:'Total Liabilities & Equity',key:'totalLiabilitiesAndStockholdersEquity'},
+            {label:'Total Debt',key:'totalDebt'},
+            {label:'Net Cash (Debt)',key:'_netCash',bold:true},
+            {label:'Net Cash Per Share',key:'_netCashPerShare'},
+            {label:'Total Common Shares Outstanding',key:'_shares',bold:true},
+            {label:'Working Capital',key:'_workingCapital'},
+            {label:'Book Value Per Share',key:'_bookValuePS'},
+            {label:'Tangible Book Value',key:'_tangibleBV'},
+            {label:'Tangible Book Value Per Share',key:'_tangibleBVPS'},
+        ],years,null);
+    }
+
+    function renderCashflowTable(data,period){
+        if(!data.cashflow?.length){document.querySelector('#cashflowTable tbody').innerHTML='<tr><td colspan="6" style="text-align:center;padding:20px;color:var(--text-secondary);">Data unavailable</td></tr>';return;}
+        const years=data.cashflow.slice(0,period==='quarterly'?8:5);
+        document.querySelector('#cashflowTable thead tr').innerHTML=`<th>Fiscal Year</th>${years.map(y=>`<th>${periodLabel(y,period)}</th>`).join('')}`;
+        document.querySelector('#cashflowTable tbody').innerHTML=buildTableRows([
+            {label:'Period Ending',key:'_date',bold:true},
+            {label:'— OPERATING ACTIVITIES —',isSection:true},
+            {label:'Net Income',key:'netIncome'},
+            {label:'Depreciation & Amortization',key:'depreciationAndAmortization'},
+            {label:'Stock-Based Compensation',key:'stockBasedCompensation'},
+            {label:'Other Operating Activities',key:'otherNonCashItems'},
+            {label:'Change in Accounts Receivable',key:'changeInWorkingCapital'},
+            {label:'Change in Inventory',key:'inventory'},
+            {label:'Change in Accounts Payable',key:'accountsPayables'},
+            {label:'Change in Other Net Operating Assets',key:'otherWorkingCapital'},
+            {label:'Operating Cash Flow',key:'operatingCashFlow',bold:true},
+            {label:'Operating Cash Flow Growth',key:'_ocfGrowth',isGrowth:true,indent:true},
+            {label:'— INVESTING ACTIVITIES —',isSection:true},
+            {label:'Capital Expenditures',key:'capitalExpenditure'},
+            {label:'Cash Acquisitions',key:'acquisitionsNet'},
+            {label:'Investment in Securities',key:'purchasesOfInvestments'},
+            {label:'Other Investing Activities',key:'otherInvestingActivites'},
+            {label:'Investing Cash Flow',key:'investingCashFlow',bold:true},
+            {label:'— FINANCING ACTIVITIES —',isSection:true},
+            {label:'Net Debt Issued (Repaid)',key:'debtRepayment'},
+            {label:'Issuance of Common Stock',key:'commonStockIssued'},
+            {label:'Repurchase of Common Stock',key:'commonStockRepurchased'},
+            {label:'Other Financing Activities',key:'otherFinancingActivites'},
+            {label:'Financing Cash Flow',key:'financingCashFlow',bold:true},
+            {label:'Net Cash Flow',key:'netChangeInCash',bold:true},
+            {label:'Free Cash Flow',key:'freeCashFlow',bold:true},
+            {label:'Free Cash Flow Growth',key:'_fcfGrowth',isGrowth:true,indent:true},
+            {label:'Free Cash Flow Margin',key:'_fcfMargin',isPercent:true,indent:true},
+            {label:'Free Cash Flow Per Share',key:'_fcfPerShare',indent:true},
+            {label:'Cash Interest Paid',key:'interestPaid'},
+            {label:'Cash Income Tax Paid',key:'incomeTaxesPaid'},
+            {label:'Change in Working Capital',key:'changeInWorkingCapital'},
+        ],years,null,data.income||[]);
+    }
+
+    function renderRatiosTable(data,period){
+        const ratiosData=data.ratiosHistory||[];
+        const years=ratiosData.slice(0,period==='quarterly'?8:5);
+        const thead=document.querySelector('#ratiosTable thead tr'),tbody=document.querySelector('#ratiosTable tbody');
+        if(!years.length){
+            const r=data.ratios||{},q=data.quote||{},p=data.profile||{};
+            thead.innerHTML=`<th>Metric</th><th>Current (TTM)</th>`;
+            tbody.innerHTML=[
+                ['Market Capitalization',formatLarge(p.mktCap)],
+                ['Last Close Price',q.price?`$${q.price.toFixed(2)}`:'—'],
+                ['PE Ratio',r.priceEarningsRatioTTM?.toFixed(2)||'—'],
+                ['PS Ratio',r.priceToSalesRatioTTM?.toFixed(2)||'—'],
+                ['PB Ratio',r.priceToBookRatioTTM?.toFixed(2)||'—'],
+                ['P/FCF Ratio',r.priceToFreeCashFlowsRatioTTM?.toFixed(2)||'—'],
+                ['P/OCF Ratio',r.priceToOperatingCashFlowsRatioTTM?.toFixed(2)||'—'],
+                ['PEG Ratio',r.priceEarningsToGrowthRatioTTM?.toFixed(2)||'—'],
+                ['EV/EBITDA Ratio',r.enterpriseValueMultipleTTM?.toFixed(2)||'—'],
+                ['Debt / Equity Ratio',r.debtEquityRatioTTM?.toFixed(2)||'—'],
+                ['Asset Turnover',r.assetTurnoverTTM?.toFixed(2)||'—'],
+                ['Quick Ratio',r.quickRatioTTM?.toFixed(2)||'—'],
+                ['Current Ratio',r.currentRatioTTM?.toFixed(2)||'—'],
+                ['Return on Equity (ROE)',r.returnOnEquityTTM?(r.returnOnEquityTTM*100).toFixed(2)+'%':'—'],
+                ['Return on Assets (ROA)',r.returnOnAssetsTTM?(r.returnOnAssetsTTM*100).toFixed(2)+'%':'—'],
+                ['Return on Invested Capital (ROIC)',r.roicTTM?(r.roicTTM*100).toFixed(2)+'%':'—'],
+                ['Earnings Yield',r.earningsYieldTTM?(r.earningsYieldTTM*100).toFixed(2)+'%':'—'],
+                ['FCF Yield',r.freeCashFlowYieldTTM?(r.freeCashFlowYieldTTM*100).toFixed(2)+'%':'—'],
+                ['Dividend Yield',r.dividendYieldTTM?(r.dividendYieldTTM*100).toFixed(2)+'%':'—'],
+                ['Payout Ratio',r.payoutRatioTTM?(r.payoutRatioTTM*100).toFixed(2)+'%':'—'],
+            ].map(([l,v])=>`<tr><td>${l}</td><td>${v}</td></tr>`).join('');
             return;
         }
-        const cols = arr.slice(0,5);
-        t.querySelector('thead tr').innerHTML = '<th>Metric</th>' + cols.map(c=>`<th>${colLabel(c,period)}</th>`).join('');
-        t.querySelector('tbody').innerHTML = rows.map(r => {
-            if (r.sep) return `<tr class="row-sep"><td colspan="${cols.length+1}">${r.label}</td></tr>`;
-            const cells = cols.map(col => {
-                const v = col[r.key];
-                let d = '—';
-                if (v!=null && !isNaN(v)) {
-                    if (r.f==='pct') d = (v*100).toFixed(1)+'%';
-                    else if (r.f==='big') {
-                        const a=Math.abs(v), s=v<0?'-':'';
-                        if(a>=1e12) d=s+'$'+(a/1e12).toFixed(2)+'T';
-                        else if(a>=1e9) d=s+'$'+(a/1e9).toFixed(1)+'B';
-                        else if(a>=1e6) d=s+'$'+(a/1e6).toFixed(0)+'M';
-                        else d=s+'$'+a.toFixed(0);
-                    }
-                    else if (r.f==='x') d = v.toFixed(2)+'x';
-                    else d = parseFloat(v).toFixed(2);
-                }
-                const cls = r.c && v!=null ? (v>=0?'pos':'neg') : '';
-                return `<td class="${cls}">${d}</td>`;
-            }).join('');
-            return `<tr><td>${r.label}</td>${cells}</tr>`;
-        }).join('');
+        thead.innerHTML=`<th>Fiscal Year</th>${years.map(y=>`<th>${periodLabel(y,period)}</th>`).join('')}`;
+        tbody.innerHTML=buildTableRows([
+            {label:'Period Ending',key:'_date',bold:true},
+            {label:'Market Capitalization',key:'marketCapitalization'},
+            {label:'Last Close Price',key:'stockPrice'},
+            {label:'PE Ratio',key:'priceEarningsRatio',bold:true},
+            {label:'PS Ratio',key:'priceToSalesRatio'},
+            {label:'PB Ratio',key:'priceToBookRatio'},
+            {label:'P/FCF Ratio',key:'priceToFreeCashFlowsRatio'},
+            {label:'P/OCF Ratio',key:'priceToOperatingCashFlowsRatio'},
+            {label:'PEG Ratio',key:'priceEarningsToGrowthRatio'},
+            {label:'EV/EBITDA Ratio',key:'enterpriseValueMultiple'},
+            {label:'Debt / Equity Ratio',key:'debtEquityRatio'},
+            {label:'Asset Turnover',key:'assetTurnover'},
+            {label:'Inventory Turnover',key:'inventoryTurnover'},
+            {label:'Quick Ratio',key:'quickRatio'},
+            {label:'Current Ratio',key:'currentRatio'},
+            {label:'Return on Equity (ROE)',key:'returnOnEquity',isPercent:true},
+            {label:'Return on Assets (ROA)',key:'returnOnAssets',isPercent:true},
+            {label:'Return on Invested Capital (ROIC)',key:'returnOnCapitalEmployed',isPercent:true},
+            {label:'Earnings Yield',key:'earningsYield',isPercent:true},
+            {label:'FCF Yield',key:'freeCashFlowYield',isPercent:true},
+        ],years,null);
     }
 
-    const incRows  = () => [
-        {sep:1,label:'Revenue'},
-        {key:'revenue',label:'Revenue',f:'big'},
-        {key:'grossProfit',label:'Gross Profit',f:'big'},
-        {key:'grossProfitRatio',label:'Gross Margin',f:'pct'},
-        {sep:1,label:'Expenses'},
-        {key:'operatingExpenses',label:'Operating Expenses',f:'big'},
-        {key:'researchAndDevelopmentExpenses',label:'R&D',f:'big'},
-        {sep:1,label:'Income'},
-        {key:'operatingIncome',label:'Operating Income',f:'big'},
-        {key:'operatingIncomeRatio',label:'Operating Margin',f:'pct'},
-        {key:'ebitda',label:'EBITDA',f:'big'},
-        {key:'netIncome',label:'Net Income',f:'big',c:1},
-        {key:'netIncomeRatio',label:'Net Margin',f:'pct'},
-        {key:'eps',label:'EPS',f:'num'},
-        {key:'epsdiluted',label:'EPS Diluted',f:'num'},
-    ];
-    const balRows  = () => [
-        {sep:1,label:'Assets'},
-        {key:'cashAndCashEquivalents',label:'Cash & Equivalents',f:'big'},
-        {key:'shortTermInvestments',label:'Short-term Investments',f:'big'},
-        {key:'netReceivables',label:'Net Receivables',f:'big'},
-        {key:'totalCurrentAssets',label:'Total Current Assets',f:'big'},
-        {key:'propertyPlantEquipmentNet',label:'PP&E Net',f:'big'},
-        {key:'goodwillAndIntangibleAssets',label:'Goodwill & Intangibles',f:'big'},
-        {key:'totalAssets',label:'Total Assets',f:'big'},
-        {sep:1,label:'Liabilities'},
-        {key:'totalCurrentLiabilities',label:'Total Current Liabilities',f:'big'},
-        {key:'longTermDebt',label:'Long-term Debt',f:'big'},
-        {key:'totalDebt',label:'Total Debt',f:'big'},
-        {key:'totalLiabilities',label:'Total Liabilities',f:'big'},
-        {sep:1,label:'Equity'},
-        {key:'totalEquity',label:'Total Equity',f:'big',c:1},
-        {key:'retainedEarnings',label:'Retained Earnings',f:'big'},
-    ];
-    const cfRows   = () => [
-        {sep:1,label:'Operating'},
-        {key:'operatingCashFlow',label:'Operating Cash Flow',f:'big'},
-        {key:'stockBasedCompensation',label:'Stock-based Comp.',f:'big'},
-        {key:'changeInWorkingCapital',label:'Working Capital Change',f:'big',c:1},
-        {sep:1,label:'Investing'},
-        {key:'capitalExpenditure',label:'CapEx',f:'big'},
-        {key:'acquisitionsNet',label:'Acquisitions',f:'big'},
-        {sep:1,label:'Free Cash Flow'},
-        {key:'freeCashFlow',label:'Free Cash Flow',f:'big',c:1},
-        {key:'dividendsPaid',label:'Dividends Paid',f:'big'},
-        {key:'commonStockRepurchased',label:'Buybacks',f:'big'},
-    ];
-    const ratRows  = () => [
-        {sep:1,label:'Valuation'},
-        {key:'priceEarningsRatioTTM',label:'P/E',f:'x'},
-        {key:'priceToBookRatioTTM',label:'P/B',f:'x'},
-        {key:'priceToSalesRatioTTM',label:'P/S',f:'x'},
-        {key:'priceToFreeCashFlowsRatioTTM',label:'P/FCF',f:'x'},
-        {key:'enterpriseValueMultipleTTM',label:'EV/EBITDA',f:'x'},
-        {sep:1,label:'Profitability'},
-        {key:'returnOnEquityTTM',label:'ROE',f:'pct'},
-        {key:'returnOnAssetsTTM',label:'ROA',f:'pct'},
-        {key:'roicTTM',label:'ROIC',f:'pct'},
-        {sep:1,label:'Debt & Liquidity'},
-        {key:'debtEquityRatioTTM',label:'Debt / Equity',f:'x'},
-        {key:'currentRatioTTM',label:'Current Ratio',f:'x'},
-        {key:'interestCoverageTTM',label:'Interest Coverage',f:'x'},
-        {sep:1,label:'Dividends'},
-        {key:'dividendYieldTTM',label:'Dividend Yield',f:'pct'},
-        {key:'payoutRatioTTM',label:'Payout Ratio',f:'pct'},
-    ];
-    const kpiRows  = () => [
-        {sep:1,label:'Per Share'},
-        {key:'revenuePerShareTTM',label:'Revenue / Share'},
-        {key:'netIncomePerShareTTM',label:'Net Income / Share'},
-        {key:'freeCashFlowPerShareTTM',label:'FCF / Share'},
-        {key:'bookValuePerShareTTM',label:'Book Value / Share'},
-        {sep:1,label:'Efficiency'},
-        {key:'assetTurnoverTTM',label:'Asset Turnover',f:'x'},
-        {key:'inventoryTurnoverTTM',label:'Inventory Turnover',f:'x'},
-        {sep:1,label:'Growth'},
-        {key:'revenueGrowthTTM',label:'Revenue Growth',f:'pct',c:1},
-        {key:'epsgrowthTTM',label:'EPS Growth',f:'pct',c:1},
-        {key:'freeCashFlowGrowthTTM',label:'FCF Growth',f:'pct',c:1},
-    ];
+    function renderKPIsTable(data,period){
+        const years=(data.income||[]).slice(0,period==='quarterly'?8:5);
+        document.querySelector('#kpisTable thead tr').innerHTML=`<th>Fiscal Year</th>${years.map(y=>`<th>${periodLabel(y,period)}</th>`).join('')}`;
+        document.querySelector('#kpisTable tbody').innerHTML=buildTableRows([
+            {label:'Period Ending',key:'_date',bold:true},
+            {label:'Shares Outstanding (Diluted)',key:'weightedAverageSharesOutDil',bold:true},
+            {label:'Shares Change (YoY)',key:'_sharesGrowth',isGrowth:true,indent:true},
+            {label:'EPS (Basic)',key:'eps'},
+            {label:'EPS (Diluted)',key:'epsdiluted',bold:true},
+            {label:'EPS Growth',key:'_epsGrowth',isGrowth:true,indent:true},
+            {label:'Free Cash Flow',key:'_fcf',bold:true},
+            {label:'Free Cash Flow Per Share',key:'_fcfPerShare',indent:true},
+            {label:'Gross Margin',key:'_grossMargin',isPercent:true},
+            {label:'Operating Margin',key:'_opMargin',isPercent:true},
+            {label:'Profit Margin',key:'_netMargin',isPercent:true},
+            {label:'Free Cash Flow Margin',key:'_fcfMarginIncome',isPercent:true},
+            {label:'EBITDA',key:'ebitda',bold:true},
+            {label:'EBITDA Margin',key:'_ebitdaMargin',isPercent:true,indent:true},
+            {label:'D&A For EBITDA',key:'depreciationAndAmortization',indent:true},
+            {label:'EBIT',key:'operatingIncome',bold:true},
+            {label:'EBIT Margin',key:'_opMargin',isPercent:true,indent:true},
+            {label:'Effective Tax Rate',key:'_taxRate',isPercent:true},
+            {label:'Revenue as Reported',key:'revenue'},
+        ],years,data.cashflow);
+    }
 
+    /* ══════════════════════════════════════════════════════════════
+       GENERIC TABLE ROW BUILDER — identical to stock-screener.html
+    ══════════════════════════════════════════════════════════════ */
+    function buildTableRows(rowsConfig,years,cashflowData,incomeDataAux){
+        let html='';
+        rowsConfig.forEach(row=>{
+            if(row.isSection){html+=`<tr class="row-section"><td colspan="${years.length+1}">${row.label}</td></tr>`;return;}
+            let tc='';if(row.bold)tc+=' row-bold';if(row.indent)tc+=' row-indent';
+            html+=`<tr class="${tc}"><td>${row.label}</td>`;
+            years.forEach((yd,i)=>{
+                let dv='N/A',cc='';
+                if(row.key==='_date'){
+                    dv=`<strong>${new Date(yd.date).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}</strong>`;
+                }else if(['_revGrowth','_netIncGrowth','_epsGrowth','_ocfGrowth','_fcfGrowth','_cashGrowth','_sharesGrowth'].includes(row.key)){
+                    if(i<years.length-1){const km={_revGrowth:'revenue',_netIncGrowth:'netIncome',_epsGrowth:'epsdiluted',_ocfGrowth:'operatingCashFlow',_fcfGrowth:'freeCashFlow',_cashGrowth:'cashAndShortTermInvestments',_sharesGrowth:'weightedAverageSharesOutDil'};const k=km[row.key],c=yd[k],p=years[i+1][k];if(c!=null&&p!=null&&p!==0){const pct=((c-p)/Math.abs(p))*100;dv=pct.toFixed(2)+'%';cc=pct>=0?'positive':'negative';}}
+                }else if(row.key==='_grossMargin'){const v=yd.revenue?(yd.grossProfit/yd.revenue)*100:null;if(v!=null)dv=v.toFixed(2)+'%';}
+                else if(row.key==='_opMargin'){const v=yd.revenue?(yd.operatingIncome/yd.revenue)*100:null;if(v!=null)dv=v.toFixed(2)+'%';}
+                else if(row.key==='_netMargin'){const v=yd.revenue?(yd.netIncome/yd.revenue)*100:null;if(v!=null)dv=v.toFixed(2)+'%';}
+                else if(row.key==='_ebitdaMargin'){const v=yd.revenue&&yd.ebitda?(yd.ebitda/yd.revenue)*100:null;if(v!=null)dv=v.toFixed(2)+'%';}
+                else if(row.key==='_taxRate'){const v=yd.incomeBeforeTax?(yd.incomeTaxExpense/yd.incomeBeforeTax)*100:null;if(v!=null)dv=v.toFixed(2)+'%';}
+                else if(row.key==='_fcf'){const cf=cashflowData?cashflowData[i]:yd;const v=cf?.freeCashFlow;if(v!=null)dv=formatMillion(v);}
+                else if(row.key==='_fcfPerShare'){const cf=cashflowData?cashflowData[i]:yd;const ir=incomeDataAux?incomeDataAux[i]:yd;const sh=ir?.weightedAverageSharesOutDil||yd.weightedAverageSharesOutDil||0;const f=cf?.freeCashFlow;if(f!=null&&sh>0)dv='$'+(f/sh).toFixed(2);}
+                else if(row.key==='_fcfMargin'||row.key==='_fcfMarginIncome'){const cf=cashflowData?cashflowData[i]:yd;const ir=incomeDataAux?incomeDataAux[i]:yd;const v=cf?.freeCashFlow&&ir?.revenue?(cf.freeCashFlow/ir.revenue)*100:null;if(v!=null)dv=v.toFixed(2)+'%';}
+                else if(row.key==='_netCash'){const ca=yd.cashAndShortTermInvestments,dt=yd.totalDebt;if(ca!=null&&dt!=null){const v=ca-dt;dv=formatMillion(v);cc=v>=0?'positive':'negative';}}
+                else if(row.key==='_netCashPerShare'){const ca=yd.cashAndShortTermInvestments,dt=yd.totalDebt,sh=yd.commonStock||yd.totalCommonShares||0;if(ca!=null&&dt!=null&&sh>0)dv='$'+((ca-dt)/sh).toFixed(2);}
+                else if(row.key==='_shares'){const v=yd.commonStock||yd.totalCommonShares||yd.weightedAverageSharesOutDil;if(v!=null)dv=(v/1_000_000).toFixed(2);}
+                else if(row.key==='_workingCapital'){const v=yd.totalCurrentAssets&&yd.totalCurrentLiabilities?yd.totalCurrentAssets-yd.totalCurrentLiabilities:null;if(v!=null)dv=formatMillion(v);}
+                else if(row.key==='_bookValuePS'){const bv=yd.totalStockholdersEquity,sh=yd.commonStock||yd.totalCommonShares||0;if(bv!=null&&sh>0)dv='$'+(bv/sh).toFixed(2);}
+                else if(row.key==='_tangibleBV'){const gi=(yd.goodwillAndIntangibleAssets||yd.goodwill||0)+(yd.intangibleAssets||0);const v=yd.totalStockholdersEquity!=null?yd.totalStockholdersEquity-gi:null;if(v!=null)dv=formatMillion(v);}
+                else if(row.key==='_tangibleBVPS'){const bv=yd.totalStockholdersEquity,gi=(yd.goodwillAndIntangibleAssets||yd.goodwill||0)+(yd.intangibleAssets||0),sh=yd.commonStock||yd.totalCommonShares||0;if(bv!=null&&sh>0)dv='$'+((bv-gi)/sh).toFixed(2);}
+                else if(row.isGrowth){if(i<years.length-1){const c=yd[row.key],p=years[i+1][row.key];if(c!=null&&p!=null&&p!==0){const pct=((c-p)/Math.abs(p))*100;dv=pct.toFixed(2)+'%';cc=pct>=0?'positive':'negative';}}}
+                else if(row.isPercent){const v=yd[row.key];if(v!=null)dv=(v*100).toFixed(2)+'%';}
+                else{const v=yd[row.key];if(v!=null){if(row.key==='eps'||row.key==='epsdiluted')dv='$'+v.toFixed(2);else if(Math.abs(v)<100)dv=v.toFixed(2);else dv=formatMillion(v);}}
+                html+=`<td class="${cc}">${dv}</td>`;
+            });
+            html+='</tr>';
+        });
+        return html;
+    }
 </script>
 </body>
 </html>
