@@ -288,19 +288,18 @@
     document.getElementById('signOutBtn').addEventListener('click', async () => { await signOut(auth); window.location.href="index.html"; });
 </script>
 
-<script>
-const API_KEY = 'RxYKGPJbSbTuLhW15Bdrop3OxJ2tiXDf';
-const BASE = 'https://financialmodelingprep.com/api/v3';
+<script type="module">
+import fmpAPI from './fmp-api.js';
 
 const M = {
-    pe:          { label:'P/E Ratio',       fmt: v => v!=null ? v.toFixed(1)+'x'            : 'N/A' },
-    pb:          { label:'P/B Ratio',       fmt: v => v!=null ? v.toFixed(2)+'x'            : 'N/A' },
-    evEbitda:    { label:'EV/EBITDA',       fmt: v => v!=null ? v.toFixed(1)+'x'            : 'N/A' },
-    revenue:     { label:'Revenue',         fmt: v => v!=null ? '$'+fmtBig(v)               : 'N/A' },
-    netIncome:   { label:'Net Income',      fmt: v => v!=null ? '$'+fmtBig(v)               : 'N/A' },
-    eps:         { label:'EPS',             fmt: v => v!=null ? '$'+v.toFixed(2)            : 'N/A' },
-    fcf:         { label:'Free Cash Flow',  fmt: v => v!=null ? '$'+fmtBig(v)               : 'N/A' },
-    grossMargin: { label:'Gross Margin',    fmt: v => v!=null ? (v*100).toFixed(1)+'%'      : 'N/A' },
+    pe:          { label:'P/E Ratio',       fmt: v => v!=null ? v.toFixed(1)+'x'       : 'N/A' },
+    pb:          { label:'P/B Ratio',       fmt: v => v!=null ? v.toFixed(2)+'x'       : 'N/A' },
+    evEbitda:    { label:'EV/EBITDA',       fmt: v => v!=null ? v.toFixed(1)+'x'       : 'N/A' },
+    revenue:     { label:'Revenue',         fmt: v => v!=null ? '$'+fmtBig(v)          : 'N/A' },
+    netIncome:   { label:'Net Income',      fmt: v => v!=null ? '$'+fmtBig(v)          : 'N/A' },
+    eps:         { label:'EPS',             fmt: v => v!=null ? '$'+v.toFixed(2)       : 'N/A' },
+    fcf:         { label:'Free Cash Flow',  fmt: v => v!=null ? '$'+fmtBig(v)          : 'N/A' },
+    grossMargin: { label:'Gross Margin',    fmt: v => v!=null ? (v*100).toFixed(1)+'%' : 'N/A' },
 };
 
 const PAL = [
@@ -312,16 +311,6 @@ const PAL = [
     {bg:'rgba(59,130,246,.8)',  b:'#3B82F6', t:'#60A5FA'},
 ];
 
-const POP = [
-    {s:'AAPL',n:'Apple Inc.'},{s:'MSFT',n:'Microsoft Corp.'},{s:'NVDA',n:'NVIDIA Corp.'},
-    {s:'GOOGL',n:'Alphabet Inc.'},{s:'AMZN',n:'Amazon.com'},{s:'TSLA',n:'Tesla Inc.'},
-    {s:'META',n:'Meta Platforms'},{s:'BRK.B',n:'Berkshire Hathaway'},{s:'JPM',n:'JPMorgan Chase'},
-    {s:'V',n:'Visa Inc.'},{s:'JNJ',n:'Johnson & Johnson'},{s:'WMT',n:'Walmart Inc.'},
-    {s:'XOM',n:'Exxon Mobil'},{s:'NFLX',n:'Netflix Inc.'},{s:'ADBE',n:'Adobe Inc.'},
-    {s:'AMD',n:'Advanced Micro Devices'},{s:'INTC',n:'Intel Corp.'},{s:'DIS',n:'Walt Disney'},
-    {s:'ASML',n:'ASML Holding'},{s:'TSM',n:'Taiwan Semiconductor'},
-];
-
 let tickers=[], cache={}, metric='pe', period='TTM', chart=null;
 
 function fmtBig(v){ const a=Math.abs(v); if(a>=1e12) return (v/1e12).toFixed(2)+'T'; if(a>=1e9) return (v/1e9).toFixed(2)+'B'; if(a>=1e6) return (v/1e6).toFixed(2)+'M'; return v.toFixed(0); }
@@ -329,131 +318,245 @@ function pal(i){ return PAL[i%PAL.length]; }
 function setLoad(v){ document.getElementById('loadingEl').style.display=v?'flex':'none'; }
 function showToast(t,m){ document.getElementById('toastT').textContent=t; document.getElementById('toastM').textContent=m; const el=document.getElementById('toast'); el.classList.add('show'); setTimeout(()=>el.classList.remove('show'),4000); }
 
-async function load(sym){
-    if(cache[sym]) return cache[sym];
-    const [iA,iQ,rA,rQ,cA,cQ,prof]=await Promise.all([
-        fetch(`${BASE}/income-statement/${sym}?limit=30&apikey=${API_KEY}`).then(r=>r.json()),
-        fetch(`${BASE}/income-statement/${sym}?period=quarter&limit=30&apikey=${API_KEY}`).then(r=>r.json()),
-        fetch(`${BASE}/ratios/${sym}?limit=30&apikey=${API_KEY}`).then(r=>r.json()),
-        fetch(`${BASE}/ratios/${sym}?period=quarter&limit=30&apikey=${API_KEY}`).then(r=>r.json()),
-        fetch(`${BASE}/cash-flow-statement/${sym}?limit=30&apikey=${API_KEY}`).then(r=>r.json()),
-        fetch(`${BASE}/cash-flow-statement/${sym}?period=quarter&limit=30&apikey=${API_KEY}`).then(r=>r.json()),
-        fetch(`${BASE}/profile/${sym}?apikey=${API_KEY}`).then(r=>r.json()),
+// ---- DATA LOADING via fmp-api.js ----
+// /stable/ field names: priceEarningsRatio, priceToBookRatio, enterpriseValueMultiple, grossProfitMargin
+
+function buildRows(rats, incs, cass) {
+    const rMap = Object.fromEntries((rats||[]).map(r => [r.date, r]));
+    const cMap = Object.fromEntries((cass||[]).map(r => [r.date, r]));
+    const anchor = (incs && incs.length) ? incs : (rats||[]);
+    return [...anchor].reverse().map(row => {
+        const r = rMap[row.date] || {};
+        const c = cMap[row.date] || {};
+        return {
+            date:        row.date,
+            pe:          r.priceEarningsRatio     ?? null,
+            pb:          r.priceToBookRatio        ?? null,
+            evEbitda:    r.enterpriseValueMultiple ?? null,
+            revenue:     row.revenue               ?? null,
+            netIncome:   row.netIncome             ?? null,
+            eps:         row.eps                   ?? null,
+            fcf:         c.freeCashFlow            ?? null,
+            grossMargin: r.grossProfitMargin       ?? null,
+        };
+    });
+}
+
+async function load(sym) {
+    if (cache[sym]) return cache[sym];
+
+    const [iA, rA, cA, prof, incQ, ratQ, casQ] = await Promise.all([
+        fmpAPI.makeRequest('/income-statement',    { symbol: sym, limit: 30 }),
+        fmpAPI.makeRequest('/ratios',              { symbol: sym, limit: 30 }),
+        fmpAPI.makeRequest('/cash-flow-statement', { symbol: sym, limit: 30 }),
+        fmpAPI.makeRequest('/profile',             { symbol: sym }),
+        fmpAPI.makeRequest('/income-statement',    { symbol: sym, period: 'quarter', limit: 30 }),
+        fmpAPI.makeRequest('/ratios',              { symbol: sym, period: 'quarter', limit: 30 }),
+        fmpAPI.makeRequest('/cash-flow-statement', { symbol: sym, period: 'quarter', limit: 30 }),
     ]);
-    if(!Array.isArray(iA)||!iA.length) throw new Error(`No data for "${sym}"`);
-    const mrg=(i,r,c)=>i.map((row,x)=>({date:row.date,pe:r[x]?.priceEarningsRatio??null,pb:r[x]?.priceToBookRatio??null,evEbitda:r[x]?.enterpriseValueMultiple??null,revenue:row.revenue??null,netIncome:row.netIncome??null,eps:row.eps??null,fcf:c[x]?.freeCashFlow??null,grossMargin:(row.grossProfit&&row.revenue)?row.grossProfit/row.revenue:null})).reverse();
-    const annual=mrg(iA,rA,cA), quarter=mrg(iQ,rQ,cQ);
-    const ttm=[];
-    for(let i=3;i<quarter.length;i++){const sl=quarter.slice(i-3,i+1),l=sl[sl.length-1];ttm.push({date:l.date,pe:l.pe,pb:l.pb,evEbitda:l.evEbitda,revenue:sl.reduce((s,r)=>s+(r.revenue||0),0),netIncome:sl.reduce((s,r)=>s+(r.netIncome||0),0),eps:sl.reduce((s,r)=>s+(r.eps||0),0),fcf:sl.reduce((s,r)=>s+(r.fcf||0),0),grossMargin:l.grossMargin});}
-    cache[sym]={annual,quarter,ttm,info:Array.isArray(prof)&&prof[0]?prof[0]:{}};
+
+    if (!Array.isArray(iA) || !iA.length) throw new Error(`No data found for "${sym}"`);
+
+    const annual  = buildRows(rA,   iA,   cA);
+    const quarter = buildRows(ratQ, incQ, casQ);
+
+    const ttm = [];
+    for (let i = 3; i < quarter.length; i++) {
+        const sl = quarter.slice(i-3, i+1), l = sl[sl.length-1];
+        ttm.push({
+            date:        l.date,
+            pe:          l.pe,
+            pb:          l.pb,
+            evEbitda:    l.evEbitda,
+            revenue:     sl.reduce((s,r) => s + (r.revenue   || 0), 0),
+            netIncome:   sl.reduce((s,r) => s + (r.netIncome || 0), 0),
+            eps:         sl.reduce((s,r) => s + (r.eps       || 0), 0),
+            fcf:         sl.reduce((s,r) => s + (r.fcf       || 0), 0),
+            grossMargin: l.grossMargin,
+        });
+    }
+
+    const profData = Array.isArray(prof) ? prof[0] : (prof || {});
+    cache[sym] = { annual, quarter, ttm, info: profData };
     return cache[sym];
 }
 
 function rows(sym){ const d=cache[sym]; if(!d) return []; return period==='Y'?d.annual:period==='Q'?d.quarter:d.ttm; }
 
-async function initStock(sym,name){
-    sym=sym.toUpperCase().trim(); setLoad(true);
-    document.getElementById('welcomeSection').style.display='none';
-    document.getElementById('chartView').style.display='block';
+async function initStock(sym, name) {
+    sym = sym.toUpperCase().trim();
+    setLoad(true);
+    document.getElementById('welcomeSection').style.display = 'none';
+    document.getElementById('chartView').style.display = 'block';
     try {
-        const d=await load(sym); tickers=[sym];
-        document.getElementById('stockBadge').textContent=sym.slice(0,4);
-        document.getElementById('stockNm').textContent=sym;
-        document.getElementById('stockSub').textContent=d.info.companyName||name||'';
+        const d = await load(sym);
+        tickers = [sym];
+        document.getElementById('stockBadge').textContent = sym.slice(0, 4);
+        document.getElementById('stockNm').textContent    = sym;
+        document.getElementById('stockSub').textContent   = d.info.companyName || name || '';
         renderChips(); renderChart(); renderStats();
-    } catch(e){ showToast('Not found',e.message); document.getElementById('welcomeSection').style.display='block'; document.getElementById('chartView').style.display='none'; }
-    finally{ setLoad(false); }
+    } catch(e) {
+        showToast('Not found', e.message);
+        document.getElementById('welcomeSection').style.display = 'block';
+        document.getElementById('chartView').style.display      = 'none';
+    } finally { setLoad(false); }
 }
 
-async function addTicker(sym){
-    sym=sym.toUpperCase().trim(); if(!sym) return;
-    if(tickers.includes(sym)){showToast('Already added',`${sym} is already in the chart.`);return;}
-    if(tickers.length>=6){showToast('Max reached','Up to 6 tickers at once.');return;}
+async function addTicker(sym) {
+    sym = sym.toUpperCase().trim(); if (!sym) return;
+    if (tickers.includes(sym)) { showToast('Already added', `${sym} is already in the chart.`); return; }
+    if (tickers.length >= 6)  { showToast('Max reached', 'Up to 6 tickers at once.'); return; }
     setLoad(true);
     try { await load(sym); tickers.push(sym); renderChips(); renderChart(); renderStats(); }
-    catch(e){ showToast('Not found',e.message); }
-    finally{ setLoad(false); }
+    catch(e) { showToast('Not found', e.message); }
+    finally { setLoad(false); }
 }
 
-function removeTicker(sym){ if(tickers.length===1) return; tickers=tickers.filter(t=>t!==sym); renderChips(); renderChart(); renderStats(); }
+function removeTicker(sym) {
+    if (tickers.length === 1) return;
+    tickers = tickers.filter(t => t !== sym);
+    renderChips(); renderChart(); renderStats();
+}
 
-function renderChips(){
-    const c=document.getElementById('chips'); c.innerHTML='';
-    tickers.forEach((sym,i)=>{
-        const p=pal(i), chip=document.createElement('div');
-        chip.className='chip'; chip.style.cssText=`color:${p.t};border-color:${p.b};background:${p.b}18`;
-        chip.innerHTML=`${sym}${tickers.length>1?`<span class="chip-x" data-s="${sym}">✕</span>`:''}`;
+function renderChips() {
+    const c = document.getElementById('chips'); c.innerHTML = '';
+    tickers.forEach((sym, i) => {
+        const p = pal(i), chip = document.createElement('div');
+        chip.className = 'chip';
+        chip.style.cssText = `color:${p.t};border-color:${p.b};background:${p.b}18`;
+        chip.innerHTML = `${sym}${tickers.length > 1 ? `<span class="chip-x" data-s="${sym}">✕</span>` : ''}`;
         c.appendChild(chip);
     });
-    document.querySelectorAll('.chip-x').forEach(x=>x.addEventListener('click',()=>removeTicker(x.dataset.s)));
+    document.querySelectorAll('.chip-x').forEach(x => x.addEventListener('click', () => removeTicker(x.dataset.s)));
 }
 
-function renderChart(){
-    const allD=new Set(); tickers.forEach(s=>rows(s).forEach(r=>allD.add(r.date)));
-    const labels=[...allD].sort();
-    const datasets=tickers.map((sym,i)=>{ const p=pal(i),r=rows(sym),map=Object.fromEntries(r.map(x=>[x.date,x[metric]])); return {label:sym,data:labels.map(d=>map[d]??null),backgroundColor:p.bg,borderColor:p.b,borderWidth:1.5,borderRadius:4}; });
-    document.getElementById('chartLeg').innerHTML=tickers.map((s,i)=>`<div class="leg-i"><div class="leg-dot" style="background:${pal(i).b}"></div>${s}</div>`).join('');
-    document.getElementById('chartTtl').textContent=M[metric].label;
-    document.getElementById('chartSubTxt').textContent=period==='Y'?'Annual · up to 30 years':period==='Q'?'Quarterly · up to 30 quarters':'TTM – trailing twelve months';
-    const dk=document.documentElement.getAttribute('data-theme')!=='light';
-    const gc=dk?'rgba(255,255,255,.05)':'rgba(0,0,0,.06)', tc=dk?'#64748B':'#94A3B8';
-    if(chart) chart.destroy();
-    chart=new Chart(document.getElementById('mainChart').getContext('2d'),{
-        type:'bar', data:{labels,datasets},
-        options:{responsive:true,maintainAspectRatio:true,aspectRatio:window.innerWidth<600?1.4:2.8,interaction:{mode:'index',intersect:false},
-            plugins:{legend:{display:false},tooltip:{backgroundColor:dk?'#1E293B':'#fff',borderColor:dk?'#334155':'#E2E8F0',borderWidth:1,titleColor:dk?'#F1F5F9':'#111827',bodyColor:dk?'#94A3B8':'#6B7280',padding:12,callbacks:{label:c=>` ${c.dataset.label}: ${M[metric].fmt(c.parsed.y)}`}}},
-            scales:{x:{grid:{color:gc},ticks:{color:tc,font:{size:11},maxTicksLimit:14,maxRotation:45}},y:{grid:{color:gc},ticks:{color:tc,font:{size:11},callback:v=>M[metric].fmt(v)}}}}
+function renderChart() {
+    const allD = new Set();
+    tickers.forEach(s => rows(s).forEach(r => allD.add(r.date)));
+    const labels = [...allD].sort();
+    const datasets = tickers.map((sym, i) => {
+        const p = pal(i), r = rows(sym), map = Object.fromEntries(r.map(x => [x.date, x[metric]]));
+        return { label: sym, data: labels.map(d => map[d] ?? null), backgroundColor: p.bg, borderColor: p.b, borderWidth: 1.5, borderRadius: 4 };
+    });
+    document.getElementById('chartLeg').innerHTML = tickers.map((s, i) => `<div class="leg-i"><div class="leg-dot" style="background:${pal(i).b}"></div>${s}</div>`).join('');
+    document.getElementById('chartTtl').textContent    = M[metric].label;
+    document.getElementById('chartSubTxt').textContent = period==='Y'?'Annual · up to 30 years':period==='Q'?'Quarterly · up to 30 quarters':'TTM – trailing twelve months';
+    const dk = document.documentElement.getAttribute('data-theme') !== 'light';
+    const gc = dk ? 'rgba(255,255,255,.05)' : 'rgba(0,0,0,.06)', tc = dk ? '#64748B' : '#94A3B8';
+    if (chart) chart.destroy();
+    chart = new Chart(document.getElementById('mainChart').getContext('2d'), {
+        type: 'bar', data: { labels, datasets },
+        options: {
+            responsive: true, maintainAspectRatio: true,
+            aspectRatio: window.innerWidth < 600 ? 1.4 : 2.8,
+            interaction: { mode: 'index', intersect: false },
+            plugins: {
+                legend: { display: false },
+                tooltip: { backgroundColor: dk?'#1E293B':'#fff', borderColor: dk?'#334155':'#E2E8F0', borderWidth: 1, titleColor: dk?'#F1F5F9':'#111827', bodyColor: dk?'#94A3B8':'#6B7280', padding: 12, callbacks: { label: c => ` ${c.dataset.label}: ${M[metric].fmt(c.parsed.y)}` } }
+            },
+            scales: {
+                x: { grid: { color: gc }, ticks: { color: tc, font: { size: 11 }, maxTicksLimit: 14, maxRotation: 45 } },
+                y: { grid: { color: gc }, ticks: { color: tc, font: { size: 11 }, callback: v => M[metric].fmt(v) } }
+            }
+        }
     });
 }
 
-function renderStats(){
-    const g=document.getElementById('stats'); g.innerHTML='';
-    tickers.forEach((sym,i)=>{
-        const p=pal(i),r=rows(sym); if(!r.length) return;
-        const lat=r[r.length-1],prev=r[r.length-2],val=lat[metric],pval=prev?prev[metric]:null;
-        const chg=(val!=null&&pval!=null&&pval!==0)?((val-pval)/Math.abs(pval))*100:null;
-        const el=document.createElement('div'); el.className='sc'; el.style.borderTop=`3px solid ${p.b}`;
-        el.innerHTML=`<div class="sc-ticker" style="color:${p.t}">${sym}</div><div class="sc-label">${M[metric].label} · Latest</div><div class="sc-val">${M[metric].fmt(val)}</div>${chg!=null?`<div class="sc-chg ${chg>=0?'up':'dn'}">${chg>=0?'▲':'▼'} ${Math.abs(chg).toFixed(1)}% <span style="font-weight:400;color:var(--sub)">vs prev</span></div>`:''}`;
+function renderStats() {
+    const g = document.getElementById('stats'); g.innerHTML = '';
+    tickers.forEach((sym, i) => {
+        const p = pal(i), r = rows(sym); if (!r.length) return;
+        const lat = r[r.length-1], prev = r[r.length-2], val = lat[metric], pval = prev ? prev[metric] : null;
+        const chg = (val != null && pval != null && pval !== 0) ? ((val - pval) / Math.abs(pval)) * 100 : null;
+        const el = document.createElement('div'); el.className = 'sc'; el.style.borderTop = `3px solid ${p.b}`;
+        el.innerHTML = `<div class="sc-ticker" style="color:${p.t}">${sym}</div><div class="sc-label">${M[metric].label} · Latest</div><div class="sc-val">${M[metric].fmt(val)}</div>${chg!=null?`<div class="sc-chg ${chg>=0?'up':'dn'}">${chg>=0?'▲':'▼'} ${Math.abs(chg).toFixed(1)}% <span style="font-weight:400;color:var(--sub)">vs prev</span></div>`:''}`;
         g.appendChild(el);
     });
 }
 
-// Welcome search
-const sInp=document.getElementById('stockSearch'), sRes=document.getElementById('searchResults');
-function buildSuggestions(q,inp,res,cb){
-    const matches=POP.filter(x=>x.s.startsWith(q)||x.n.toUpperCase().includes(q)).slice(0,8);
-    if(!matches.length){res.classList.remove('open');return;}
-    res.innerHTML=matches.map(x=>`<div class="s-item" data-s="${x.s}" data-n="${x.n}"><div style="display:flex;align-items:center;gap:11px"><span class="s-sym">${x.s}</span><span class="s-name">${x.n}</span></div><span class="s-arr"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg></span></div>`).join('');
+// ---- SEARCH using fmpAPI.searchStocks() ----
+const sInp = document.getElementById('stockSearch'), sRes = document.getElementById('searchResults');
+let searchTimer = null;
+
+function renderSuggestions(results, inp, res, cb) {
+    if (!results.length) { res.classList.remove('open'); return; }
+    res.innerHTML = results.map(x => `
+        <div class="s-item" data-s="${x.s}" data-n="${x.n}">
+            <div style="display:flex;align-items:center;gap:11px">
+                <span class="s-sym">${x.s}</span>
+                <span class="s-name">${x.n}</span>
+            </div>
+            <span class="s-arr"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg></span>
+        </div>`).join('');
     res.classList.add('open');
-    res.querySelectorAll('.s-item').forEach(el=>el.addEventListener('click',()=>{ res.classList.remove('open'); inp.value=''; cb(el.dataset.s,el.dataset.n); }));
+    res.querySelectorAll('.s-item').forEach(el => el.addEventListener('click', () => {
+        res.classList.remove('open'); inp.value = ''; cb(el.dataset.s, el.dataset.n);
+    }));
 }
-sInp.addEventListener('input',()=>{ const q=sInp.value.trim().toUpperCase(); if(!q){sRes.classList.remove('open');return;} buildSuggestions(q,sInp,sRes,initStock); });
-sInp.addEventListener('keydown',e=>{ if(e.key==='Enter'){ const v=sInp.value.trim(); if(v){sRes.classList.remove('open');sInp.value='';initStock(v,'');} } });
-document.addEventListener('click',e=>{ if(!sInp.contains(e.target)&&!sRes.contains(e.target)) sRes.classList.remove('open'); });
 
-// Compare
-const ci=document.getElementById('ci'),ciAc=document.getElementById('ciAc');
-ci.addEventListener('input',()=>{ const q=ci.value.trim().toUpperCase(); if(!q){ciAc.classList.remove('open');return;} const m=POP.filter(x=>x.s.startsWith(q)||x.n.toUpperCase().includes(q)).slice(0,6); if(!m.length){ciAc.classList.remove('open');return;} ciAc.innerHTML=m.map(x=>`<div class="ac-i" data-s="${x.s}"><span class="ac-s">${x.s}</span><span class="ac-n">${x.n}</span></div>`).join(''); ciAc.classList.add('open'); ciAc.querySelectorAll('.ac-i').forEach(el=>el.addEventListener('click',()=>{ci.value='';ciAc.classList.remove('open');addTicker(el.dataset.s);})); });
-ci.addEventListener('keydown',e=>{ if(e.key==='Enter'){const v=ci.value.trim();if(v){ci.value='';ciAc.classList.remove('open');addTicker(v);}} });
-document.getElementById('addBtn').addEventListener('click',()=>{ const v=ci.value.trim();if(v){ci.value='';ciAc.classList.remove('open');addTicker(v);} });
-document.addEventListener('click',e=>{ if(!ci.contains(e.target)&&!ciAc.contains(e.target)) ciAc.classList.remove('open'); });
+async function doSearch(q, inp, res, cb) {
+    if (!q) { res.classList.remove('open'); return; }
+    try {
+        const raw = await fmpAPI.searchStocks(q);
+        // /stable/search-symbol returns array of { symbol, name, ... }
+        const results = (Array.isArray(raw) ? raw : [])
+            .slice(0, 8)
+            .map(x => ({ s: x.symbol || x.s, n: x.name || x.companyName || x.n || '' }))
+            .filter(x => x.s);
+        renderSuggestions(results, inp, res, cb);
+    } catch(e) {
+        res.classList.remove('open');
+    }
+}
 
-// Metric/Period pills
-document.getElementById('metricPills').addEventListener('click',e=>{ const p=e.target.closest('[data-m]');if(!p)return; document.querySelectorAll('#metricPills .pill').forEach(x=>x.classList.remove('active')); p.classList.add('active'); metric=p.dataset.m; if(tickers.length){renderChart();renderStats();} });
-document.getElementById('periodPills').addEventListener('click',e=>{ const p=e.target.closest('[data-p]');if(!p)return; document.querySelectorAll('#periodPills .pill').forEach(x=>x.classList.remove('active')); p.classList.add('active'); period=p.dataset.p; if(tickers.length){renderChart();renderStats();} });
+sInp.addEventListener('input', () => {
+    clearTimeout(searchTimer);
+    const q = sInp.value.trim();
+    if (!q) { sRes.classList.remove('open'); return; }
+    searchTimer = setTimeout(() => doSearch(q, sInp, sRes, initStock), 300);
+});
+sInp.addEventListener('keydown', e => { if (e.key === 'Enter') { const v = sInp.value.trim(); if (v) { sRes.classList.remove('open'); sInp.value = ''; initStock(v, ''); } } });
+document.addEventListener('click', e => { if (!sInp.contains(e.target) && !sRes.contains(e.target)) sRes.classList.remove('open'); });
 
-// Back
-document.getElementById('backBtn').addEventListener('click',()=>{ tickers=[];cache={};if(chart){chart.destroy();chart=null;} document.getElementById('chartView').style.display='none'; document.getElementById('welcomeSection').style.display='block'; });
+// ---- COMPARE SEARCH ----
+const ci = document.getElementById('ci'), ciAc = document.getElementById('ciAc');
+let ciTimer = null;
 
-// Theme
-const html=document.documentElement, stored=localStorage.getItem('theme')||'dark';
-html.setAttribute('data-theme',stored);
-if(stored==='light'){document.getElementById('sunIco').style.display='none';document.getElementById('moonIco').style.display='block';}
-document.getElementById('themeBtn').addEventListener('click',()=>{ const n=html.getAttribute('data-theme')==='dark'?'light':'dark'; html.setAttribute('data-theme',n); localStorage.setItem('theme',n); document.getElementById('sunIco').style.display=n==='dark'?'block':'none'; document.getElementById('moonIco').style.display=n==='light'?'block':'none'; if(chart&&tickers.length) renderChart(); });
+ci.addEventListener('input', () => {
+    clearTimeout(ciTimer);
+    const q = ci.value.trim();
+    if (!q) { ciAc.classList.remove('open'); return; }
+    ciTimer = setTimeout(async () => {
+        try {
+            const raw = await fmpAPI.searchStocks(q);
+            const results = (Array.isArray(raw) ? raw : []).slice(0, 6).map(x => ({ s: x.symbol||x.s, n: x.name||x.companyName||'' })).filter(x=>x.s);
+            if (!results.length) { ciAc.classList.remove('open'); return; }
+            ciAc.innerHTML = results.map(x => `<div class="ac-i" data-s="${x.s}"><span class="ac-s">${x.s}</span><span class="ac-n">${x.n}</span></div>`).join('');
+            ciAc.classList.add('open');
+            ciAc.querySelectorAll('.ac-i').forEach(el => el.addEventListener('click', () => { ci.value = ''; ciAc.classList.remove('open'); addTicker(el.dataset.s); }));
+        } catch(e) { ciAc.classList.remove('open'); }
+    }, 300);
+});
+ci.addEventListener('keydown', e => { if (e.key === 'Enter') { const v = ci.value.trim(); if (v) { ci.value = ''; ciAc.classList.remove('open'); addTicker(v); } } });
+document.getElementById('addBtn').addEventListener('click', () => { const v = ci.value.trim(); if (v) { ci.value = ''; ciAc.classList.remove('open'); addTicker(v); } });
+document.addEventListener('click', e => { if (!ci.contains(e.target) && !ciAc.contains(e.target)) ciAc.classList.remove('open'); });
 
-// Dropdown
-document.getElementById('avatarBtn').addEventListener('click',e=>{e.stopPropagation();document.getElementById('dropdown').classList.toggle('open');});
-document.addEventListener('click',()=>document.getElementById('dropdown').classList.remove('open'));
+// ---- PILLS ----
+document.getElementById('metricPills').addEventListener('click', e => { const p = e.target.closest('[data-m]'); if (!p) return; document.querySelectorAll('#metricPills .pill').forEach(x=>x.classList.remove('active')); p.classList.add('active'); metric = p.dataset.m; if (tickers.length) { renderChart(); renderStats(); } });
+document.getElementById('periodPills').addEventListener('click', e => { const p = e.target.closest('[data-p]'); if (!p) return; document.querySelectorAll('#periodPills .pill').forEach(x=>x.classList.remove('active')); p.classList.add('active'); period = p.dataset.p; if (tickers.length) { renderChart(); renderStats(); } });
+
+// ---- BACK ----
+document.getElementById('backBtn').addEventListener('click', () => { tickers = []; cache = {}; if (chart) { chart.destroy(); chart = null; } document.getElementById('chartView').style.display = 'none'; document.getElementById('welcomeSection').style.display = 'block'; });
+
+// ---- THEME ----
+const html = document.documentElement, stored = localStorage.getItem('theme') || 'dark';
+html.setAttribute('data-theme', stored);
+if (stored === 'light') { document.getElementById('sunIco').style.display='none'; document.getElementById('moonIco').style.display='block'; }
+document.getElementById('themeBtn').addEventListener('click', () => { const n = html.getAttribute('data-theme')==='dark'?'light':'dark'; html.setAttribute('data-theme',n); localStorage.setItem('theme',n); document.getElementById('sunIco').style.display=n==='dark'?'block':'none'; document.getElementById('moonIco').style.display=n==='light'?'block':'none'; if(chart&&tickers.length) renderChart(); });
+
+// ---- DROPDOWN ----
+document.getElementById('avatarBtn').addEventListener('click', e => { e.stopPropagation(); document.getElementById('dropdown').classList.toggle('open'); });
+document.addEventListener('click', () => document.getElementById('dropdown').classList.remove('open'));
 </script>
 </body>
 </html>
