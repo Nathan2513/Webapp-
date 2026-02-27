@@ -319,25 +319,35 @@ function setLoad(v){ document.getElementById('loadingEl').style.display=v?'flex'
 function showToast(t,m){ document.getElementById('toastT').textContent=t; document.getElementById('toastM').textContent=m; const el=document.getElementById('toast'); el.classList.add('show'); setTimeout(()=>el.classList.remove('show'),4000); }
 
 // ---- DATA LOADING via fmp-api.js ----
-// /stable/ field names: priceEarningsRatio, priceToBookRatio, enterpriseValueMultiple, grossProfitMargin
+// Only uses FREE endpoints: /income-statement, /cash-flow-statement, /quote, /profile, /key-metrics-ttm, /ratios-ttm
+// P/E is calculated from marketCap / netIncome (available in income statement)
+// Ratios requiring paid plan (/ratios historical) are NOT used
 
-function buildRows(rats, incs, cass) {
-    const rMap = Object.fromEntries((rats||[]).map(r => [r.date, r]));
+function buildRows(incs, cass, kmTTM, ratTTM, currentPrice) {
+    // incs / cass come newest→oldest from FMP, reverse for chronological order
     const cMap = Object.fromEntries((cass||[]).map(r => [r.date, r]));
-    const anchor = (incs && incs.length) ? incs : (rats||[]);
-    return [...anchor].reverse().map(row => {
-        const r = rMap[row.date] || {};
+    return [...(incs||[])].reverse().map(row => {
         const c = cMap[row.date] || {};
+        // Calculate P/E from shares outstanding + price (unavailable historically for free)
+        // Use marketCap from income statement if available, else null
+        const mktCap = row.marketCap ?? null;
+        const ni     = row.netIncome ?? null;
+        const pe     = (mktCap && ni && ni > 0) ? mktCap / ni : null;
+        const bvps   = row.bookValuePerShare ?? null;
+        const pb     = (currentPrice && bvps && bvps > 0) ? null : null; // no historical price → N/A
+        const ebitda = row.ebitda ?? null;
+        const ev     = row.enterpriseValue ?? null; // not in free income stmt
         return {
             date:        row.date,
-            pe:          r.priceEarningsRatio     ?? null,
-            pb:          r.priceToBookRatio        ?? null,
-            evEbitda:    r.enterpriseValueMultiple ?? null,
+            pe:          pe,
+            pb:          null, // requires historical price — show TTM only
+            evEbitda:    null, // requires enterprise value — show TTM only
             revenue:     row.revenue               ?? null,
-            netIncome:   row.netIncome             ?? null,
+            netIncome:   ni,
             eps:         row.eps                   ?? null,
             fcf:         c.freeCashFlow            ?? null,
-            grossMargin: r.grossProfitMargin       ?? null,
+            grossMargin: (row.grossProfit && row.revenue && row.revenue > 0)
+                            ? row.grossProfit / row.revenue : null,
         };
     });
 }
@@ -345,29 +355,40 @@ function buildRows(rats, incs, cass) {
 async function load(sym) {
     if (cache[sym]) return cache[sym];
 
-    const [iA, rA, cA, prof, incQ, ratQ, casQ] = await Promise.all([
+    // All endpoints available on free FMP plan
+    const [iA, cA, incQ, casQ, quote, ratTTM, kmTTM] = await Promise.all([
         fmpAPI.makeRequest('/income-statement',    { symbol: sym, limit: 30 }),
-        fmpAPI.makeRequest('/ratios',              { symbol: sym, limit: 30 }),
         fmpAPI.makeRequest('/cash-flow-statement', { symbol: sym, limit: 30 }),
-        fmpAPI.makeRequest('/profile',             { symbol: sym }),
         fmpAPI.makeRequest('/income-statement',    { symbol: sym, period: 'quarter', limit: 30 }),
-        fmpAPI.makeRequest('/ratios',              { symbol: sym, period: 'quarter', limit: 30 }),
         fmpAPI.makeRequest('/cash-flow-statement', { symbol: sym, period: 'quarter', limit: 30 }),
+        fmpAPI.makeRequest('/quote',               { symbol: sym }),
+        fmpAPI.makeRequest('/ratios-ttm',          { symbol: sym }),
+        fmpAPI.makeRequest('/key-metrics-ttm',     { symbol: sym }),
     ]);
 
     if (!Array.isArray(iA) || !iA.length) throw new Error(`No data found for "${sym}"`);
 
-    const annual  = buildRows(rA,   iA,   cA);
-    const quarter = buildRows(ratQ, incQ, casQ);
+    const quoteData = Array.isArray(quote) ? quote[0] : (quote || {});
+    const currentPrice = quoteData.price ?? null;
 
+    const annual  = buildRows(iA,   cA,   kmTTM, ratTTM, currentPrice);
+    const quarter = buildRows(incQ, casQ, kmTTM, ratTTM, currentPrice);
+
+    // Inject current TTM ratios (from ratios-ttm) into the most recent period
+    const rttm = Array.isArray(ratTTM) ? ratTTM[0] : (ratTTM || {});
+    const kmttm = Array.isArray(kmTTM) ? kmTTM[0] : (kmTTM || {});
+
+    // TTM = rolling 4-quarter sum/avg for financial data
     const ttm = [];
     for (let i = 3; i < quarter.length; i++) {
         const sl = quarter.slice(i-3, i+1), l = sl[sl.length-1];
+        const isLatest = (i === quarter.length - 1);
         ttm.push({
             date:        l.date,
-            pe:          l.pe,
-            pb:          l.pb,
-            evEbitda:    l.evEbitda,
+            // For the most recent TTM point, use the real ratios-ttm values
+            pe:          isLatest ? (rttm.priceEarningsRatioTTM ?? l.pe) : l.pe,
+            pb:          isLatest ? (rttm.priceToBookRatioTTM   ?? null) : null,
+            evEbitda:    isLatest ? (kmttm.evToEbitdaTTM        ?? null) : null,
             revenue:     sl.reduce((s,r) => s + (r.revenue   || 0), 0),
             netIncome:   sl.reduce((s,r) => s + (r.netIncome || 0), 0),
             eps:         sl.reduce((s,r) => s + (r.eps       || 0), 0),
@@ -376,8 +397,12 @@ async function load(sym) {
         });
     }
 
-    const profData = Array.isArray(prof) ? prof[0] : (prof || {});
-    cache[sym] = { annual, quarter, ttm, info: profData };
+    cache[sym] = {
+        annual,
+        quarter,
+        ttm,
+        info: { companyName: quoteData.name || sym, ...quoteData },
+    };
     return cache[sym];
 }
 
@@ -438,6 +463,23 @@ function renderChart() {
         const p = pal(i), r = rows(sym), map = Object.fromEntries(r.map(x => [x.date, x[metric]]));
         return { label: sym, data: labels.map(d => map[d] ?? null), backgroundColor: p.bg, borderColor: p.b, borderWidth: 1.5, borderRadius: 4 };
     });
+    // Check if all data is null (metric not available for this period)
+    const hasData = datasets.some(ds => ds.data.some(v => v !== null));
+    const noDataEl = document.getElementById('noDataMsg');
+    if (!hasData) {
+        if (!noDataEl) {
+            const msg = document.createElement('div');
+            msg.id = 'noDataMsg';
+            msg.style.cssText = 'position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--sub);font-size:.95rem;gap:8px;';
+            msg.innerHTML = '<svg style="width:40px;height:40px;opacity:.4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg><span>Not available for this period — switch to <strong>TTM</strong> for this metric</span>';
+            document.getElementById('mainChart').parentElement.appendChild(msg);
+        }
+        if (noDataEl) noDataEl.style.display = 'flex';
+        document.getElementById('mainChart').style.display = 'none';
+        return;
+    }
+    if (noDataEl) noDataEl.style.display = 'none';
+    document.getElementById('mainChart').style.display = 'block';
     document.getElementById('chartLeg').innerHTML = tickers.map((s, i) => `<div class="leg-i"><div class="leg-dot" style="background:${pal(i).b}"></div>${s}</div>`).join('');
     document.getElementById('chartTtl').textContent    = M[metric].label;
     document.getElementById('chartSubTxt').textContent = period==='Y'?'Annual · up to 30 years':period==='Q'?'Quarterly · up to 30 quarters':'TTM – trailing twelve months';
