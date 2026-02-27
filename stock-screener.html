@@ -141,95 +141,65 @@
         /* MAIN CONTENT */
         .main-content { flex: 1; padding: 30px; overflow-y: auto; }
         
-        /* SCREENER HOME */
+        /* ── SCREENER HOME ── */
         .screener-home {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 48px 24px 60px;
+            padding: 40px 32px 60px;
         }
 
-        /* HERO ROW */
-        .screener-hero {
+        /* TOP ROW: logo left, search right */
+        .sh-top-row {
             display: flex;
             align-items: center;
             justify-content: space-between;
             gap: 40px;
-            margin-bottom: 48px;
+            margin-bottom: 36px;
         }
-        .screener-hero-left { flex: 1; }
-        .screener-eyebrow {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(255,122,0,0.1);
-            border: 1px solid rgba(255,122,0,0.25);
-            color: var(--primary-orange);
-            font-size: 0.78rem;
-            font-weight: 700;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-            padding: 5px 14px;
-            border-radius: 100px;
-            margin-bottom: 20px;
-        }
-        .screener-hero h1 {
-            font-size: 2.8rem;
+        .sh-brand { flex-shrink: 0; }
+        .sh-brand-title {
+            font-size: 2.2rem;
             font-weight: 800;
-            line-height: 1.15;
-            color: var(--text-primary);
-            margin-bottom: 16px;
-            letter-spacing: -0.03em;
+            letter-spacing: -0.04em;
+            line-height: 1.1;
+            background: linear-gradient(135deg, var(--text-primary) 0%, var(--primary-orange) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
-        .screener-hero h1 span { color: var(--primary-orange); }
-        .screener-hero-desc {
-            font-size: 1.05rem;
+        .sh-brand-sub {
+            margin-top: 8px;
+            font-size: 0.9rem;
             color: var(--text-secondary);
-            line-height: 1.65;
-            max-width: 480px;
-            margin-bottom: 32px;
+            font-weight: 400;
         }
-        .screener-stats {
-            display: flex;
-            gap: 32px;
+        .sh-search-col {
+            flex: 1;
+            max-width: 560px;
         }
-        .screener-stat { }
-        .screener-stat-value {
-            font-size: 1.6rem;
-            font-weight: 800;
-            color: var(--text-primary);
-            letter-spacing: -0.02em;
-        }
-        .screener-stat-label {
-            font-size: 0.8rem;
-            color: var(--text-secondary);
-            margin-top: 2px;
-        }
-        
+
         /* SEARCH BAR */
-        .search-bar-wrap {
-            position: relative;
-            max-width: 700px;
-        }
+        .search-bar-wrap { position: relative; }
         .search-bar-inner {
             display: flex;
             align-items: center;
             background: var(--bg-topbar);
             border: 1.5px solid var(--border-color);
-            border-radius: 12px;
-            padding: 0 16px;
+            border-radius: 14px;
+            padding: 0 18px;
             gap: 12px;
             transition: all 0.2s;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.06);
         }
         .search-bar-inner:focus-within {
             border-color: var(--primary-orange);
-            box-shadow: 0 0 0 3px rgba(255,122,0,0.12);
+            box-shadow: 0 0 0 3px rgba(255,122,0,0.1);
         }
         .search-bar-icon { color: var(--text-secondary); display:flex; flex-shrink:0; }
         .search-bar-icon svg { width: 20px; height: 20px; }
         .search-input {
             flex: 1;
-            padding: 15px 0;
+            padding: 17px 0;
             border: none;
             background: transparent;
             font-size: 1rem;
@@ -238,31 +208,17 @@
         }
         .search-input:focus { outline: none; }
         .search-input::placeholder { color: var(--text-secondary); }
-        .search-kbd {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            font-size: 0.75rem;
-            color: var(--text-secondary);
-            background: var(--hover-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 5px;
-            padding: 3px 8px;
-            white-space: nowrap;
-            flex-shrink: 0;
-        }
         .search-results {
             position: absolute;
             top: calc(100% + 6px);
-            left: 0;
-            right: 0;
+            left: 0; right: 0;
             background: var(--bg-topbar);
             border: 1px solid var(--border-color);
             border-radius: 12px;
             box-shadow: var(--shadow-lg);
             max-height: 320px;
             overflow-y: auto;
-            z-index: 100;
+            z-index: 200;
             display: none;
         }
         .search-results.active { display: block; }
@@ -271,214 +227,327 @@
             cursor: pointer;
             border-bottom: 1px solid var(--border-color);
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            transition: background 0.15s;
+            gap: 12px;
+            transition: background 0.12s;
         }
         .search-result-item:last-child { border-bottom: none; }
         .search-result-item:hover { background: var(--hover-bg); }
-        .result-symbol {
-            font-weight: 700;
-            color: var(--primary-orange);
-            font-size: 0.95rem;
-            min-width: 60px;
-        }
-        .result-name { color: var(--text-secondary); font-size: 0.88rem; flex:1; margin-left: 12px; }
-        .result-exchange {
-            font-size: 0.75rem;
-            color: var(--text-secondary);
-            background: var(--hover-bg);
-            padding: 2px 8px;
-            border-radius: 4px;
-        }
+        .result-symbol { font-weight: 700; color: var(--primary-orange); font-size: 0.9rem; min-width: 55px; }
+        .result-name { color: var(--text-secondary); font-size: 0.85rem; flex: 1; }
 
-        /* SECTION LABEL */
-        .section-label {
-            font-size: 0.75rem;
-            font-weight: 700;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-            color: var(--text-secondary);
-            margin-bottom: 16px;
+        /* ── FILTERS BAR ── */
+        .sh-filters-bar {
+            background: var(--bg-topbar);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            margin-bottom: 24px;
+            overflow: visible;
+        }
+        .sh-filters-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .sh-filters-left {
             display: flex;
             align-items: center;
             gap: 10px;
-        }
-        .section-label::after {
-            content: '';
-            flex: 1;
-            height: 1px;
-            background: var(--border-color);
-        }
-
-        /* FILTER PRESETS GRID */
-        .filter-presets {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 14px;
-            margin-bottom: 48px;
-        }
-        @media (max-width: 900px) { .filter-presets { grid-template-columns: repeat(2,1fr); } }
-        @media (max-width: 580px) { .filter-presets { grid-template-columns: 1fr; } }
-
-        .preset-card {
-            background: var(--bg-topbar);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 20px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            display: flex;
-            gap: 16px;
-            align-items: flex-start;
-            text-align: left;
-        }
-        .preset-card:hover {
-            border-color: var(--primary-orange);
-            background: rgba(255,122,0,0.03);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 16px rgba(255,122,0,0.1);
-        }
-        .preset-icon {
-            width: 42px;
-            height: 42px;
-            min-width: 42px;
-            background: rgba(255,122,0,0.1);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.3rem;
-        }
-        .preset-body { flex: 1; min-width: 0; }
-        .preset-card h3 {
-            font-size: 0.95rem;
-            font-weight: 700;
-            color: var(--text-primary);
-            margin-bottom: 4px;
-        }
-        .preset-card p {
-            font-size: 0.8rem;
-            color: var(--text-secondary);
-            line-height: 1.5;
-            margin-bottom: 10px;
-        }
-        .preset-tags {
-            display: flex;
-            gap: 6px;
             flex-wrap: wrap;
         }
-        .tag {
-            padding: 2px 8px;
-            background: var(--hover-bg);
-            border-radius: 4px;
-            font-size: 0.73rem;
+        .sh-filters-label {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            margin-right: 4px;
+        }
+        .filter-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 0;
+            border: 1.5px solid var(--border-color);
+            border-radius: 8px;
+            background: var(--bg-main);
+            overflow: hidden;
+            font-size: 0.82rem;
+            transition: border-color 0.15s;
+        }
+        .filter-chip:focus-within { border-color: var(--primary-orange); }
+        .filter-chip-label {
+            padding: 6px 10px;
             font-weight: 600;
             color: var(--text-secondary);
-            border: 1px solid var(--border-color);
+            background: var(--hover-bg);
+            border-right: 1px solid var(--border-color);
+            white-space: nowrap;
+            font-size: 0.78rem;
         }
+        .filter-chip select,
+        .filter-chip input[type="number"] {
+            border: none;
+            background: transparent;
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 0.82rem;
+            padding: 6px 8px;
+            outline: none;
+            cursor: pointer;
+        }
+        .filter-chip select { padding-right: 24px; -webkit-appearance: none; }
+        .filter-chip-select-wrap {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        .filter-chip-select-wrap::after {
+            content: '';
+            position: absolute;
+            right: 8px;
+            width: 0; height: 0;
+            border-left: 4px solid transparent;
+            border-right: 4px solid transparent;
+            border-top: 5px solid var(--text-secondary);
+            pointer-events: none;
+        }
+        .filter-chip input[type="number"] { width: 68px; }
+        .filter-chip-sep {
+            padding: 0 4px;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+        .filter-chip-unit {
+            padding: 0 8px 0 2px;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+        .filter-chip-remove {
+            padding: 6px 9px;
+            background: none;
+            border: none;
+            border-left: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 1rem;
+            line-height: 1;
+            transition: all 0.12s;
+        }
+        .filter-chip-remove:hover { background: rgba(239,68,68,0.1); color: #ef4444; }
 
-        /* POPULAR STOCKS TABLE */
-        .popular-section { margin-bottom: 48px; }
-        .popular-table-wrap {
+        .add-filter-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 6px 12px;
+            background: none;
+            border: 1.5px dashed var(--border-color);
+            border-radius: 8px;
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s;
+            font-family: inherit;
+            white-space: nowrap;
+        }
+        .add-filter-btn:hover {
+            border-color: var(--primary-orange);
+            color: var(--primary-orange);
+            background: rgba(255,122,0,0.05);
+        }
+        .add-filter-btn svg { width: 13px; height: 13px; }
+
+        .sh-filters-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-shrink: 0;
+        }
+        .sh-results-count {
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+        .sh-results-count strong { color: var(--text-primary); }
+        .filters-reset-btn {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            background: none;
+            border: 1px solid var(--border-color);
+            cursor: pointer;
+            padding: 5px 12px;
+            border-radius: 7px;
+            transition: all 0.15s;
+            display: none;
+            font-family: inherit;
+        }
+        .filters-reset-btn:hover { background: var(--hover-bg); color: var(--text-primary); }
+        .filters-reset-btn.visible { display: block; }
+
+        /* ── FILTER PICKER DROPDOWN ── */
+        .filter-picker-overlay {
+            position: fixed; inset: 0; z-index: 300;
+            display: none;
+        }
+        .filter-picker-overlay.open { display: block; }
+        .filter-picker {
+            position: fixed;
             background: var(--bg-topbar);
             border: 1px solid var(--border-color);
             border-radius: 12px;
+            box-shadow: 0 16px 40px rgba(0,0,0,0.15);
+            width: 300px;
+            max-height: 420px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            z-index: 301;
+        }
+        .filter-picker-search-row {
+            padding: 10px 14px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .filter-picker-search-row svg { width: 15px; height: 15px; color: var(--text-secondary); flex-shrink:0; }
+        .filter-picker-search-row input {
+            flex: 1; border: none; background: transparent;
+            font-size: 0.85rem; color: var(--text-primary);
+            font-family: inherit; outline: none;
+        }
+        .filter-picker-list { overflow-y: auto; flex: 1; }
+        .fp-group-label {
+            padding: 8px 14px 3px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.07em;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            background: var(--hover-bg);
+            position: sticky;
+            top: 0;
+        }
+        .fp-item {
+            padding: 9px 14px;
+            font-size: 0.85rem;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: background 0.1s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .fp-item:hover { background: var(--hover-bg); }
+        .fp-item-badge {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            background: var(--hover-bg);
+            border: 1px solid var(--border-color);
+            padding: 2px 7px;
+            border-radius: 4px;
+        }
+
+        /* ── STOCKS TABLE ── */
+        .sh-table-wrap {
+            background: var(--bg-topbar);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
             overflow: hidden;
         }
-        .popular-table {
+        .sh-table-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 20px;
+            border-bottom: 1px solid var(--border-color);
+            background: var(--hover-bg);
+        }
+        .sh-table-title {
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+        .sh-table-hint {
+            font-size: 0.78rem;
+            color: var(--text-secondary);
+        }
+        .sh-table {
             width: 100%;
             border-collapse: collapse;
+            font-size: 0.88rem;
         }
-        .popular-table th {
-            padding: 12px 16px;
-            text-align: left;
-            font-size: 0.78rem;
+        .sh-table thead th {
+            padding: 11px 16px;
+            text-align: right;
+            font-size: 0.77rem;
             font-weight: 600;
             color: var(--text-secondary);
             text-transform: uppercase;
             letter-spacing: 0.05em;
             border-bottom: 1px solid var(--border-color);
             background: var(--hover-bg);
+            cursor: pointer;
+            user-select: none;
+            white-space: nowrap;
         }
-        .popular-table th:not(:first-child) { text-align: right; }
-        .popular-table td {
-            padding: 13px 16px;
-            font-size: 0.88rem;
+        .sh-table thead th:first-child { text-align: left; }
+        .sh-table thead th:hover { color: var(--text-primary); }
+        .sh-table thead th.sort-asc::after { content: ' ↑'; color: var(--primary-orange); }
+        .sh-table thead th.sort-desc::after { content: ' ↓'; color: var(--primary-orange); }
+        .sh-table tbody tr {
             border-bottom: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: background 0.1s;
+        }
+        .sh-table tbody tr:last-child { border-bottom: none; }
+        .sh-table tbody tr:hover td { background: var(--hover-bg); }
+        .sh-table tbody td {
+            padding: 13px 16px;
+            text-align: right;
             color: var(--text-primary);
         }
-        .popular-table td:not(:first-child) { text-align: right; }
-        .popular-table tr:last-child td { border-bottom: none; }
-        .popular-table tr { transition: background 0.15s; cursor: pointer; }
-        .popular-table tr:hover td { background: var(--hover-bg); }
-        .pop-symbol {
-            font-weight: 700;
-            color: var(--primary-orange);
+        .sh-table tbody td:first-child { text-align: left; }
+        .sh-td-symbol { font-weight: 700; color: var(--primary-orange); font-size: 0.9rem; }
+        .sh-td-name { font-size: 0.78rem; color: var(--text-secondary); margin-top: 2px; }
+        .sh-td-sector {
+            display: inline-block;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            background: var(--hover-bg);
+            border: 1px solid var(--border-color);
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+        .change-pos { color: #10b981; font-weight: 600; }
+        .change-neg { color: #ef4444; font-weight: 600; }
+        .sh-loading {
+            padding: 60px 20px;
+            text-align: center;
+            color: var(--text-secondary);
             font-size: 0.9rem;
         }
-        .pop-name { color: var(--text-secondary); font-size: 0.82rem; margin-top: 1px; }
-        .pop-change-pos { color: #10b981; font-weight: 600; }
-        .pop-change-neg { color: #ef4444; font-weight: 600; }
-        .pop-mktcap { color: var(--text-secondary); }
+        .sh-loading-spinner {
+            width: 32px; height: 32px;
+            border: 3px solid var(--border-color);
+            border-top-color: var(--primary-orange);
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+            margin: 0 auto 14px;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .sh-no-results {
+            padding: 60px 20px;
+            text-align: center;
+            color: var(--text-secondary);
+        }
+        .sh-no-results svg { width: 40px; height: 40px; margin: 0 auto 12px; opacity: 0.3; display: block; }
 
-                /* FILTER PRESETS */
-        .filter-presets {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 24px;
-            margin-top: 40px;
-        }
-        .preset-card {
-            background: var(--bg-topbar);
-            border: 2px solid var(--border-color);
-            border-radius: 16px;
-            padding: 30px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-align: left;
-        }
-        .preset-card:hover {
-            transform: translateY(-5px);
-            border-color: var(--primary-orange);
-            box-shadow: var(--shadow-lg);
-        }
-        .preset-icon {
-            width: 50px;
-            height: 50px;
-            background: linear-gradient(135deg, rgba(255, 122, 0, 0.1), rgba(255, 122, 0, 0.2));
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 20px;
-        }
-        .preset-icon svg { width: 26px; height: 26px; color: var(--primary-orange); }
-        .preset-card h3 {
-            font-size: 1.3rem;
-            font-weight: 700;
-            margin-bottom: 10px;
-            color: var(--text-primary);
-        }
-        .preset-card p {
-            color: var(--text-secondary);
-            line-height: 1.6;
-            margin-bottom: 16px;
-        }
-        .preset-tags {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-        .tag {
-            padding: 4px 12px;
-            background: var(--hover-bg);
-            border-radius: 6px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            color: var(--text-secondary);
-        }
-        
         /* STOCK DETAILS PAGE */
         .stock-details {
             display: none;
@@ -870,211 +939,80 @@
         <main class="main-content">
             <div class="screener-home" id="searchView">
 
-                <!-- HERO -->
-                <div class="screener-hero">
-                    <div class="screener-hero-left">
-                        <div class="screener-eyebrow">
-                            <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor"><circle cx="6" cy="6" r="6"/></svg>
-                            Professional Stock Screener
-                        </div>
-                        <h1>Find your next<br><span>great investment</span></h1>
-                        <p class="screener-hero-desc">Search and analyze thousands of stocks. Access detailed financial data, insight scores and key metrics — all in one place.</p>
-                        <div class="screener-stats">
-                            <div class="screener-stat">
-                                <div class="screener-stat-value">172K+</div>
-                                <div class="screener-stat-label">Stocks & ETFs</div>
+                <!-- TOP ROW: branding left + search right -->
+                <div class="sh-top-row">
+                    <div class="sh-brand">
+                        <div class="sh-brand-title">Stock Screener</div>
+                        <div class="sh-brand-sub">Search &amp; filter thousands of stocks in real-time</div>
+                    </div>
+                    <div class="sh-search-col">
+                        <div class="search-bar-wrap">
+                            <div class="search-bar-inner">
+                                <div class="search-bar-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                    </svg>
+                                </div>
+                                <input
+                                    type="text"
+                                    class="search-input"
+                                    id="stockSearch"
+                                    placeholder="Search a stock (e.g. AAPL, MSFT, NVDA...)"
+                                    autocomplete="off"
+                                >
                             </div>
-                            <div class="screener-stat">
-                                <div class="screener-stat-value">6</div>
-                                <div class="screener-stat-label">Score categories</div>
-                            </div>
-                            <div class="screener-stat">
-                                <div class="screener-stat-value">Real-time</div>
-                                <div class="screener-stat-label">Market data</div>
-                            </div>
+                            <div class="search-results" id="searchResults"></div>
                         </div>
                     </div>
                 </div>
 
-                <!-- SEARCH BAR -->
-                <div class="search-bar-wrap" style="margin-bottom:48px;">
-                    <div class="search-bar-inner">
-                        <div class="search-bar-icon">
+                <!-- FILTERS BAR -->
+                <div class="sh-filters-bar">
+                    <div class="sh-filters-header">
+                        <div class="sh-filters-left">
+                            <span class="sh-filters-label">Filters</span>
+                            <div id="filterChipsRow" style="display:contents"></div>
+                            <button class="add-filter-btn" id="addFilterBtn" onclick="openFilterPicker(event)">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                                </svg>
+                                Add Filter
+                            </button>
+                        </div>
+                        <div class="sh-filters-right">
+                            <span class="sh-results-count" id="tableResultsCount"></span>
+                            <button class="filters-reset-btn" id="filtersResetBtn" onclick="resetAllFilters()">Reset all</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FILTER PICKER OVERLAY -->
+                <div class="filter-picker-overlay" id="filterPickerOverlay" onclick="closeFilterPicker()">
+                    <div class="filter-picker" id="filterPicker" onclick="event.stopPropagation()">
+                        <div class="filter-picker-search-row">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                             </svg>
+                            <input type="text" id="filterPickerSearch" placeholder="Search filters..." oninput="filterPickerSearch(this.value)" autocomplete="off">
                         </div>
-                        <input 
-                            type="text" 
-                            class="search-input" 
-                            id="stockSearch" 
-                            placeholder="Search a stock to analyze (e.g. AAPL, MSFT, NVDA...)"
-                            autocomplete="off"
-                        >
-                        <span class="search-kbd">/ to focus</span>
+                        <div class="filter-picker-list" id="filterPickerList"></div>
                     </div>
-                    <div class="search-results" id="searchResults"></div>
                 </div>
 
-                <!-- POPULAR SCREENS -->
-                <div class="section-label">Popular Screens</div>
-                <div class="filter-presets">
-                    <div class="preset-card" data-preset="value">
-                        <div class="preset-icon">💎</div>
-                        <div class="preset-body">
-                            <h3>Value Stocks</h3>
-                            <p>Undervalued companies with strong fundamentals and recovery potential.</p>
-                            <div class="preset-tags">
-                                <span class="tag">P/E &lt; 15</span>
-                                <span class="tag">P/B &lt; 2</span>
-                                <span class="tag">Div &gt; 3%</span>
-                            </div>
-                        </div>
+                <!-- STOCKS TABLE -->
+                <div class="sh-table-wrap">
+                    <div class="sh-table-header">
+                        <span class="sh-table-title">Stocks</span>
+                        <span class="sh-table-hint">Click a row to open full analysis</span>
                     </div>
-
-                    <div class="preset-card" data-preset="growth">
-                        <div class="preset-icon">🚀</div>
-                        <div class="preset-body">
-                            <h3>Growth Stocks</h3>
-                            <p>High-growth companies with strong revenue and earnings momentum.</p>
-                            <div class="preset-tags">
-                                <span class="tag">Rev +20%</span>
-                                <span class="tag">EPS +25%</span>
-                                <span class="tag">ROE &gt; 15%</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="preset-card" data-preset="dividend">
-                        <div class="preset-icon">💰</div>
-                        <div class="preset-body">
-                            <h3>Dividend Kings</h3>
-                            <p>High and consistent dividend payers, ideal for passive income.</p>
-                            <div class="preset-tags">
-                                <span class="tag">Yield &gt; 4%</span>
-                                <span class="tag">Payout &lt; 60%</span>
-                                <span class="tag">5yr+ history</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="preset-card" data-preset="quality">
-                        <div class="preset-icon">⭐</div>
-                        <div class="preset-body">
-                            <h3>Quality Stocks</h3>
-                            <p>Strong balance sheets, high margins, and durable competitive moats.</p>
-                            <div class="preset-tags">
-                                <span class="tag">ROE &gt; 20%</span>
-                                <span class="tag">D/E &lt; 0.5</span>
-                                <span class="tag">Margin &gt; 15%</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="preset-card" data-preset="momentum">
-                        <div class="preset-icon">⚡</div>
-                        <div class="preset-body">
-                            <h3>Momentum</h3>
-                            <p>Stocks with strong technical and fundamental upward momentum.</p>
-                            <div class="preset-tags">
-                                <span class="tag">Above SMA50</span>
-                                <span class="tag">Vol +20%</span>
-                                <span class="tag">RSI 50–70</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="preset-card" data-preset="smallcap">
-                        <div class="preset-icon">🌟</div>
-                        <div class="preset-body">
-                            <h3>Small Cap Gems</h3>
-                            <p>High-growth small caps with significant upside and manageable risk.</p>
-                            <div class="preset-tags">
-                                <span class="tag">Cap &lt; 2B</span>
-                                <span class="tag">Rev +30%</span>
-                                <span class="tag">Profitable</span>
-                            </div>
+                    <div id="screenerTableBody">
+                        <div class="sh-loading">
+                            <div class="sh-loading-spinner"></div>
+                            Loading stocks...
                         </div>
                     </div>
                 </div>
 
-                <!-- POPULAR STOCKS TABLE -->
-                <div class="popular-section">
-                    <div class="section-label">Most Searched Stocks</div>
-                    <div class="popular-table-wrap">
-                        <table class="popular-table">
-                            <thead>
-                                <tr>
-                                    <th>Symbol</th>
-                                    <th>Sector</th>
-                                    <th>Market Cap</th>
-                                    <th>P/E Ratio</th>
-                                    <th>Change</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr onclick="showStockDetails('AAPL')">
-                                    <td><div class="pop-symbol">AAPL</div><div class="pop-name">Apple Inc.</div></td>
-                                    <td><span style="color:var(--text-secondary)">Technology</span></td>
-                                    <td class="pop-mktcap">3.48T</td>
-                                    <td>33.2</td>
-                                    <td class="pop-change-pos">+0.82%</td>
-                                </tr>
-                                <tr onclick="showStockDetails('MSFT')">
-                                    <td><div class="pop-symbol">MSFT</div><div class="pop-name">Microsoft Corporation</div></td>
-                                    <td><span style="color:var(--text-secondary)">Technology</span></td>
-                                    <td class="pop-mktcap">3.02T</td>
-                                    <td>37.8</td>
-                                    <td class="pop-change-neg">-0.34%</td>
-                                </tr>
-                                <tr onclick="showStockDetails('NVDA')">
-                                    <td><div class="pop-symbol">NVDA</div><div class="pop-name">NVIDIA Corporation</div></td>
-                                    <td><span style="color:var(--text-secondary)">Semiconductors</span></td>
-                                    <td class="pop-mktcap">2.74T</td>
-                                    <td>52.1</td>
-                                    <td class="pop-change-pos">+1.47%</td>
-                                </tr>
-                                <tr onclick="showStockDetails('AMZN')">
-                                    <td><div class="pop-symbol">AMZN</div><div class="pop-name">Amazon.com Inc.</div></td>
-                                    <td><span style="color:var(--text-secondary)">Consumer Cyclical</span></td>
-                                    <td class="pop-mktcap">2.21T</td>
-                                    <td>44.6</td>
-                                    <td class="pop-change-pos">+0.61%</td>
-                                </tr>
-                                <tr onclick="showStockDetails('META')">
-                                    <td><div class="pop-symbol">META</div><div class="pop-name">Meta Platforms Inc.</div></td>
-                                    <td><span style="color:var(--text-secondary)">Communication</span></td>
-                                    <td class="pop-mktcap">1.49T</td>
-                                    <td>28.3</td>
-                                    <td class="pop-change-neg">-0.21%</td>
-                                </tr>
-                                <tr onclick="showStockDetails('GOOGL')">
-                                    <td><div class="pop-symbol">GOOGL</div><div class="pop-name">Alphabet Inc.</div></td>
-                                    <td><span style="color:var(--text-secondary)">Communication</span></td>
-                                    <td class="pop-mktcap">2.08T</td>
-                                    <td>24.1</td>
-                                    <td class="pop-change-pos">+0.33%</td>
-                                </tr>
-                                <tr onclick="showStockDetails('BRK-B')">
-                                    <td><div class="pop-symbol">BRK-B</div><div class="pop-name">Berkshire Hathaway</div></td>
-                                    <td><span style="color:var(--text-secondary)">Financials</span></td>
-                                    <td class="pop-mktcap">1.07T</td>
-                                    <td>21.8</td>
-                                    <td class="pop-change-pos">+0.15%</td>
-                                </tr>
-                                <tr onclick="showStockDetails('JPM')">
-                                    <td><div class="pop-symbol">JPM</div><div class="pop-name">JPMorgan Chase & Co.</div></td>
-                                    <td><span style="color:var(--text-secondary)">Financials</span></td>
-                                    <td class="pop-mktcap">764B</td>
-                                    <td>13.4</td>
-                                    <td class="pop-change-neg">-0.44%</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-            </div>
 
             <div class="stock-details" id="stockDetailsView">
                 <div class="stock-header">
@@ -2477,15 +2415,444 @@ window.scorePageGo = scorePageGo;
             });
         });
 
-        // Preset cards
-        document.querySelectorAll('.preset-card').forEach(card => {
-            card.addEventListener('click', () => {
-                const preset = card.dataset.preset;
-                alert(`Screener "${preset}" sera bientôt disponible !`);
-            });
-        });
+        // ============================================================
+        // SCREENER — FILTER ENGINE + TABLE
+        // ============================================================
 
-        console.log('📊 FMP Cache Stats:', fmpAPI.getCacheStats());
-    </script>
-</body>
-</html>
+        // All available filter definitions
+        const FILTER_DEFS = [
+            // Valuation
+            { id:'pe',        group:'Valuation',     label:'P/E Ratio',          type:'range', unit:'x',  fmpKey:'pe'  },
+            { id:'pb',        group:'Valuation',     label:'P/B Ratio',          type:'range', unit:'x',  fmpKey:'priceToBookRatioTTM' },
+            { id:'ps',        group:'Valuation',     label:'P/S Ratio',          type:'range', unit:'x',  fmpKey:'priceToSalesRatioTTM' },
+            { id:'pfcf',      group:'Valuation',     label:'P/FCF Ratio',        type:'range', unit:'x',  fmpKey:'pfcfRatioTTM' },
+            { id:'ev_ebitda', group:'Valuation',     label:'EV/EBITDA',          type:'range', unit:'x',  fmpKey:'enterpriseValueMultipleTTM' },
+            { id:'peg',       group:'Valuation',     label:'PEG Ratio',          type:'range', unit:'x',  fmpKey:'pegRatioTTM' },
+            // Profitability
+            { id:'gross_m',   group:'Profitability', label:'Gross Margin',       type:'min',   unit:'%',  fmpKey:'grossProfitMarginTTM' },
+            { id:'op_m',      group:'Profitability', label:'Operating Margin',   type:'min',   unit:'%',  fmpKey:'operatingProfitMarginTTM' },
+            { id:'net_m',     group:'Profitability', label:'Net Margin',         type:'min',   unit:'%',  fmpKey:'netProfitMarginTTM' },
+            { id:'fcf_m',     group:'Profitability', label:'FCF Margin',         type:'min',   unit:'%',  fmpKey:'freeCashFlowPerShareTTM' },
+            { id:'roe',       group:'Profitability', label:'ROE',                type:'min',   unit:'%',  fmpKey:'returnOnEquityTTM' },
+            { id:'roa',       group:'Profitability', label:'ROA',                type:'min',   unit:'%',  fmpKey:'returnOnAssetsTTM' },
+            { id:'roic',      group:'Profitability', label:'ROIC',               type:'min',   unit:'%',  fmpKey:'roicTTM' },
+            { id:'ebitda_m',  group:'Profitability', label:'EBITDA Margin',      type:'min',   unit:'%',  fmpKey:'ebitdaMarginTTM' },
+            // Growth
+            { id:'rev_g',     group:'Growth',        label:'Revenue Growth',     type:'min',   unit:'%',  fmpKey:'revenueGrowthTTM' },
+            { id:'eps_g',     group:'Growth',        label:'EPS Growth',         type:'min',   unit:'%',  fmpKey:'epsgrowthTTM' },
+            { id:'ni_g',      group:'Growth',        label:'Net Income Growth',  type:'min',   unit:'%',  fmpKey:'netIncomeGrowthTTM' },
+            { id:'fcf_g',     group:'Growth',        label:'FCF Growth',         type:'min',   unit:'%',  fmpKey:'freeCashFlowGrowthTTM' },
+            { id:'ocf_g',     group:'Growth',        label:'OCF Growth',         type:'min',   unit:'%',  fmpKey:'operatingCashFlowGrowthTTM' },
+            // Financial Health
+            { id:'cur_r',     group:'Health',        label:'Current Ratio',      type:'min',   unit:'x',  fmpKey:'currentRatioTTM' },
+            { id:'de',        group:'Health',        label:'Debt / Equity',      type:'max',   unit:'x',  fmpKey:'debtEquityRatioTTM' },
+            { id:'debt_ebitda',group:'Health',       label:'Debt / EBITDA',      type:'max',   unit:'x',  fmpKey:'debtToEBITDATTM' },
+            { id:'int_cov',   group:'Health',        label:'Interest Coverage',  type:'min',   unit:'x',  fmpKey:'interestCoverageTTM' },
+            { id:'quick_r',   group:'Health',        label:'Quick Ratio',        type:'min',   unit:'x',  fmpKey:'quickRatioTTM' },
+            // Dividends
+            { id:'div_y',     group:'Dividends',     label:'Dividend Yield',     type:'min',   unit:'%',  fmpKey:'dividendYieldTTM' },
+            { id:'payout',    group:'Dividends',     label:'Payout Ratio',       type:'max',   unit:'%',  fmpKey:'payoutRatioTTM' },
+            // Size & Classification
+            { id:'mkt_cap',   group:'Size',          label:'Market Cap',         type:'select', options:['Any','Mega (>200B)','Large (>10B)','Mid (>2B)','Small (>300M)','Micro (<300M)'] },
+            { id:'sector',    group:'Size',          label:'Sector',             type:'select', options:['Any','Technology','Healthcare','Financials','Consumer Cyclical','Consumer Defensive','Industrials','Energy','Utilities','Communication Services','Real Estate','Basic Materials'] },
+            { id:'country',   group:'Size',          label:'Country',            type:'select', options:['Any','US','Canada','UK','Germany','France','Japan','China','India','Australia'] },
+        ];
+
+        // Screener state
+        let activeFilters = {};
+        let screenerData  = [];   // raw data from API
+        let filteredData  = [];   // after applying filters
+        let sortKey       = 'marketCap';
+        let sortDir       = 'desc';
+        let screenerLoaded = false;
+
+        // ── LOAD SCREENER DATA from FMP ───────────────────────────────
+        async function loadScreenerData() {
+            const body = document.getElementById('screenerTableBody');
+            body.innerHTML = '<div class="sh-loading"><div class="sh-loading-spinner"></div>Loading stocks...</div>';
+
+            try {
+                const apiKey = 'RxYKGPJbSbTuLhW15Bdrop3OxJ2tiXDf';
+                // Use FMP stock screener endpoint with broad filters for US large caps
+                const url = `https://financialmodelingprep.com/stable/company-screener?isActivelyTrading=true&limit=200&marketCapMoreThan=1000000000&apikey=${apiKey}`;
+                const resp = await fetch(url);
+                if (!resp.ok) throw new Error('API error');
+                const data = await resp.json();
+                if (!Array.isArray(data)) throw new Error('Bad data');
+                screenerData  = data;
+                screenerLoaded = true;
+                applyFiltersAndRender();
+            } catch(e) {
+                console.error('Screener load error:', e);
+                // Fallback: show static popular stocks
+                screenerData = getStaticStocks();
+                screenerLoaded = true;
+                applyFiltersAndRender();
+            }
+        }
+
+        function getStaticStocks() {
+            return [
+                { symbol:'AAPL',  companyName:'Apple Inc.',              sector:'Technology',          marketCap:3480000000000, pe:33.2, priceToSalesRatioTTM:8.4,  returnOnEquityTTM:1.47,  revenueGrowthTTM:2.1,  netProfitMarginTTM:0.263, price:222.5,  changes:0.82  },
+                { symbol:'MSFT',  companyName:'Microsoft Corporation',   sector:'Technology',          marketCap:3020000000000, pe:37.8, priceToSalesRatioTTM:13.2, returnOnEquityTTM:0.38,  revenueGrowthTTM:15.7, netProfitMarginTTM:0.365, price:415.3,  changes:-0.34 },
+                { symbol:'NVDA',  companyName:'NVIDIA Corporation',      sector:'Technology',          marketCap:2740000000000, pe:52.1, priceToSalesRatioTTM:29.8, returnOnEquityTTM:1.23,  revenueGrowthTTM:122.4,netProfitMarginTTM:0.557, price:111.2,  changes:1.47  },
+                { symbol:'AMZN',  companyName:'Amazon.com Inc.',         sector:'Consumer Cyclical',   marketCap:2210000000000, pe:44.6, priceToSalesRatioTTM:3.4,  returnOnEquityTTM:0.21,  revenueGrowthTTM:10.1, netProfitMarginTTM:0.076, price:211.4,  changes:0.61  },
+                { symbol:'META',  companyName:'Meta Platforms Inc.',     sector:'Communication Services',marketCap:1490000000000,pe:28.3, priceToSalesRatioTTM:8.8, returnOnEquityTTM:0.34,  revenueGrowthTTM:22.1, netProfitMarginTTM:0.381, price:590.2,  changes:-0.21 },
+                { symbol:'GOOGL', companyName:'Alphabet Inc.',           sector:'Communication Services',marketCap:2080000000000,pe:24.1, priceToSalesRatioTTM:6.1, returnOnEquityTTM:0.28,  revenueGrowthTTM:13.6, netProfitMarginTTM:0.274, price:174.5,  changes:0.33  },
+                { symbol:'TSLA',  companyName:'Tesla Inc.',              sector:'Consumer Cyclical',   marketCap:820000000000,  pe:81.4, priceToSalesRatioTTM:8.1,  returnOnEquityTTM:0.12,  revenueGrowthTTM:1.1,  netProfitMarginTTM:0.072, price:258.1,  changes:-1.22 },
+                { symbol:'BRK-B', companyName:'Berkshire Hathaway',     sector:'Financials',          marketCap:1070000000000, pe:21.8, priceToSalesRatioTTM:2.2,  returnOnEquityTTM:0.12,  revenueGrowthTTM:3.4,  netProfitMarginTTM:0.141, price:465.3,  changes:0.15  },
+                { symbol:'JPM',   companyName:'JPMorgan Chase & Co.',   sector:'Financials',          marketCap:764000000000,  pe:13.4, priceToSalesRatioTTM:3.8,  returnOnEquityTTM:0.17,  revenueGrowthTTM:12.2, netProfitMarginTTM:0.276, price:254.8,  changes:-0.44 },
+                { symbol:'V',     companyName:'Visa Inc.',              sector:'Financials',          marketCap:622000000000,  pe:30.2, priceToSalesRatioTTM:16.4, returnOnEquityTTM:0.51,  revenueGrowthTTM:10.3, netProfitMarginTTM:0.543, price:314.7,  changes:0.28  },
+                { symbol:'JNJ',   companyName:'Johnson & Johnson',      sector:'Healthcare',          marketCap:381000000000,  pe:22.1, priceToSalesRatioTTM:4.6,  returnOnEquityTTM:0.22,  revenueGrowthTTM:4.3,  netProfitMarginTTM:0.198, price:157.2,  changes:0.41  },
+                { symbol:'LLY',   companyName:'Eli Lilly and Co.',      sector:'Healthcare',          marketCap:761000000000,  pe:74.2, priceToSalesRatioTTM:22.3, returnOnEquityTTM:0.84,  revenueGrowthTTM:44.7, netProfitMarginTTM:0.281, price:801.3,  changes:1.12  },
+                { symbol:'XOM',   companyName:'Exxon Mobil Corporation',sector:'Energy',              marketCap:488000000000,  pe:14.2, priceToSalesRatioTTM:1.4,  returnOnEquityTTM:0.14,  revenueGrowthTTM:-3.8, netProfitMarginTTM:0.101, price:114.3,  changes:-0.62 },
+                { symbol:'WMT',   companyName:'Walmart Inc.',           sector:'Consumer Defensive',  marketCap:739000000000,  pe:36.8, priceToSalesRatioTTM:0.9,  returnOnEquityTTM:0.21,  revenueGrowthTTM:5.1,  netProfitMarginTTM:0.024, price:91.4,   changes:0.55  },
+                { symbol:'MA',    companyName:'Mastercard Incorporated',sector:'Financials',          marketCap:482000000000,  pe:36.1, priceToSalesRatioTTM:17.8, returnOnEquityTTM:2.14,  revenueGrowthTTM:12.8, netProfitMarginTTM:0.448, price:514.2,  changes:0.19  },
+                { symbol:'COST',  companyName:'Costco Wholesale Corp.', sector:'Consumer Defensive',  marketCap:422000000000,  pe:52.3, priceToSalesRatioTTM:1.4,  returnOnEquityTTM:0.31,  revenueGrowthTTM:7.8,  netProfitMarginTTM:0.026, price:952.1,  changes:0.38  },
+                { symbol:'HD',    companyName:'Home Depot Inc.',        sector:'Consumer Cyclical',   marketCap:394000000000,  pe:24.8, priceToSalesRatioTTM:2.6,  returnOnEquityTTM:99.9,  revenueGrowthTTM:4.5,  netProfitMarginTTM:0.104, price:396.4,  changes:-0.18 },
+                { symbol:'ABBV',  companyName:'AbbVie Inc.',            sector:'Healthcare',          marketCap:325000000000,  pe:56.7, priceToSalesRatioTTM:5.9,  returnOnEquityTTM:99.9,  revenueGrowthTTM:3.7,  netProfitMarginTTM:0.103, price:184.1,  changes:0.72  },
+                { symbol:'AVGO',  companyName:'Broadcom Inc.',          sector:'Technology',          marketCap:898000000000,  pe:67.4, priceToSalesRatioTTM:12.3, returnOnEquityTTM:0.34,  revenueGrowthTTM:23.9, netProfitMarginTTM:0.224, price:215.4,  changes:1.08  },
+                { symbol:'NFLX',  companyName:'Netflix Inc.',           sector:'Communication Services',marketCap:421000000000,pe:47.2, priceToSalesRatioTTM:9.7, returnOnEquityTTM:0.38,  revenueGrowthTTM:14.8, netProfitMarginTTM:0.196, price:976.3,  changes:0.94  },
+            ];
+        }
+
+        // ── APPLY FILTERS + RENDER ─────────────────────────────────────
+        function applyFiltersAndRender() {
+            const filters = Object.values(activeFilters);
+
+            filteredData = screenerData.filter(stock => {
+                for (const f of filters) {
+                    const def = f.def;
+
+                    if (def.type === 'select') {
+                        const val = f.val;
+                        if (val === 'Any') continue;
+
+                        if (def.id === 'sector') {
+                            if ((stock.sector || '') !== val) return false;
+                        } else if (def.id === 'mkt_cap') {
+                            const cap = stock.marketCap || 0;
+                            if (val === 'Mega (>200B)'  && cap < 200e9) return false;
+                            if (val === 'Large (>10B)'  && cap < 10e9)  return false;
+                            if (val === 'Mid (>2B)'     && cap < 2e9)   return false;
+                            if (val === 'Small (>300M)' && cap < 300e6) return false;
+                            if (val === 'Micro (<300M)' && cap >= 300e6) return false;
+                        } else if (def.id === 'country') {
+                            if ((stock.country || 'US') !== val) return false;
+                        }
+                        continue;
+                    }
+
+                    // Numeric filters — map to stock field
+                    const fieldMap = {
+                        pe: v => v.pe || v.priceEarningsRatioTTM,
+                        pb: v => v.priceToBookRatioTTM,
+                        ps: v => v.priceToSalesRatioTTM,
+                        pfcf: v => v.pfcfRatioTTM || v.priceToFreeCashFlowsRatioTTM,
+                        ev_ebitda: v => v.enterpriseValueMultipleTTM,
+                        peg: v => v.pegRatioTTM,
+                        gross_m: v => (v.grossProfitMarginTTM || v.grossProfitMargin || 0) * 100,
+                        op_m:    v => (v.operatingProfitMarginTTM || v.operatingIncomeRatio || 0) * 100,
+                        net_m:   v => (v.netProfitMarginTTM || v.netIncomeRatio || 0) * 100,
+                        fcf_m:   v => (v.freeCashFlowMarginTTM || 0) * 100,
+                        roe:     v => (v.returnOnEquityTTM || v.roe || 0) * 100,
+                        roa:     v => (v.returnOnAssetsTTM || v.roa || 0) * 100,
+                        roic:    v => (v.roicTTM || v.roic || 0) * 100,
+                        ebitda_m:v => (v.ebitdaMarginTTM || 0) * 100,
+                        rev_g:   v => (v.revenueGrowthTTM || v.revenueGrowth || 0) * 100,
+                        eps_g:   v => (v.epsgrowthTTM || v.epsGrowth || 0) * 100,
+                        ni_g:    v => (v.netIncomeGrowthTTM || 0) * 100,
+                        fcf_g:   v => (v.freeCashFlowGrowthTTM || 0) * 100,
+                        ocf_g:   v => (v.operatingCashFlowGrowthTTM || 0) * 100,
+                        cur_r:   v => v.currentRatioTTM || v.currentRatio,
+                        de:      v => v.debtEquityRatioTTM || v.debtEquityRatio,
+                        debt_ebitda: v => v.debtToEBITDATTM,
+                        int_cov: v => v.interestCoverageTTM,
+                        quick_r: v => v.quickRatioTTM,
+                        div_y:   v => (v.dividendYieldTTM || v.dividendYield || 0) * 100,
+                        payout:  v => (v.payoutRatioTTM || v.payoutRatio || 0) * 100,
+                    };
+
+                    const getValue = fieldMap[def.id];
+                    if (!getValue) continue;
+                    const raw = getValue(stock);
+                    if (raw == null || raw === '' || isNaN(raw)) continue;
+                    const v = parseFloat(raw);
+
+                    if (def.type === 'min' && f.min !== '') {
+                        if (v < parseFloat(f.min)) return false;
+                    } else if (def.type === 'max' && f.max !== '') {
+                        if (v > parseFloat(f.max)) return false;
+                    } else if (def.type === 'range') {
+                        if (f.min !== '' && v < parseFloat(f.min)) return false;
+                        if (f.max !== '' && v > parseFloat(f.max)) return false;
+                    }
+                }
+                return true;
+            });
+
+            // Sort
+            filteredData.sort((a, b) => {
+                const va = getSortValue(a, sortKey);
+                const vb = getSortValue(b, sortKey);
+                if (va == null) return 1;
+                if (vb == null) return -1;
+                return sortDir === 'asc' ? va - vb : vb - va;
+            });
+
+            renderTable();
+        }
+
+        function getSortValue(stock, key) {
+            const map = {
+                symbol:    s => s.symbol,
+                marketCap: s => s.marketCap,
+                pe:        s => s.pe || s.priceEarningsRatioTTM,
+                ps:        s => s.priceToSalesRatioTTM,
+                roe:       s => s.returnOnEquityTTM,
+                rev_g:     s => s.revenueGrowthTTM,
+                net_m:     s => s.netProfitMarginTTM,
+                price:     s => s.price,
+                changes:   s => s.changes,
+            };
+            const fn = map[key];
+            return fn ? fn(stock) : null;
+        }
+
+        function fmtCap(v) {
+            if (!v) return '—';
+            if (v >= 1e12) return (v/1e12).toFixed(2) + 'T';
+            if (v >= 1e9)  return (v/1e9).toFixed(1) + 'B';
+            if (v >= 1e6)  return (v/1e6).toFixed(0) + 'M';
+            return v;
+        }
+
+        function fmtPct(v, raw) {
+            // raw = true means multiply by 100
+            if (v == null || v === '' || isNaN(v)) return '—';
+            const n = raw ? v * 100 : v;
+            return n.toFixed(1) + '%';
+        }
+
+        function fmtNum(v) {
+            if (v == null || isNaN(v)) return '—';
+            return parseFloat(v).toFixed(1) + 'x';
+        }
+
+        function renderTable() {
+            const body = document.getElementById('screenerTableBody');
+            const countEl = document.getElementById('tableResultsCount');
+            if (countEl) {
+                countEl.innerHTML = `<strong>${filteredData.length}</strong> stocks`;
+            }
+
+            if (!filteredData.length) {
+                body.innerHTML = `<div class="sh-no-results">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    No stocks match your filters. Try relaxing some criteria.
+                </div>`;
+                return;
+            }
+
+            const cols = [
+                { key:'symbol',    label:'Symbol',       sortable:true  },
+                { key:'sector',    label:'Sector',       sortable:false },
+                { key:'marketCap', label:'Market Cap',   sortable:true  },
+                { key:'pe',        label:'P/E',          sortable:true  },
+                { key:'ps',        label:'P/S',          sortable:true  },
+                { key:'net_m',     label:'Net Margin',   sortable:true  },
+                { key:'roe',       label:'ROE',          sortable:true  },
+                { key:'rev_g',     label:'Rev Growth',   sortable:true  },
+                { key:'changes',   label:'Change',       sortable:true  },
+            ];
+
+            const thead = cols.map(c => {
+                if (!c.sortable) return `<th>${c.label}</th>`;
+                const cls = sortKey === c.key ? (sortDir === 'asc' ? 'sort-asc' : 'sort-desc') : '';
+                return `<th class="${cls}" onclick="setSort('${c.key}')" style="cursor:pointer">${c.label}</th>`;
+            }).join('');
+
+            const rows = filteredData.slice(0, 100).map(s => {
+                const pe   = s.pe || s.priceEarningsRatioTTM;
+                const ps   = s.priceToSalesRatioTTM;
+                const roe  = s.returnOnEquityTTM;
+                const netM = s.netProfitMarginTTM || s.netIncomeRatio;
+                const revG = s.revenueGrowthTTM || s.revenueGrowth;
+                const chg  = s.changes || s.changesPercentage || 0;
+                const chgClass = chg >= 0 ? 'change-pos' : 'change-neg';
+                const chgStr   = (chg >= 0 ? '+' : '') + parseFloat(chg).toFixed(2) + '%';
+
+                return `<tr onclick="showStockDetails('${s.symbol}')">
+                    <td><div class="sh-td-symbol">${s.symbol}</div><div class="sh-td-name">${s.companyName || ''}</div></td>
+                    <td><span class="sh-td-sector">${s.sector || '—'}</span></td>
+                    <td>${fmtCap(s.marketCap)}</td>
+                    <td>${pe ? parseFloat(pe).toFixed(1) : '—'}</td>
+                    <td>${ps ? parseFloat(ps).toFixed(1) : '—'}</td>
+                    <td>${fmtPct(netM, true)}</td>
+                    <td>${fmtPct(roe, true)}</td>
+                    <td class="${revG >= 0 ? 'change-pos' : 'change-neg'}">${fmtPct(revG, true)}</td>
+                    <td class="${chgClass}">${chgStr}</td>
+                </tr>`;
+            }).join('');
+
+            body.innerHTML = `<table class="sh-table">
+                <thead><tr>${thead}</tr></thead>
+                <tbody>${rows}</tbody>
+            </table>`;
+        }
+
+        function setSort(key) {
+            if (sortKey === key) {
+                sortDir = sortDir === 'desc' ? 'asc' : 'desc';
+            } else {
+                sortKey = key;
+                sortDir = 'desc';
+            }
+            applyFiltersAndRender();
+        }
+
+        // ── FILTER PICKER ──────────────────────────────────────────────
+        function openFilterPicker(e) {
+            e.stopPropagation();
+            const overlay = document.getElementById('filterPickerOverlay');
+            const picker  = document.getElementById('filterPicker');
+            overlay.classList.add('open');
+            document.getElementById('filterPickerSearch').value = '';
+            renderPickerList('');
+            const btn  = document.getElementById('addFilterBtn');
+            const rect = btn.getBoundingClientRect();
+            const top  = rect.bottom + 6;
+            const left = Math.min(rect.left, window.innerWidth - 310);
+            picker.style.top  = top + 'px';
+            picker.style.left = left + 'px';
+            setTimeout(() => document.getElementById('filterPickerSearch').focus(), 30);
+        }
+
+        function closeFilterPicker() {
+            document.getElementById('filterPickerOverlay').classList.remove('open');
+        }
+
+        function filterPickerSearch(q) {
+            renderPickerList(q.toLowerCase().trim());
+        }
+
+        function renderPickerList(q) {
+            const list   = document.getElementById('filterPickerList');
+            const groups = {};
+            FILTER_DEFS.forEach(def => {
+                if (activeFilters[def.id]) return;
+                if (q && !def.label.toLowerCase().includes(q) && !def.group.toLowerCase().includes(q)) return;
+                if (!groups[def.group]) groups[def.group] = [];
+                groups[def.group].push(def);
+            });
+            let html = '';
+            for (const [group, defs] of Object.entries(groups)) {
+                html += `<div class="fp-group-label">${group}</div>`;
+                defs.forEach(def => {
+                    const badge = def.type === 'select' ? 'dropdown' : def.type;
+                    html += `<div class="fp-item" onclick="addFilter('${def.id}')">
+                        <span>${def.label}</span>
+                        <span class="fp-item-badge">${badge}</span>
+                    </div>`;
+                });
+            }
+            if (!html) html = '<div style="padding:24px;text-align:center;color:var(--text-secondary);font-size:0.85rem;">No filters found</div>';
+            list.innerHTML = html;
+        }
+
+        function addFilter(id) {
+            const def = FILTER_DEFS.find(d => d.id === id);
+            if (!def || activeFilters[id]) return;
+            activeFilters[id] = { def, min:'', max:'', val: def.options?.[0] || '' };
+            closeFilterPicker();
+            renderFilterChips();
+            applyFiltersAndRender();
+        }
+
+        function removeFilter(id) {
+            delete activeFilters[id];
+            renderFilterChips();
+            applyFiltersAndRender();
+        }
+
+        function resetAllFilters() {
+            activeFilters = {};
+            renderFilterChips();
+            applyFiltersAndRender();
+        }
+
+        function updateFilter(id, field, value) {
+            if (!activeFilters[id]) return;
+            activeFilters[id][field] = value;
+            applyFiltersAndRender();
+        }
+
+        function renderFilterChips() {
+            const row      = document.getElementById('filterChipsRow');
+            const count    = Object.keys(activeFilters).length;
+            const resetBtn = document.getElementById('filtersResetBtn');
+            resetBtn.classList.toggle('visible', count > 0);
+
+            let html = '';
+            for (const [id, state] of Object.entries(activeFilters)) {
+                const def = state.def;
+
+                if (def.type === 'select') {
+                    const opts = def.options.map(o =>
+                        `<option value="${o}" ${state.val === o ? 'selected' : ''}>${o}</option>`
+                    ).join('');
+                    html += `<div class="filter-chip">
+                        <span class="filter-chip-label">${def.label}</span>
+                        <div class="filter-chip-select-wrap">
+                            <select onchange="updateFilter('${id}','val',this.value)">${opts}</select>
+                        </div>
+                        <button class="filter-chip-remove" onclick="removeFilter('${id}')">×</button>
+                    </div>`;
+
+                } else if (def.type === 'min') {
+                    html += `<div class="filter-chip">
+                        <span class="filter-chip-label">${def.label}</span>
+                        <span class="filter-chip-sep">≥</span>
+                        <input type="number" placeholder="—" value="${state.min}" onchange="updateFilter('${id}','min',this.value)">
+                        <span class="filter-chip-unit">${def.unit}</span>
+                        <button class="filter-chip-remove" onclick="removeFilter('${id}')">×</button>
+                    </div>`;
+
+                } else if (def.type === 'max') {
+                    html += `<div class="filter-chip">
+                        <span class="filter-chip-label">${def.label}</span>
+                        <span class="filter-chip-sep">≤</span>
+                        <input type="number" placeholder="—" value="${state.max}" onchange="updateFilter('${id}','max',this.value)">
+                        <span class="filter-chip-unit">${def.unit}</span>
+                        <button class="filter-chip-remove" onclick="removeFilter('${id}')">×</button>
+                    </div>`;
+
+                } else { // range
+                    html += `<div class="filter-chip">
+                        <span class="filter-chip-label">${def.label}</span>
+                        <input type="number" placeholder="Min" value="${state.min}" onchange="updateFilter('${id}','min',this.value)">
+                        <span class="filter-chip-sep">–</span>
+                        <input type="number" placeholder="Max" value="${state.max}" onchange="updateFilter('${id}','max',this.value)">
+                        <span class="filter-chip-unit">${def.unit}</span>
+                        <button class="filter-chip-remove" onclick="removeFilter('${id}')">×</button>
+                    </div>`;
+                }
+            }
+            row.innerHTML = html;
+        }
+
+        // ── INIT: load screener on page open ───────────────────────────
+        // Wait until searchView is visible
+        const _searchViewObserver = new MutationObserver(() => {
+            const sv = document.getElementById('searchView');
+            if (sv && sv.style.display !== 'none' && !screenerLoaded) {
+                loadScreenerData();
+            }
+        });
+        _searchViewObserver.observe(document.body, { childList: true, subtree: true, attributes: true });
+        // Also try immediately
+        setTimeout(() => {
+            if (!screenerLoaded) loadScreenerData();
+        }, 300);
+
+
