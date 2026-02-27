@@ -1622,7 +1622,454 @@ window.scorePageGo = scorePageGo;
 
     </script>
 
+    <script>
+// ============================================================
+// SCREENER — FILTER ENGINE + TABLE
+// ============================================================
+
+// All available filter definitions
+const FILTER_DEFS = [
+    // Valuation
+    { id:'pe',        group:'Valuation',     label:'P/E Ratio',          type:'range', unit:'x',  fmpKey:'pe'  },
+    { id:'pb',        group:'Valuation',     label:'P/B Ratio',          type:'range', unit:'x',  fmpKey:'priceToBookRatioTTM' },
+    { id:'ps',        group:'Valuation',     label:'P/S Ratio',          type:'range', unit:'x',  fmpKey:'priceToSalesRatioTTM' },
+    { id:'pfcf',      group:'Valuation',     label:'P/FCF Ratio',        type:'range', unit:'x',  fmpKey:'pfcfRatioTTM' },
+    { id:'ev_ebitda', group:'Valuation',     label:'EV/EBITDA',          type:'range', unit:'x',  fmpKey:'enterpriseValueMultipleTTM' },
+    { id:'peg',       group:'Valuation',     label:'PEG Ratio',          type:'range', unit:'x',  fmpKey:'pegRatioTTM' },
+    // Profitability
+    { id:'gross_m',   group:'Profitability', label:'Gross Margin',       type:'min',   unit:'%',  fmpKey:'grossProfitMarginTTM' },
+    { id:'op_m',      group:'Profitability', label:'Operating Margin',   type:'min',   unit:'%',  fmpKey:'operatingProfitMarginTTM' },
+    { id:'net_m',     group:'Profitability', label:'Net Margin',         type:'min',   unit:'%',  fmpKey:'netProfitMarginTTM' },
+    { id:'fcf_m',     group:'Profitability', label:'FCF Margin',         type:'min',   unit:'%',  fmpKey:'freeCashFlowPerShareTTM' },
+    { id:'roe',       group:'Profitability', label:'ROE',                type:'min',   unit:'%',  fmpKey:'returnOnEquityTTM' },
+    { id:'roa',       group:'Profitability', label:'ROA',                type:'min',   unit:'%',  fmpKey:'returnOnAssetsTTM' },
+    { id:'roic',      group:'Profitability', label:'ROIC',               type:'min',   unit:'%',  fmpKey:'roicTTM' },
+    { id:'ebitda_m',  group:'Profitability', label:'EBITDA Margin',      type:'min',   unit:'%',  fmpKey:'ebitdaMarginTTM' },
+    // Growth
+    { id:'rev_g',     group:'Growth',        label:'Revenue Growth',     type:'min',   unit:'%',  fmpKey:'revenueGrowthTTM' },
+    { id:'eps_g',     group:'Growth',        label:'EPS Growth',         type:'min',   unit:'%',  fmpKey:'epsgrowthTTM' },
+    { id:'ni_g',      group:'Growth',        label:'Net Income Growth',  type:'min',   unit:'%',  fmpKey:'netIncomeGrowthTTM' },
+    { id:'fcf_g',     group:'Growth',        label:'FCF Growth',         type:'min',   unit:'%',  fmpKey:'freeCashFlowGrowthTTM' },
+    { id:'ocf_g',     group:'Growth',        label:'OCF Growth',         type:'min',   unit:'%',  fmpKey:'operatingCashFlowGrowthTTM' },
+    // Financial Health
+    { id:'cur_r',     group:'Health',        label:'Current Ratio',      type:'min',   unit:'x',  fmpKey:'currentRatioTTM' },
+    { id:'de',        group:'Health',        label:'Debt / Equity',      type:'max',   unit:'x',  fmpKey:'debtEquityRatioTTM' },
+    { id:'debt_ebitda',group:'Health',       label:'Debt / EBITDA',      type:'max',   unit:'x',  fmpKey:'debtToEBITDATTM' },
+    { id:'int_cov',   group:'Health',        label:'Interest Coverage',  type:'min',   unit:'x',  fmpKey:'interestCoverageTTM' },
+    { id:'quick_r',   group:'Health',        label:'Quick Ratio',        type:'min',   unit:'x',  fmpKey:'quickRatioTTM' },
+    // Dividends
+    { id:'div_y',     group:'Dividends',     label:'Dividend Yield',     type:'min',   unit:'%',  fmpKey:'dividendYieldTTM' },
+    { id:'payout',    group:'Dividends',     label:'Payout Ratio',       type:'max',   unit:'%',  fmpKey:'payoutRatioTTM' },
+    // Size & Classification
+    { id:'mkt_cap',   group:'Size',          label:'Market Cap',         type:'select', options:['Any','Mega (>200B)','Large (>10B)','Mid (>2B)','Small (>300M)','Micro (<300M)'] },
+    { id:'sector',    group:'Size',          label:'Sector',             type:'select', options:['Any','Technology','Healthcare','Financials','Consumer Cyclical','Consumer Defensive','Industrials','Energy','Utilities','Communication Services','Real Estate','Basic Materials'] },
+    { id:'country',   group:'Size',          label:'Country',            type:'select', options:['Any','US','Canada','UK','Germany','France','Japan','China','India','Australia'] },
+];
+
+// Screener state
+let activeFilters = {};
+let screenerData  = [];   // raw data from API
+let filteredData  = [];   // after applying filters
+let sortKey       = 'marketCap';
+let sortDir       = 'desc';
+let screenerLoaded = false;
+
+// ── LOAD SCREENER DATA from FMP ───────────────────────────────
+async function loadScreenerData() {
+    const body = document.getElementById('screenerTableBody');
+    body.innerHTML = '<div class="sh-loading"><div class="sh-loading-spinner"></div>Loading stocks...</div>';
+
+    try {
+        const apiKey = 'RxYKGPJbSbTuLhW15Bdrop3OxJ2tiXDf';
+        // Use FMP stock screener endpoint with broad filters for US large caps
+        const url = `https://financialmodelingprep.com/stable/company-screener?isActivelyTrading=true&limit=200&marketCapMoreThan=1000000000&apikey=${apiKey}`;
+        const resp = await fetch(url);
+        if (!resp.ok) throw new Error('API error');
+        const data = await resp.json();
+        if (!Array.isArray(data)) throw new Error('Bad data');
+        screenerData  = data;
+        screenerLoaded = true;
+        applyFiltersAndRender();
+    } catch(e) {
+        console.error('Screener load error:', e);
+        // Fallback: show static popular stocks
+        screenerData = getStaticStocks();
+        screenerLoaded = true;
+        applyFiltersAndRender();
+    }
+}
+
+function getStaticStocks() {
+    return [
+        { symbol:'AAPL',  companyName:'Apple Inc.',              sector:'Technology',          marketCap:3480000000000, pe:33.2, priceToSalesRatioTTM:8.4,  returnOnEquityTTM:1.47,  revenueGrowthTTM:2.1,  netProfitMarginTTM:0.263, price:222.5,  changes:0.82  },
+        { symbol:'MSFT',  companyName:'Microsoft Corporation',   sector:'Technology',          marketCap:3020000000000, pe:37.8, priceToSalesRatioTTM:13.2, returnOnEquityTTM:0.38,  revenueGrowthTTM:15.7, netProfitMarginTTM:0.365, price:415.3,  changes:-0.34 },
+        { symbol:'NVDA',  companyName:'NVIDIA Corporation',      sector:'Technology',          marketCap:2740000000000, pe:52.1, priceToSalesRatioTTM:29.8, returnOnEquityTTM:1.23,  revenueGrowthTTM:122.4,netProfitMarginTTM:0.557, price:111.2,  changes:1.47  },
+        { symbol:'AMZN',  companyName:'Amazon.com Inc.',         sector:'Consumer Cyclical',   marketCap:2210000000000, pe:44.6, priceToSalesRatioTTM:3.4,  returnOnEquityTTM:0.21,  revenueGrowthTTM:10.1, netProfitMarginTTM:0.076, price:211.4,  changes:0.61  },
+        { symbol:'META',  companyName:'Meta Platforms Inc.',     sector:'Communication Services',marketCap:1490000000000,pe:28.3, priceToSalesRatioTTM:8.8, returnOnEquityTTM:0.34,  revenueGrowthTTM:22.1, netProfitMarginTTM:0.381, price:590.2,  changes:-0.21 },
+        { symbol:'GOOGL', companyName:'Alphabet Inc.',           sector:'Communication Services',marketCap:2080000000000,pe:24.1, priceToSalesRatioTTM:6.1, returnOnEquityTTM:0.28,  revenueGrowthTTM:13.6, netProfitMarginTTM:0.274, price:174.5,  changes:0.33  },
+        { symbol:'TSLA',  companyName:'Tesla Inc.',              sector:'Consumer Cyclical',   marketCap:820000000000,  pe:81.4, priceToSalesRatioTTM:8.1,  returnOnEquityTTM:0.12,  revenueGrowthTTM:1.1,  netProfitMarginTTM:0.072, price:258.1,  changes:-1.22 },
+        { symbol:'BRK-B', companyName:'Berkshire Hathaway',     sector:'Financials',          marketCap:1070000000000, pe:21.8, priceToSalesRatioTTM:2.2,  returnOnEquityTTM:0.12,  revenueGrowthTTM:3.4,  netProfitMarginTTM:0.141, price:465.3,  changes:0.15  },
+        { symbol:'JPM',   companyName:'JPMorgan Chase & Co.',   sector:'Financials',          marketCap:764000000000,  pe:13.4, priceToSalesRatioTTM:3.8,  returnOnEquityTTM:0.17,  revenueGrowthTTM:12.2, netProfitMarginTTM:0.276, price:254.8,  changes:-0.44 },
+        { symbol:'V',     companyName:'Visa Inc.',              sector:'Financials',          marketCap:622000000000,  pe:30.2, priceToSalesRatioTTM:16.4, returnOnEquityTTM:0.51,  revenueGrowthTTM:10.3, netProfitMarginTTM:0.543, price:314.7,  changes:0.28  },
+        { symbol:'JNJ',   companyName:'Johnson & Johnson',      sector:'Healthcare',          marketCap:381000000000,  pe:22.1, priceToSalesRatioTTM:4.6,  returnOnEquityTTM:0.22,  revenueGrowthTTM:4.3,  netProfitMarginTTM:0.198, price:157.2,  changes:0.41  },
+        { symbol:'LLY',   companyName:'Eli Lilly and Co.',      sector:'Healthcare',          marketCap:761000000000,  pe:74.2, priceToSalesRatioTTM:22.3, returnOnEquityTTM:0.84,  revenueGrowthTTM:44.7, netProfitMarginTTM:0.281, price:801.3,  changes:1.12  },
+        { symbol:'XOM',   companyName:'Exxon Mobil Corporation',sector:'Energy',              marketCap:488000000000,  pe:14.2, priceToSalesRatioTTM:1.4,  returnOnEquityTTM:0.14,  revenueGrowthTTM:-3.8, netProfitMarginTTM:0.101, price:114.3,  changes:-0.62 },
+        { symbol:'WMT',   companyName:'Walmart Inc.',           sector:'Consumer Defensive',  marketCap:739000000000,  pe:36.8, priceToSalesRatioTTM:0.9,  returnOnEquityTTM:0.21,  revenueGrowthTTM:5.1,  netProfitMarginTTM:0.024, price:91.4,   changes:0.55  },
+        { symbol:'MA',    companyName:'Mastercard Incorporated',sector:'Financials',          marketCap:482000000000,  pe:36.1, priceToSalesRatioTTM:17.8, returnOnEquityTTM:2.14,  revenueGrowthTTM:12.8, netProfitMarginTTM:0.448, price:514.2,  changes:0.19  },
+        { symbol:'COST',  companyName:'Costco Wholesale Corp.', sector:'Consumer Defensive',  marketCap:422000000000,  pe:52.3, priceToSalesRatioTTM:1.4,  returnOnEquityTTM:0.31,  revenueGrowthTTM:7.8,  netProfitMarginTTM:0.026, price:952.1,  changes:0.38  },
+        { symbol:'HD',    companyName:'Home Depot Inc.',        sector:'Consumer Cyclical',   marketCap:394000000000,  pe:24.8, priceToSalesRatioTTM:2.6,  returnOnEquityTTM:99.9,  revenueGrowthTTM:4.5,  netProfitMarginTTM:0.104, price:396.4,  changes:-0.18 },
+        { symbol:'ABBV',  companyName:'AbbVie Inc.',            sector:'Healthcare',          marketCap:325000000000,  pe:56.7, priceToSalesRatioTTM:5.9,  returnOnEquityTTM:99.9,  revenueGrowthTTM:3.7,  netProfitMarginTTM:0.103, price:184.1,  changes:0.72  },
+        { symbol:'AVGO',  companyName:'Broadcom Inc.',          sector:'Technology',          marketCap:898000000000,  pe:67.4, priceToSalesRatioTTM:12.3, returnOnEquityTTM:0.34,  revenueGrowthTTM:23.9, netProfitMarginTTM:0.224, price:215.4,  changes:1.08  },
+        { symbol:'NFLX',  companyName:'Netflix Inc.',           sector:'Communication Services',marketCap:421000000000,pe:47.2, priceToSalesRatioTTM:9.7, returnOnEquityTTM:0.38,  revenueGrowthTTM:14.8, netProfitMarginTTM:0.196, price:976.3,  changes:0.94  },
+    ];
+}
+
+// ── APPLY FILTERS + RENDER ─────────────────────────────────────
+function applyFiltersAndRender() {
+    const filters = Object.values(activeFilters);
+
+    filteredData = screenerData.filter(stock => {
+        for (const f of filters) {
+            const def = f.def;
+
+            if (def.type === 'select') {
+                const val = f.val;
+                if (val === 'Any') continue;
+
+                if (def.id === 'sector') {
+                    if ((stock.sector || '') !== val) return false;
+                } else if (def.id === 'mkt_cap') {
+                    const cap = stock.marketCap || 0;
+                    if (val === 'Mega (>200B)'  && cap < 200e9) return false;
+                    if (val === 'Large (>10B)'  && cap < 10e9)  return false;
+                    if (val === 'Mid (>2B)'     && cap < 2e9)   return false;
+                    if (val === 'Small (>300M)' && cap < 300e6) return false;
+                    if (val === 'Micro (<300M)' && cap >= 300e6) return false;
+                } else if (def.id === 'country') {
+                    if ((stock.country || 'US') !== val) return false;
+                }
+                continue;
+            }
+
+            // Numeric filters — map to stock field
+            const fieldMap = {
+                pe: v => v.pe || v.priceEarningsRatioTTM,
+                pb: v => v.priceToBookRatioTTM,
+                ps: v => v.priceToSalesRatioTTM,
+                pfcf: v => v.pfcfRatioTTM || v.priceToFreeCashFlowsRatioTTM,
+                ev_ebitda: v => v.enterpriseValueMultipleTTM,
+                peg: v => v.pegRatioTTM,
+                gross_m: v => (v.grossProfitMarginTTM || v.grossProfitMargin || 0) * 100,
+                op_m:    v => (v.operatingProfitMarginTTM || v.operatingIncomeRatio || 0) * 100,
+                net_m:   v => (v.netProfitMarginTTM || v.netIncomeRatio || 0) * 100,
+                fcf_m:   v => (v.freeCashFlowMarginTTM || 0) * 100,
+                roe:     v => (v.returnOnEquityTTM || v.roe || 0) * 100,
+                roa:     v => (v.returnOnAssetsTTM || v.roa || 0) * 100,
+                roic:    v => (v.roicTTM || v.roic || 0) * 100,
+                ebitda_m:v => (v.ebitdaMarginTTM || 0) * 100,
+                rev_g:   v => (v.revenueGrowthTTM || v.revenueGrowth || 0) * 100,
+                eps_g:   v => (v.epsgrowthTTM || v.epsGrowth || 0) * 100,
+                ni_g:    v => (v.netIncomeGrowthTTM || 0) * 100,
+                fcf_g:   v => (v.freeCashFlowGrowthTTM || 0) * 100,
+                ocf_g:   v => (v.operatingCashFlowGrowthTTM || 0) * 100,
+                cur_r:   v => v.currentRatioTTM || v.currentRatio,
+                de:      v => v.debtEquityRatioTTM || v.debtEquityRatio,
+                debt_ebitda: v => v.debtToEBITDATTM,
+                int_cov: v => v.interestCoverageTTM,
+                quick_r: v => v.quickRatioTTM,
+                div_y:   v => (v.dividendYieldTTM || v.dividendYield || 0) * 100,
+                payout:  v => (v.payoutRatioTTM || v.payoutRatio || 0) * 100,
+            };
+
+            const getValue = fieldMap[def.id];
+            if (!getValue) continue;
+            const raw = getValue(stock);
+            if (raw == null || raw === '' || isNaN(raw)) continue;
+            const v = parseFloat(raw);
+
+            if (def.type === 'min' && f.min !== '') {
+                if (v < parseFloat(f.min)) return false;
+            } else if (def.type === 'max' && f.max !== '') {
+                if (v > parseFloat(f.max)) return false;
+            } else if (def.type === 'range') {
+                if (f.min !== '' && v < parseFloat(f.min)) return false;
+                if (f.max !== '' && v > parseFloat(f.max)) return false;
+            }
+        }
+        return true;
+    });
+
+    // Sort
+    filteredData.sort((a, b) => {
+        const va = getSortValue(a, sortKey);
+        const vb = getSortValue(b, sortKey);
+        if (va == null) return 1;
+        if (vb == null) return -1;
+        return sortDir === 'asc' ? va - vb : vb - va;
+    });
+
+    renderTable();
+}
+
+function getSortValue(stock, key) {
+    const map = {
+        symbol:    s => s.symbol,
+        marketCap: s => s.marketCap,
+        pe:        s => s.pe || s.priceEarningsRatioTTM,
+        ps:        s => s.priceToSalesRatioTTM,
+        roe:       s => s.returnOnEquityTTM,
+        rev_g:     s => s.revenueGrowthTTM,
+        net_m:     s => s.netProfitMarginTTM,
+        price:     s => s.price,
+        changes:   s => s.changes,
+    };
+    const fn = map[key];
+    return fn ? fn(stock) : null;
+}
+
+function fmtCap(v) {
+    if (!v) return '—';
+    if (v >= 1e12) return (v/1e12).toFixed(2) + 'T';
+    if (v >= 1e9)  return (v/1e9).toFixed(1) + 'B';
+    if (v >= 1e6)  return (v/1e6).toFixed(0) + 'M';
+    return v;
+}
+
+function fmtPct(v, raw) {
+    // raw = true means multiply by 100
+    if (v == null || v === '' || isNaN(v)) return '—';
+    const n = raw ? v * 100 : v;
+    return n.toFixed(1) + '%';
+}
+
+function fmtNum(v) {
+    if (v == null || isNaN(v)) return '—';
+    return parseFloat(v).toFixed(1) + 'x';
+}
+
+function renderTable() {
+    const body = document.getElementById('screenerTableBody');
+    const countEl = document.getElementById('tableResultsCount');
+    if (countEl) {
+        countEl.innerHTML = `<strong>${filteredData.length}</strong> stocks`;
+    }
+
+    if (!filteredData.length) {
+        body.innerHTML = `<div class="sh-no-results">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            No stocks match your filters. Try relaxing some criteria.
+        </div>`;
+        return;
+    }
+
+    const cols = [
+        { key:'symbol',    label:'Symbol',       sortable:true  },
+        { key:'sector',    label:'Sector',       sortable:false },
+        { key:'marketCap', label:'Market Cap',   sortable:true  },
+        { key:'pe',        label:'P/E',          sortable:true  },
+        { key:'ps',        label:'P/S',          sortable:true  },
+        { key:'net_m',     label:'Net Margin',   sortable:true  },
+        { key:'roe',       label:'ROE',          sortable:true  },
+        { key:'rev_g',     label:'Rev Growth',   sortable:true  },
+        { key:'changes',   label:'Change',       sortable:true  },
+    ];
+
+    const thead = cols.map(c => {
+        if (!c.sortable) return `<th>${c.label}</th>`;
+        const cls = sortKey === c.key ? (sortDir === 'asc' ? 'sort-asc' : 'sort-desc') : '';
+        return `<th class="${cls}" onclick="setSort('${c.key}')" style="cursor:pointer">${c.label}</th>`;
+    }).join('');
+
+    const rows = filteredData.slice(0, 100).map(s => {
+        const pe   = s.pe || s.priceEarningsRatioTTM;
+        const ps   = s.priceToSalesRatioTTM;
+        const roe  = s.returnOnEquityTTM;
+        const netM = s.netProfitMarginTTM || s.netIncomeRatio;
+        const revG = s.revenueGrowthTTM || s.revenueGrowth;
+        const chg  = s.changes || s.changesPercentage || 0;
+        const chgClass = chg >= 0 ? 'change-pos' : 'change-neg';
+        const chgStr   = (chg >= 0 ? '+' : '') + parseFloat(chg).toFixed(2) + '%';
+
+        return `<tr onclick="showStockDetails('${s.symbol}')">
+            <td><div class="sh-td-symbol">${s.symbol}</div><div class="sh-td-name">${s.companyName || ''}</div></td>
+            <td><span class="sh-td-sector">${s.sector || '—'}</span></td>
+            <td>${fmtCap(s.marketCap)}</td>
+            <td>${pe ? parseFloat(pe).toFixed(1) : '—'}</td>
+            <td>${ps ? parseFloat(ps).toFixed(1) : '—'}</td>
+            <td>${fmtPct(netM, true)}</td>
+            <td>${fmtPct(roe, true)}</td>
+            <td class="${revG >= 0 ? 'change-pos' : 'change-neg'}">${fmtPct(revG, true)}</td>
+            <td class="${chgClass}">${chgStr}</td>
+        </tr>`;
+    }).join('');
+
+    body.innerHTML = `<table class="sh-table">
+        <thead><tr>${thead}</tr></thead>
+        <tbody>${rows}</tbody>
+    </table>`;
+}
+
+function setSort(key) {
+    if (sortKey === key) {
+        sortDir = sortDir === 'desc' ? 'asc' : 'desc';
+    } else {
+        sortKey = key;
+        sortDir = 'desc';
+    }
+    applyFiltersAndRender();
+}
+
+// ── FILTER PICKER ──────────────────────────────────────────────
+function openFilterPicker(e) {
+    e.stopPropagation();
+    const overlay = document.getElementById('filterPickerOverlay');
+    const picker  = document.getElementById('filterPicker');
+    overlay.classList.add('open');
+    document.getElementById('filterPickerSearch').value = '';
+    renderPickerList('');
+    const btn  = document.getElementById('addFilterBtn');
+    const rect = btn.getBoundingClientRect();
+    const top  = rect.bottom + 6;
+    const left = Math.min(rect.left, window.innerWidth - 310);
+    picker.style.top  = top + 'px';
+    picker.style.left = left + 'px';
+    setTimeout(() => document.getElementById('filterPickerSearch').focus(), 30);
+}
+
+function closeFilterPicker() {
+    document.getElementById('filterPickerOverlay').classList.remove('open');
+}
+
+function filterPickerSearch(q) {
+    renderPickerList(q.toLowerCase().trim());
+}
+
+function renderPickerList(q) {
+    const list   = document.getElementById('filterPickerList');
+    const groups = {};
+    FILTER_DEFS.forEach(def => {
+        if (activeFilters[def.id]) return;
+        if (q && !def.label.toLowerCase().includes(q) && !def.group.toLowerCase().includes(q)) return;
+        if (!groups[def.group]) groups[def.group] = [];
+        groups[def.group].push(def);
+    });
+    let html = '';
+    for (const [group, defs] of Object.entries(groups)) {
+        html += `<div class="fp-group-label">${group}</div>`;
+        defs.forEach(def => {
+            const badge = def.type === 'select' ? 'dropdown' : def.type;
+            html += `<div class="fp-item" onclick="addFilter('${def.id}')">
+                <span>${def.label}</span>
+                <span class="fp-item-badge">${badge}</span>
+            </div>`;
+        });
+    }
+    if (!html) html = '<div style="padding:24px;text-align:center;color:var(--text-secondary);font-size:0.85rem;">No filters found</div>';
+    list.innerHTML = html;
+}
+
+function addFilter(id) {
+    const def = FILTER_DEFS.find(d => d.id === id);
+    if (!def || activeFilters[id]) return;
+    activeFilters[id] = { def, min:'', max:'', val: def.options?.[0] || '' };
+    closeFilterPicker();
+    renderFilterChips();
+    applyFiltersAndRender();
+}
+
+function removeFilter(id) {
+    delete activeFilters[id];
+    renderFilterChips();
+    applyFiltersAndRender();
+}
+
+function resetAllFilters() {
+    activeFilters = {};
+    renderFilterChips();
+    applyFiltersAndRender();
+}
+
+function updateFilter(id, field, value) {
+    if (!activeFilters[id]) return;
+    activeFilters[id][field] = value;
+    applyFiltersAndRender();
+}
+
+function renderFilterChips() {
+    const row      = document.getElementById('filterChipsRow');
+    const count    = Object.keys(activeFilters).length;
+    const resetBtn = document.getElementById('filtersResetBtn');
+    resetBtn.classList.toggle('visible', count > 0);
+
+    let html = '';
+    for (const [id, state] of Object.entries(activeFilters)) {
+        const def = state.def;
+
+        if (def.type === 'select') {
+            const opts = def.options.map(o =>
+                `<option value="${o}" ${state.val === o ? 'selected' : ''}>${o}</option>`
+            ).join('');
+            html += `<div class="filter-chip">
+                <span class="filter-chip-label">${def.label}</span>
+                <div class="filter-chip-select-wrap">
+                    <select onchange="updateFilter('${id}','val',this.value)">${opts}</select>
+                </div>
+                <button class="filter-chip-remove" onclick="removeFilter('${id}')">×</button>
+            </div>`;
+
+        } else if (def.type === 'min') {
+            html += `<div class="filter-chip">
+                <span class="filter-chip-label">${def.label}</span>
+                <span class="filter-chip-sep">≥</span>
+                <input type="number" placeholder="—" value="${state.min}" onchange="updateFilter('${id}','min',this.value)">
+                <span class="filter-chip-unit">${def.unit}</span>
+                <button class="filter-chip-remove" onclick="removeFilter('${id}')">×</button>
+            </div>`;
+
+        } else if (def.type === 'max') {
+            html += `<div class="filter-chip">
+                <span class="filter-chip-label">${def.label}</span>
+                <span class="filter-chip-sep">≤</span>
+                <input type="number" placeholder="—" value="${state.max}" onchange="updateFilter('${id}','max',this.value)">
+                <span class="filter-chip-unit">${def.unit}</span>
+                <button class="filter-chip-remove" onclick="removeFilter('${id}')">×</button>
+            </div>`;
+
+        } else { // range
+            html += `<div class="filter-chip">
+                <span class="filter-chip-label">${def.label}</span>
+                <input type="number" placeholder="Min" value="${state.min}" onchange="updateFilter('${id}','min',this.value)">
+                <span class="filter-chip-sep">–</span>
+                <input type="number" placeholder="Max" value="${state.max}" onchange="updateFilter('${id}','max',this.value)">
+                <span class="filter-chip-unit">${def.unit}</span>
+                <button class="filter-chip-remove" onclick="removeFilter('${id}')">×</button>
+            </div>`;
+        }
+    }
+    row.innerHTML = html;
+}
+
+// ── INIT: load screener immediately ───────────────────────────
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', loadScreenerData);
+} else {
+    loadScreenerData();
+}
+
+// Expose filter functions to global scope (called from onclick in HTML)
+window.openFilterPicker  = openFilterPicker;
+window.closeFilterPicker = closeFilterPicker;
+window.filterPickerSearch = filterPickerSearch;
+window.addFilter         = addFilter;
+window.removeFilter      = removeFilter;
+window.resetAllFilters   = resetAllFilters;
+window.updateFilter      = updateFilter;
+window.setSort           = setSort;
+// window.showStockDetails is exposed by the module script below
+    </script>
+
     <script type="module">
+
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
         import fmpAPI from './fmp-api.js';
@@ -2415,444 +2862,9 @@ window.scorePageGo = scorePageGo;
             });
         });
 
-        // ============================================================
-        // SCREENER — FILTER ENGINE + TABLE
-        // ============================================================
-
-        // All available filter definitions
-        const FILTER_DEFS = [
-            // Valuation
-            { id:'pe',        group:'Valuation',     label:'P/E Ratio',          type:'range', unit:'x',  fmpKey:'pe'  },
-            { id:'pb',        group:'Valuation',     label:'P/B Ratio',          type:'range', unit:'x',  fmpKey:'priceToBookRatioTTM' },
-            { id:'ps',        group:'Valuation',     label:'P/S Ratio',          type:'range', unit:'x',  fmpKey:'priceToSalesRatioTTM' },
-            { id:'pfcf',      group:'Valuation',     label:'P/FCF Ratio',        type:'range', unit:'x',  fmpKey:'pfcfRatioTTM' },
-            { id:'ev_ebitda', group:'Valuation',     label:'EV/EBITDA',          type:'range', unit:'x',  fmpKey:'enterpriseValueMultipleTTM' },
-            { id:'peg',       group:'Valuation',     label:'PEG Ratio',          type:'range', unit:'x',  fmpKey:'pegRatioTTM' },
-            // Profitability
-            { id:'gross_m',   group:'Profitability', label:'Gross Margin',       type:'min',   unit:'%',  fmpKey:'grossProfitMarginTTM' },
-            { id:'op_m',      group:'Profitability', label:'Operating Margin',   type:'min',   unit:'%',  fmpKey:'operatingProfitMarginTTM' },
-            { id:'net_m',     group:'Profitability', label:'Net Margin',         type:'min',   unit:'%',  fmpKey:'netProfitMarginTTM' },
-            { id:'fcf_m',     group:'Profitability', label:'FCF Margin',         type:'min',   unit:'%',  fmpKey:'freeCashFlowPerShareTTM' },
-            { id:'roe',       group:'Profitability', label:'ROE',                type:'min',   unit:'%',  fmpKey:'returnOnEquityTTM' },
-            { id:'roa',       group:'Profitability', label:'ROA',                type:'min',   unit:'%',  fmpKey:'returnOnAssetsTTM' },
-            { id:'roic',      group:'Profitability', label:'ROIC',               type:'min',   unit:'%',  fmpKey:'roicTTM' },
-            { id:'ebitda_m',  group:'Profitability', label:'EBITDA Margin',      type:'min',   unit:'%',  fmpKey:'ebitdaMarginTTM' },
-            // Growth
-            { id:'rev_g',     group:'Growth',        label:'Revenue Growth',     type:'min',   unit:'%',  fmpKey:'revenueGrowthTTM' },
-            { id:'eps_g',     group:'Growth',        label:'EPS Growth',         type:'min',   unit:'%',  fmpKey:'epsgrowthTTM' },
-            { id:'ni_g',      group:'Growth',        label:'Net Income Growth',  type:'min',   unit:'%',  fmpKey:'netIncomeGrowthTTM' },
-            { id:'fcf_g',     group:'Growth',        label:'FCF Growth',         type:'min',   unit:'%',  fmpKey:'freeCashFlowGrowthTTM' },
-            { id:'ocf_g',     group:'Growth',        label:'OCF Growth',         type:'min',   unit:'%',  fmpKey:'operatingCashFlowGrowthTTM' },
-            // Financial Health
-            { id:'cur_r',     group:'Health',        label:'Current Ratio',      type:'min',   unit:'x',  fmpKey:'currentRatioTTM' },
-            { id:'de',        group:'Health',        label:'Debt / Equity',      type:'max',   unit:'x',  fmpKey:'debtEquityRatioTTM' },
-            { id:'debt_ebitda',group:'Health',       label:'Debt / EBITDA',      type:'max',   unit:'x',  fmpKey:'debtToEBITDATTM' },
-            { id:'int_cov',   group:'Health',        label:'Interest Coverage',  type:'min',   unit:'x',  fmpKey:'interestCoverageTTM' },
-            { id:'quick_r',   group:'Health',        label:'Quick Ratio',        type:'min',   unit:'x',  fmpKey:'quickRatioTTM' },
-            // Dividends
-            { id:'div_y',     group:'Dividends',     label:'Dividend Yield',     type:'min',   unit:'%',  fmpKey:'dividendYieldTTM' },
-            { id:'payout',    group:'Dividends',     label:'Payout Ratio',       type:'max',   unit:'%',  fmpKey:'payoutRatioTTM' },
-            // Size & Classification
-            { id:'mkt_cap',   group:'Size',          label:'Market Cap',         type:'select', options:['Any','Mega (>200B)','Large (>10B)','Mid (>2B)','Small (>300M)','Micro (<300M)'] },
-            { id:'sector',    group:'Size',          label:'Sector',             type:'select', options:['Any','Technology','Healthcare','Financials','Consumer Cyclical','Consumer Defensive','Industrials','Energy','Utilities','Communication Services','Real Estate','Basic Materials'] },
-            { id:'country',   group:'Size',          label:'Country',            type:'select', options:['Any','US','Canada','UK','Germany','France','Japan','China','India','Australia'] },
-        ];
-
-        // Screener state
-        let activeFilters = {};
-        let screenerData  = [];   // raw data from API
-        let filteredData  = [];   // after applying filters
-        let sortKey       = 'marketCap';
-        let sortDir       = 'desc';
-        let screenerLoaded = false;
-
-        // ── LOAD SCREENER DATA from FMP ───────────────────────────────
-        async function loadScreenerData() {
-            const body = document.getElementById('screenerTableBody');
-            body.innerHTML = '<div class="sh-loading"><div class="sh-loading-spinner"></div>Loading stocks...</div>';
-
-            try {
-                const apiKey = 'RxYKGPJbSbTuLhW15Bdrop3OxJ2tiXDf';
-                // Use FMP stock screener endpoint with broad filters for US large caps
-                const url = `https://financialmodelingprep.com/stable/company-screener?isActivelyTrading=true&limit=200&marketCapMoreThan=1000000000&apikey=${apiKey}`;
-                const resp = await fetch(url);
-                if (!resp.ok) throw new Error('API error');
-                const data = await resp.json();
-                if (!Array.isArray(data)) throw new Error('Bad data');
-                screenerData  = data;
-                screenerLoaded = true;
-                applyFiltersAndRender();
-            } catch(e) {
-                console.error('Screener load error:', e);
-                // Fallback: show static popular stocks
-                screenerData = getStaticStocks();
-                screenerLoaded = true;
-                applyFiltersAndRender();
-            }
-        }
-
-        function getStaticStocks() {
-            return [
-                { symbol:'AAPL',  companyName:'Apple Inc.',              sector:'Technology',          marketCap:3480000000000, pe:33.2, priceToSalesRatioTTM:8.4,  returnOnEquityTTM:1.47,  revenueGrowthTTM:2.1,  netProfitMarginTTM:0.263, price:222.5,  changes:0.82  },
-                { symbol:'MSFT',  companyName:'Microsoft Corporation',   sector:'Technology',          marketCap:3020000000000, pe:37.8, priceToSalesRatioTTM:13.2, returnOnEquityTTM:0.38,  revenueGrowthTTM:15.7, netProfitMarginTTM:0.365, price:415.3,  changes:-0.34 },
-                { symbol:'NVDA',  companyName:'NVIDIA Corporation',      sector:'Technology',          marketCap:2740000000000, pe:52.1, priceToSalesRatioTTM:29.8, returnOnEquityTTM:1.23,  revenueGrowthTTM:122.4,netProfitMarginTTM:0.557, price:111.2,  changes:1.47  },
-                { symbol:'AMZN',  companyName:'Amazon.com Inc.',         sector:'Consumer Cyclical',   marketCap:2210000000000, pe:44.6, priceToSalesRatioTTM:3.4,  returnOnEquityTTM:0.21,  revenueGrowthTTM:10.1, netProfitMarginTTM:0.076, price:211.4,  changes:0.61  },
-                { symbol:'META',  companyName:'Meta Platforms Inc.',     sector:'Communication Services',marketCap:1490000000000,pe:28.3, priceToSalesRatioTTM:8.8, returnOnEquityTTM:0.34,  revenueGrowthTTM:22.1, netProfitMarginTTM:0.381, price:590.2,  changes:-0.21 },
-                { symbol:'GOOGL', companyName:'Alphabet Inc.',           sector:'Communication Services',marketCap:2080000000000,pe:24.1, priceToSalesRatioTTM:6.1, returnOnEquityTTM:0.28,  revenueGrowthTTM:13.6, netProfitMarginTTM:0.274, price:174.5,  changes:0.33  },
-                { symbol:'TSLA',  companyName:'Tesla Inc.',              sector:'Consumer Cyclical',   marketCap:820000000000,  pe:81.4, priceToSalesRatioTTM:8.1,  returnOnEquityTTM:0.12,  revenueGrowthTTM:1.1,  netProfitMarginTTM:0.072, price:258.1,  changes:-1.22 },
-                { symbol:'BRK-B', companyName:'Berkshire Hathaway',     sector:'Financials',          marketCap:1070000000000, pe:21.8, priceToSalesRatioTTM:2.2,  returnOnEquityTTM:0.12,  revenueGrowthTTM:3.4,  netProfitMarginTTM:0.141, price:465.3,  changes:0.15  },
-                { symbol:'JPM',   companyName:'JPMorgan Chase & Co.',   sector:'Financials',          marketCap:764000000000,  pe:13.4, priceToSalesRatioTTM:3.8,  returnOnEquityTTM:0.17,  revenueGrowthTTM:12.2, netProfitMarginTTM:0.276, price:254.8,  changes:-0.44 },
-                { symbol:'V',     companyName:'Visa Inc.',              sector:'Financials',          marketCap:622000000000,  pe:30.2, priceToSalesRatioTTM:16.4, returnOnEquityTTM:0.51,  revenueGrowthTTM:10.3, netProfitMarginTTM:0.543, price:314.7,  changes:0.28  },
-                { symbol:'JNJ',   companyName:'Johnson & Johnson',      sector:'Healthcare',          marketCap:381000000000,  pe:22.1, priceToSalesRatioTTM:4.6,  returnOnEquityTTM:0.22,  revenueGrowthTTM:4.3,  netProfitMarginTTM:0.198, price:157.2,  changes:0.41  },
-                { symbol:'LLY',   companyName:'Eli Lilly and Co.',      sector:'Healthcare',          marketCap:761000000000,  pe:74.2, priceToSalesRatioTTM:22.3, returnOnEquityTTM:0.84,  revenueGrowthTTM:44.7, netProfitMarginTTM:0.281, price:801.3,  changes:1.12  },
-                { symbol:'XOM',   companyName:'Exxon Mobil Corporation',sector:'Energy',              marketCap:488000000000,  pe:14.2, priceToSalesRatioTTM:1.4,  returnOnEquityTTM:0.14,  revenueGrowthTTM:-3.8, netProfitMarginTTM:0.101, price:114.3,  changes:-0.62 },
-                { symbol:'WMT',   companyName:'Walmart Inc.',           sector:'Consumer Defensive',  marketCap:739000000000,  pe:36.8, priceToSalesRatioTTM:0.9,  returnOnEquityTTM:0.21,  revenueGrowthTTM:5.1,  netProfitMarginTTM:0.024, price:91.4,   changes:0.55  },
-                { symbol:'MA',    companyName:'Mastercard Incorporated',sector:'Financials',          marketCap:482000000000,  pe:36.1, priceToSalesRatioTTM:17.8, returnOnEquityTTM:2.14,  revenueGrowthTTM:12.8, netProfitMarginTTM:0.448, price:514.2,  changes:0.19  },
-                { symbol:'COST',  companyName:'Costco Wholesale Corp.', sector:'Consumer Defensive',  marketCap:422000000000,  pe:52.3, priceToSalesRatioTTM:1.4,  returnOnEquityTTM:0.31,  revenueGrowthTTM:7.8,  netProfitMarginTTM:0.026, price:952.1,  changes:0.38  },
-                { symbol:'HD',    companyName:'Home Depot Inc.',        sector:'Consumer Cyclical',   marketCap:394000000000,  pe:24.8, priceToSalesRatioTTM:2.6,  returnOnEquityTTM:99.9,  revenueGrowthTTM:4.5,  netProfitMarginTTM:0.104, price:396.4,  changes:-0.18 },
-                { symbol:'ABBV',  companyName:'AbbVie Inc.',            sector:'Healthcare',          marketCap:325000000000,  pe:56.7, priceToSalesRatioTTM:5.9,  returnOnEquityTTM:99.9,  revenueGrowthTTM:3.7,  netProfitMarginTTM:0.103, price:184.1,  changes:0.72  },
-                { symbol:'AVGO',  companyName:'Broadcom Inc.',          sector:'Technology',          marketCap:898000000000,  pe:67.4, priceToSalesRatioTTM:12.3, returnOnEquityTTM:0.34,  revenueGrowthTTM:23.9, netProfitMarginTTM:0.224, price:215.4,  changes:1.08  },
-                { symbol:'NFLX',  companyName:'Netflix Inc.',           sector:'Communication Services',marketCap:421000000000,pe:47.2, priceToSalesRatioTTM:9.7, returnOnEquityTTM:0.38,  revenueGrowthTTM:14.8, netProfitMarginTTM:0.196, price:976.3,  changes:0.94  },
-            ];
-        }
-
-        // ── APPLY FILTERS + RENDER ─────────────────────────────────────
-        function applyFiltersAndRender() {
-            const filters = Object.values(activeFilters);
-
-            filteredData = screenerData.filter(stock => {
-                for (const f of filters) {
-                    const def = f.def;
-
-                    if (def.type === 'select') {
-                        const val = f.val;
-                        if (val === 'Any') continue;
-
-                        if (def.id === 'sector') {
-                            if ((stock.sector || '') !== val) return false;
-                        } else if (def.id === 'mkt_cap') {
-                            const cap = stock.marketCap || 0;
-                            if (val === 'Mega (>200B)'  && cap < 200e9) return false;
-                            if (val === 'Large (>10B)'  && cap < 10e9)  return false;
-                            if (val === 'Mid (>2B)'     && cap < 2e9)   return false;
-                            if (val === 'Small (>300M)' && cap < 300e6) return false;
-                            if (val === 'Micro (<300M)' && cap >= 300e6) return false;
-                        } else if (def.id === 'country') {
-                            if ((stock.country || 'US') !== val) return false;
-                        }
-                        continue;
-                    }
-
-                    // Numeric filters — map to stock field
-                    const fieldMap = {
-                        pe: v => v.pe || v.priceEarningsRatioTTM,
-                        pb: v => v.priceToBookRatioTTM,
-                        ps: v => v.priceToSalesRatioTTM,
-                        pfcf: v => v.pfcfRatioTTM || v.priceToFreeCashFlowsRatioTTM,
-                        ev_ebitda: v => v.enterpriseValueMultipleTTM,
-                        peg: v => v.pegRatioTTM,
-                        gross_m: v => (v.grossProfitMarginTTM || v.grossProfitMargin || 0) * 100,
-                        op_m:    v => (v.operatingProfitMarginTTM || v.operatingIncomeRatio || 0) * 100,
-                        net_m:   v => (v.netProfitMarginTTM || v.netIncomeRatio || 0) * 100,
-                        fcf_m:   v => (v.freeCashFlowMarginTTM || 0) * 100,
-                        roe:     v => (v.returnOnEquityTTM || v.roe || 0) * 100,
-                        roa:     v => (v.returnOnAssetsTTM || v.roa || 0) * 100,
-                        roic:    v => (v.roicTTM || v.roic || 0) * 100,
-                        ebitda_m:v => (v.ebitdaMarginTTM || 0) * 100,
-                        rev_g:   v => (v.revenueGrowthTTM || v.revenueGrowth || 0) * 100,
-                        eps_g:   v => (v.epsgrowthTTM || v.epsGrowth || 0) * 100,
-                        ni_g:    v => (v.netIncomeGrowthTTM || 0) * 100,
-                        fcf_g:   v => (v.freeCashFlowGrowthTTM || 0) * 100,
-                        ocf_g:   v => (v.operatingCashFlowGrowthTTM || 0) * 100,
-                        cur_r:   v => v.currentRatioTTM || v.currentRatio,
-                        de:      v => v.debtEquityRatioTTM || v.debtEquityRatio,
-                        debt_ebitda: v => v.debtToEBITDATTM,
-                        int_cov: v => v.interestCoverageTTM,
-                        quick_r: v => v.quickRatioTTM,
-                        div_y:   v => (v.dividendYieldTTM || v.dividendYield || 0) * 100,
-                        payout:  v => (v.payoutRatioTTM || v.payoutRatio || 0) * 100,
-                    };
-
-                    const getValue = fieldMap[def.id];
-                    if (!getValue) continue;
-                    const raw = getValue(stock);
-                    if (raw == null || raw === '' || isNaN(raw)) continue;
-                    const v = parseFloat(raw);
-
-                    if (def.type === 'min' && f.min !== '') {
-                        if (v < parseFloat(f.min)) return false;
-                    } else if (def.type === 'max' && f.max !== '') {
-                        if (v > parseFloat(f.max)) return false;
-                    } else if (def.type === 'range') {
-                        if (f.min !== '' && v < parseFloat(f.min)) return false;
-                        if (f.max !== '' && v > parseFloat(f.max)) return false;
-                    }
-                }
-                return true;
-            });
-
-            // Sort
-            filteredData.sort((a, b) => {
-                const va = getSortValue(a, sortKey);
-                const vb = getSortValue(b, sortKey);
-                if (va == null) return 1;
-                if (vb == null) return -1;
-                return sortDir === 'asc' ? va - vb : vb - va;
-            });
-
-            renderTable();
-        }
-
-        function getSortValue(stock, key) {
-            const map = {
-                symbol:    s => s.symbol,
-                marketCap: s => s.marketCap,
-                pe:        s => s.pe || s.priceEarningsRatioTTM,
-                ps:        s => s.priceToSalesRatioTTM,
-                roe:       s => s.returnOnEquityTTM,
-                rev_g:     s => s.revenueGrowthTTM,
-                net_m:     s => s.netProfitMarginTTM,
-                price:     s => s.price,
-                changes:   s => s.changes,
-            };
-            const fn = map[key];
-            return fn ? fn(stock) : null;
-        }
-
-        function fmtCap(v) {
-            if (!v) return '—';
-            if (v >= 1e12) return (v/1e12).toFixed(2) + 'T';
-            if (v >= 1e9)  return (v/1e9).toFixed(1) + 'B';
-            if (v >= 1e6)  return (v/1e6).toFixed(0) + 'M';
-            return v;
-        }
-
-        function fmtPct(v, raw) {
-            // raw = true means multiply by 100
-            if (v == null || v === '' || isNaN(v)) return '—';
-            const n = raw ? v * 100 : v;
-            return n.toFixed(1) + '%';
-        }
-
-        function fmtNum(v) {
-            if (v == null || isNaN(v)) return '—';
-            return parseFloat(v).toFixed(1) + 'x';
-        }
-
-        function renderTable() {
-            const body = document.getElementById('screenerTableBody');
-            const countEl = document.getElementById('tableResultsCount');
-            if (countEl) {
-                countEl.innerHTML = `<strong>${filteredData.length}</strong> stocks`;
-            }
-
-            if (!filteredData.length) {
-                body.innerHTML = `<div class="sh-no-results">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                    No stocks match your filters. Try relaxing some criteria.
-                </div>`;
-                return;
-            }
-
-            const cols = [
-                { key:'symbol',    label:'Symbol',       sortable:true  },
-                { key:'sector',    label:'Sector',       sortable:false },
-                { key:'marketCap', label:'Market Cap',   sortable:true  },
-                { key:'pe',        label:'P/E',          sortable:true  },
-                { key:'ps',        label:'P/S',          sortable:true  },
-                { key:'net_m',     label:'Net Margin',   sortable:true  },
-                { key:'roe',       label:'ROE',          sortable:true  },
-                { key:'rev_g',     label:'Rev Growth',   sortable:true  },
-                { key:'changes',   label:'Change',       sortable:true  },
-            ];
-
-            const thead = cols.map(c => {
-                if (!c.sortable) return `<th>${c.label}</th>`;
-                const cls = sortKey === c.key ? (sortDir === 'asc' ? 'sort-asc' : 'sort-desc') : '';
-                return `<th class="${cls}" onclick="setSort('${c.key}')" style="cursor:pointer">${c.label}</th>`;
-            }).join('');
-
-            const rows = filteredData.slice(0, 100).map(s => {
-                const pe   = s.pe || s.priceEarningsRatioTTM;
-                const ps   = s.priceToSalesRatioTTM;
-                const roe  = s.returnOnEquityTTM;
-                const netM = s.netProfitMarginTTM || s.netIncomeRatio;
-                const revG = s.revenueGrowthTTM || s.revenueGrowth;
-                const chg  = s.changes || s.changesPercentage || 0;
-                const chgClass = chg >= 0 ? 'change-pos' : 'change-neg';
-                const chgStr   = (chg >= 0 ? '+' : '') + parseFloat(chg).toFixed(2) + '%';
-
-                return `<tr onclick="showStockDetails('${s.symbol}')">
-                    <td><div class="sh-td-symbol">${s.symbol}</div><div class="sh-td-name">${s.companyName || ''}</div></td>
-                    <td><span class="sh-td-sector">${s.sector || '—'}</span></td>
-                    <td>${fmtCap(s.marketCap)}</td>
-                    <td>${pe ? parseFloat(pe).toFixed(1) : '—'}</td>
-                    <td>${ps ? parseFloat(ps).toFixed(1) : '—'}</td>
-                    <td>${fmtPct(netM, true)}</td>
-                    <td>${fmtPct(roe, true)}</td>
-                    <td class="${revG >= 0 ? 'change-pos' : 'change-neg'}">${fmtPct(revG, true)}</td>
-                    <td class="${chgClass}">${chgStr}</td>
-                </tr>`;
-            }).join('');
-
-            body.innerHTML = `<table class="sh-table">
-                <thead><tr>${thead}</tr></thead>
-                <tbody>${rows}</tbody>
-            </table>`;
-        }
-
-        function setSort(key) {
-            if (sortKey === key) {
-                sortDir = sortDir === 'desc' ? 'asc' : 'desc';
-            } else {
-                sortKey = key;
-                sortDir = 'desc';
-            }
-            applyFiltersAndRender();
-        }
-
-        // ── FILTER PICKER ──────────────────────────────────────────────
-        function openFilterPicker(e) {
-            e.stopPropagation();
-            const overlay = document.getElementById('filterPickerOverlay');
-            const picker  = document.getElementById('filterPicker');
-            overlay.classList.add('open');
-            document.getElementById('filterPickerSearch').value = '';
-            renderPickerList('');
-            const btn  = document.getElementById('addFilterBtn');
-            const rect = btn.getBoundingClientRect();
-            const top  = rect.bottom + 6;
-            const left = Math.min(rect.left, window.innerWidth - 310);
-            picker.style.top  = top + 'px';
-            picker.style.left = left + 'px';
-            setTimeout(() => document.getElementById('filterPickerSearch').focus(), 30);
-        }
-
-        function closeFilterPicker() {
-            document.getElementById('filterPickerOverlay').classList.remove('open');
-        }
-
-        function filterPickerSearch(q) {
-            renderPickerList(q.toLowerCase().trim());
-        }
-
-        function renderPickerList(q) {
-            const list   = document.getElementById('filterPickerList');
-            const groups = {};
-            FILTER_DEFS.forEach(def => {
-                if (activeFilters[def.id]) return;
-                if (q && !def.label.toLowerCase().includes(q) && !def.group.toLowerCase().includes(q)) return;
-                if (!groups[def.group]) groups[def.group] = [];
-                groups[def.group].push(def);
-            });
-            let html = '';
-            for (const [group, defs] of Object.entries(groups)) {
-                html += `<div class="fp-group-label">${group}</div>`;
-                defs.forEach(def => {
-                    const badge = def.type === 'select' ? 'dropdown' : def.type;
-                    html += `<div class="fp-item" onclick="addFilter('${def.id}')">
-                        <span>${def.label}</span>
-                        <span class="fp-item-badge">${badge}</span>
-                    </div>`;
-                });
-            }
-            if (!html) html = '<div style="padding:24px;text-align:center;color:var(--text-secondary);font-size:0.85rem;">No filters found</div>';
-            list.innerHTML = html;
-        }
-
-        function addFilter(id) {
-            const def = FILTER_DEFS.find(d => d.id === id);
-            if (!def || activeFilters[id]) return;
-            activeFilters[id] = { def, min:'', max:'', val: def.options?.[0] || '' };
-            closeFilterPicker();
-            renderFilterChips();
-            applyFiltersAndRender();
-        }
-
-        function removeFilter(id) {
-            delete activeFilters[id];
-            renderFilterChips();
-            applyFiltersAndRender();
-        }
-
-        function resetAllFilters() {
-            activeFilters = {};
-            renderFilterChips();
-            applyFiltersAndRender();
-        }
-
-        function updateFilter(id, field, value) {
-            if (!activeFilters[id]) return;
-            activeFilters[id][field] = value;
-            applyFiltersAndRender();
-        }
-
-        function renderFilterChips() {
-            const row      = document.getElementById('filterChipsRow');
-            const count    = Object.keys(activeFilters).length;
-            const resetBtn = document.getElementById('filtersResetBtn');
-            resetBtn.classList.toggle('visible', count > 0);
-
-            let html = '';
-            for (const [id, state] of Object.entries(activeFilters)) {
-                const def = state.def;
-
-                if (def.type === 'select') {
-                    const opts = def.options.map(o =>
-                        `<option value="${o}" ${state.val === o ? 'selected' : ''}>${o}</option>`
-                    ).join('');
-                    html += `<div class="filter-chip">
-                        <span class="filter-chip-label">${def.label}</span>
-                        <div class="filter-chip-select-wrap">
-                            <select onchange="updateFilter('${id}','val',this.value)">${opts}</select>
-                        </div>
-                        <button class="filter-chip-remove" onclick="removeFilter('${id}')">×</button>
-                    </div>`;
-
-                } else if (def.type === 'min') {
-                    html += `<div class="filter-chip">
-                        <span class="filter-chip-label">${def.label}</span>
-                        <span class="filter-chip-sep">≥</span>
-                        <input type="number" placeholder="—" value="${state.min}" onchange="updateFilter('${id}','min',this.value)">
-                        <span class="filter-chip-unit">${def.unit}</span>
-                        <button class="filter-chip-remove" onclick="removeFilter('${id}')">×</button>
-                    </div>`;
-
-                } else if (def.type === 'max') {
-                    html += `<div class="filter-chip">
-                        <span class="filter-chip-label">${def.label}</span>
-                        <span class="filter-chip-sep">≤</span>
-                        <input type="number" placeholder="—" value="${state.max}" onchange="updateFilter('${id}','max',this.value)">
-                        <span class="filter-chip-unit">${def.unit}</span>
-                        <button class="filter-chip-remove" onclick="removeFilter('${id}')">×</button>
-                    </div>`;
-
-                } else { // range
-                    html += `<div class="filter-chip">
-                        <span class="filter-chip-label">${def.label}</span>
-                        <input type="number" placeholder="Min" value="${state.min}" onchange="updateFilter('${id}','min',this.value)">
-                        <span class="filter-chip-sep">–</span>
-                        <input type="number" placeholder="Max" value="${state.max}" onchange="updateFilter('${id}','max',this.value)">
-                        <span class="filter-chip-unit">${def.unit}</span>
-                        <button class="filter-chip-remove" onclick="removeFilter('${id}')">×</button>
-                    </div>`;
-                }
-            }
-            row.innerHTML = html;
-        }
-
-        // ── INIT: load screener on page open ───────────────────────────
-        // Wait until searchView is visible
-        const _searchViewObserver = new MutationObserver(() => {
-            const sv = document.getElementById('searchView');
-            if (sv && sv.style.display !== 'none' && !screenerLoaded) {
-                loadScreenerData();
-            }
-        });
-        _searchViewObserver.observe(document.body, { childList: true, subtree: true, attributes: true });
-        // Also try immediately
-        setTimeout(() => {
-            if (!screenerLoaded) loadScreenerData();
-        }, 300);
-
-
+        // Expose module-scoped functions to window for onclick handlers
+        window.showStockDetails = showStockDetails;
+        console.log('📊 StockMaster ready');
+    </script>
+</body>
+</html>
