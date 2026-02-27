@@ -1640,6 +1640,7 @@ window.setSort           = setSort;
         // ============================================================
         const stockSearch = document.getElementById('stockSearch');
         const searchResults = document.getElementById('searchResults');
+        let searchTimeout;
 
         stockSearch.addEventListener('input', async (e) => {
             const query = e.target.value.trim().toUpperCase();
