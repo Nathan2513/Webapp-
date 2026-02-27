@@ -1,518 +1,1123 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Valorisation Analysis - StockMaster</title>
+    <title>Valuation Analysis - StockMaster</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+
     <style>
         :root {
-            --primary-orange: #FF7A00;
-            --bg-main: #F9FAFB;
-            --bg-topbar: #FFFFFF;
-            --text-primary: #111827;
-            --text-secondary: #6B7280;
-            --border-color: #E5E7EB;
-            --hover-bg: #F3F4F6;
-            --shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-            --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
-            --success-color: #10B981;
-            --danger-color: #EF4444;
+            --orange: #FF7A00;
+            --orange-light: #ff9f40;
+            --bg: #0F172A;
+            --bg-card: #1E293B;
+            --bg-hover: #263448;
+            --border: #334155;
+            --text: #F1F5F9;
+            --text-muted: #64748B;
+            --text-sub: #94A3B8;
+            --success: #10B981;
+            --danger: #EF4444;
+            --topbar: #1E293B;
         }
-        [data-theme="dark"] {
-            --bg-main: #0F172A;
-            --bg-topbar: #1E293B;
-            --text-primary: #F1F5F9;
-            --text-secondary: #94A3B8;
-            --border-color: #334155;
-            --hover-bg: #334155;
-            --shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-            --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
+        [data-theme="light"] {
+            --bg: #F8FAFC;
+            --bg-card: #FFFFFF;
+            --bg-hover: #F1F5F9;
+            --border: #E2E8F0;
+            --text: #0F172A;
+            --text-muted: #94A3B8;
+            --text-sub: #64748B;
+            --topbar: #FFFFFF;
         }
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+
         body {
             font-family: 'Inter', sans-serif;
-            background-color: var(--bg-main);
-            color: var(--text-primary);
-            overflow-x: hidden;
-            transition: background-color 0.3s ease;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            transition: background 0.3s, color 0.3s;
         }
-        .app-container { display: flex; flex-direction: column; height: 100vh; }
-        
-        /* TOPBAR */
+
+        /* ===== TOPBAR ===== */
         .topbar {
-            background-color: var(--bg-topbar);
-            border-bottom: 1px solid var(--border-color);
-            padding: 0 30px;
-            height: 70px;
+            background: var(--topbar);
+            border-bottom: 1px solid var(--border);
+            padding: 0 28px;
+            height: 66px;
             display: flex;
             align-items: center;
             justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 200;
+            backdrop-filter: blur(12px);
         }
+
         .topbar-logo {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
             font-weight: 800;
-            font-size: 1.4rem;
-            color: var(--text-primary);
+            font-size: 1.3rem;
+            color: var(--text);
             text-decoration: none;
         }
-        .topbar-logo img { height: 45px; width: auto; }
-        .topbar-nav { display: flex; gap: 10px; flex: 1; justify-content: center; }
+        .topbar-logo img { height: 40px; }
+
+        .topbar-nav { display: flex; gap: 6px; flex: 1; justify-content: center; }
+
         .nav-btn {
-            padding: 10px 20px;
-            border-radius: 10px;
+            padding: 8px 16px;
+            border-radius: 8px;
             font-weight: 600;
-            font-size: 0.95rem;
+            font-size: 0.875rem;
             cursor: pointer;
-            transition: all 0.2s ease;
-            border: 2px solid var(--border-color);
-            background: var(--bg-topbar);
-            color: var(--text-secondary);
+            border: 1.5px solid var(--border);
+            background: transparent;
+            color: var(--text-sub);
             text-decoration: none;
             display: inline-flex;
             align-items: center;
-            gap: 8px;
+            gap: 7px;
+            transition: all 0.2s;
         }
-        .nav-btn:hover {
-            background-color: var(--hover-bg);
-            color: var(--text-primary);
-            transform: translateY(-2px);
-        }
-        .nav-btn.active {
-            background-color: var(--primary-orange);
-            color: white;
-            border-color: var(--primary-orange);
-        }
-        .nav-btn svg { width: 18px; height: 18px; }
-        .topbar-actions { display: flex; align-items: center; gap: 15px; }
-        .theme-toggle {
-            background-color: var(--hover-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            padding: 10px 12px;
+        .nav-btn:hover { background: var(--bg-hover); color: var(--text); }
+        .nav-btn.active { background: var(--orange); color: white; border-color: var(--orange); }
+        .nav-btn svg { width: 16px; height: 16px; }
+
+        .topbar-actions { display: flex; align-items: center; gap: 10px; }
+
+        .icon-btn {
+            background: var(--bg-hover);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 8px 10px;
             cursor: pointer;
             display: flex;
             align-items: center;
-            justify-content: center;
+            color: var(--text-sub);
+            transition: all 0.2s;
         }
-        .theme-toggle svg { width: 20px; height: 20px; color: var(--text-primary); }
-        .user-menu { position: relative; }
+        .icon-btn:hover { color: var(--text); }
+        .icon-btn svg { width: 18px; height: 18px; }
+
         .user-avatar {
-            width: 40px;
-            height: 40px;
+            width: 36px; height: 36px;
             border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary-orange), #ff9f40);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: 700;
+            background: linear-gradient(135deg, var(--orange), var(--orange-light));
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-weight: 700; font-size: 0.9rem;
             cursor: pointer;
         }
+
         .dropdown-menu {
-            position: absolute;
-            top: 55px;
-            right: 0;
-            background: var(--bg-topbar);
-            border: 1px solid var(--border-color);
+            position: absolute; top: 58px; right: 0;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
             border-radius: 12px;
-            box-shadow: var(--shadow-lg);
-            min-width: 220px;
-            opacity: 0;
-            visibility: hidden;
-            z-index: 1000;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            min-width: 200px;
+            opacity: 0; visibility: hidden;
+            transition: all 0.2s;
+            z-index: 999;
         }
-        .dropdown-menu.active { opacity: 1; visibility: visible; }
+        .dropdown-menu.open { opacity: 1; visibility: visible; }
         .dropdown-item {
-            padding: 14px 20px;
+            padding: 12px 18px;
             cursor: pointer;
-            color: var(--text-primary);
+            color: var(--text);
+            display: flex; align-items: center; gap: 10px;
+            font-size: 0.9rem;
+            transition: background 0.15s;
+            text-decoration: none;
+        }
+        .dropdown-item:hover { background: var(--bg-hover); }
+        .dropdown-item.danger { color: var(--danger); border-top: 1px solid var(--border); }
+        .dropdown-item svg { width: 16px; height: 16px; }
+        .user-menu { position: relative; }
+
+        /* ===== MAIN LAYOUT ===== */
+        .main { padding: 28px; max-width: 1400px; margin: 0 auto; }
+
+        /* ===== TICKER BAR ===== */
+        .ticker-bar {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 16px 20px;
             display: flex;
             align-items: center;
             gap: 12px;
-        }
-        .dropdown-item:hover { background-color: var(--hover-bg); }
-        .dropdown-item:last-child { color: #ef4444; border-top: 1px solid var(--border-color); }
-        .dropdown-item svg { width: 18px; height: 18px; }
-        
-        /* MAIN CONTENT */
-        .main-content { flex: 1; padding: 30px; overflow-y: auto; }
-        
-        /* WELCOME SECTION */
-        .welcome-section {
-            max-width: 1000px;
-            margin: 0 auto;
-            text-align: center;
-            padding: 60px 20px;
-        }
-        .welcome-icon {
-            width: 120px;
-            height: 120px;
-            margin: 0 auto 30px;
-            background: linear-gradient(135deg, var(--primary-orange), #ff9f40);
-            border-radius: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 15px 40px rgba(255, 122, 0, 0.25);
-        }
-        .welcome-icon svg { width: 60px; height: 60px; color: white; }
-        .welcome-section h2 {
-            font-size: 2.5rem;
-            font-weight: 800;
-            margin-bottom: 16px;
-            background: linear-gradient(135deg, var(--text-primary) 0%, var(--primary-orange) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .welcome-section p {
-            font-size: 1.25rem;
-            color: var(--text-secondary);
-            margin-bottom: 40px;
-            line-height: 1.6;
-        }
-        
-        /* SEARCH BAR */
-        .search-container {
-            max-width: 700px;
-            margin: 0 auto 50px;
-        }
-        .search-wrapper { position: relative; }
-        .search-input {
-            width: 100%;
-            padding: 18px 60px 18px 60px;
-            border: 2px solid var(--border-color);
-            border-radius: 16px;
-            font-size: 1.1rem;
-            background-color: var(--bg-topbar);
-            color: var(--text-primary);
-            transition: all 0.3s ease;
-            box-shadow: var(--shadow);
-        }
-        .search-input:focus {
-            outline: none;
-            border-color: var(--primary-orange);
-            box-shadow: 0 0 0 4px rgba(255, 122, 0, 0.1);
-            transform: translateY(-2px);
-        }
-        .search-icon {
-            position: absolute;
-            left: 22px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--text-secondary);
-        }
-        .search-icon svg { width: 24px; height: 24px; }
-        .search-results {
-            position: absolute;
-            top: calc(100% + 8px);
-            left: 0;
-            right: 0;
-            background: var(--bg-topbar);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            box-shadow: var(--shadow-lg);
-            max-height: 300px;
-            overflow-y: auto;
-            z-index: 100;
-            display: none;
-        }
-        .search-results.active { display: block; }
-        .search-result-item {
-            padding: 14px 20px;
-            cursor: pointer;
-            transition: background-color 0.2s ease;
-            border-bottom: 1px solid var(--border-color);
-            display: flex;
-            justify-content: space-between;
-        }
-        .search-result-item:hover { background-color: var(--hover-bg); }
-        .result-symbol {
-            font-weight: 700;
-            color: var(--text-primary);
-            margin-right: 12px;
-        }
-        .result-name {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-        }
-        
-        /* FEATURES GRID */
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 24px;
-            margin-top: 50px;
-        }
-        .feature-card {
-            background: var(--bg-topbar);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            padding: 30px;
-            text-align: left;
-            transition: all 0.3s ease;
-            box-shadow: var(--shadow);
-        }
-        .feature-card:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--shadow-lg);
-            border-color: var(--primary-orange);
-        }
-        .feature-icon {
-            width: 50px;
-            height: 50px;
-            background: linear-gradient(135deg, rgba(255, 122, 0, 0.1), rgba(255, 122, 0, 0.2));
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            flex-wrap: wrap;
             margin-bottom: 20px;
         }
-        .feature-icon svg { width: 26px; height: 26px; color: var(--primary-orange); }
-        .feature-card h3 {
-            font-size: 1.25rem;
+
+        .ticker-bar-label {
+            font-size: 0.8rem;
             font-weight: 700;
-            margin-bottom: 12px;
-            color: var(--text-primary);
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--text-muted);
+            white-space: nowrap;
         }
-        .feature-card p {
-            color: var(--text-secondary);
-            line-height: 1.6;
-            font-size: 0.95rem;
+
+        .ticker-chips { display: flex; gap: 8px; flex-wrap: wrap; flex: 1; }
+
+        .ticker-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            border: 1.5px solid;
+            cursor: default;
+            transition: all 0.2s;
         }
-        
-        /* RESPONSIVE */
-        @media (max-width: 968px) {
+
+        .ticker-chip .remove-ticker {
+            width: 16px; height: 16px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer;
+            opacity: 0.6;
+            transition: opacity 0.2s;
+            background: rgba(255,255,255,0.15);
+            font-size: 0.7rem;
+        }
+        .ticker-chip .remove-ticker:hover { opacity: 1; }
+
+        .add-ticker-form {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .ticker-input {
+            background: var(--bg);
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
+            padding: 7px 12px;
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            font-size: 0.875rem;
+            width: 110px;
+            text-transform: uppercase;
+            transition: border-color 0.2s;
+        }
+        .ticker-input:focus { outline: none; border-color: var(--orange); }
+        .ticker-input::placeholder { text-transform: none; font-weight: 400; color: var(--text-muted); }
+
+        .btn-add {
+            background: var(--orange);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 7px 14px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+        .btn-add:hover { background: var(--orange-light); transform: translateY(-1px); }
+
+        .btn-reset {
+            background: transparent;
+            color: var(--text-muted);
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
+            padding: 7px 12px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-reset:hover { border-color: var(--danger); color: var(--danger); }
+
+        /* Search autocomplete */
+        .ticker-search-wrapper { position: relative; }
+        .ticker-autocomplete {
+            position: absolute;
+            top: calc(100% + 6px);
+            left: 0;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+            min-width: 260px;
+            max-height: 220px;
+            overflow-y: auto;
+            z-index: 300;
+            display: none;
+        }
+        .ticker-autocomplete.open { display: block; }
+        .autocomplete-item {
+            padding: 10px 16px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+            transition: background 0.15s;
+            font-size: 0.875rem;
+        }
+        .autocomplete-item:last-child { border-bottom: none; }
+        .autocomplete-item:hover { background: var(--bg-hover); }
+        .autocomplete-sym { font-weight: 700; color: var(--text); }
+        .autocomplete-name { color: var(--text-muted); font-size: 0.8rem; }
+
+        /* ===== CONTROLS BAR ===== */
+        .controls-bar {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 14px 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .controls-label {
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--text-muted);
+        }
+
+        .metric-pills { display: flex; gap: 6px; flex-wrap: wrap; }
+
+        .metric-pill {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: 1.5px solid var(--border);
+            background: transparent;
+            color: var(--text-sub);
+            transition: all 0.2s;
+        }
+        .metric-pill:hover { border-color: var(--orange); color: var(--orange); }
+        .metric-pill.active { background: var(--orange); color: white; border-color: var(--orange); }
+
+        .divider-v {
+            width: 1px;
+            height: 28px;
+            background: var(--border);
+        }
+
+        .period-pills { display: flex; gap: 4px; }
+        .period-pill {
+            padding: 5px 12px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: 1.5px solid var(--border);
+            background: transparent;
+            color: var(--text-sub);
+            transition: all 0.2s;
+        }
+        .period-pill:hover { background: var(--bg-hover); }
+        .period-pill.active { background: var(--bg-hover); color: var(--text); border-color: var(--text-sub); }
+
+        /* ===== CHART AREA ===== */
+        .chart-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .chart-header {
+            padding: 20px 24px 16px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .chart-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .chart-subtitle {
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            margin-top: 3px;
+        }
+
+        .chart-legend {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--text-sub);
+        }
+
+        .legend-dot {
+            width: 12px; height: 12px;
+            border-radius: 3px;
+        }
+
+        .chart-body {
+            padding: 24px;
+            position: relative;
+            min-height: 380px;
+        }
+
+        .chart-canvas-wrapper {
+            position: relative;
+            width: 100%;
+        }
+
+        /* ===== STATS GRID ===== */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 14px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 18px 20px;
+            transition: all 0.2s;
+        }
+        .stat-card:hover { border-color: var(--orange); transform: translateY(-2px); }
+
+        .stat-ticker {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            margin-bottom: 6px;
+        }
+
+        .stat-metric {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            font-size: 1.7rem;
+            font-weight: 800;
+            line-height: 1;
+            margin-bottom: 6px;
+        }
+
+        .stat-change {
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .stat-change.up { color: var(--success); }
+        .stat-change.down { color: var(--danger); }
+
+        /* ===== EMPTY STATE ===== */
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 80px 40px;
+            text-align: center;
+            gap: 16px;
+        }
+
+        .empty-icon {
+            width: 80px; height: 80px;
+            background: linear-gradient(135deg, rgba(255,122,0,0.15), rgba(255,122,0,0.05));
+            border-radius: 20px;
+            display: flex; align-items: center; justify-content: center;
+            margin-bottom: 8px;
+        }
+        .empty-icon svg { width: 40px; height: 40px; color: var(--orange); }
+
+        .empty-title { font-size: 1.3rem; font-weight: 700; }
+        .empty-sub { font-size: 0.95rem; color: var(--text-muted); max-width: 360px; line-height: 1.6; }
+
+        /* ===== LOADING ===== */
+        .loading-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(15,23,42,0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 16px;
+            z-index: 10;
+            backdrop-filter: blur(4px);
+        }
+        [data-theme="light"] .loading-overlay { background: rgba(248,250,252,0.7); }
+
+        .spinner {
+            width: 40px; height: 40px;
+            border: 3px solid var(--border);
+            border-top-color: var(--orange);
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ===== ERROR TOAST ===== */
+        .toast {
+            position: fixed;
+            bottom: 28px;
+            right: 28px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--danger);
+            border-radius: 10px;
+            padding: 14px 18px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+            z-index: 9999;
+            transform: translateY(80px);
+            opacity: 0;
+            transition: all 0.3s ease;
+            max-width: 360px;
+        }
+        .toast.show { transform: translateY(0); opacity: 1; }
+        .toast-title { font-weight: 700; color: var(--danger); margin-bottom: 3px; }
+        .toast-msg { color: var(--text-sub); }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 900px) {
             .topbar-nav { display: none; }
-            .welcome-section h2 { font-size: 2rem; }
-            .features-grid { grid-template-columns: 1fr; }
+            .main { padding: 16px; }
+        }
+        @media (max-width: 600px) {
+            .controls-bar { flex-direction: column; align-items: flex-start; }
+            .divider-v { display: none; }
         }
     </style>
 </head>
 <body>
-    <div class="app-container">
-        <header class="topbar">
-            <a href="webapp.html" class="topbar-logo">
-                <img src="logo.png" alt="Logo">
-                StockMaster
+<div id="app">
+
+    <!-- TOPBAR -->
+    <header class="topbar">
+        <a href="webapp.html" class="topbar-logo">
+            <img src="logo.png" alt="Logo">
+            StockMaster
+        </a>
+
+        <nav class="topbar-nav">
+            <a href="webapp.html" class="nav-btn">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+                Home
             </a>
-            <nav class="topbar-nav">
-                <a href="webapp.html" class="nav-btn">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                    </svg>
-                    Home
-                </a>
-                <a href="stock-screener.html" class="nav-btn">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                    </svg>
-                    Stock Screener
-                </a>
-                <a href="valorisation-analysis.html" class="nav-btn active">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                    </svg>
-                    Valorisation Analysis
-                </a>
-                <a href="dcf-calculator.html" class="nav-btn">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                    </svg>
-                    DCF Calculator
-                </a>
-            </nav>
-            <div class="topbar-actions">
-                <button class="theme-toggle" id="themeToggle">
-                    <svg id="sunIcon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-                    </svg>
-                    <svg id="moonIcon" style="display:none;" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-                    </svg>
-                </button>
-                <div class="user-menu">
-                    <div class="user-avatar" id="userAvatar">U</div>
-                    <div class="dropdown-menu" id="dropdownMenu">
-                        <a href="settings.html" class="dropdown-item">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                            </svg>
-                            Settings
-                        </a>
-                        <a href="billings-plans.html" class="dropdown-item">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
-                            </svg>
-                            Billings & Plans
-                        </a>
-                        <div class="dropdown-item" id="signOutBtn">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                            </svg>
-                            Sign Out
-                        </div>
+            <a href="stock-screener.html" class="nav-btn">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                Stock Screener
+            </a>
+            <a href="valorisation-analysis.html" class="nav-btn active">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+                Valuation Analysis
+            </a>
+            <a href="dcf-calculator.html" class="nav-btn">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+                DCF Calculator
+            </a>
+        </nav>
+
+        <div class="topbar-actions">
+            <button class="icon-btn" id="themeBtn" title="Toggle theme">
+                <svg id="sunIco" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                <svg id="moonIco" style="display:none" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+            </button>
+            <div class="user-menu">
+                <div class="user-avatar" id="userAvatar">U</div>
+                <div class="dropdown-menu" id="dropdownMenu">
+                    <a href="settings.html" class="dropdown-item">
+                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                        Settings
+                    </a>
+                    <a href="billings-plans.html" class="dropdown-item">
+                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+                        Billings & Plans
+                    </a>
+                    <div class="dropdown-item danger" id="signOutBtn">
+                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+                        Sign Out
                     </div>
                 </div>
             </div>
-        </header>
+        </div>
+    </header>
 
-        <main class="main-content">
-            <div class="welcome-section">
-                <div class="welcome-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                    </svg>
+    <!-- MAIN -->
+    <main class="main">
+
+        <!-- TICKER BAR -->
+        <div class="ticker-bar">
+            <span class="ticker-bar-label">Tickers</span>
+            <div class="ticker-chips" id="tickerChips"></div>
+            <div class="add-ticker-form">
+                <div class="ticker-search-wrapper">
+                    <input type="text" class="ticker-input" id="tickerInput" placeholder="Add ticker..." maxlength="10" autocomplete="off">
+                    <div class="ticker-autocomplete" id="tickerAutocomplete"></div>
                 </div>
-                <h2>Analyse de Valorisation par Multiples</h2>
-                <p>Comparez les ratios actuels d'une action avec son historique sur 5 ans. Identifiez rapidement si une action est sous-évaluée, surévaluée ou correctement valorisée.</p>
+                <button class="btn-add" id="addTickerBtn">+ Add</button>
+                <button class="btn-reset" id="resetBtn">Reset All</button>
+            </div>
+        </div>
 
-                <div class="search-container">
-                    <div class="search-wrapper">
-                        <div class="search-icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                            </svg>
-                        </div>
-                        <input 
-                            type="text" 
-                            class="search-input" 
-                            id="stockSearch" 
-                            placeholder="Recherchez une action à analyser (ex: AAPL, MSFT, TSLA...)"
-                        >
-                        <div class="search-results" id="searchResults"></div>
+        <!-- CONTROLS BAR -->
+        <div class="controls-bar">
+            <span class="controls-label">Metric</span>
+            <div class="metric-pills" id="metricPills">
+                <button class="metric-pill active" data-metric="pe">P/E Ratio</button>
+                <button class="metric-pill" data-metric="pb">P/B Ratio</button>
+                <button class="metric-pill" data-metric="evEbitda">EV/EBITDA</button>
+                <button class="metric-pill" data-metric="revenue">Revenue</button>
+                <button class="metric-pill" data-metric="netIncome">Net Income</button>
+                <button class="metric-pill" data-metric="eps">EPS</button>
+                <button class="metric-pill" data-metric="fcf">Free Cash Flow</button>
+                <button class="metric-pill" data-metric="grossMargin">Gross Margin</button>
+            </div>
+            <div class="divider-v"></div>
+            <span class="controls-label">Period</span>
+            <div class="period-pills" id="periodPills">
+                <button class="period-pill" data-period="Q">Q</button>
+                <button class="period-pill active" data-period="TTM">TTM</button>
+                <button class="period-pill" data-period="Y">Y</button>
+            </div>
+        </div>
+
+        <!-- STATS GRID -->
+        <div class="stats-grid" id="statsGrid"></div>
+
+        <!-- CHART SECTION -->
+        <div class="chart-section" id="chartSection">
+            <div class="empty-state" id="emptyState">
+                <div class="empty-icon">
+                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+                </div>
+                <div class="empty-title">Add a ticker to start</div>
+                <div class="empty-sub">Type a stock symbol above and press Enter or click "Add" to visualize its valuation metrics over up to 30 years.</div>
+            </div>
+
+            <div id="chartContainer" style="display:none;">
+                <div class="chart-header">
+                    <div>
+                        <div class="chart-title" id="chartTitle">P/E Ratio</div>
+                        <div class="chart-subtitle" id="chartSubtitle">Annual data · up to 30 years</div>
+                    </div>
+                    <div class="chart-legend" id="chartLegend"></div>
+                </div>
+                <div class="chart-body">
+                    <div class="loading-overlay" id="loadingOverlay" style="display:none;">
+                        <div class="spinner"></div>
+                    </div>
+                    <div class="chart-canvas-wrapper">
+                        <canvas id="mainChart"></canvas>
                     </div>
                 </div>
             </div>
-        </main>
-    </div>
+        </div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    </main>
+</div>
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyD4dkPbO1C-bZiSokalUnwNqOTpeAyrOU0",
-            authDomain: "stockmaster-30835.firebaseapp.com",
-            projectId: "stockmaster-30835",
-            storageBucket: "stockmaster-30835.firebasestorage.app",
-            messagingSenderId: "506097874613",
-            appId: "1:506097874613:web:0d15d2bd1575a55c8ab0fc",
-            measurementId: "G-2PG7Q471TR"
+<!-- TOAST -->
+<div class="toast" id="toast">
+    <div class="toast-title" id="toastTitle">Error</div>
+    <div class="toast-msg" id="toastMsg"></div>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyD4dkPbO1C-bZiSokalUnwNqOTpeAyrOU0",
+        authDomain: "stockmaster-30835.firebaseapp.com",
+        projectId: "stockmaster-30835",
+        storageBucket: "stockmaster-30835.firebasestorage.app",
+        messagingSenderId: "506097874613",
+        appId: "1:506097874613:web:0d15d2bd1575a55c8ab0fc"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    onAuthStateChanged(auth, user => {
+        if (!user) { window.location.href = "login.html"; return; }
+        document.getElementById('userAvatar').textContent = user.email.charAt(0).toUpperCase();
+    });
+
+    document.getElementById('signOutBtn').addEventListener('click', async () => {
+        await signOut(auth);
+        window.location.href = "index.html";
+    });
+</script>
+
+<script>
+// ===================== CONFIG =====================
+const API_KEY = 'RxYKGPJbSbTuLhW15Bdrop3OxJ2tiXDf';
+const BASE = 'https://financialmodelingprep.com/api/v3';
+
+const METRIC_CONFIG = {
+    pe:          { label: 'P/E Ratio',       unit: 'x',  fmt: v => v != null ? v.toFixed(1)+'x' : 'N/A' },
+    pb:          { label: 'P/B Ratio',       unit: 'x',  fmt: v => v != null ? v.toFixed(2)+'x' : 'N/A' },
+    evEbitda:    { label: 'EV/EBITDA',       unit: 'x',  fmt: v => v != null ? v.toFixed(1)+'x' : 'N/A' },
+    revenue:     { label: 'Revenue',         unit: '$B', fmt: v => v != null ? '$'+fmtBig(v) : 'N/A' },
+    netIncome:   { label: 'Net Income',      unit: '$B', fmt: v => v != null ? '$'+fmtBig(v) : 'N/A' },
+    eps:         { label: 'EPS',             unit: '$',  fmt: v => v != null ? '$'+v.toFixed(2) : 'N/A' },
+    fcf:         { label: 'Free Cash Flow',  unit: '$B', fmt: v => v != null ? '$'+fmtBig(v) : 'N/A' },
+    grossMargin: { label: 'Gross Margin',    unit: '%',  fmt: v => v != null ? (v*100).toFixed(1)+'%' : 'N/A' },
+};
+
+// Color palette for tickers
+const PALETTE = [
+    { bg: 'rgba(255,122,0,0.85)',  border: '#FF7A00',  text: '#FF7A00'  },
+    { bg: 'rgba(99,102,241,0.85)', border: '#6366F1',  text: '#818CF8'  },
+    { bg: 'rgba(16,185,129,0.85)', border: '#10B981',  text: '#10B981'  },
+    { bg: 'rgba(236,72,153,0.85)', border: '#EC4899',  text: '#F472B6'  },
+    { bg: 'rgba(245,158,11,0.85)', border: '#F59E0B',  text: '#FCD34D'  },
+    { bg: 'rgba(59,130,246,0.85)', border: '#3B82F6',  text: '#60A5FA'  },
+];
+
+// ===================== STATE =====================
+let tickers = [];
+let dataCache = {};   // symbol -> { annual, quarter }
+let activeMetric = 'pe';
+let activePeriod = 'TTM';
+let chart = null;
+
+// ===================== HELPERS =====================
+function fmtBig(v) {
+    const abs = Math.abs(v);
+    if (abs >= 1e12) return (v/1e12).toFixed(2)+'T';
+    if (abs >= 1e9)  return (v/1e9).toFixed(2)+'B';
+    if (abs >= 1e6)  return (v/1e6).toFixed(2)+'M';
+    return v.toFixed(0);
+}
+
+function showToast(title, msg) {
+    const t = document.getElementById('toast');
+    document.getElementById('toastTitle').textContent = title;
+    document.getElementById('toastMsg').textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 4000);
+}
+
+function setLoading(show) {
+    document.getElementById('loadingOverlay').style.display = show ? 'flex' : 'none';
+}
+
+// ===================== API =====================
+async function fetchData(symbol) {
+    if (dataCache[symbol]) return dataCache[symbol];
+
+    try {
+        const [incomeA, incomeQ, ratiosA, ratiosQ, cashA, cashQ] = await Promise.all([
+            fetch(`${BASE}/income-statement/${symbol}?limit=30&apikey=${API_KEY}`).then(r=>r.json()),
+            fetch(`${BASE}/income-statement/${symbol}?period=quarter&limit=30&apikey=${API_KEY}`).then(r=>r.json()),
+            fetch(`${BASE}/ratios/${symbol}?limit=30&apikey=${API_KEY}`).then(r=>r.json()),
+            fetch(`${BASE}/ratios/${symbol}?period=quarter&limit=30&apikey=${API_KEY}`).then(r=>r.json()),
+            fetch(`${BASE}/cash-flow-statement/${symbol}?limit=30&apikey=${API_KEY}`).then(r=>r.json()),
+            fetch(`${BASE}/cash-flow-statement/${symbol}?period=quarter&limit=30&apikey=${API_KEY}`).then(r=>r.json()),
+        ]);
+
+        if (!Array.isArray(incomeA) || incomeA.length === 0) {
+            throw new Error(`No data found for "${symbol}"`);
+        }
+
+        // Merge annual
+        const mergeAnnual = (inc, rat, cas) => inc.map((row, i) => ({
+            date: row.date,
+            pe: rat[i]?.priceEarningsRatio ?? null,
+            pb: rat[i]?.priceToBookRatio ?? null,
+            evEbitda: rat[i]?.enterpriseValueMultiple ?? null,
+            revenue: row.revenue ?? null,
+            netIncome: row.netIncome ?? null,
+            eps: row.eps ?? null,
+            fcf: cas[i]?.freeCashFlow ?? null,
+            grossMargin: row.grossProfit && row.revenue ? row.grossProfit/row.revenue : null,
+        })).reverse();
+
+        const mergeQuarter = (inc, rat, cas) => inc.map((row, i) => ({
+            date: row.date,
+            pe: rat[i]?.priceEarningsRatio ?? null,
+            pb: rat[i]?.priceToBookRatio ?? null,
+            evEbitda: rat[i]?.enterpriseValueMultiple ?? null,
+            revenue: row.revenue ?? null,
+            netIncome: row.netIncome ?? null,
+            eps: row.eps ?? null,
+            fcf: cas[i]?.freeCashFlow ?? null,
+            grossMargin: row.grossProfit && row.revenue ? row.grossProfit/row.revenue : null,
+        })).reverse();
+
+        // TTM = rolling 4-quarter sum/avg
+        const quarters = mergeQuarter(incomeQ, ratiosQ, cashQ);
+        const ttm = [];
+        for (let i = 3; i < quarters.length; i++) {
+            const slice = quarters.slice(i-3, i+1);
+            ttm.push({
+                date: quarters[i].date,
+                pe: slice[slice.length-1].pe,
+                pb: slice[slice.length-1].pb,
+                evEbitda: slice[slice.length-1].evEbitda,
+                revenue: slice.reduce((s,r) => s + (r.revenue||0), 0),
+                netIncome: slice.reduce((s,r) => s + (r.netIncome||0), 0),
+                eps: slice.reduce((s,r) => s + (r.eps||0), 0),
+                fcf: slice.reduce((s,r) => s + (r.fcf||0), 0),
+                grossMargin: slice[slice.length-1].grossMargin,
+            });
+        }
+
+        dataCache[symbol] = {
+            annual: mergeAnnual(incomeA, ratiosA, cashA),
+            quarter: mergeQuarter(incomeQ, ratiosQ, cashQ),
+            ttm,
         };
 
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
+        return dataCache[symbol];
+    } catch(e) {
+        throw new Error(e.message || 'API error');
+    }
+}
 
-        onAuthStateChanged(auth, (user) => {
-            if (!user) {
-                window.location.href = "login.html";
-            } else {
-                document.querySelector('.user-avatar').textContent = user.email.charAt(0).toUpperCase();
-            }
-        });
+// ===================== TICKER CHIPS =====================
+function colorForIndex(i) { return PALETTE[i % PALETTE.length]; }
 
-        const userAvatar = document.getElementById('userAvatar');
-        const dropdownMenu = document.getElementById('dropdownMenu');
-        userAvatar.addEventListener('click', (e) => {
-            e.stopPropagation();
-            dropdownMenu.classList.toggle('active');
-        });
-        document.addEventListener('click', (e) => {
-            if (!userAvatar.contains(e.target) && !dropdownMenu.contains(e.target)) {
-                dropdownMenu.classList.remove('active');
-            }
-        });
+function renderTickerChips() {
+    const container = document.getElementById('tickerChips');
+    container.innerHTML = '';
+    tickers.forEach((sym, i) => {
+        const c = colorForIndex(i);
+        const chip = document.createElement('div');
+        chip.className = 'ticker-chip';
+        chip.style.cssText = `color:${c.text};border-color:${c.border};background:${c.bg.replace('0.85','0.12')}`;
+        chip.innerHTML = `${sym}<span class="remove-ticker" data-sym="${sym}">✕</span>`;
+        container.appendChild(chip);
+    });
 
-        document.getElementById('signOutBtn').addEventListener('click', async () => {
-            await signOut(auth);
-            window.location.href = "index.html";
-        });
+    document.querySelectorAll('.remove-ticker').forEach(btn => {
+        btn.addEventListener('click', () => removeTicker(btn.dataset.sym));
+    });
+}
 
-        const themeToggle = document.getElementById('themeToggle');
-        const sunIcon = document.getElementById('sunIcon');
-        const moonIcon = document.getElementById('moonIcon');
-        const html = document.documentElement;
-        const currentTheme = localStorage.getItem('theme') || 'light';
-        html.setAttribute('data-theme', currentTheme);
-        if (currentTheme === 'dark') {
-            sunIcon.style.display = 'none';
-            moonIcon.style.display = 'block';
+async function addTicker(sym) {
+    sym = sym.toUpperCase().trim();
+    if (!sym) return;
+    if (tickers.includes(sym)) { showToast('Already added', `${sym} is already in the chart.`); return; }
+    if (tickers.length >= 6) { showToast('Max reached', 'You can compare up to 6 tickers at once.'); return; }
+
+    setLoading(true);
+    document.getElementById('emptyState').style.display = 'none';
+    document.getElementById('chartContainer').style.display = 'block';
+
+    try {
+        await fetchData(sym);
+        tickers.push(sym);
+        renderTickerChips();
+        renderChart();
+        renderStats();
+    } catch(e) {
+        showToast('Not found', e.message);
+        if (tickers.length === 0) {
+            document.getElementById('emptyState').style.display = 'flex';
+            document.getElementById('chartContainer').style.display = 'none';
         }
-        themeToggle.addEventListener('click', () => {
-            const newTheme = html.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
-            html.setAttribute('data-theme', newTheme);
-            localStorage.setItem('theme', newTheme);
-            if (newTheme === 'dark') {
-                sunIcon.style.display = 'none';
-                moonIcon.style.display = 'block';
-            } else {
-                sunIcon.style.display = 'block';
-                moonIcon.style.display = 'none';
+    } finally {
+        setLoading(false);
+    }
+}
+
+function removeTicker(sym) {
+    tickers = tickers.filter(t => t !== sym);
+    renderTickerChips();
+    if (tickers.length === 0) {
+        document.getElementById('emptyState').style.display = 'flex';
+        document.getElementById('chartContainer').style.display = 'none';
+        if (chart) { chart.destroy(); chart = null; }
+        document.getElementById('statsGrid').innerHTML = '';
+    } else {
+        renderChart();
+        renderStats();
+    }
+}
+
+// ===================== CHART =====================
+function getPeriodData(sym) {
+    const d = dataCache[sym];
+    if (!d) return [];
+    if (activePeriod === 'Y') return d.annual;
+    if (activePeriod === 'Q') return d.quarter;
+    return d.ttm;
+}
+
+function renderChart() {
+    if (tickers.length === 0) return;
+
+    // Union of all dates
+    const allDates = new Set();
+    tickers.forEach(sym => getPeriodData(sym).forEach(row => allDates.add(row.date)));
+    const labels = [...allDates].sort();
+
+    const datasets = tickers.map((sym, i) => {
+        const c = colorForIndex(i);
+        const rows = getPeriodData(sym);
+        const map = Object.fromEntries(rows.map(r => [r.date, r[activeMetric]]));
+        return {
+            label: sym,
+            data: labels.map(d => map[d] ?? null),
+            backgroundColor: c.bg,
+            borderColor: c.border,
+            borderWidth: 1.5,
+            borderRadius: 4,
+            borderSkipped: false,
+        };
+    });
+
+    // Update legend
+    const legend = document.getElementById('chartLegend');
+    legend.innerHTML = tickers.map((sym, i) => {
+        const c = colorForIndex(i);
+        return `<div class="legend-item"><div class="legend-dot" style="background:${c.border}"></div>${sym}</div>`;
+    }).join('');
+
+    // Update title
+    document.getElementById('chartTitle').textContent = METRIC_CONFIG[activeMetric].label;
+    document.getElementById('chartSubtitle').textContent =
+        activePeriod === 'Y' ? 'Annual data · up to 30 years' :
+        activePeriod === 'Q' ? 'Quarterly data · up to 30 quarters' :
+        'TTM (trailing twelve months)';
+
+    const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
+    const gridColor = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)';
+    const tickColor = isDark ? '#64748B' : '#94A3B8';
+
+    if (chart) chart.destroy();
+
+    const ctx = document.getElementById('mainChart').getContext('2d');
+    chart = new Chart(ctx, {
+        type: 'bar',
+        data: { labels, datasets },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            aspectRatio: window.innerWidth < 600 ? 1.4 : 2.8,
+            interaction: { mode: 'index', intersect: false },
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    backgroundColor: isDark ? '#1E293B' : '#fff',
+                    borderColor: isDark ? '#334155' : '#E2E8F0',
+                    borderWidth: 1,
+                    titleColor: isDark ? '#F1F5F9' : '#0F172A',
+                    bodyColor: isDark ? '#94A3B8' : '#64748B',
+                    padding: 12,
+                    callbacks: {
+                        label: ctx => {
+                            const v = ctx.parsed.y;
+                            return ` ${ctx.dataset.label}: ${METRIC_CONFIG[activeMetric].fmt(v)}`;
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    grid: { color: gridColor },
+                    ticks: {
+                        color: tickColor,
+                        maxTicksLimit: 12,
+                        font: { size: 11 },
+                        maxRotation: 45,
+                    },
+                },
+                y: {
+                    grid: { color: gridColor },
+                    ticks: {
+                        color: tickColor,
+                        font: { size: 11 },
+                        callback: v => METRIC_CONFIG[activeMetric].fmt(v),
+                    }
+                }
             }
+        }
+    });
+}
+
+// ===================== STATS =====================
+function renderStats() {
+    const grid = document.getElementById('statsGrid');
+    grid.innerHTML = '';
+
+    tickers.forEach((sym, i) => {
+        const c = colorForIndex(i);
+        const rows = getPeriodData(sym);
+        if (!rows.length) return;
+
+        const latest = rows[rows.length - 1];
+        const prev = rows[rows.length - 2];
+        const val = latest[activeMetric];
+        const prevVal = prev ? prev[activeMetric] : null;
+
+        let changePct = null;
+        if (val != null && prevVal != null && prevVal !== 0) {
+            changePct = ((val - prevVal) / Math.abs(prevVal)) * 100;
+        }
+
+        const card = document.createElement('div');
+        card.className = 'stat-card';
+        card.style.borderTop = `3px solid ${c.border}`;
+
+        card.innerHTML = `
+            <div class="stat-ticker" style="color:${c.text}">${sym}</div>
+            <div class="stat-metric">${METRIC_CONFIG[activeMetric].label} · Latest</div>
+            <div class="stat-value">${METRIC_CONFIG[activeMetric].fmt(val)}</div>
+            ${changePct != null ? `
+            <div class="stat-change ${changePct >= 0 ? 'up' : 'down'}">
+                ${changePct >= 0 ? '▲' : '▼'} ${Math.abs(changePct).toFixed(1)}%
+                <span style="font-weight:400;color:var(--text-muted)">vs previous</span>
+            </div>` : ''}
+        `;
+        grid.appendChild(card);
+    });
+}
+
+// ===================== AUTOCOMPLETE (simple list) =====================
+const POPULAR = [
+    {s:'AAPL', n:'Apple Inc.'}, {s:'MSFT', n:'Microsoft Corp.'}, {s:'NVDA', n:'NVIDIA Corp.'},
+    {s:'GOOGL', n:'Alphabet Inc.'}, {s:'AMZN', n:'Amazon.com Inc.'}, {s:'TSLA', n:'Tesla Inc.'},
+    {s:'META', n:'Meta Platforms'}, {s:'BRK.B', n:'Berkshire Hathaway'}, {s:'JPM', n:'JPMorgan Chase'},
+    {s:'V', n:'Visa Inc.'}, {s:'JNJ', n:'Johnson & Johnson'}, {s:'WMT', n:'Walmart Inc.'},
+    {s:'XOM', n:'Exxon Mobil'}, {s:'UNH', n:'UnitedHealth Group'}, {s:'LVMH', n:'LVMH'},
+    {s:'ASML', n:'ASML Holding'}, {s:'BABA', n:'Alibaba Group'}, {s:'TSM', n:'Taiwan Semiconductor'},
+    {s:'NFLX', n:'Netflix Inc.'}, {s:'ADBE', n:'Adobe Inc.'}, {s:'CRM', n:'Salesforce'},
+    {s:'AMD', n:'Advanced Micro Devices'}, {s:'INTC', n:'Intel Corp.'}, {s:'DIS', n:'Walt Disney Co.'},
+];
+
+const tickerInput = document.getElementById('tickerInput');
+const autocomplete = document.getElementById('tickerAutocomplete');
+
+tickerInput.addEventListener('input', () => {
+    const q = tickerInput.value.trim().toUpperCase();
+    if (!q) { autocomplete.classList.remove('open'); return; }
+
+    const matches = POPULAR.filter(x => x.s.startsWith(q) || x.n.toUpperCase().includes(q)).slice(0, 8);
+    if (!matches.length) { autocomplete.classList.remove('open'); return; }
+
+    autocomplete.innerHTML = matches.map(x =>
+        `<div class="autocomplete-item" data-sym="${x.s}">
+            <span class="autocomplete-sym">${x.s}</span>
+            <span class="autocomplete-name">${x.n}</span>
+        </div>`
+    ).join('');
+
+    autocomplete.classList.add('open');
+    autocomplete.querySelectorAll('.autocomplete-item').forEach(el => {
+        el.addEventListener('click', () => {
+            tickerInput.value = '';
+            autocomplete.classList.remove('open');
+            addTicker(el.dataset.sym);
         });
+    });
+});
 
-        // Mock data for search
-        const mockStocks = [
-            { symbol: 'AAPL', name: 'Apple Inc.', price: 178.50 },
-            { symbol: 'MSFT', name: 'Microsoft Corporation', price: 375.20 },
-            { symbol: 'NVDA', name: 'NVIDIA Corporation', price: 495.00 },
-            { symbol: 'GOOGL', name: 'Alphabet Inc.', price: 140.25 },
-            { symbol: 'TSLA', name: 'Tesla Inc.', price: 245.00 }
-        ];
+tickerInput.addEventListener('keydown', e => {
+    if (e.key === 'Enter') {
+        const v = tickerInput.value.trim();
+        if (v) { tickerInput.value = ''; autocomplete.classList.remove('open'); addTicker(v); }
+    }
+});
 
-        const stockSearch = document.getElementById('stockSearch');
-        const searchResults = document.getElementById('searchResults');
+document.addEventListener('click', e => {
+    if (!tickerInput.contains(e.target) && !autocomplete.contains(e.target))
+        autocomplete.classList.remove('open');
+});
 
-        stockSearch.addEventListener('input', (e) => {
-            const query = e.target.value.trim().toLowerCase();
-            
-            if (query.length < 1) {
-                searchResults.classList.remove('active');
-                return;
-            }
+document.getElementById('addTickerBtn').addEventListener('click', () => {
+    const v = tickerInput.value.trim();
+    if (v) { tickerInput.value = ''; autocomplete.classList.remove('open'); addTicker(v); }
+});
 
-            const results = mockStocks.filter(s => 
-                s.symbol.toLowerCase().includes(query) || 
-                s.name.toLowerCase().includes(query)
-            );
-            
-            if (results.length > 0) {
-                searchResults.innerHTML = results.map(stock => `
-                    <div class="search-result-item" data-symbol="${stock.symbol}">
-                        <div>
-                            <span class="result-symbol">${stock.symbol}</span>
-                            <span class="result-name">${stock.name}</span>
-                        </div>
-                        <span style="font-weight:700;">$${stock.price.toFixed(2)}</span>
-                    </div>
-                `).join('');
-                searchResults.classList.add('active');
-                
-                document.querySelectorAll('.search-result-item').forEach(item => {
-                    item.addEventListener('click', () => {
-                        const symbol = item.dataset.symbol;
-                        console.log(`Analyzing ${symbol}...`);
-                        alert(`Analyse de valorisation pour ${symbol} en cours de développement !`);
-                        searchResults.classList.remove('active');
-                        stockSearch.value = '';
-                    });
-                });
-            } else {
-                searchResults.innerHTML = '<div class="search-result-item">Aucun résultat trouvé</div>';
-                searchResults.classList.add('active');
-            }
-        });
+document.getElementById('resetBtn').addEventListener('click', () => {
+    tickers = [];
+    renderTickerChips();
+    document.getElementById('emptyState').style.display = 'flex';
+    document.getElementById('chartContainer').style.display = 'none';
+    document.getElementById('statsGrid').innerHTML = '';
+    if (chart) { chart.destroy(); chart = null; }
+});
 
-        document.addEventListener('click', (e) => {
-            if (!stockSearch.contains(e.target) && !searchResults.contains(e.target)) {
-                searchResults.classList.remove('active');
-            }
-        });
-    </script>
+// ===================== METRIC / PERIOD PILLS =====================
+document.getElementById('metricPills').addEventListener('click', e => {
+    const pill = e.target.closest('.metric-pill');
+    if (!pill) return;
+    document.querySelectorAll('.metric-pill').forEach(p => p.classList.remove('active'));
+    pill.classList.add('active');
+    activeMetric = pill.dataset.metric;
+    if (tickers.length) { renderChart(); renderStats(); }
+});
+
+document.getElementById('periodPills').addEventListener('click', e => {
+    const pill = e.target.closest('.period-pill');
+    if (!pill) return;
+    document.querySelectorAll('.period-pill').forEach(p => p.classList.remove('active'));
+    pill.classList.add('active');
+    activePeriod = pill.dataset.period;
+    if (tickers.length) { renderChart(); renderStats(); }
+});
+
+// ===================== THEME =====================
+const html = document.documentElement;
+const stored = localStorage.getItem('theme') || 'dark';
+html.setAttribute('data-theme', stored);
+if (stored === 'light') {
+    document.getElementById('sunIco').style.display = 'none';
+    document.getElementById('moonIco').style.display = 'block';
+}
+document.getElementById('themeBtn').addEventListener('click', () => {
+    const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    html.setAttribute('data-theme', next);
+    localStorage.setItem('theme', next);
+    document.getElementById('sunIco').style.display = next === 'dark' ? 'block' : 'none';
+    document.getElementById('moonIco').style.display = next === 'light' ? 'block' : 'none';
+    if (chart && tickers.length) renderChart();
+});
+
+// ===================== DROPDOWN =====================
+document.getElementById('userAvatar').addEventListener('click', e => {
+    e.stopPropagation();
+    document.getElementById('dropdownMenu').classList.toggle('open');
+});
+document.addEventListener('click', () => document.getElementById('dropdownMenu').classList.remove('open'));
+</script>
 </body>
 </html>
