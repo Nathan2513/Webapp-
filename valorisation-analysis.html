@@ -20,6 +20,7 @@
         * { margin:0; padding:0; box-sizing:border-box; }
         body { font-family:'Inter',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; transition:background .3s,color .3s; }
 
+        /* TOPBAR */
         .topbar { background:var(--topbar); border-bottom:1px solid var(--border); padding:0 30px; height:70px; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:200; }
         .logo { display:flex; align-items:center; gap:12px; font-weight:800; font-size:1.4rem; color:var(--text); text-decoration:none; }
         .logo img { height:45px; }
@@ -40,14 +41,17 @@
         .dd-item.red { color:var(--danger); border-top:1px solid var(--border); }
         .dd-item svg { width:17px; height:17px; }
 
+        /* MAIN */
         .main { padding:30px; }
 
+        /* WELCOME */
         .welcome { max-width:900px; margin:0 auto; text-align:center; padding:60px 20px; }
         .w-icon { width:120px; height:120px; margin:0 auto 28px; background:linear-gradient(135deg,var(--orange),#ff9f40); border-radius:30px; display:flex; align-items:center; justify-content:center; box-shadow:0 15px 40px rgba(255,122,0,.25); }
         .w-icon svg { width:60px; height:60px; color:white; }
         .welcome h2 { font-size:2.5rem; font-weight:800; margin-bottom:14px; background:linear-gradient(135deg,var(--text) 0%,var(--orange) 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
         .welcome p { font-size:1.15rem; color:var(--sub); margin-bottom:40px; line-height:1.6; max-width:560px; margin-left:auto; margin-right:auto; }
 
+        /* SEARCH */
         .search-box { max-width:680px; margin:0 auto; }
         .search-wrap { position:relative; }
         .search-inp { width:100%; padding:17px 60px; border:2px solid var(--border); border-radius:16px; font-size:1.05rem; font-family:'Inter',sans-serif; background:var(--card); color:var(--text); transition:all .3s; box-shadow:0 1px 3px rgba(0,0,0,.08); }
@@ -65,6 +69,7 @@
         .s-item:hover .s-arr { opacity:1; transform:translateX(4px); }
         .s-arr svg { width:17px; height:17px; }
 
+        /* CHART VIEW */
         .chart-view { display:none; }
 
         .stock-hdr { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:14px; margin-bottom:22px; }
@@ -76,6 +81,7 @@
         .back-btn:hover { border-color:var(--orange); color:var(--orange); }
         .back-btn svg { width:15px; height:15px; }
 
+        /* Controls */
         .cbar { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:13px 18px; display:flex; align-items:center; gap:14px; flex-wrap:wrap; margin-bottom:16px; }
         .clabel { font-size:.75rem; font-weight:700; text-transform:uppercase; letter-spacing:.07em; color:var(--sub); white-space:nowrap; }
         .pills { display:flex; gap:6px; flex-wrap:wrap; }
@@ -84,6 +90,7 @@
         .pill.active { background:var(--orange); color:white; border-color:var(--orange); }
         .sep { width:1px; height:26px; background:var(--border); }
 
+        /* Compare bar */
         .comp-bar { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:13px 18px; display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:16px; }
         .chips { display:flex; gap:8px; flex-wrap:wrap; flex:1; }
         .chip { display:inline-flex; align-items:center; gap:6px; padding:5px 11px; border-radius:8px; font-size:.83rem; font-weight:700; border:1.5px solid; }
@@ -102,6 +109,7 @@
         .btn-add { background:var(--orange); color:white; border:none; border-radius:8px; padding:7px 14px; font-weight:700; font-size:.83rem; cursor:pointer; transition:all .2s; white-space:nowrap; }
         .btn-add:hover { background:#ff9f40; transform:translateY(-1px); }
 
+        /* Stats grid */
         .stats { display:grid; grid-template-columns:repeat(auto-fill,minmax(175px,1fr)); gap:12px; margin-bottom:18px; }
         .sc { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:15px 17px; transition:all .2s; }
         .sc:hover { transform:translateY(-2px); box-shadow:0 8px 20px rgba(0,0,0,.1); }
@@ -111,6 +119,7 @@
         .sc-chg { font-size:.75rem; font-weight:600; display:flex; align-items:center; gap:4px; }
         .sc-chg.up { color:var(--success); } .sc-chg.dn { color:var(--danger); }
 
+        /* Chart section */
         .chart-sec { background:var(--card); border:1px solid var(--border); border-radius:16px; overflow:hidden; }
         .chart-hd { padding:18px 22px 14px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; }
         .chart-ttl { font-size:1.05rem; font-weight:700; }
@@ -124,10 +133,15 @@
         .spin { width:36px; height:36px; border:3px solid var(--border); border-top-color:var(--orange); border-radius:50%; animation:spin .7s linear infinite; }
         @keyframes spin { to { transform:rotate(360deg); } }
 
-        /* No data message */
-        .no-data-msg { position:absolute; inset:0; display:none; flex-direction:column; align-items:center; justify-content:center; color:var(--sub); font-size:.95rem; gap:8px; }
-        .no-data-msg.show { display:flex; }
+        /* FIX: static no-data element, toggled by JS with display flex/none */
+        #noDataMsg {
+            position:absolute; inset:0;
+            display:none;           /* hidden by default */
+            flex-direction:column; align-items:center; justify-content:center;
+            color:var(--sub); font-size:.95rem; gap:8px; text-align:center;
+        }
 
+        /* Toast */
         .toast { position:fixed; bottom:26px; right:26px; background:var(--card); border:1px solid var(--border); border-left:4px solid var(--danger); border-radius:10px; padding:13px 17px; font-size:.875rem; box-shadow:0 10px 28px rgba(0,0,0,.18); z-index:9999; transform:translateY(80px); opacity:0; transition:all .3s; max-width:330px; }
         .toast.show { transform:translateY(0); opacity:1; }
         .toast-t { font-weight:700; color:var(--danger); margin-bottom:3px; }
@@ -138,6 +152,7 @@
 </head>
 <body>
 
+<!-- TOPBAR -->
 <header class="topbar">
     <a href="webapp.html" class="logo"><img src="logo.png" alt="Logo"> StockMaster</a>
     <nav class="nav">
@@ -177,6 +192,8 @@
 </header>
 
 <main class="main">
+
+    <!-- WELCOME -->
     <div class="welcome" id="welcomeSection">
         <div class="w-icon">
             <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
@@ -192,7 +209,9 @@
         </div>
     </div>
 
+    <!-- CHART VIEW -->
     <div class="chart-view" id="chartView">
+
         <div class="stock-hdr">
             <div class="stock-hdr-left">
                 <div class="stock-badge" id="stockBadge">—</div>
@@ -244,20 +263,21 @@
             <div class="chart-hd">
                 <div>
                     <div class="chart-ttl" id="chartTtl">P/E Ratio</div>
-                    <div class="chart-sub-txt" id="chartSubTxt">TTM – trailing twelve months</div>
+                    <div class="chart-sub-txt" id="chartSubTxt">Annual · up to 30 years</div>
                 </div>
                 <div class="chart-leg" id="chartLeg"></div>
             </div>
             <div class="chart-bd">
                 <div class="loading" id="loadingEl" style="display:none"><div class="spin"></div></div>
-                <!-- Fixed: static element instead of dynamically created one -->
-                <div class="no-data-msg" id="noDataMsg">
+                <!-- FIX: static element in HTML, toggled via display — eliminates the variable-race bug -->
+                <div id="noDataMsg">
                     <svg style="width:40px;height:40px;opacity:.4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                    <span id="noDataText">Not available for this period — switch to <strong>TTM</strong> for this metric</span>
+                    <span>Not available for this period — switch to <strong>TTM</strong> for this metric</span>
                 </div>
                 <canvas id="mainChart"></canvas>
             </div>
         </div>
+
     </div>
 </main>
 
@@ -285,80 +305,59 @@
 import fmpAPI from './fmp-api.js';
 
 const M = {
-    pe:          { label:'P/E Ratio',       fmt: v => v != null && isFinite(v) ? v.toFixed(1)+'x'       : 'N/A' },
-    pb:          { label:'P/B Ratio',       fmt: v => v != null && isFinite(v) ? v.toFixed(2)+'x'       : 'N/A' },
-    evEbitda:    { label:'EV/EBITDA',       fmt: v => v != null && isFinite(v) ? v.toFixed(1)+'x'       : 'N/A' },
-    revenue:     { label:'Revenue',         fmt: v => v != null && isFinite(v) ? '$'+fmtBig(v)          : 'N/A' },
-    netIncome:   { label:'Net Income',      fmt: v => v != null && isFinite(v) ? '$'+fmtBig(v)          : 'N/A' },
-    eps:         { label:'EPS',             fmt: v => v != null && isFinite(v) ? '$'+v.toFixed(2)       : 'N/A' },
-    fcf:         { label:'Free Cash Flow',  fmt: v => v != null && isFinite(v) ? '$'+fmtBig(v)          : 'N/A' },
-    grossMargin: { label:'Gross Margin',    fmt: v => v != null && isFinite(v) ? (v*100).toFixed(1)+'%' : 'N/A' },
+    pe:          { label:'P/E Ratio',       fmt: v => v!=null ? v.toFixed(1)+'x'       : 'N/A' },
+    pb:          { label:'P/B Ratio',       fmt: v => v!=null ? v.toFixed(2)+'x'       : 'N/A' },
+    evEbitda:    { label:'EV/EBITDA',       fmt: v => v!=null ? v.toFixed(1)+'x'       : 'N/A' },
+    revenue:     { label:'Revenue',         fmt: v => v!=null ? '$'+fmtBig(v)          : 'N/A' },
+    netIncome:   { label:'Net Income',      fmt: v => v!=null ? '$'+fmtBig(v)          : 'N/A' },
+    eps:         { label:'EPS',             fmt: v => v!=null ? '$'+v.toFixed(2)       : 'N/A' },
+    fcf:         { label:'Free Cash Flow',  fmt: v => v!=null ? '$'+fmtBig(v)          : 'N/A' },
+    grossMargin: { label:'Gross Margin',    fmt: v => v!=null ? (v*100).toFixed(1)+'%' : 'N/A' },
 };
 
 const PAL = [
-    {bg:'rgba(255,122,0,.75)',  b:'#FF7A00', t:'#FF7A00'},
-    {bg:'rgba(99,102,241,.75)', b:'#6366F1', t:'#818CF8'},
-    {bg:'rgba(16,185,129,.75)', b:'#10B981', t:'#10B981'},
-    {bg:'rgba(236,72,153,.75)', b:'#EC4899', t:'#F472B6'},
-    {bg:'rgba(245,158,11,.75)', b:'#F59E0B', t:'#FCD34D'},
-    {bg:'rgba(59,130,246,.75)', b:'#3B82F6', t:'#60A5FA'},
+    {bg:'rgba(255,122,0,.8)',   b:'#FF7A00', t:'#FF7A00'},
+    {bg:'rgba(99,102,241,.8)',  b:'#6366F1', t:'#818CF8'},
+    {bg:'rgba(16,185,129,.8)',  b:'#10B981', t:'#10B981'},
+    {bg:'rgba(236,72,153,.8)',  b:'#EC4899', t:'#F472B6'},
+    {bg:'rgba(245,158,11,.8)',  b:'#F59E0B', t:'#FCD34D'},
+    {bg:'rgba(59,130,246,.8)',  b:'#3B82F6', t:'#60A5FA'},
 ];
 
-let tickers = [], cache = {}, metric = 'pe', period = 'TTM', chart = null;
+let tickers=[], cache={}, metric='pe', period='TTM', chart=null;
 
-function fmtBig(v) {
-    const a = Math.abs(v);
-    if (a >= 1e12) return (v/1e12).toFixed(2)+'T';
-    if (a >= 1e9)  return (v/1e9).toFixed(2)+'B';
-    if (a >= 1e6)  return (v/1e6).toFixed(2)+'M';
-    return v.toFixed(0);
-}
-function pal(i) { return PAL[i % PAL.length]; }
-function setLoad(v) { document.getElementById('loadingEl').style.display = v ? 'flex' : 'none'; }
-function showToast(t, m) {
-    document.getElementById('toastT').textContent = t;
-    document.getElementById('toastM').textContent = m;
-    const el = document.getElementById('toast');
-    el.classList.add('show');
-    setTimeout(() => el.classList.remove('show'), 5000);
+function fmtBig(v){ const a=Math.abs(v); if(a>=1e12) return (v/1e12).toFixed(2)+'T'; if(a>=1e9) return (v/1e9).toFixed(2)+'B'; if(a>=1e6) return (v/1e6).toFixed(2)+'M'; return v.toFixed(0); }
+function pal(i){ return PAL[i%PAL.length]; }
+function setLoad(v){ document.getElementById('loadingEl').style.display=v?'flex':'none'; }
+function showToast(t,m){ document.getElementById('toastT').textContent=t; document.getElementById('toastM').textContent=m; const el=document.getElementById('toast'); el.classList.add('show'); setTimeout(()=>el.classList.remove('show'),4000); }
+
+// Returns a valid finite number or null — prevents NaN/Infinity reaching Chart.js
+function safeN(v) {
+    const n = Number(v);
+    return (v != null && v !== '' && isFinite(n)) ? n : null;
 }
 
-// Safe value extractor — returns null if value is not a valid finite number
-function safeNum(v) {
-    if (v == null || v === '' || !isFinite(Number(v))) return null;
-    return Number(v);
-}
-
-// ---- DATA BUILDING ----
-// FMP /income-statement does NOT include marketCap, so P/E can't be
-// calculated historically from income statements alone.
-// For annual/quarterly P/E: use eps * sharesOutstanding if available,
-// but since we don't have historical prices, P/E is only meaningful at TTM.
-// Revenue, Net Income, EPS, FCF, Gross Margin all work perfectly.
+// ---- DATA LOADING ----
+// FIX 1: /income-statement does NOT contain marketCap, so historical P/E
+// cannot be computed from it. We leave pe/pb/evEbitda as null for historical
+// rows and inject real TTM values (from /ratios-ttm & /key-metrics-ttm)
+// only for the most-recent row. Revenue, NI, EPS, FCF, Margin work fine.
 
 function buildRows(incs, cass) {
-    const cMap = Object.fromEntries((cass || []).map(r => [r.date, r]));
-    // FMP returns newest→oldest, reverse to get chronological order
-    return [...(incs || [])].reverse().map(row => {
+    const cMap = Object.fromEntries((cass||[]).map(r => [r.date, r]));
+    return [...(incs||[])].reverse().map(row => {
         const c = cMap[row.date] || {};
-        const revenue   = safeNum(row.revenue);
-        const grossProf = safeNum(row.grossProfit);
-        const ni        = safeNum(row.netIncome);
-        const eps       = safeNum(row.eps) ?? safeNum(row.epsdiluted);
-        const fcf       = safeNum(c.freeCashFlow);
-
+        const revenue     = safeN(row.revenue);
+        const grossProfit = safeN(row.grossProfit);
+        const netIncome   = safeN(row.netIncome);
+        const eps         = safeN(row.epsdiluted) ?? safeN(row.eps);
+        const fcf         = safeN(c.freeCashFlow);
+        const grossMargin = (grossProfit != null && revenue != null && revenue > 0)
+                                ? grossProfit / revenue : null;
         return {
-            date:        row.date,
-            // P/E not calculable historically without prices — will be overridden at TTM
-            pe:          null,
-            pb:          null,
-            evEbitda:    null,
-            revenue,
-            netIncome:   ni,
-            eps,
-            fcf,
-            grossMargin: (grossProf != null && revenue != null && revenue > 0)
-                            ? grossProf / revenue : null,
+            date: row.date,
+            pe: null, pb: null, evEbitda: null,   // ratios need price — inject at TTM only
+            revenue, netIncome, eps, fcf, grossMargin,
         };
     });
 }
@@ -366,8 +365,7 @@ function buildRows(incs, cass) {
 async function load(sym) {
     if (cache[sym]) return cache[sym];
 
-    // Fetch all data in parallel
-    const [iA, cA, incQ, casQ, quoteRaw, ratTTMRaw, kmTTMRaw] = await Promise.all([
+    const [iA, cA, incQ, casQ, quote, ratTTM, kmTTM] = await Promise.all([
         fmpAPI.makeRequest('/income-statement',    { symbol: sym, limit: 30 }),
         fmpAPI.makeRequest('/cash-flow-statement', { symbol: sym, limit: 30 }),
         fmpAPI.makeRequest('/income-statement',    { symbol: sym, period: 'quarter', limit: 30 }),
@@ -377,77 +375,64 @@ async function load(sym) {
         fmpAPI.makeRequest('/key-metrics-ttm',     { symbol: sym }),
     ]);
 
-    // Robust array check — FMP can return error objects or empty arrays
-    const annualInc = Array.isArray(iA) ? iA : [];
-    const annualCas = Array.isArray(cA) ? cA : [];
-    const quarterInc = Array.isArray(incQ) ? incQ : [];
-    const quarterCas = Array.isArray(casQ) ? casQ : [];
+    // Normalise every response — FMP can return array OR object
+    const annualInc  = Array.isArray(iA)     ? iA     : [];
+    const annualCas  = Array.isArray(cA)     ? cA     : [];
+    const quarterInc = Array.isArray(incQ)   ? incQ   : [];
+    const quarterCas = Array.isArray(casQ)   ? casQ   : [];
 
-    // Validate: we need at least some income data
-    if (!annualInc.length && !quarterInc.length) {
-        throw new Error(`No financial data found for "${sym}". Check the ticker symbol.`);
-    }
+    if (!annualInc.length && !quarterInc.length)
+        throw new Error(`No data found for "${sym}". Please check the ticker.`);
 
-    // Normalize quote, ratios, metrics — they can be arrays or objects
-    const quoteData = Array.isArray(quoteRaw) ? (quoteRaw[0] || {}) : (quoteRaw || {});
-    const rttm      = Array.isArray(ratTTMRaw) ? (ratTTMRaw[0] || {}) : (ratTTMRaw || {});
-    const kmttm     = Array.isArray(kmTTMRaw)  ? (kmTTMRaw[0]  || {}) : (kmTTMRaw  || {});
+    const quoteData = Array.isArray(quote)  ? (quote[0]  || {}) : (quote  || {});
+
+    // FIX 2: correct field names — FMP /ratios-ttm uses peRatioTTM, pbRatioTTM
+    // /key-metrics-ttm uses enterpriseValueOverEBITDATTM
+    const rttm  = Array.isArray(ratTTM) ? (ratTTM[0] || {}) : (ratTTM || {});
+    const kmttm = Array.isArray(kmTTM)  ? (kmTTM[0]  || {}) : (kmTTM  || {});
 
     const annual  = buildRows(annualInc,  annualCas);
     const quarter = buildRows(quarterInc, quarterCas);
 
-    // Build TTM series: rolling 4-quarter sums
+    // TTM = rolling 4-quarter sums
     const ttm = [];
     for (let i = 3; i < quarter.length; i++) {
-        const sl = quarter.slice(i - 3, i + 1);
-        const l = sl[sl.length - 1];
+        const sl = quarter.slice(i-3, i+1), l = sl[sl.length-1];
         const isLatest = (i === quarter.length - 1);
-
-        // Sum financial metrics over trailing 4 quarters
-        const sumRevenue   = sl.reduce((s, r) => s + (r.revenue   ?? 0), 0);
-        const sumNetIncome = sl.reduce((s, r) => s + (r.netIncome ?? 0), 0);
-        const sumEps       = sl.reduce((s, r) => s + (r.eps       ?? 0), 0);
-        const sumFcf       = sl.reduce((s, r) => s + (r.fcf       ?? 0), 0);
-
+        const sum = key => { const vals = sl.map(r => r[key]); return vals.every(v=>v==null) ? null : vals.reduce((s,v)=>s+(v??0),0); };
         ttm.push({
             date:      l.date,
-            // Latest TTM point: inject real TTM ratios from API
-            pe:        isLatest ? safeNum(rttm.peRatioTTM ?? rttm.priceEarningsRatioTTM) : null,
-            pb:        isLatest ? safeNum(rttm.pbRatioTTM ?? rttm.priceToBookRatioTTM)   : null,
-            evEbitda:  isLatest ? safeNum(kmttm.enterpriseValueOverEBITDATTM ?? kmttm.evToEbitdaTTM) : null,
-            revenue:    sumRevenue   || null,
-            netIncome:  sumNetIncome || null,
-            eps:        sumEps       || null,
-            fcf:        sumFcf       || null,
+            // FIX 2: correct field names with fallbacks
+            pe:        isLatest ? (safeN(rttm.peRatioTTM)                    ?? safeN(rttm.priceEarningsRatioTTM)) : null,
+            pb:        isLatest ? (safeN(rttm.pbRatioTTM)                    ?? safeN(rttm.priceToBookRatioTTM))   : null,
+            evEbitda:  isLatest ? (safeN(kmttm.enterpriseValueOverEBITDATTM) ?? safeN(kmttm.evToEbitdaTTM))        : null,
+            revenue:     sum('revenue'),
+            netIncome:   sum('netIncome'),
+            eps:         sum('eps'),
+            fcf:         sum('fcf'),
             grossMargin: l.grossMargin,
         });
     }
 
-    // Also inject TTM ratios into the latest annual row (useful for Y period)
-    if (annual.length > 0) {
-        const last = annual[annual.length - 1];
-        last.pe      = safeNum(rttm.peRatioTTM ?? rttm.priceEarningsRatioTTM) ?? last.pe;
-        last.pb      = safeNum(rttm.pbRatioTTM ?? rttm.priceToBookRatioTTM)   ?? last.pb;
-        last.evEbitda = safeNum(kmttm.enterpriseValueOverEBITDATTM ?? kmttm.evToEbitdaTTM) ?? last.evEbitda;
+    // Also inject TTM ratios into the latest annual row (for Y period)
+    if (annual.length) {
+        const last = annual[annual.length-1];
+        last.pe       = safeN(rttm.peRatioTTM)                    ?? safeN(rttm.priceEarningsRatioTTM);
+        last.pb       = safeN(rttm.pbRatioTTM)                    ?? safeN(rttm.priceToBookRatioTTM);
+        last.evEbitda = safeN(kmttm.enterpriseValueOverEBITDATTM) ?? safeN(kmttm.evToEbitdaTTM);
     }
 
-    const companyName = quoteData.name || quoteData.companyName || sym;
-
-    cache[sym] = { annual, quarter, ttm, info: { companyName, ...quoteData } };
+    cache[sym] = {
+        annual, quarter, ttm,
+        info: { companyName: quoteData.name || quoteData.companyName || sym, ...quoteData },
+    };
     return cache[sym];
 }
 
-function rows(sym) {
-    const d = cache[sym];
-    if (!d) return [];
-    if (period === 'Y')   return d.annual;
-    if (period === 'Q')   return d.quarter;
-    return d.ttm;
-}
+function rows(sym){ const d=cache[sym]; if(!d) return []; return period==='Y'?d.annual:period==='Q'?d.quarter:d.ttm; }
 
 async function initStock(sym, name) {
     sym = sym.toUpperCase().trim();
-    if (!sym) return;
     setLoad(true);
     document.getElementById('welcomeSection').style.display = 'none';
     document.getElementById('chartView').style.display = 'block';
@@ -457,200 +442,114 @@ async function initStock(sym, name) {
         document.getElementById('stockBadge').textContent = sym.slice(0, 4);
         document.getElementById('stockNm').textContent    = sym;
         document.getElementById('stockSub').textContent   = d.info.companyName || name || '';
-        renderChips();
-        renderChart();
-        renderStats();
-    } catch (e) {
-        console.error('initStock error:', e);
-        showToast('Not found', e.message || `Could not load data for ${sym}`);
+        renderChips(); renderChart(); renderStats();
+    } catch(e) {
+        showToast('Not found', e.message);
         document.getElementById('welcomeSection').style.display = 'block';
-        document.getElementById('chartView').style.display = 'none';
-    } finally {
-        setLoad(false);
-    }
+        document.getElementById('chartView').style.display      = 'none';
+    } finally { setLoad(false); }
 }
 
 async function addTicker(sym) {
-    sym = sym.toUpperCase().trim();
-    if (!sym) return;
+    sym = sym.toUpperCase().trim(); if (!sym) return;
     if (tickers.includes(sym)) { showToast('Already added', `${sym} is already in the chart.`); return; }
     if (tickers.length >= 6)  { showToast('Max reached', 'Up to 6 tickers at once.'); return; }
     setLoad(true);
-    try {
-        await load(sym);
-        tickers.push(sym);
-        renderChips();
-        renderChart();
-        renderStats();
-    } catch (e) {
-        console.error('addTicker error:', e);
-        showToast('Not found', e.message || `Could not load data for ${sym}`);
-    } finally {
-        setLoad(false);
-    }
+    try { await load(sym); tickers.push(sym); renderChips(); renderChart(); renderStats(); }
+    catch(e) { showToast('Not found', e.message); }
+    finally { setLoad(false); }
 }
 
 function removeTicker(sym) {
     if (tickers.length === 1) return;
     tickers = tickers.filter(t => t !== sym);
-    renderChips();
-    renderChart();
-    renderStats();
+    renderChips(); renderChart(); renderStats();
 }
 
 function renderChips() {
-    const c = document.getElementById('chips');
-    c.innerHTML = '';
+    const c = document.getElementById('chips'); c.innerHTML = '';
     tickers.forEach((sym, i) => {
         const p = pal(i), chip = document.createElement('div');
         chip.className = 'chip';
-        chip.style.cssText = `color:${p.t};border-color:${p.b};background:${p.b}20`;
-        chip.innerHTML = sym + (tickers.length > 1
-            ? `<span class="chip-x" data-s="${sym}">✕</span>`
-            : '');
+        chip.style.cssText = `color:${p.t};border-color:${p.b};background:${p.b}18`;
+        chip.innerHTML = `${sym}${tickers.length > 1 ? `<span class="chip-x" data-s="${sym}">✕</span>` : ''}`;
         c.appendChild(chip);
     });
-    document.querySelectorAll('.chip-x').forEach(x =>
-        x.addEventListener('click', () => removeTicker(x.dataset.s))
-    );
+    document.querySelectorAll('.chip-x').forEach(x => x.addEventListener('click', () => removeTicker(x.dataset.s)));
 }
 
 function renderChart() {
-    const canvas  = document.getElementById('mainChart');
     const noDataEl = document.getElementById('noDataMsg');
+    const canvas   = document.getElementById('mainChart');
 
     const allD = new Set();
     tickers.forEach(s => rows(s).forEach(r => allD.add(r.date)));
     const labels = [...allD].sort();
 
     const datasets = tickers.map((sym, i) => {
-        const p = pal(i);
-        const r = rows(sym);
+        const p = pal(i), r = rows(sym);
         const map = Object.fromEntries(r.map(x => [x.date, x[metric]]));
         return {
             label: sym,
-            data: labels.map(d => {
-                const v = map[d];
-                return (v != null && isFinite(v)) ? v : null;
-            }),
-            backgroundColor: p.bg,
-            borderColor: p.b,
-            borderWidth: 1.5,
-            borderRadius: 4,
-            spanGaps: false,
+            // FIX 3: filter non-finite values so Chart.js doesn't crash
+            data: labels.map(d => { const v = map[d]; return (v != null && isFinite(v)) ? v : null; }),
+            backgroundColor: p.bg, borderColor: p.b, borderWidth: 1.5, borderRadius: 4,
         };
     });
 
     const hasData = datasets.some(ds => ds.data.some(v => v !== null));
 
-    if (!hasData) {
-        noDataEl.classList.add('show');
-        canvas.style.display = 'none';
-        // Update message based on metric
-        const metricLabel = M[metric].label;
-        document.getElementById('noDataText').innerHTML =
-            `<strong>${metricLabel}</strong> is not available for the <strong>${period}</strong> period. ` +
-            (period !== 'TTM' ? 'Switch to <strong>TTM</strong> for ratio metrics.' : 'No data available for this metric.');
-        if (chart) { chart.destroy(); chart = null; }
-        return;
-    }
+    // FIX 4: noDataMsg is a static element — toggle display directly, no race condition
+    noDataEl.style.display = hasData ? 'none' : 'flex';
+    canvas.style.display   = hasData ? 'block' : 'none';
 
-    noDataEl.classList.remove('show');
-    canvas.style.display = 'block';
+    if (!hasData) { if (chart) { chart.destroy(); chart = null; } return; }
 
-    document.getElementById('chartLeg').innerHTML = tickers
-        .map((s, i) => `<div class="leg-i"><div class="leg-dot" style="background:${pal(i).b}"></div>${s}</div>`)
-        .join('');
+    document.getElementById('chartLeg').innerHTML = tickers.map((s, i) => `<div class="leg-i"><div class="leg-dot" style="background:${pal(i).b}"></div>${s}</div>`).join('');
     document.getElementById('chartTtl').textContent    = M[metric].label;
-    document.getElementById('chartSubTxt').textContent =
-        period === 'Y' ? 'Annual · up to 30 years' :
-        period === 'Q' ? 'Quarterly · up to 30 quarters' :
-        'TTM – trailing twelve months';
+    document.getElementById('chartSubTxt').textContent = period==='Y'?'Annual · up to 30 years':period==='Q'?'Quarterly · up to 30 quarters':'TTM – trailing twelve months';
 
     const dk = document.documentElement.getAttribute('data-theme') !== 'light';
-    const gc = dk ? 'rgba(255,255,255,.05)' : 'rgba(0,0,0,.06)';
-    const tc = dk ? '#64748B' : '#94A3B8';
-
-    if (chart) { chart.destroy(); chart = null; }
-
+    const gc = dk ? 'rgba(255,255,255,.05)' : 'rgba(0,0,0,.06)', tc = dk ? '#64748B' : '#94A3B8';
+    if (chart) chart.destroy();
     chart = new Chart(canvas.getContext('2d'), {
-        type: 'bar',
-        data: { labels, datasets },
+        type: 'bar', data: { labels, datasets },
         options: {
-            responsive: true,
-            maintainAspectRatio: true,
+            responsive: true, maintainAspectRatio: true,
             aspectRatio: window.innerWidth < 600 ? 1.4 : 2.8,
             interaction: { mode: 'index', intersect: false },
             plugins: {
                 legend: { display: false },
-                tooltip: {
-                    backgroundColor: dk ? '#1E293B' : '#fff',
-                    borderColor: dk ? '#334155' : '#E2E8F0',
-                    borderWidth: 1,
-                    titleColor: dk ? '#F1F5F9' : '#111827',
-                    bodyColor: dk ? '#94A3B8' : '#6B7280',
-                    padding: 12,
-                    callbacks: {
-                        label: c => ` ${c.dataset.label}: ${M[metric].fmt(c.parsed.y)}`
-                    }
-                }
+                tooltip: { backgroundColor: dk?'#1E293B':'#fff', borderColor: dk?'#334155':'#E2E8F0', borderWidth: 1, titleColor: dk?'#F1F5F9':'#111827', bodyColor: dk?'#94A3B8':'#6B7280', padding: 12, callbacks: { label: c => ` ${c.dataset.label}: ${M[metric].fmt(c.parsed.y)}` } }
             },
             scales: {
-                x: {
-                    grid: { color: gc },
-                    ticks: { color: tc, font: { size: 11 }, maxTicksLimit: 14, maxRotation: 45 }
-                },
-                y: {
-                    grid: { color: gc },
-                    ticks: { color: tc, font: { size: 11 }, callback: v => M[metric].fmt(v) }
-                }
+                x: { grid: { color: gc }, ticks: { color: tc, font: { size: 11 }, maxTicksLimit: 14, maxRotation: 45 } },
+                y: { grid: { color: gc }, ticks: { color: tc, font: { size: 11 }, callback: v => M[metric].fmt(v) } }
             }
         }
     });
 }
 
 function renderStats() {
-    const g = document.getElementById('stats');
-    g.innerHTML = '';
+    const g = document.getElementById('stats'); g.innerHTML = '';
     tickers.forEach((sym, i) => {
-        const p = pal(i);
-        const r = rows(sym);
-        if (!r.length) return;
-
-        // Find latest row with a valid value for the current metric
-        let latIdx = r.length - 1;
-        while (latIdx >= 0 && (r[latIdx][metric] == null || !isFinite(r[latIdx][metric]))) {
-            latIdx--;
-        }
-        const lat  = latIdx >= 0 ? r[latIdx] : r[r.length - 1];
-        const prev = latIdx > 0  ? r[latIdx - 1] : null;
-        const val  = lat[metric];
-        const pval = prev ? prev[metric] : null;
-        const chg  = (val != null && pval != null && pval !== 0 && isFinite(val) && isFinite(pval))
-            ? ((val - pval) / Math.abs(pval)) * 100 : null;
-
-        const el = document.createElement('div');
-        el.className = 'sc';
-        el.style.borderTop = `3px solid ${p.b}`;
-        el.innerHTML = `
-            <div class="sc-ticker" style="color:${p.t}">${sym}</div>
-            <div class="sc-label">${M[metric].label} · Latest</div>
-            <div class="sc-val">${M[metric].fmt(val)}</div>
-            ${chg != null ? `<div class="sc-chg ${chg >= 0 ? 'up' : 'dn'}">${chg >= 0 ? '▲' : '▼'} ${Math.abs(chg).toFixed(1)}% <span style="font-weight:400;color:var(--sub)">vs prev</span></div>` : ''}
-        `;
+        const p = pal(i), r = rows(sym); if (!r.length) return;
+        const lat = r[r.length-1], prev = r[r.length-2], val = lat[metric], pval = prev ? prev[metric] : null;
+        const chg = (val != null && pval != null && pval !== 0) ? ((val - pval) / Math.abs(pval)) * 100 : null;
+        const el = document.createElement('div'); el.className = 'sc'; el.style.borderTop = `3px solid ${p.b}`;
+        el.innerHTML = `<div class="sc-ticker" style="color:${p.t}">${sym}</div><div class="sc-label">${M[metric].label} · Latest</div><div class="sc-val">${M[metric].fmt(val)}</div>${chg!=null?`<div class="sc-chg ${chg>=0?'up':'dn'}">${chg>=0?'▲':'▼'} ${Math.abs(chg).toFixed(1)}% <span style="font-weight:400;color:var(--sub)">vs prev</span></div>`:''}`;
         g.appendChild(el);
     });
 }
 
 // ---- SEARCH ----
-const sInp = document.getElementById('stockSearch');
-const sRes = document.getElementById('searchResults');
+const sInp = document.getElementById('stockSearch'), sRes = document.getElementById('searchResults');
 let searchTimer = null;
 
 function renderSuggestions(results, inp, res, cb) {
     if (!results.length) { res.classList.remove('open'); return; }
     res.innerHTML = results.map(x => `
-        <div class="s-item" data-s="${x.s}" data-n="${encodeURIComponent(x.n)}">
+        <div class="s-item" data-s="${x.s}" data-n="${x.n}">
             <div style="display:flex;align-items:center;gap:11px">
                 <span class="s-sym">${x.s}</span>
                 <span class="s-name">${x.n}</span>
@@ -659,9 +558,7 @@ function renderSuggestions(results, inp, res, cb) {
         </div>`).join('');
     res.classList.add('open');
     res.querySelectorAll('.s-item').forEach(el => el.addEventListener('click', () => {
-        res.classList.remove('open');
-        inp.value = '';
-        cb(el.dataset.s, decodeURIComponent(el.dataset.n));
+        res.classList.remove('open'); inp.value = ''; cb(el.dataset.s, el.dataset.n);
     }));
 }
 
@@ -671,16 +568,10 @@ async function doSearch(q, inp, res, cb) {
         const raw = await fmpAPI.searchStocks(q);
         const results = (Array.isArray(raw) ? raw : [])
             .slice(0, 8)
-            .map(x => ({
-                s: x.symbol || x.s || '',
-                n: x.name || x.companyName || x.n || ''
-            }))
+            .map(x => ({ s: x.symbol || x.s, n: x.name || x.companyName || x.n || '' }))
             .filter(x => x.s);
         renderSuggestions(results, inp, res, cb);
-    } catch (e) {
-        console.error('Search error:', e);
-        res.classList.remove('open');
-    }
+    } catch(e) { res.classList.remove('open'); }
 }
 
 sInp.addEventListener('input', () => {
@@ -689,19 +580,11 @@ sInp.addEventListener('input', () => {
     if (!q) { sRes.classList.remove('open'); return; }
     searchTimer = setTimeout(() => doSearch(q, sInp, sRes, initStock), 300);
 });
-sInp.addEventListener('keydown', e => {
-    if (e.key === 'Enter') {
-        const v = sInp.value.trim();
-        if (v) { sRes.classList.remove('open'); sInp.value = ''; initStock(v, ''); }
-    }
-});
-document.addEventListener('click', e => {
-    if (!sInp.contains(e.target) && !sRes.contains(e.target)) sRes.classList.remove('open');
-});
+sInp.addEventListener('keydown', e => { if (e.key === 'Enter') { const v = sInp.value.trim(); if (v) { sRes.classList.remove('open'); sInp.value = ''; initStock(v, ''); } } });
+document.addEventListener('click', e => { if (!sInp.contains(e.target) && !sRes.contains(e.target)) sRes.classList.remove('open'); });
 
 // ---- COMPARE SEARCH ----
-const ci   = document.getElementById('ci');
-const ciAc = document.getElementById('ciAc');
+const ci = document.getElementById('ci'), ciAc = document.getElementById('ciAc');
 let ciTimer = null;
 
 ci.addEventListener('input', () => {
@@ -711,89 +594,33 @@ ci.addEventListener('input', () => {
     ciTimer = setTimeout(async () => {
         try {
             const raw = await fmpAPI.searchStocks(q);
-            const results = (Array.isArray(raw) ? raw : [])
-                .slice(0, 6)
-                .map(x => ({ s: x.symbol || x.s || '', n: x.name || x.companyName || '' }))
-                .filter(x => x.s);
+            const results = (Array.isArray(raw) ? raw : []).slice(0, 6).map(x => ({ s: x.symbol||x.s, n: x.name||x.companyName||'' })).filter(x=>x.s);
             if (!results.length) { ciAc.classList.remove('open'); return; }
-            ciAc.innerHTML = results.map(x =>
-                `<div class="ac-i" data-s="${x.s}"><span class="ac-s">${x.s}</span><span class="ac-n">${x.n}</span></div>`
-            ).join('');
+            ciAc.innerHTML = results.map(x => `<div class="ac-i" data-s="${x.s}"><span class="ac-s">${x.s}</span><span class="ac-n">${x.n}</span></div>`).join('');
             ciAc.classList.add('open');
-            ciAc.querySelectorAll('.ac-i').forEach(el =>
-                el.addEventListener('click', () => {
-                    ci.value = '';
-                    ciAc.classList.remove('open');
-                    addTicker(el.dataset.s);
-                })
-            );
-        } catch (e) {
-            ciAc.classList.remove('open');
-        }
+            ciAc.querySelectorAll('.ac-i').forEach(el => el.addEventListener('click', () => { ci.value = ''; ciAc.classList.remove('open'); addTicker(el.dataset.s); }));
+        } catch(e) { ciAc.classList.remove('open'); }
     }, 300);
 });
-ci.addEventListener('keydown', e => {
-    if (e.key === 'Enter') { const v = ci.value.trim(); if (v) { ci.value = ''; ciAc.classList.remove('open'); addTicker(v); } }
-});
-document.getElementById('addBtn').addEventListener('click', () => {
-    const v = ci.value.trim(); if (v) { ci.value = ''; ciAc.classList.remove('open'); addTicker(v); }
-});
-document.addEventListener('click', e => {
-    if (!ci.contains(e.target) && !ciAc.contains(e.target)) ciAc.classList.remove('open');
-});
+ci.addEventListener('keydown', e => { if (e.key === 'Enter') { const v = ci.value.trim(); if (v) { ci.value = ''; ciAc.classList.remove('open'); addTicker(v); } } });
+document.getElementById('addBtn').addEventListener('click', () => { const v = ci.value.trim(); if (v) { ci.value = ''; ciAc.classList.remove('open'); addTicker(v); } });
+document.addEventListener('click', e => { if (!ci.contains(e.target) && !ciAc.contains(e.target)) ciAc.classList.remove('open'); });
 
-// ---- METRIC PILLS ----
-document.getElementById('metricPills').addEventListener('click', e => {
-    const p = e.target.closest('[data-m]');
-    if (!p) return;
-    document.querySelectorAll('#metricPills .pill').forEach(x => x.classList.remove('active'));
-    p.classList.add('active');
-    metric = p.dataset.m;
-    if (tickers.length) { renderChart(); renderStats(); }
-});
-
-// ---- PERIOD PILLS ----
-document.getElementById('periodPills').addEventListener('click', e => {
-    const p = e.target.closest('[data-p]');
-    if (!p) return;
-    document.querySelectorAll('#periodPills .pill').forEach(x => x.classList.remove('active'));
-    p.classList.add('active');
-    period = p.dataset.p;
-    if (tickers.length) { renderChart(); renderStats(); }
-});
+// ---- PILLS ----
+document.getElementById('metricPills').addEventListener('click', e => { const p = e.target.closest('[data-m]'); if (!p) return; document.querySelectorAll('#metricPills .pill').forEach(x=>x.classList.remove('active')); p.classList.add('active'); metric = p.dataset.m; if (tickers.length) { renderChart(); renderStats(); } });
+document.getElementById('periodPills').addEventListener('click', e => { const p = e.target.closest('[data-p]'); if (!p) return; document.querySelectorAll('#periodPills .pill').forEach(x=>x.classList.remove('active')); p.classList.add('active'); period = p.dataset.p; if (tickers.length) { renderChart(); renderStats(); } });
 
 // ---- BACK ----
-document.getElementById('backBtn').addEventListener('click', () => {
-    tickers = [];
-    cache = {};
-    if (chart) { chart.destroy(); chart = null; }
-    document.getElementById('chartView').style.display = 'none';
-    document.getElementById('welcomeSection').style.display = 'block';
-    document.getElementById('stockSearch').value = '';
-});
+document.getElementById('backBtn').addEventListener('click', () => { tickers = []; cache = {}; if (chart) { chart.destroy(); chart = null; } document.getElementById('chartView').style.display = 'none'; document.getElementById('welcomeSection').style.display = 'block'; });
 
 // ---- THEME ----
-const html   = document.documentElement;
-const stored = localStorage.getItem('theme') || 'dark';
+const html = document.documentElement, stored = localStorage.getItem('theme') || 'dark';
 html.setAttribute('data-theme', stored);
-if (stored === 'light') {
-    document.getElementById('sunIco').style.display = 'none';
-    document.getElementById('moonIco').style.display = 'block';
-}
-document.getElementById('themeBtn').addEventListener('click', () => {
-    const n = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-    html.setAttribute('data-theme', n);
-    localStorage.setItem('theme', n);
-    document.getElementById('sunIco').style.display  = n === 'dark' ? 'block' : 'none';
-    document.getElementById('moonIco').style.display = n === 'light' ? 'block' : 'none';
-    if (chart && tickers.length) renderChart();
-});
+if (stored === 'light') { document.getElementById('sunIco').style.display='none'; document.getElementById('moonIco').style.display='block'; }
+document.getElementById('themeBtn').addEventListener('click', () => { const n = html.getAttribute('data-theme')==='dark'?'light':'dark'; html.setAttribute('data-theme',n); localStorage.setItem('theme',n); document.getElementById('sunIco').style.display=n==='dark'?'block':'none'; document.getElementById('moonIco').style.display=n==='light'?'block':'none'; if(chart&&tickers.length) renderChart(); });
 
 // ---- DROPDOWN ----
-document.getElementById('avatarBtn').addEventListener('click', e => {
-    e.stopPropagation();
-    document.getElementById('dropdown').classList.toggle('open');
-});
+document.getElementById('avatarBtn').addEventListener('click', e => { e.stopPropagation(); document.getElementById('dropdown').classList.toggle('open'); });
 document.addEventListener('click', () => document.getElementById('dropdown').classList.remove('open'));
 </script>
 </body>
