@@ -151,6 +151,7 @@
         .search-result-item:hover { background: var(--hover-bg); }
         .result-symbol { font-weight: 700; color: var(--primary-orange); font-size: 0.9rem; min-width: 55px; }
         .result-name { color: var(--text-secondary); font-size: 0.85rem; flex: 1; }
+        .result-type-badge { font-size: 0.75rem; font-weight: 600; color: var(--text-secondary); background: var(--hover-bg); border: 1px solid var(--border-color); padding: 2px 9px; border-radius: 5px; white-space: nowrap; flex-shrink: 0; }
 
         /* FILTERS */
         .sh-filters-bar { background: var(--bg-topbar); border: 1px solid var(--border-color); border-radius: 14px; margin-bottom: 24px; overflow: visible; }
@@ -741,6 +742,7 @@ if (document.readyState === 'loading') {
                                 <div class="search-result-item" onclick="showStockDetails('${stock.symbol}')">
                                     <span class="result-symbol">${stock.symbol}</span>
                                     <span class="result-name">${stock.name || stock.companyName || ''}</span>
+                                    <span class="result-type-badge">Stock</span>
                                 </div>`).join('');
                             searchResults.classList.add('active');
                         } else {
