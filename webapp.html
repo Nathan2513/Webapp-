@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -27,378 +27,91 @@
         }
         
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg-main);
-            color: var(--text-primary);
-            overflow-x: hidden;
-        }
-        
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg-main); color: var(--text-primary); overflow-x: hidden; }
         .app-container { display: flex; flex-direction: column; min-height: 100vh; }
         
         /* TOPBAR */
-        .topbar {
-            background-color: var(--bg-card);
-            border-bottom: 1px solid var(--border-color);
-            padding: 0 30px;
-            height: 70px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        .topbar-logo {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-weight: 800;
-            font-size: 1.4rem;
-            color: var(--text-primary);
-            text-decoration: none;
-        }
+        .topbar { background-color: var(--bg-card); border-bottom: 1px solid var(--border-color); padding: 0 30px; height: 70px; display: flex; align-items: center; justify-content: space-between; }
+        .topbar-logo { display: flex; align-items: center; gap: 12px; font-weight: 800; font-size: 1.4rem; color: var(--text-primary); text-decoration: none; }
         .topbar-logo img { height: 45px; width: auto; }
         .topbar-nav { display: flex; gap: 10px; flex: 1; justify-content: center; }
-        .nav-btn {
-            padding: 10px 20px;
-            border-radius: 10px;
-            font-weight: 600;
-            font-size: 0.95rem;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            border: 2px solid var(--border-color);
-            background: var(--bg-card);
-            color: var(--text-secondary);
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .nav-btn:hover {
-            background-color: var(--hover-bg);
-            color: var(--text-primary);
-            transform: translateY(-2px);
-        }
-        .nav-btn.active {
-            background-color: var(--primary-orange);
-            color: white;
-            border-color: var(--primary-orange);
-        }
+        .nav-btn { padding: 10px 20px; border-radius: 10px; font-weight: 600; font-size: 0.95rem; cursor: pointer; transition: all 0.2s ease; border: 2px solid var(--border-color); background: var(--bg-card); color: var(--text-secondary); text-decoration: none; display: inline-flex; align-items: center; gap: 8px; }
+        .nav-btn:hover { background-color: var(--hover-bg); color: var(--text-primary); transform: translateY(-2px); }
+        .nav-btn.active { background-color: var(--primary-orange); color: white; border-color: var(--primary-orange); }
         .nav-btn svg { width: 18px; height: 18px; }
         .topbar-actions { display: flex; align-items: center; gap: 15px; }
-        .theme-toggle {
-            background-color: var(--hover-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            padding: 10px 12px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+        .theme-toggle { background-color: var(--hover-bg); border: 1px solid var(--border-color); border-radius: 10px; padding: 10px 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
         .theme-toggle svg { width: 20px; height: 20px; color: var(--text-primary); }
         .user-menu { position: relative; }
-        .user-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary-orange), #ff9f40);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: 700;
-            cursor: pointer;
-        }
-        .dropdown-menu {
-            position: absolute;
-            top: 55px;
-            right: 0;
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
-            min-width: 220px;
-            opacity: 0;
-            visibility: hidden;
-            z-index: 1000;
-        }
+        .user-avatar { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, var(--primary-orange), #ff9f40); display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; cursor: pointer; }
+        .dropdown-menu { position: absolute; top: 55px; right: 0; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.3); min-width: 220px; opacity: 0; visibility: hidden; z-index: 1000; }
         .dropdown-menu.active { opacity: 1; visibility: visible; }
-        .dropdown-item {
-            padding: 14px 20px;
-            cursor: pointer;
-            color: var(--text-primary);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
+        .dropdown-item { padding: 14px 20px; cursor: pointer; color: var(--text-primary); display: flex; align-items: center; gap: 12px; text-decoration: none; }
         .dropdown-item:hover { background-color: var(--hover-bg); }
         .dropdown-item:last-child { color: #ef4444; border-top: 1px solid var(--border-color); }
         .dropdown-item svg { width: 18px; height: 18px; }
         
-        /* MAIN CONTENT */
-        .main-content {
-            flex: 1;
-            padding: 40px 30px;
-            max-width: 1400px;
-            margin: 0 auto;
-            width: 100%;
-        }
+        /* MAIN */
+        .main-content { flex: 1; padding: 40px 30px; max-width: 1400px; margin: 0 auto; width: 100%; }
         
-        /* HERO SECTION */
-        .hero-section {
-            text-align: center;
-            margin-bottom: 60px;
-        }
-        .hero-section h1 {
-            font-size: 3.5rem;
-            font-weight: 800;
-            margin-bottom: 16px;
-            background: linear-gradient(135deg, var(--text-primary) 0%, var(--primary-orange) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        .hero-section p {
-            font-size: 1.3rem;
-            color: var(--text-secondary);
-            margin-bottom: 40px;
-            max-width: 700px;
-            margin-left: auto;
-            margin-right: auto;
-        }
+        /* HERO */
+        .hero-section { text-align: center; margin-bottom: 60px; }
+        .hero-section h1 { font-size: 3.5rem; font-weight: 800; margin-bottom: 16px; background: linear-gradient(135deg, var(--text-primary) 0%, var(--primary-orange) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .hero-section p { font-size: 1.3rem; color: var(--text-secondary); margin-bottom: 40px; max-width: 700px; margin-left: auto; margin-right: auto; }
         
         /* SEARCH BLOCK */
-        .search-block {
-            max-width: 800px;
-            margin: 0 auto 80px;
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 20px;
-            padding: 40px;
-            box-shadow: 0 20px 50px rgba(255, 122, 0, 0.1);
-        }
-        .search-block h2 {
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 10px;
-            color: var(--text-primary);
-            text-align: center;
-        }
-        .search-block p {
-            text-align: center;
-            color: var(--text-secondary);
-            margin-bottom: 30px;
-            font-size: 1rem;
-        }
-        .search-wrapper {
-            position: relative;
-        }
-        .search-input {
-            width: 100%;
-            padding: 20px 60px 20px 60px;
-            border: 2px solid var(--border-color);
-            border-radius: 16px;
-            font-size: 1.1rem;
-            background-color: var(--bg-main);
-            color: var(--text-primary);
-            transition: all 0.3s ease;
-        }
-        .search-input:focus {
-            outline: none;
-            border-color: var(--primary-orange);
-            box-shadow: 0 0 0 4px rgba(255, 122, 0, 0.1);
-        }
-        .search-icon {
-            position: absolute;
-            left: 24px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--text-secondary);
-        }
-        .search-icon svg {
-            width: 24px;
-            height: 24px;
-        }
-        .search-results {
-            position: absolute;
-            top: calc(100% + 12px);
-            left: 0;
-            right: 0;
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
-            max-height: 350px;
-            overflow-y: auto;
-            z-index: 100;
-            display: none;
-        }
-        .search-results.active {
-            display: block;
-        }
-        .search-result-item {
-            padding: 16px 24px;
-            cursor: pointer;
-            border-bottom: 1px solid var(--border-color);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: background-color 0.2s;
-        }
-        .search-result-item:last-child {
-            border-bottom: none;
-        }
-        .search-result-item:hover {
-            background-color: var(--hover-bg);
-        }
-        .result-info {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-        .result-symbol {
-            font-weight: 700;
-            font-size: 1.05rem;
-            color: var(--text-primary);
-        }
-        .result-name {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-        }
-        .result-price {
-            font-weight: 700;
-            color: var(--text-primary);
-            font-size: 1.05rem;
-        }
-        
-        /* FEATURE BLOCKS */
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 30px;
-            margin-bottom: 60px;
-        }
-        .feature-block {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 20px;
-            padding: 40px;
-            cursor: pointer;
-            transition: all 0.4s ease;
-            text-decoration: none;
-            display: block;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        /* Effet de brillance au survol */
-        .feature-block::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 122, 0, 0.1), transparent);
-            transition: left 0.5s;
-        }
+        .search-block { max-width: 800px; margin: 0 auto 80px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 20px; padding: 40px; box-shadow: 0 20px 50px rgba(255,122,0,0.1); }
+        .search-block h2 { font-size: 1.5rem; font-weight: 700; margin-bottom: 10px; color: var(--text-primary); text-align: center; }
+        .search-block p { text-align: center; color: var(--text-secondary); margin-bottom: 30px; font-size: 1rem; }
+        .search-wrapper { position: relative; }
+        .search-input { width: 100%; padding: 20px 60px; border: 2px solid var(--border-color); border-radius: 16px; font-size: 1.1rem; background-color: var(--bg-main); color: var(--text-primary); transition: all 0.3s ease; font-family: inherit; }
+        .search-input:focus { outline: none; border-color: var(--primary-orange); box-shadow: 0 0 0 4px rgba(255,122,0,0.1); }
+        .search-input::placeholder { color: var(--text-secondary); }
+        .search-icon { position: absolute; left: 24px; top: 50%; transform: translateY(-50%); color: var(--text-secondary); }
+        .search-icon svg { width: 24px; height: 24px; }
 
-        .feature-block:hover::before {
-            left: 100%;
-        }
+        /* search hint */
+        .search-hint { text-align: center; margin-top: 14px; font-size: 0.85rem; color: var(--text-secondary); }
+        .search-hint kbd { display: inline-block; padding: 2px 7px; border: 1px solid var(--border-color); border-radius: 5px; font-size: 0.8rem; background: var(--hover-bg); }
+
+        .search-results { position: absolute; top: calc(100% + 12px); left: 0; right: 0; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.3); max-height: 350px; overflow-y: auto; z-index: 100; display: none; }
+        .search-results.active { display: block; }
+        .search-result-item { padding: 16px 24px; cursor: pointer; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; transition: background-color 0.2s; }
+        .search-result-item:last-child { border-bottom: none; }
+        .search-result-item:hover { background-color: var(--hover-bg); }
+        .result-info { display: flex; flex-direction: column; gap: 4px; }
+        .result-symbol { font-weight: 700; font-size: 1.05rem; color: var(--primary-orange); }
+        .result-name { font-size: 0.9rem; color: var(--text-secondary); }
+        .result-right { display: flex; flex-direction: column; align-items: flex-end; gap: 3px; }
+        .result-price { font-weight: 700; color: var(--text-primary); font-size: 1.05rem; }
+        .result-change-pos { font-size: 0.82rem; color: #10b981; font-weight: 600; }
+        .result-change-neg { font-size: 0.82rem; color: #ef4444; font-weight: 600; }
+        .result-arrow { font-size: 0.78rem; color: var(--text-secondary); margin-top: 2px; }
         
-        .feature-block:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 20px 50px rgba(255, 122, 0, 0.15);
-            border-color: var(--primary-orange);
-        }
-        .feature-icon {
-            width: 70px;
-            height: 70px;
-            background: linear-gradient(135deg, var(--primary-orange), #ff9f40);
-            border-radius: 18px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 24px;
-            box-shadow: 0 10px 30px rgba(255, 122, 0, 0.3);
-            transition: transform 0.3s ease;
-        }
+        /* FEATURES */
+        .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; margin-bottom: 60px; }
+        .feature-block { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 20px; padding: 40px; cursor: pointer; transition: all 0.4s ease; text-decoration: none; display: block; position: relative; overflow: hidden; }
+        .feature-block::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,122,0,0.08), transparent); transition: left 0.5s; }
+        .feature-block:hover::before { left: 100%; }
+        .feature-block:hover { transform: translateY(-10px); box-shadow: 0 20px 50px rgba(255,122,0,0.15); border-color: var(--primary-orange); }
+        .feature-icon { width: 70px; height: 70px; background: linear-gradient(135deg, var(--primary-orange), #ff9f40); border-radius: 18px; display: flex; align-items: center; justify-content: center; margin-bottom: 24px; box-shadow: 0 10px 30px rgba(255,122,0,0.3); transition: transform 0.3s ease; }
+        .feature-block:hover .feature-icon { transform: scale(1.1) rotate(-5deg); }
+        .feature-icon svg { width: 36px; height: 36px; color: white; }
+        .feature-block h3 { font-size: 1.5rem; font-weight: 700; margin-bottom: 12px; color: var(--text-primary); }
+        .feature-block p { color: var(--text-secondary); line-height: 1.7; font-size: 1rem; margin-bottom: 20px; }
+        .feature-tags { display: flex; gap: 8px; flex-wrap: wrap; }
+        .tag { padding: 6px 14px; background: var(--hover-bg); border-radius: 8px; font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); }
+        .feature-arrow { display: flex; align-items: center; gap: 8px; color: var(--primary-orange); font-weight: 600; margin-top: 20px; font-size: 0.95rem; }
+        .feature-arrow svg { width: 18px; height: 18px; transition: transform 0.3s; }
+        .feature-block:hover .feature-arrow svg { transform: translateX(5px); }
         
-        .feature-block:hover .feature-icon {
-            transform: scale(1.1) rotate(-5deg);
-        }
-        
-        .feature-icon svg {
-            width: 36px;
-            height: 36px;
-            color: white;
-        }
-        .feature-block h3 {
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 12px;
-            color: var(--text-primary);
-        }
-        .feature-block p {
-            color: var(--text-secondary);
-            line-height: 1.7;
-            font-size: 1rem;
-            margin-bottom: 20px;
-        }
-        .feature-tags {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-        .tag {
-            padding: 6px 14px;
-            background: var(--hover-bg);
-            border-radius: 8px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: var(--text-secondary);
-        }
-        .feature-arrow {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: var(--primary-orange);
-            font-weight: 600;
-            margin-top: 20px;
-            font-size: 0.95rem;
-        }
-        .feature-arrow svg {
-            width: 18px;
-            height: 18px;
-            transition: transform 0.3s;
-        }
-        .feature-block:hover .feature-arrow svg {
-            transform: translateX(5px);
-        }
-        
-        /* RESPONSIVE */
         @media (max-width: 1200px) {
-            .features-grid {
-                grid-template-columns: 1fr;
-                max-width: 600px;
-                margin-left: auto;
-                margin-right: auto;
-            }
-            .topbar-nav {
-                display: none;
-            }
+            .features-grid { grid-template-columns: 1fr; max-width: 600px; margin-left: auto; margin-right: auto; }
+            .topbar-nav { display: none; }
         }
         @media (max-width: 768px) {
-            .hero-section h1 {
-                font-size: 2.5rem;
-            }
-            .hero-section p {
-                font-size: 1.1rem;
-            }
-            .search-block {
-                padding: 30px 20px;
-            }
+            .hero-section h1 { font-size: 2.5rem; }
+            .search-block { padding: 30px 20px; }
         }
     </style>
 </head>
@@ -406,64 +119,44 @@
     <div class="app-container">
         <header class="topbar">
             <a href="webapp.html" class="topbar-logo">
-                <img src="logo.png" alt="Logo">
-                StockMaster
+                <img src="logo.png" alt="Logo"> StockMaster
             </a>
             <nav class="topbar-nav">
                 <a href="webapp.html" class="nav-btn active">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                    </svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>
                     Home
                 </a>
                 <a href="stock-screener.html" class="nav-btn">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                    </svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
                     Stock Screener
                 </a>
                 <a href="valorisation-analysis.html" class="nav-btn">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                    </svg>
-                    Valorisation Analysis
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
+                    Valuation Analysis
                 </a>
                 <a href="dcf-calculator.html" class="nav-btn">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                    </svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg>
                     DCF Calculator
                 </a>
             </nav>
             <div class="topbar-actions">
                 <button class="theme-toggle" id="themeToggle">
-                    <svg id="sunIcon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-                    </svg>
-                    <svg id="moonIcon" style="display:none;" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-                    </svg>
+                    <svg id="sunIcon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
+                    <svg id="moonIcon" style="display:none;" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg>
                 </button>
                 <div class="user-menu">
                     <div class="user-avatar" id="userAvatar">U</div>
                     <div class="dropdown-menu" id="dropdownMenu">
                         <a href="settings.html" class="dropdown-item">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                            </svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
                             Settings
                         </a>
                         <a href="billings-plans.html" class="dropdown-item">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
-                            </svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" /></svg>
                             Billings & Plans
                         </a>
                         <div class="dropdown-item" id="signOutBtn">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                            </svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
                             Sign Out
                         </div>
                     </div>
@@ -472,43 +165,34 @@
         </header>
 
         <main class="main-content">
-            <!-- HERO SECTION -->
+            <!-- HERO -->
             <div class="hero-section">
                 <h1>Analyse Better, Invest Better.</h1>
-                <p>Accédez aux outils d'analyse professionnels pour évaluer n'importe quelle action en quelques secondes.</p>
+                <p>Access professional-grade analysis tools to evaluate any stock in seconds.</p>
             </div>
 
             <!-- SEARCH BLOCK -->
             <div class="search-block">
-                <h2>🔍 Rechercher une Action</h2>
-                <p>Commencez par rechercher un ticker pour accéder aux analyses</p>
+                <h2>🔍 Search a Stock</h2>
+                <p>Search for a ticker to access the full stock analysis</p>
                 <div class="search-wrapper">
                     <div class="search-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                        </svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
                     </div>
-                    <input 
-                        type="text" 
-                        class="search-input" 
-                        id="stockSearch" 
-                        placeholder="Tapez un ticker (AAPL, NVDA, MSFT...)"
-                    >
+                    <input type="text" class="search-input" id="stockSearch" placeholder="Type a ticker (AAPL, NVDA, MSFT...)" autocomplete="off">
                     <div class="search-results" id="searchResults"></div>
                 </div>
+                <p class="search-hint">Press <kbd>Enter</kbd> to go directly · Click a result to open full analysis</p>
             </div>
 
             <!-- FEATURE BLOCKS -->
             <div class="features-grid">
-                <!-- STOCK SCREENER -->
                 <a href="stock-screener.html" class="feature-block">
                     <div class="feature-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                        </svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
                     </div>
                     <h3>📊 Stock Screener</h3>
-                    <p>Filtrez des milliers d'actions selon vos critères. Trouvez les meilleures opportunités avec nos presets prédéfinis.</p>
+                    <p>Filter thousands of stocks by your criteria. Find the best opportunities with predefined presets.</p>
                     <div class="feature-tags">
                         <span class="tag">Value</span>
                         <span class="tag">Growth</span>
@@ -516,22 +200,17 @@
                         <span class="tag">Quality</span>
                     </div>
                     <div class="feature-arrow">
-                        Explorer le Screener
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                        </svg>
+                        Explore the Screener
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
                     </div>
                 </a>
 
-                <!-- VALORISATION ANALYSIS -->
                 <a href="valorisation-analysis.html" class="feature-block">
                     <div class="feature-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                        </svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
                     </div>
-                    <h3>💰 Analyse de Valorisation</h3>
-                    <p>Comparez les multiples actuels avec l'historique 5 ans. Détectez les actions sous-évaluées instantanément.</p>
+                    <h3>💰 Valuation Analysis</h3>
+                    <p>Compare current multiples against 5-year historical averages. Instantly spot undervalued stocks.</p>
                     <div class="feature-tags">
                         <span class="tag">P/E</span>
                         <span class="tag">P/FCF</span>
@@ -539,22 +218,17 @@
                         <span class="tag">P/OI</span>
                     </div>
                     <div class="feature-arrow">
-                        Analyser une Action
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                        </svg>
+                        Analyse a Stock
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
                     </div>
                 </a>
 
-                <!-- DCF CALCULATOR -->
                 <a href="dcf-calculator.html" class="feature-block">
                     <div class="feature-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                        </svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg>
                     </div>
                     <h3>📈 DCF Calculator</h3>
-                    <p>Calculez la valeur intrinsèque avec le modèle DCF. Projections sur 5 ans avec graphiques interactifs.</p>
+                    <p>Calculate intrinsic value using the DCF model. 5-year projections with interactive charts.</p>
                     <div class="feature-tags">
                         <span class="tag">Fair Value</span>
                         <span class="tag">CAGR</span>
@@ -562,10 +236,8 @@
                         <span class="tag">Charts</span>
                     </div>
                     <div class="feature-arrow">
-                        Calculer le DCF
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                        </svg>
+                        Calculate DCF
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
                     </div>
                 </a>
             </div>
@@ -577,156 +249,135 @@
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
         import fmpAPI from './fmp-api.js';
 
-        const firebaseConfig = {
+        initializeApp({
             apiKey: "AIzaSyD4dkPbO1C-bZiSokalUnwNqOTpeAyrOU0",
             authDomain: "stockmaster-30835.firebaseapp.com",
             projectId: "stockmaster-30835",
             storageBucket: "stockmaster-30835.firebasestorage.app",
             messagingSenderId: "506097874613",
-            appId: "1:506097874613:web:0d15d2bd1575a55c8ab0fc",
-            measurementId: "G-2PG7Q471TR"
-        };
+            appId: "1:506097874613:web:0d15d2bd1575a55c8ab0fc"
+        });
+        const auth = getAuth();
 
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-
-        onAuthStateChanged(auth, (user) => {
-            if (!user) {
-                window.location.href = "login.html";
-            } else {
-                document.querySelector('.user-avatar').textContent = user.email.charAt(0).toUpperCase();
-            }
+        onAuthStateChanged(auth, user => {
+            if (!user) { window.location.href = "login.html"; return; }
+            document.getElementById('userAvatar').textContent = user.email.charAt(0).toUpperCase();
         });
 
+        // User menu
         const userAvatar = document.getElementById('userAvatar');
         const dropdownMenu = document.getElementById('dropdownMenu');
-        userAvatar.addEventListener('click', (e) => {
-            e.stopPropagation();
-            dropdownMenu.classList.toggle('active');
-        });
-        document.addEventListener('click', (e) => {
-            if (!userAvatar.contains(e.target) && !dropdownMenu.contains(e.target)) {
-                dropdownMenu.classList.remove('active');
-            }
-        });
+        userAvatar.addEventListener('click', e => { e.stopPropagation(); dropdownMenu.classList.toggle('active'); });
+        document.addEventListener('click', () => dropdownMenu.classList.remove('active'));
+        document.getElementById('signOutBtn').addEventListener('click', async () => { await signOut(auth); window.location.href = "index.html"; });
 
-        document.getElementById('signOutBtn').addEventListener('click', async () => {
-            await signOut(auth);
-            window.location.href = "index.html";
-        });
-
-        // Theme toggle (start with dark)
+        // Theme
         const themeToggle = document.getElementById('themeToggle');
         const sunIcon = document.getElementById('sunIcon');
         const moonIcon = document.getElementById('moonIcon');
         const html = document.documentElement;
-        
-        html.setAttribute('data-theme', 'dark');
-        sunIcon.style.display = 'block';
-        moonIcon.style.display = 'none';
-        
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        html.setAttribute('data-theme', savedTheme);
+        sunIcon.style.display  = savedTheme === 'dark' ? 'block' : 'none';
+        moonIcon.style.display = savedTheme === 'dark' ? 'none'  : 'block';
         themeToggle.addEventListener('click', () => {
-            const newTheme = html.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
-            html.setAttribute('data-theme', newTheme);
-            if (newTheme === 'dark') {
-                sunIcon.style.display = 'block';
-                moonIcon.style.display = 'none';
-            } else {
-                sunIcon.style.display = 'none';
-                moonIcon.style.display = 'block';
-            }
+            const t = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', t);
+            localStorage.setItem('theme', t);
+            sunIcon.style.display  = t === 'dark' ? 'block' : 'none';
+            moonIcon.style.display = t === 'dark' ? 'none'  : 'block';
         });
 
-        // Search functionality with FMP API
-        const stockSearch = document.getElementById('stockSearch');
+        // ── SEARCH → stock-details.html ───────────────────────────
+        const stockSearch  = document.getElementById('stockSearch');
         const searchResults = document.getElementById('searchResults');
         let searchTimeout;
 
-        stockSearch.addEventListener('input', async (e) => {
-            const query = e.target.value.trim().toUpperCase();
-            
-            if (query.length < 1) {
-                searchResults.classList.remove('active');
-                return;
-            }
+        function goToStock(symbol) {
+            window.location.href = 'stock-details.html?symbol=' + encodeURIComponent(symbol.toUpperCase());
+        }
 
-            // Debounce search
+        stockSearch.addEventListener('keydown', e => {
+            if (e.key === 'Enter') {
+                const sym = stockSearch.value.trim();
+                if (sym) { searchResults.classList.remove('active'); goToStock(sym); }
+            }
+        });
+
+        stockSearch.addEventListener('input', async e => {
+            const query = e.target.value.trim().toUpperCase();
+            if (query.length < 1) { searchResults.classList.remove('active'); return; }
+
             clearTimeout(searchTimeout);
             searchTimeout = setTimeout(async () => {
                 try {
-                    searchResults.innerHTML = '<div class="search-result-item"><div class="result-info"><div class="result-symbol">Recherche...</div></div></div>';
+                    searchResults.innerHTML = '<div class="search-result-item"><div class="result-info"><div class="result-symbol">Searching...</div></div></div>';
                     searchResults.classList.add('active');
 
                     const results = await fmpAPI.searchStocks(query);
-                    
-                    if (results && results.length > 0) {
-                        // Filter to only stocks (not funds, ETFs unless specifically wanted)
-                        const stocks = results.filter(r => 
-                            r.exchangeShortName === 'NASDAQ' || 
-                            r.exchangeShortName === 'NYSE' ||
-                            r.exchangeShortName === 'AMEX'
-                        ).slice(0, 8);
-
-                        if (stocks.length > 0) {
-                            // Get quotes for the results
-                            const symbols = stocks.map(s => s.symbol).join(',');
-                            const quotes = await fmpAPI.makeRequest(`/quote/${symbols}`);
-                            
-                            const quotesMap = {};
-                            if (quotes) {
-                                quotes.forEach(q => {
-                                    quotesMap[q.symbol] = q;
-                                });
-                            }
-
-                            searchResults.innerHTML = stocks.map(stock => {
-                                const quote = quotesMap[stock.symbol];
-                                const price = quote ? quote.price : 'N/A';
-                                const priceDisplay = typeof price === 'number' ? `$${price.toFixed(2)}` : price;
-                                
-                                return `
-                                    <div class="search-result-item" data-symbol="${stock.symbol}">
-                                        <div class="result-info">
-                                            <div class="result-symbol">${stock.symbol}</div>
-                                            <div class="result-name">${stock.name}</div>
-                                        </div>
-                                        <div class="result-price">${priceDisplay}</div>
-                                    </div>
-                                `;
-                            }).join('');
-                            
-                            searchResults.classList.add('active');
-                            
-                            document.querySelectorAll('.search-result-item').forEach(item => {
-                                item.addEventListener('click', () => {
-                                    const symbol = item.dataset.symbol;
-                                    window.location.href = `dcf-calculator.html?ticker=${symbol}`;
-                                });
-                            });
-                        } else {
-                            searchResults.innerHTML = '<div class="search-result-item"><div class="result-info"><div class="result-symbol">Aucune action trouvée</div></div></div>';
-                            searchResults.classList.add('active');
-                        }
-                    } else {
-                        searchResults.innerHTML = '<div class="search-result-item"><div class="result-info"><div class="result-symbol">Aucun résultat</div></div></div>';
-                        searchResults.classList.add('active');
+                    if (!results || !results.length) {
+                        searchResults.innerHTML = '<div class="search-result-item"><div class="result-info"><div class="result-symbol">No results found</div></div></div>';
+                        return;
                     }
-                } catch (error) {
-                    console.error('Search error:', error);
-                    searchResults.innerHTML = '<div class="search-result-item"><div class="result-info"><div class="result-symbol">Erreur de recherche</div></div></div>';
+
+                    const stocks = results.filter(r => {
+                        const ex = (r.exchangeShortName || r.exchange || '').toUpperCase();
+                        return ex.includes('NASDAQ') || ex.includes('NYSE') || ex.includes('AMEX');
+                    }).slice(0, 8);
+
+                    if (!stocks.length) {
+                        searchResults.innerHTML = '<div class="search-result-item"><div class="result-info"><div class="result-symbol">No stocks found</div></div></div>';
+                        return;
+                    }
+
+                    // Fetch quotes for price + change
+                    const symbols = stocks.map(s => s.symbol).join(',');
+                    let quotesMap = {};
+                    try {
+                        const quotes = await fmpAPI.makeRequest(`/quote/${symbols}`);
+                        if (quotes) quotes.forEach(q => quotesMap[q.symbol] = q);
+                    } catch(_) {}
+
+                    searchResults.innerHTML = stocks.map(stock => {
+                        const q = quotesMap[stock.symbol];
+                        const price  = q?.price != null ? `$${q.price.toFixed(2)}` : '—';
+                        const chg    = q?.changesPercentage;
+                        const chgStr = chg != null
+                            ? `${chg >= 0 ? '+' : ''}${chg.toFixed(2)}%`
+                            : '';
+                        const chgClass = chg != null ? (chg >= 0 ? 'result-change-pos' : 'result-change-neg') : '';
+
+                        return `<div class="search-result-item" data-symbol="${stock.symbol}">
+                            <div class="result-info">
+                                <div class="result-symbol">${stock.symbol}</div>
+                                <div class="result-name">${stock.name || stock.companyName || ''}</div>
+                            </div>
+                            <div class="result-right">
+                                <div class="result-price">${price}</div>
+                                ${chgStr ? `<div class="${chgClass}">${chgStr}</div>` : ''}
+                                <div class="result-arrow">View analysis →</div>
+                            </div>
+                        </div>`;
+                    }).join('');
+
                     searchResults.classList.add('active');
+
+                    // ✅ Click → stock-details.html
+                    document.querySelectorAll('.search-result-item[data-symbol]').forEach(item => {
+                        item.addEventListener('click', () => goToStock(item.dataset.symbol));
+                    });
+
+                } catch (err) {
+                    console.error('Search error:', err);
+                    searchResults.innerHTML = '<div class="search-result-item"><div class="result-info"><div class="result-symbol">Search error</div></div></div>';
                 }
-            }, 300); // 300ms debounce
+            }, 300);
         });
 
-        document.addEventListener('click', (e) => {
-            if (!stockSearch.contains(e.target) && !searchResults.contains(e.target)) {
+        document.addEventListener('click', e => {
+            if (!stockSearch.contains(e.target) && !searchResults.contains(e.target))
                 searchResults.classList.remove('active');
-            }
         });
-
-        // Log cache stats on load
-        console.log('📊 FMP Cache Stats:', fmpAPI.getCacheStats());
     </script>
 </body>
 </html>
