@@ -173,7 +173,7 @@
         tbody tr{border-bottom:1px solid var(--border);transition:background .15s;}
         tbody tr:last-child{border-bottom:none;}
         tbody tr:hover{background:var(--hover);}
-        td{padding:11px 16px;white-space:nowrap;}
+        td{padding:11px 16px;white-space:nowrap;vertical-align:top;}
         td:not(:first-child){text-align:right;font-weight:600;}
         .td-series{display:flex;align-items:center;gap:9px;}
         .td-dot{width:10px;height:10px;border-radius:3px;flex-shrink:0;}
@@ -339,11 +339,13 @@
                 <table>
                     <thead><tr>
                         <th>Series</th>
-                        <th>Latest</th>
-                        <th>vs Previous</th>
+                        <th>CAGR</th>
+                        <th>Total Change</th>
                         <th>Average</th>
+                        <th>Median</th>
                         <th>Low</th>
                         <th>High</th>
+                        <th>Latest</th>
                     </tr></thead>
                     <tbody id="summaryBody"></tbody>
                 </table>
@@ -495,15 +497,18 @@ async function load(sym){
         fmpAPI.makeRequest('/income-statement',       {symbol:sym,limit:5}),
         fmpAPI.makeRequest('/cash-flow-statement',    {symbol:sym,limit:5}),
         fmpAPI.makeRequest('/balance-sheet-statement',{symbol:sym,limit:5}),
-        fmpAPI.makeRequest('/income-statement',       {symbol:sym,period:'quarter',limit:5}),
-        fmpAPI.makeRequest('/cash-flow-statement',    {symbol:sym,period:'quarter',limit:5}),
-        fmpAPI.makeRequest('/balance-sheet-statement',{symbol:sym,period:'quarter',limit:5}),
+        // Quarterly: fetch 4 pages of 5 = 20 quarters (~5 years). Each page offset by 'page' param.
+        Promise.all([0,1,2,3].map(p=>fmpAPI.makeRequest('/income-statement',       {symbol:sym,period:'quarter',limit:5,page:p}))).then(r=>r.flat().filter(Boolean)),
+        Promise.all([0,1,2,3].map(p=>fmpAPI.makeRequest('/cash-flow-statement',    {symbol:sym,period:'quarter',limit:5,page:p}))).then(r=>r.flat().filter(Boolean)),
+        Promise.all([0,1,2,3].map(p=>fmpAPI.makeRequest('/balance-sheet-statement',{symbol:sym,period:'quarter',limit:5,page:p}))).then(r=>r.flat().filter(Boolean)),
         fmpAPI.makeRequest('/quote',                  {symbol:sym}),
         fmpAPI.makeRequest('/ratios-ttm',             {symbol:sym}),
         fmpAPI.makeRequest('/key-metrics-ttm',        {symbol:sym}),
     ]);
     const ai=Array.isArray(incA)?incA:[], ac=Array.isArray(casA)?casA:[], ab=Array.isArray(balA)?balA:[];
-    const qi=Array.isArray(incQ)?incQ:[], qc=Array.isArray(casQ)?casQ:[], qb=Array.isArray(balQ)?balQ:[];
+    // Deduplicate quarterly results by date (pages may overlap or return dupes)
+    const dedupe = arr => { const seen=new Set(); return (Array.isArray(arr)?arr:[]).filter(r=>r&&r.date&&!seen.has(r.date)&&seen.add(r.date)); };
+    const qi=dedupe(incQ), qc=dedupe(casQ), qb=dedupe(balQ);
     if(!ai.length&&!qi.length) throw new Error(`No data found for "${sym}". Check the ticker.`);
     const qd=Array.isArray(quoteRaw)?(quoteRaw[0]||{}):(quoteRaw||{});
     const rttm=Array.isArray(ratTTM)?(ratTTM[0]||{}):(ratTTM||{});
@@ -736,6 +741,12 @@ function renderChart(){
 }
 
 // ── SUMMARY TABLE ──────────────────────────────────────────────────────────────
+function calcCAGR(first, last, nPeriods) {
+    // nPeriods = number of years between first and last value
+    if (!first || !last || nPeriods <= 0 || first <= 0) return null;
+    return Math.pow(last / first, 1 / nPeriods) - 1;
+}
+
 function renderSummary(){
     const card=document.getElementById('summaryCard');
     const tbody=document.getElementById('summaryBody');
@@ -743,32 +754,62 @@ function renderSummary(){
     card.style.display='block';
     tbody.innerHTML='';
 
-    selMetrics.forEach((mKey,mIdx)=>{
-        const m=METRIC_MAP[mKey];
-        tickers.forEach((sym,tIdx)=>{
+    // Order: ticker (outer) → metric (inner) — matches bar chart grouping
+    tickers.forEach((sym,tIdx)=>{
+        selMetrics.forEach((mKey,mIdx)=>{
+            const m=METRIC_MAP[mKey];
             const color=getSeriesColor(tIdx,mIdx);
             const rows=filteredRowsFor(sym);
-            const vals=rows.map(r=>r[mKey]).filter(v=>v!=null&&isFinite(v));
-            if(!vals.length){
+            const validRows=rows.filter(r=>r[mKey]!=null&&isFinite(r[mKey]));
+
+            if(!validRows.length){
                 const tr=document.createElement('tr');
-                tr.innerHTML=`<td><div class="td-series"><div class="td-dot" style="background:${color}"></div><div><div class="td-sym">${sym}</div><div class="td-metric">${m.label}</div></div></div></td><td colspan="5" class="td-na" style="text-align:center">No data</td>`;
+                tr.innerHTML=`<td><div class="td-series"><div class="td-dot" style="background:${color}"></div><div><div class="td-sym">${sym}</div><div class="td-metric">${m.label}</div></div></div></td><td colspan="7" class="td-na" style="text-align:center">No data</td>`;
                 tbody.appendChild(tr);
                 return;
             }
-            const latest=vals[vals.length-1];
-            const prev=vals.length>1?vals[vals.length-2]:null;
+
+            const vals=validRows.map(r=>r[mKey]);
+            const first=vals[0], latest=vals[vals.length-1];
             const avg=vals.reduce((s,v)=>s+v,0)/vals.length;
-            const low=Math.min(...vals);
-            const high=Math.max(...vals);
-            const chgPct=(prev!=null&&prev!==0)?((latest-prev)/Math.abs(prev))*100:null;
+            const low=Math.min(...vals), high=Math.max(...vals);
+
+            // Median
+            const sorted=[...vals].sort((a,b)=>a-b);
+            const mid=Math.floor(sorted.length/2);
+            const median=sorted.length%2===0?(sorted[mid-1]+sorted[mid])/2:sorted[mid];
+
+            // Total change: (latest − first) / |first|
+            const totalChg=(first!=null&&first!==0)?((latest-first)/Math.abs(first)):null;
+
+            // CAGR
+            const firstDate=validRows[0].date, lastDate=validRows[validRows.length-1].date;
+            let nYears=0;
+            if(firstDate&&lastDate&&firstDate!==lastDate){
+                const ms=new Date(lastDate)-new Date(firstDate);
+                nYears=ms/(1000*60*60*24*365.25);
+            }
+            const isRatio=['grossMargin','pe','pb','evEbitda'].includes(mKey);
+            const cagr=(!isRatio&&nYears>0.5)?calcCAGR(Math.abs(first),Math.abs(latest),nYears):null;
+
+            // Low/High dates
+            const lowDate=validRows.find(r=>r[mKey]===low)?.date||'';
+            const highDate=validRows.slice().reverse().find(r=>r[mKey]===high)?.date||'';
+
+            // vs previous (last two valid values)
+            const prev=vals.length>1?vals[vals.length-2]:null;
+            const vsPrev=(prev!=null&&prev!==0)?((latest-prev)/Math.abs(prev)):null;
+
             const tr=document.createElement('tr');
             tr.innerHTML=`
                 <td><div class="td-series"><div class="td-dot" style="background:${color}"></div><div><div class="td-sym">${sym}</div><div class="td-metric">${m.label}</div></div></div></td>
-                <td>${fmtVal(mKey,latest)}</td>
-                <td>${chgPct!=null?`<span class="td-chg ${chgPct>=0?'up':'dn'}">${chgPct>=0?'▲':'▼'} ${Math.abs(chgPct).toFixed(1)}%</span>`:'<span class="td-na">—</span>'}</td>
+                <td>${cagr!=null?`<div style="font-weight:700">${(cagr*100).toFixed(2)}%</div><div style="font-size:.7rem;color:var(--sub);margin-top:2px">Since ${firstDate?.slice(0,4)||'—'}</div>`:'<span class="td-na">—</span>'}</td>
+                <td>${totalChg!=null?`<span class="td-chg ${totalChg>=0?'up':'dn'}">${totalChg>=0?'▲':'▼'} ${Math.abs(totalChg*100).toFixed(2)}%</span>`:'<span class="td-na">—</span>'}</td>
                 <td>${fmtVal(mKey,avg)}</td>
-                <td>${fmtVal(mKey,low)}</td>
-                <td>${fmtVal(mKey,high)}</td>`;
+                <td>${fmtVal(mKey,median)}</td>
+                <td><div style="font-weight:700">${fmtVal(mKey,low)}</div><div style="font-size:.7rem;color:var(--sub);margin-top:2px">${lowDate}</div></td>
+                <td><div style="font-weight:700">${fmtVal(mKey,high)}</div><div style="font-size:.7rem;color:var(--sub);margin-top:2px">${highDate}</div></td>
+                <td><div style="font-weight:700">${fmtVal(mKey,latest)}</div><div style="font-size:.7rem;color:var(--sub);margin-top:2px">${lastDate}</div></td>`;
             tbody.appendChild(tr);
         });
     });
