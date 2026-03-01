@@ -76,17 +76,13 @@
 
         .search-results { position: absolute; top: calc(100% + 12px); left: 0; right: 0; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.3); max-height: 350px; overflow-y: auto; z-index: 100; display: none; }
         .search-results.active { display: block; }
-        .search-result-item { padding: 16px 24px; cursor: pointer; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; transition: background-color 0.2s; }
+        .search-result-item { padding: 12px 20px; cursor: pointer; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; gap: 12px; transition: background-color 0.15s; }
         .search-result-item:last-child { border-bottom: none; }
         .search-result-item:hover { background-color: var(--hover-bg); }
-        .result-info { display: flex; flex-direction: column; gap: 4px; }
-        .result-symbol { font-weight: 700; font-size: 1.05rem; color: var(--primary-orange); }
-        .result-name { font-size: 0.9rem; color: var(--text-secondary); }
-        .result-right { display: flex; flex-direction: column; align-items: flex-end; gap: 3px; }
-        .result-price { font-weight: 700; color: var(--text-primary); font-size: 1.05rem; }
-        .result-change-pos { font-size: 0.82rem; color: #10b981; font-weight: 600; }
-        .result-change-neg { font-size: 0.82rem; color: #ef4444; font-weight: 600; }
-        .result-arrow { font-size: 0.78rem; color: var(--text-secondary); margin-top: 2px; }
+        .result-symbol { font-weight: 700; color: var(--primary-orange); font-size: 0.95rem; min-width: 60px; flex-shrink: 0; }
+        .result-name { color: var(--text-secondary); font-size: 0.88rem; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .result-type-badge { font-size: 0.75rem; font-weight: 600; color: var(--text-secondary); background: var(--hover-bg); border: 1px solid var(--border-color); padding: 2px 9px; border-radius: 5px; white-space: nowrap; flex-shrink: 0; }
+        .result-type-badge { font-size: 0.75rem; font-weight: 600; color: var(--text-secondary); background: var(--hover-bg); border: 1px solid var(--border-color); padding: 2px 9px; border-radius: 5px; white-space: nowrap; flex-shrink: 0; }
         
         /* FEATURES */
         .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; margin-bottom: 60px; }
@@ -182,7 +178,6 @@
                     <input type="text" class="search-input" id="stockSearch" placeholder="Type a ticker (AAPL, NVDA, MSFT...)" autocomplete="off">
                     <div class="search-results" id="searchResults"></div>
                 </div>
-                <p class="search-hint">Press <kbd>Enter</kbd> to go directly · Click a result to open full analysis</p>
             </div>
 
             <!-- FEATURE BLOCKS -->
@@ -339,24 +334,20 @@
                     } catch(_) {}
 
                     searchResults.innerHTML = stocks.map(stock => {
-                        const q = quotesMap[stock.symbol];
-                        const price  = q?.price != null ? `$${q.price.toFixed(2)}` : '—';
-                        const chg    = q?.changesPercentage;
-                        const chgStr = chg != null
-                            ? `${chg >= 0 ? '+' : ''}${chg.toFixed(2)}%`
-                            : '';
-                        const chgClass = chg != null ? (chg >= 0 ? 'result-change-pos' : 'result-change-neg') : '';
+                        // Determine type badge label
+                        const ex = (stock.exchangeShortName || stock.exchange || '').toUpperCase();
+                        const type = (stock.type || '').toLowerCase();
+                        let badge = 'Stock';
+                        if (type === 'etf' || stock.isEtf) badge = 'ETF';
+                        else if (type === 'fund' || type === 'mutual fund') badge = 'Fund';
+                        else if (type === 'trust' || type === 'reit') badge = 'REIT';
+                        else if (type === 'index') badge = 'Index';
+                        else if (!ex.includes('NASDAQ') && !ex.includes('NYSE') && !ex.includes('AMEX') && ex) badge = ex;
 
                         return `<div class="search-result-item" data-symbol="${stock.symbol}">
-                            <div class="result-info">
-                                <div class="result-symbol">${stock.symbol}</div>
-                                <div class="result-name">${stock.name || stock.companyName || ''}</div>
-                            </div>
-                            <div class="result-right">
-                                <div class="result-price">${price}</div>
-                                ${chgStr ? `<div class="${chgClass}">${chgStr}</div>` : ''}
-                                <div class="result-arrow">View analysis →</div>
-                            </div>
+                            <span class="result-symbol">${stock.symbol}</span>
+                            <span class="result-name">${stock.name || stock.companyName || ''}</span>
+                            <span class="result-type-badge">${badge}</span>
                         </div>`;
                     }).join('');
 
