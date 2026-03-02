@@ -13,7 +13,6 @@
     </script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="fmp-api.js"></script>
 
     <style>
         :root {
@@ -957,7 +956,10 @@
     });
 </script>
 
-<script>
+<script type="module">
+import fmpAPI from './fmp-api.js';
+window.fmpAPI = fmpAPI;
+
 // ============================
 // THEME (shared via localStorage)
 // ============================
@@ -1641,6 +1643,6 @@ window.toggleMetricChart = function(btn, series) {
     }
     metricChart.update();
 };
+
 </script>
 </body>
-</html>
