@@ -13,6 +13,7 @@
     </script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="fmp-api.js"></script>
 
     <style>
         :root {
@@ -599,7 +600,7 @@
     <header class="topbar">
         <a href="webapp.html" class="topbar-logo">
             <img src="logo.png" alt="Logo" onerror="this.style.display='none'">
-            StockMaster.
+            StockMaster
         </a>
         <nav class="topbar-nav">
             <a href="webapp.html" class="nav-btn">
@@ -650,7 +651,7 @@
             <div class="welcome-icon">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
             </div>
-            <h2>DCF Calculator</h2>
+            <h2>Professional DCF Calculator</h2>
             <p>Analyze the intrinsic value of any stock in a few clicks. Choose your metric, set your assumptions and get a detailed valuation.</p>
             <div class="search-container">
                 <div class="search-wrapper">
@@ -1001,12 +1002,6 @@ function stepInput(id, step) {
 window.stepInput = stepInput;
 
 // ============================
-// FMP API KEY
-// ============================
-const API_KEY = 'RxYKGPJbSbTuLhW15Bdrop3OxJ2tiXDf';
-const BASE_URL = 'https://financialmodelingprep.com/stable';
-
-// ============================
 // STATE
 // ============================
 let stockData = null;
@@ -1016,7 +1011,7 @@ let activeMetricSeries = 'historical';
 let activePriceSeries = 'ratio';
 
 // ============================
-// SEARCH
+// SEARCH — uses fmpAPI from fmp-api.js
 // ============================
 const stockSearch = document.getElementById('stockSearch');
 const searchResults = document.getElementById('searchResults');
@@ -1025,8 +1020,7 @@ stockSearch.addEventListener('input', async (e) => {
     const query = e.target.value.trim();
     if (query.length < 1) { searchResults.classList.remove('active'); return; }
     try {
-        const res = await fetch(`${BASE_URL}/search-symbol?query=${encodeURIComponent(query)}&limit=8&apikey=${API_KEY}&exchange=NYSE,NASDAQ,AMEX`);
-        const data = await res.json();
+        const data = await fmpAPI.searchStocks(query);
         if (data && data.length > 0) {
             searchResults.innerHTML = data.map(s => `
                 <div class="search-result-item" data-symbol="${s.symbol}">
@@ -1055,7 +1049,7 @@ document.addEventListener('click', (e) => {
 });
 
 // ============================
-// LOAD STOCK
+// LOAD STOCK — uses fmpAPI.getDCFData() from fmp-api.js
 // ============================
 async function loadStock(symbol) {
     document.getElementById('welcomeSection').style.display = 'none';
@@ -1067,28 +1061,28 @@ async function loadStock(symbol) {
     showStatus('Loading data for ' + symbol + '...', 'loading');
 
     try {
-        const [quote, cashflow, income, balance, ratios, growth] = await Promise.all([
-            apiFetch(`/quote?symbol=${symbol}`),
-            apiFetch(`/cash-flow-statement?symbol=${symbol}&limit=10`),
-            apiFetch(`/income-statement?symbol=${symbol}&limit=10`),
-            apiFetch(`/balance-sheet-statement?symbol=${symbol}&limit=10`),
-            apiFetch(`/ratios?symbol=${symbol}&limit=10`),
-            apiFetch(`/financial-growth?symbol=${symbol}&limit=10`),
-        ]);
+        // getDCFData returns: { profile, quote, cashFlow, income, growth, dcf }
+        const raw = await fmpAPI.getDCFData(symbol);
 
-        const q = Array.isArray(quote) ? quote[0] : quote;
+        if (!raw || !raw.quote || !raw.quote.symbol) {
+            throw new Error(`Symbol "${symbol}" not found.`);
+        }
+
+        // Fetch ratios separately (needed for P/FCF ratio auto-fill)
+        let ratios = [];
+        try { ratios = await fmpAPI.makeRequest('/ratios', { symbol, limit: 10 }); } catch(e) { console.warn('ratios not available', e); }
+
         stockData = {
             symbol,
-            quote: q,
-            cashflow: cashflow || [],
-            income: income || [],
-            balance: balance || [],
-            ratios: ratios || [],
-            growth: growth || [],
+            quote:    raw.quote,
+            cashflow: raw.cashFlow || [],
+            income:   raw.income   || [],
+            ratios:   Array.isArray(ratios) ? ratios : [],
+            growth:   raw.growth   || [],
         };
 
         document.getElementById('stockSymbol').textContent = symbol;
-        document.getElementById('stockCompanyName').textContent = q?.name || symbol;
+        document.getElementById('stockCompanyName').textContent = raw.profile?.companyName || raw.quote.name || symbol;
         document.getElementById('stockNameSpan').textContent = symbol;
         document.getElementById('loadingIndicator').style.display = 'none';
         document.getElementById('autoFillBtn').disabled = false;
@@ -1100,12 +1094,6 @@ async function loadStock(symbol) {
     }
 }
 
-async function apiFetch(endpoint) {
-    // endpoint already contains '?' so we add apikey with '&'
-    const sep = endpoint.includes('?') ? '&' : '?';
-    const url = `${BASE_URL}${endpoint}${sep}apikey=${API_KEY}`;
-    const res = await fetch(url);
-    if (!res.ok) throw new Error(`HTTP ${res.status} on ${endpoint}`);
     return res.json();
 }
 
