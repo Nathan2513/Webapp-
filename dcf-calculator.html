@@ -4,6 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DCF Calculator - StockMaster</title>
+    <script>
+        // Prevent flash of wrong theme
+        (function() {
+            const t = localStorage.getItem('theme') || 'dark';
+            document.documentElement.setAttribute('data-theme', t);
+        })();
+    </script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -592,7 +599,7 @@
     <header class="topbar">
         <a href="webapp.html" class="topbar-logo">
             <img src="logo.png" alt="Logo" onerror="this.style.display='none'">
-            StockMaster.
+            StockMaster
         </a>
         <nav class="topbar-nav">
             <a href="webapp.html" class="nav-btn">
@@ -643,7 +650,7 @@
             <div class="welcome-icon">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
             </div>
-            <h2>DCF Calculator</h2>
+            <h2>Professional DCF Calculator</h2>
             <p>Analyze the intrinsic value of any stock in a few clicks. Choose your metric, set your assumptions and get a detailed valuation.</p>
             <div class="search-container">
                 <div class="search-wrapper">
@@ -951,16 +958,35 @@
 
 <script>
 // ============================
-// THEME
+// THEME (shared via localStorage)
 // ============================
 const html = document.documentElement;
-html.setAttribute('data-theme', 'dark');
+
+function applyTheme(theme) {
+    html.setAttribute('data-theme', theme);
+    document.getElementById('sunIcon').style.display = theme === 'dark' ? 'block' : 'none';
+    document.getElementById('moonIcon').style.display = theme === 'dark' ? 'none' : 'block';
+}
+
+// Init from localStorage (same key used by other pages)
+const savedTheme = localStorage.getItem('theme') || 'dark';
+applyTheme(savedTheme);
+
 document.getElementById('themeToggle').addEventListener('click', () => {
     const newTheme = html.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
-    html.setAttribute('data-theme', newTheme);
-    document.getElementById('sunIcon').style.display = newTheme === 'dark' ? 'block' : 'none';
-    document.getElementById('moonIcon').style.display = newTheme === 'dark' ? 'none' : 'block';
+    localStorage.setItem('theme', newTheme);
+    applyTheme(newTheme);
+    // Dispatch for same-tab listeners on other pages (if SPA-like)
+    window.dispatchEvent(new CustomEvent('themechange', { detail: { theme: newTheme } }));
     if (stockData) updateCharts();
+});
+
+// Listen for theme changes from other tabs/pages
+window.addEventListener('storage', (e) => {
+    if (e.key === 'theme') {
+        applyTheme(e.newValue || 'dark');
+        if (stockData) updateCharts();
+    }
 });
 
 // ============================
@@ -999,7 +1025,7 @@ stockSearch.addEventListener('input', async (e) => {
     const query = e.target.value.trim();
     if (query.length < 1) { searchResults.classList.remove('active'); return; }
     try {
-        const res = await fetch(`${BASE_URL}/search-symbol?query=${encodeURIComponent(query)}&limit=8&apikey=${API_KEY}`);
+        const res = await fetch(`${BASE_URL}/search-symbol?query=${encodeURIComponent(query)}&limit=8&apikey=${API_KEY}&exchange=NYSE,NASDAQ,AMEX`);
         const data = await res.json();
         if (data && data.length > 0) {
             searchResults.innerHTML = data.map(s => `
@@ -1075,9 +1101,11 @@ async function loadStock(symbol) {
 }
 
 async function apiFetch(endpoint) {
-    const url = `${BASE_URL}${endpoint}&apikey=${API_KEY}`;
+    // endpoint already contains '?' so we add apikey with '&'
+    const sep = endpoint.includes('?') ? '&' : '?';
+    const url = `${BASE_URL}${endpoint}${sep}apikey=${API_KEY}`;
     const res = await fetch(url);
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    if (!res.ok) throw new Error(`HTTP ${res.status} on ${endpoint}`);
     return res.json();
 }
 
@@ -1098,6 +1126,7 @@ document.getElementById('autoFillBtn').addEventListener('click', autoFill);
 document.getElementById('yearsInput').addEventListener('input', () => {
     const y = parseInt(document.getElementById('yearsInput').value) || 5;
     document.getElementById('autoFillYearsLabel').textContent = y;
+    triggerCalculation();
 });
 
 function getMetricValues(metric, years) {
@@ -1222,7 +1251,7 @@ document.getElementById('metricSelect').addEventListener('change', () => {
     if (stockData) autoFill();
 });
 
-['growthInput','decayInput','ratioInput','returnInput','dividendGrowthInput','shareChangeInput','customFCFInput','yearsInput'].forEach(id => {
+['growthInput','decayInput','ratioInput','returnInput','dividendGrowthInput','shareChangeInput','customFCFInput'].forEach(id => {
     document.getElementById(id).addEventListener('input', triggerCalculation);
 });
 
