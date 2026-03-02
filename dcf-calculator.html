@@ -956,9 +956,94 @@
     });
 </script>
 
-<script type="module">
-import fmpAPI from './fmp-api.js';
-window.fmpAPI = fmpAPI;
+<script>
+
+class FMPCache {
+    constructor() {
+        this.API_KEY = 'RxYKGPJbSbTuLhW15Bdrop3OxJ2tiXDf';
+        this.BASE_URL = 'https://financialmodelingprep.com/stable';
+        this.CACHE_DURATION = 3600000;
+    }
+
+    getCacheKey(endpoint, params = {}) {
+        const paramString = Object.entries(params)
+            .sort(([a], [b]) => a.localeCompare(b))
+            .map(([k, v]) => `${k}=${v}`)
+            .join('&');
+        return `fmp_${endpoint}_${paramString}`;
+    }
+
+    isCacheValid(cacheData) {
+        if (!cacheData) return false;
+        return (Date.now() - cacheData.timestamp) < this.CACHE_DURATION;
+    }
+
+    getFromCache(key) {
+        try {
+            const cached = localStorage.getItem(key);
+            if (!cached) return null;
+            const data = JSON.parse(cached);
+            if (this.isCacheValid(data)) return data.value;
+            localStorage.removeItem(key);
+            return null;
+        } catch (e) { return null; }
+    }
+
+    saveToCache(key, value) {
+        try {
+            localStorage.setItem(key, JSON.stringify({ value, timestamp: Date.now() }));
+        } catch (e) {}
+    }
+
+    async makeRequest(endpoint, params = {}) {
+        const cacheKey = this.getCacheKey(endpoint, params);
+        const cached = this.getFromCache(cacheKey);
+        if (cached) return cached;
+
+        const queryParams = new URLSearchParams({ ...params, apikey: this.API_KEY });
+        const url = `${this.BASE_URL}${endpoint}?${queryParams}`;
+
+        const response = await fetch(url);
+        if (!response.ok) throw new Error(`HTTP ${response.status} on ${endpoint}`);
+        const data = await response.json();
+        this.saveToCache(cacheKey, data);
+        return data;
+    }
+
+    async batchRequest(requests) {
+        const promises = requests.map(req =>
+            this.makeRequest(req.endpoint, req.params).catch(() => null)
+        );
+        return await Promise.all(promises);
+    }
+
+    async searchStocks(query) {
+        if (query.length < 1) return [];
+        return this.makeRequest('/search-symbol', { query, limit: 10 });
+    }
+
+    async getDCFData(symbol) {
+        const requests = [
+            { endpoint: '/quote',               params: { symbol } },
+            { endpoint: '/cash-flow-statement', params: { symbol, limit: 10 } },
+            { endpoint: '/income-statement',    params: { symbol, limit: 10 } },
+            { endpoint: '/financial-growth',    params: { symbol, limit: 5  } },
+            { endpoint: '/discounted-cash-flow',params: { symbol } },
+        ];
+        const [quote, cashFlow, income, growth, dcf] = await this.batchRequest(requests);
+        const quoteData = Array.isArray(quote) ? quote[0] : (quote || {});
+        return {
+            profile:  { symbol: quoteData.symbol || symbol, companyName: quoteData.name || symbol },
+            quote:    quoteData,
+            cashFlow: cashFlow || [],
+            income:   income   || [],
+            growth:   growth   || [],
+            dcf:      Array.isArray(dcf) ? dcf[0] : (dcf || null),
+        };
+    }
+}
+
+const fmpAPI = new FMPCache();
 
 // ============================
 // THEME (shared via localStorage)
