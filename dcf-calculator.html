@@ -1148,36 +1148,45 @@ async function loadStock(symbol) {
     showStatus('Loading data for ' + symbol + '...', 'loading');
 
     try {
-        // getDCFData returns: { profile, quote, cashFlow, income, growth, dcf }
-        const raw = await fmpAPI.getDCFData(symbol);
+        // Fetch all data in parallel using same pattern as fmp-api.js
+        const [quoteRaw, cashFlowRaw, incomeRaw, ratiosRaw, growthRaw] = await Promise.all([
+            fmpAPI.makeRequest('/quote',               { symbol }),
+            fmpAPI.makeRequest('/cash-flow-statement', { symbol, limit: 10 }),
+            fmpAPI.makeRequest('/income-statement',    { symbol, limit: 10 }),
+            fmpAPI.makeRequest('/ratios',              { symbol, limit: 10 }),
+            fmpAPI.makeRequest('/financial-growth',    { symbol, limit: 10 }),
+        ].map(p => p.catch(e => { console.warn(e); return []; })));
 
-        if (!raw || !raw.quote || !raw.quote.symbol) {
-            throw new Error(`Symbol "${symbol}" not found.`);
+        console.log('quote:', quoteRaw);
+        console.log('cashflow:', cashFlowRaw);
+        console.log('income:', incomeRaw);
+
+        const q = Array.isArray(quoteRaw) ? quoteRaw[0] : (quoteRaw || {});
+
+        if (!q || !q.price) {
+            throw new Error(`No data found for "${symbol}". Check console for API response.`);
         }
-
-        // Fetch ratios separately (needed for P/FCF ratio auto-fill)
-        let ratios = [];
-        try { ratios = await fmpAPI.makeRequest('/ratios', { symbol, limit: 10 }); } catch(e) { console.warn('ratios not available', e); }
 
         stockData = {
             symbol,
-            quote:    raw.quote,
-            cashflow: raw.cashFlow || [],
-            income:   raw.income   || [],
-            ratios:   Array.isArray(ratios) ? ratios : [],
-            growth:   raw.growth   || [],
+            quote:    q,
+            cashflow: Array.isArray(cashFlowRaw) ? cashFlowRaw : [],
+            income:   Array.isArray(incomeRaw)   ? incomeRaw   : [],
+            ratios:   Array.isArray(ratiosRaw)   ? ratiosRaw   : [],
+            growth:   Array.isArray(growthRaw)   ? growthRaw   : [],
         };
 
         document.getElementById('stockSymbol').textContent = symbol;
-        document.getElementById('stockCompanyName').textContent = raw.profile?.companyName || raw.quote.name || symbol;
+        document.getElementById('stockCompanyName').textContent = q.name || symbol;
         document.getElementById('stockNameSpan').textContent = symbol;
         document.getElementById('loadingIndicator').style.display = 'none';
         document.getElementById('autoFillBtn').disabled = false;
         hideStatus();
         autoFill();
     } catch (err) {
-        showStatus('Failed to load data: ' + err.message, 'error');
+        showStatus('Erreur: ' + err.message, 'error');
         document.getElementById('loadingIndicator').style.display = 'none';
+        console.error('loadStock error:', err);
     }
 }
 
