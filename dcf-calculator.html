@@ -33,90 +33,27 @@
             --border-color: #E5E7EB;
             --hover-bg: #F3F4F6;
         }
-
         * { margin: 0; padding: 0; box-sizing: border-box; }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg-main);
-            color: var(--text-primary);
-            overflow-x: hidden;
-        }
-
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg-main); color: var(--text-primary); overflow-x: hidden; }
         .app-container { display: flex; flex-direction: column; min-height: 100vh; }
 
         /* TOPBAR */
-        .topbar {
-            background-color: var(--bg-card);
-            border-bottom: 1px solid var(--border-color);
-            padding: 0 30px;
-            height: 70px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-        .topbar-logo {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-weight: 800;
-            font-size: 1.4rem;
-            color: var(--text-primary);
-            text-decoration: none;
-        }
+        .topbar { background-color: var(--bg-card); border-bottom: 1px solid var(--border-color); padding: 0 30px; height: 70px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
+        .topbar-logo { display: flex; align-items: center; gap: 12px; font-weight: 800; font-size: 1.4rem; color: var(--text-primary); text-decoration: none; }
         .topbar-logo img { height: 45px; width: auto; }
         .topbar-nav { display: flex; gap: 10px; flex: 1; justify-content: center; }
-        .nav-btn {
-            padding: 10px 20px;
-            border-radius: 10px;
-            font-weight: 600;
-            font-size: 0.95rem;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            border: 2px solid var(--border-color);
-            background: var(--bg-card);
-            color: var(--text-secondary);
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
+        .nav-btn { padding: 10px 20px; border-radius: 10px; font-weight: 600; font-size: 0.95rem; cursor: pointer; transition: all 0.2s ease; border: 2px solid var(--border-color); background: var(--bg-card); color: var(--text-secondary); text-decoration: none; display: inline-flex; align-items: center; gap: 8px; }
         .nav-btn:hover { background-color: var(--hover-bg); color: var(--text-primary); transform: translateY(-2px); }
         .nav-btn.active { background-color: var(--primary-orange); color: white; border-color: var(--primary-orange); }
         .nav-btn svg { width: 18px; height: 18px; }
         .topbar-actions { display: flex; align-items: center; gap: 15px; }
-        .theme-toggle {
-            background-color: var(--hover-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            padding: 10px 12px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+        .theme-toggle { background-color: var(--hover-bg); border: 1px solid var(--border-color); border-radius: 10px; padding: 10px 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
         .theme-toggle svg { width: 20px; height: 20px; color: var(--text-primary); }
         .user-menu { position: relative; }
-        .user-avatar {
-            width: 40px; height: 40px; border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary-orange), #ff9f40);
-            display: flex; align-items: center; justify-content: center;
-            color: white; font-weight: 700; cursor: pointer; font-size: 1rem;
-        }
-        .dropdown-menu {
-            position: absolute; top: 55px; right: 0;
-            background: var(--bg-card); border: 1px solid var(--border-color);
-            border-radius: 12px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.3);
-            min-width: 220px; opacity: 0; visibility: hidden; z-index: 1000; transition: all 0.2s;
-        }
+        .user-avatar { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, var(--primary-orange), #ff9f40); display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; cursor: pointer; font-size: 1rem; }
+        .dropdown-menu { position: absolute; top: 55px; right: 0; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.3); min-width: 220px; opacity: 0; visibility: hidden; z-index: 1000; transition: all 0.2s; }
         .dropdown-menu.active { opacity: 1; visibility: visible; }
-        .dropdown-item {
-            padding: 14px 20px; cursor: pointer; color: var(--text-primary);
-            display: flex; align-items: center; gap: 12px; font-size: 0.9rem;
-        }
+        .dropdown-item { padding: 14px 20px; cursor: pointer; color: var(--text-primary); display: flex; align-items: center; gap: 12px; font-size: 0.9rem; }
         .dropdown-item:hover { background-color: var(--hover-bg); }
         .dropdown-item:first-child { border-radius: 12px 12px 0 0; }
         .dropdown-item:last-child { color: #ef4444; border-top: 1px solid var(--border-color); border-radius: 0 0 12px 12px; }
@@ -128,27 +65,14 @@
         /* SEARCH */
         .search-container { max-width: 700px; margin: 0 auto; }
         .search-wrapper { position: relative; }
-        .search-input {
-            width: 100%; padding: 18px 60px 18px 60px;
-            border: 2px solid var(--border-color); border-radius: 16px;
-            font-size: 1.1rem; background-color: var(--bg-card); color: var(--text-primary);
-            transition: all 0.3s ease; font-family: 'Inter', sans-serif;
-        }
+        .search-input { width: 100%; padding: 18px 60px 18px 60px; border: 2px solid var(--border-color); border-radius: 16px; font-size: 1.1rem; background-color: var(--bg-card); color: var(--text-primary); transition: all 0.3s ease; font-family: 'Inter', sans-serif; }
         .search-input:focus { outline: none; border-color: var(--primary-orange); box-shadow: 0 0 0 4px rgba(255,122,0,0.1); transform: translateY(-2px); }
         .search-input::placeholder { color: var(--text-secondary); }
         .search-icon { position: absolute; left: 22px; top: 50%; transform: translateY(-50%); color: var(--text-secondary); }
         .search-icon svg { width: 24px; height: 24px; }
-        .search-results {
-            position: absolute; top: calc(100% + 8px); left: 0; right: 0;
-            background: var(--bg-card); border: 1px solid var(--border-color);
-            border-radius: 12px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.3);
-            max-height: 300px; overflow-y: auto; z-index: 200; display: none;
-        }
+        .search-results { position: absolute; top: calc(100% + 8px); left: 0; right: 0; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.3); max-height: 300px; overflow-y: auto; z-index: 200; display: none; }
         .search-results.active { display: block; }
-        .search-result-item {
-            padding: 14px 20px; cursor: pointer; border-bottom: 1px solid var(--border-color);
-            display: flex; align-items: center; gap: 12px; transition: background 0.15s;
-        }
+        .search-result-item { padding: 14px 20px; cursor: pointer; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; gap: 12px; transition: background 0.15s; }
         .search-result-item:last-child { border-bottom: none; }
         .search-result-item:hover { background-color: var(--hover-bg); }
         .result-symbol { font-weight: 700; color: var(--primary-orange); font-size: 0.95rem; min-width: 60px; }
@@ -156,98 +80,57 @@
 
         /* WELCOME */
         .welcome-section { max-width: 900px; margin: 0 auto; text-align: center; padding: 80px 20px; }
-        .welcome-icon {
-            width: 120px; height: 120px; margin: 0 auto 30px;
-            background: linear-gradient(135deg, var(--primary-orange), #ff9f40);
-            border-radius: 30px; display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 15px 40px rgba(255,122,0,0.25);
-        }
+        .welcome-icon { width: 120px; height: 120px; margin: 0 auto 30px; background: linear-gradient(135deg, var(--primary-orange), #ff9f40); border-radius: 30px; display: flex; align-items: center; justify-content: center; box-shadow: 0 15px 40px rgba(255,122,0,0.25); }
         .welcome-icon svg { width: 60px; height: 60px; color: white; }
-        .welcome-section h2 {
-            font-size: 2.5rem; font-weight: 800; margin-bottom: 16px;
-            background: linear-gradient(135deg, var(--text-primary) 0%, var(--primary-orange) 100%);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-        }
+        .welcome-section h2 { font-size: 2.5rem; font-weight: 800; margin-bottom: 16px; background: linear-gradient(135deg, var(--text-primary) 0%, var(--primary-orange) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
         .welcome-section p { font-size: 1.2rem; color: var(--text-secondary); margin-bottom: 50px; line-height: 1.6; }
 
-        /* DCF LAYOUT */
+        /* LAYOUT */
         .dcf-layout { display: grid; grid-template-columns: 480px 1fr; gap: 30px; }
-
-        /* CARD */
         .card { background-color: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 24px; }
 
         /* STOCK HEADER */
-        .stock-header {
-            display: flex; align-items: center; gap: 12px; margin-bottom: 24px;
-            padding-bottom: 20px; border-bottom: 1px solid var(--border-color);
-        }
+        .stock-header { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid var(--border-color); }
         .stock-ticker { font-size: 1.4rem; font-weight: 800; color: var(--text-primary); }
         .stock-company-name { font-size: 0.9rem; color: var(--text-secondary); }
-        .loading-spinner {
-            display: inline-block; width: 20px; height: 20px;
-            border: 2px solid var(--border-color); border-top-color: var(--primary-orange);
-            border-radius: 50%; animation: spin 0.8s linear infinite;
-        }
+        .loading-spinner { display: inline-block; width: 20px; height: 20px; border: 2px solid var(--border-color); border-top-color: var(--primary-orange); border-radius: 50%; animation: spin 0.8s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* LIVE DATA BADGE */
+        .data-source-badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 20px; font-size: 0.78rem; font-weight: 600; background: rgba(16,185,129,0.1); color: var(--success-color); border: 1px solid rgba(16,185,129,0.2); margin-bottom: 16px; }
+        .data-source-badge svg { width: 13px; height: 13px; }
+
+        /* LIVE DATA CARDS */
+        .data-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 22px; }
+        .data-card { background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 10px; padding: 12px 14px; }
+        .data-card-label { font-size: 0.73rem; color: var(--text-secondary); font-weight: 500; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.3px; }
+        .data-card-value { font-size: 1rem; font-weight: 700; color: var(--text-primary); }
+        .data-card-value.orange { color: var(--primary-orange); }
 
         /* FORM */
         .input-group { margin-bottom: 20px; }
-        .input-label {
-            display: flex; align-items: center; gap: 8px; margin-bottom: 10px;
-            font-size: 0.88rem; font-weight: 600; color: var(--text-primary);
-        }
-        .info-icon {
-            color: var(--text-secondary); cursor: help; font-size: 0.8rem;
-            width: 16px; height: 16px; display: inline-flex; align-items: center;
-            justify-content: center; border-radius: 50%; border: 1px solid var(--text-secondary);
-            flex-shrink: 0; font-style: normal;
-        }
-
-        /* CUSTOM SELECT */
+        .input-label { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; font-size: 0.88rem; font-weight: 600; color: var(--text-primary); }
+        .info-icon { color: var(--text-secondary); cursor: help; font-size: 0.8rem; width: 16px; height: 16px; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; border: 1px solid var(--text-secondary); flex-shrink: 0; font-style: normal; }
         .custom-select-wrapper { position: relative; }
-        .custom-select {
-            width: 100%; padding: 13px 44px 13px 16px;
-            border: 2px solid var(--border-color); border-radius: 10px;
-            font-size: 0.95rem; font-weight: 500; font-family: 'Inter', sans-serif;
-            background-color: var(--bg-main); color: var(--text-primary);
-            cursor: pointer; appearance: none; -webkit-appearance: none; transition: border-color 0.2s;
-        }
+        .custom-select { width: 100%; padding: 13px 44px 13px 16px; border: 2px solid var(--border-color); border-radius: 10px; font-size: 0.95rem; font-weight: 500; font-family: 'Inter', sans-serif; background-color: var(--bg-main); color: var(--text-primary); cursor: pointer; appearance: none; -webkit-appearance: none; transition: border-color 0.2s; }
         .custom-select:focus { outline: none; border-color: var(--primary-orange); }
         .select-arrow { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); pointer-events: none; color: var(--text-secondary); }
         .select-arrow svg { width: 16px; height: 16px; }
-
-        /* NUMBER INPUT */
         .number-input-wrapper { position: relative; display: flex; align-items: center; }
         .input-prefix-text { position: absolute; left: 14px; color: var(--text-secondary); font-weight: 600; font-size: 0.9rem; pointer-events: none; z-index: 1; }
-        .styled-number {
-            width: 100%; padding: 13px 48px 13px 30px;
-            border: 2px solid var(--border-color); border-radius: 10px;
-            font-size: 0.95rem; font-family: 'Inter', sans-serif;
-            background-color: var(--bg-main); color: var(--text-primary); transition: border-color 0.2s;
-            -moz-appearance: textfield; appearance: textfield;
-        }
+        .styled-number { width: 100%; padding: 13px 48px 13px 30px; border: 2px solid var(--border-color); border-radius: 10px; font-size: 0.95rem; font-family: 'Inter', sans-serif; background-color: var(--bg-main); color: var(--text-primary); transition: border-color 0.2s; -moz-appearance: textfield; appearance: textfield; }
         .styled-number::-webkit-inner-spin-button, .styled-number::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
         .styled-number:focus { outline: none; border-color: var(--primary-orange); }
         .styled-number.no-prefix { padding-left: 16px; }
         .stepper-btns { position: absolute; right: 6px; display: flex; flex-direction: column; gap: 2px; }
-        .stepper-btn {
-            width: 20px; height: 18px; background: var(--hover-bg); border: 1px solid var(--border-color);
-            border-radius: 5px; cursor: pointer; display: flex; align-items: center; justify-content: center;
-            color: var(--text-secondary); transition: all 0.15s;
-        }
+        .stepper-btn { width: 20px; height: 18px; background: var(--hover-bg); border: 1px solid var(--border-color); border-radius: 5px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--text-secondary); transition: all 0.15s; }
         .stepper-btn:hover { background: var(--primary-orange); border-color: var(--primary-orange); color: white; }
         .stepper-btn svg { width: 10px; height: 10px; }
         .helper-text { display: flex; align-items: flex-start; gap: 7px; margin-top: 8px; font-size: 0.82rem; color: var(--text-secondary); line-height: 1.4; }
         .helper-icon { width: 13px; height: 13px; flex-shrink: 0; margin-top: 1px; }
 
         /* AUTO-FILL */
-        .auto-fill-btn {
-            display: flex; align-items: center; gap: 8px; padding: 11px 18px;
-            background-color: rgba(255,122,0,0.1); border: 1px solid rgba(255,122,0,0.3);
-            border-radius: 10px; color: var(--primary-orange); font-size: 0.9rem;
-            font-weight: 600; cursor: pointer; margin-bottom: 22px; transition: all 0.2s;
-            font-family: 'Inter', sans-serif; width: 100%; justify-content: center;
-        }
+        .auto-fill-btn { display: flex; align-items: center; gap: 8px; padding: 11px 18px; background-color: rgba(255,122,0,0.1); border: 1px solid rgba(255,122,0,0.3); border-radius: 10px; color: var(--primary-orange); font-size: 0.9rem; font-weight: 600; cursor: pointer; margin-bottom: 22px; transition: all 0.2s; font-family: 'Inter', sans-serif; width: 100%; justify-content: center; }
         .auto-fill-btn:hover { background-color: rgba(255,122,0,0.2); transform: translateY(-1px); }
         .auto-fill-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
         .auto-fill-btn svg { width: 16px; height: 16px; }
@@ -278,11 +161,7 @@
         .chart-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 12px; }
         .chart-title { font-size: 1rem; font-weight: 700; color: var(--text-primary); }
         .chart-toggles { display: flex; gap: 8px; flex-wrap: wrap; }
-        .chart-toggle {
-            padding: 7px 14px; border-radius: 8px; font-size: 0.82rem; font-weight: 600;
-            cursor: pointer; transition: all 0.2s; border: 1px solid var(--border-color);
-            background: var(--bg-main); color: var(--text-secondary); font-family: 'Inter', sans-serif;
-        }
+        .chart-toggle { padding: 7px 14px; border-radius: 8px; font-size: 0.82rem; font-weight: 600; cursor: pointer; transition: all 0.2s; border: 1px solid var(--border-color); background: var(--bg-main); color: var(--text-secondary); font-family: 'Inter', sans-serif; }
         .chart-toggle:hover { border-color: var(--primary-orange); color: var(--primary-orange); }
         .chart-toggle.active { background: var(--primary-orange); color: white; border-color: var(--primary-orange); }
         .chart-toggle.active-green { background: var(--success-color); color: white; border-color: var(--success-color); }
@@ -292,11 +171,6 @@
         .status-msg { padding: 12px 16px; border-radius: 10px; font-size: 0.9rem; font-weight: 500; margin-bottom: 16px; }
         .status-error { background: rgba(239,68,68,0.1); color: #EF4444; border: 1px solid rgba(239,68,68,0.2); }
         .status-loading { background: rgba(255,122,0,0.1); color: var(--primary-orange); border: 1px solid rgba(255,122,0,0.2); }
-
-        /* DEBUG PANEL */
-        .debug-panel { background: rgba(255,122,0,0.05); border: 1px solid rgba(255,122,0,0.2); border-radius: 10px; padding: 12px 16px; margin-bottom: 16px; font-size: 0.78rem; color: var(--text-secondary); display: none; }
-        .debug-panel.show { display: block; }
-        .debug-panel strong { color: var(--primary-orange); }
 
         @media (max-width: 1200px) { .dcf-layout { grid-template-columns: 1fr; } .topbar-nav { display: none; } }
     </style>
@@ -372,11 +246,11 @@
 
         <!-- DCF CONTENT -->
         <div class="dcf-layout" id="dcfContent" style="display:none;">
-            <!-- LEFT -->
+            <!-- LEFT PANEL -->
             <div>
                 <div class="card">
                     <div class="stock-header">
-                        <div>
+                        <div style="flex:1">
                             <div class="stock-ticker" id="stockSymbol">—</div>
                             <div class="stock-company-name" id="stockCompanyName">—</div>
                         </div>
@@ -384,20 +258,51 @@
                     </div>
 
                     <div id="statusMsg" style="display:none;"></div>
-                    <div class="debug-panel" id="debugPanel"></div>
+
+                    <!-- Live data pulled from API — all computed from free endpoints -->
+                    <div id="liveDataCards" style="display:none; margin-bottom:20px;">
+                        <div class="data-source-badge">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                            Live data loaded · ratios computed from quote + metrics
+                        </div>
+                        <div class="data-cards">
+                            <div class="data-card">
+                                <div class="data-card-label">EPS TTM</div>
+                                <div class="data-card-value orange" id="dc_eps">—</div>
+                            </div>
+                            <div class="data-card">
+                                <div class="data-card-label">P/E Ratio</div>
+                                <div class="data-card-value" id="dc_pe">—</div>
+                            </div>
+                            <div class="data-card">
+                                <div class="data-card-label">FCF / Share</div>
+                                <div class="data-card-value orange" id="dc_fcfps">—</div>
+                            </div>
+                            <div class="data-card">
+                                <div class="data-card-label">P/FCF Ratio</div>
+                                <div class="data-card-value" id="dc_pfcf">—</div>
+                            </div>
+                            <div class="data-card">
+                                <div class="data-card-label">Rev / Share</div>
+                                <div class="data-card-value" id="dc_revps">—</div>
+                            </div>
+                            <div class="data-card">
+                                <div class="data-card-label">Dividend / Share</div>
+                                <div class="data-card-value" id="dc_div">—</div>
+                            </div>
+                        </div>
+                    </div>
 
                     <div class="input-group">
                         <div class="input-label">Metric to Use in Calculations <i class="info-icon" title="Choose the financial metric for your DCF projection">?</i></div>
                         <div class="custom-select-wrapper">
                             <select class="custom-select" id="metricSelect">
-                                <option value="fcf">Free Cash Flow</option>
-                                <option value="ocf">Operating Cash Flow</option>
-                                <option value="oi">Operating Income</option>
-                                <option value="ni">Net Income</option>
+                                <option value="fcf">Free Cash Flow per Share (TTM)</option>
+                                <option value="eps">Earnings per Share / EPS (TTM)</option>
+                                <option value="rev">Revenue per Share (TTM)</option>
+                                <option value="ocf">Operating Cash Flow per Share (TTM)</option>
                             </select>
-                            <span class="select-arrow">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
-                            </span>
+                            <span class="select-arrow"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg></span>
                         </div>
                     </div>
 
@@ -406,15 +311,15 @@
                         <div class="number-input-wrapper">
                             <input type="number" class="styled-number no-prefix" id="yearsInput" value="5" min="1" max="30">
                             <div class="stepper-btns">
-                                <button class="stepper-btn" onclick="stepInput('yearsInput', 1)"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 15l7-7 7 7"/></svg></button>
-                                <button class="stepper-btn" onclick="stepInput('yearsInput', -1)"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7"/></svg></button>
+                                <button class="stepper-btn" onclick="stepInput('yearsInput',1)"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 15l7-7 7 7"/></svg></button>
+                                <button class="stepper-btn" onclick="stepInput('yearsInput',-1)"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7"/></svg></button>
                             </div>
                         </div>
                     </div>
 
                     <button class="auto-fill-btn" id="autoFillBtn" disabled>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-                        Auto-fill <span id="autoFillYearsLabel">5</span>-year averages
+                        Auto-fill from live data
                     </button>
 
                     <div class="input-group">
@@ -423,13 +328,13 @@
                             <span class="input-prefix-text">%</span>
                             <input type="number" class="styled-number" id="growthInput" value="15" step="0.01">
                             <div class="stepper-btns">
-                                <button class="stepper-btn" onclick="stepInput('growthInput', 1)"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 15l7-7 7 7"/></svg></button>
-                                <button class="stepper-btn" onclick="stepInput('growthInput', -1)"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7"/></svg></button>
+                                <button class="stepper-btn" onclick="stepInput('growthInput',1)"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 15l7-7 7 7"/></svg></button>
+                                <button class="stepper-btn" onclick="stepInput('growthInput',-1)"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7"/></svg></button>
                             </div>
                         </div>
                         <div class="helper-text">
                             <svg class="helper-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                            <span id="growthHelperText">Annual growth over the past 5 year(s) is: —</span>
+                            <span id="growthHelperText">Load a stock to get a suggested growth rate</span>
                         </div>
                     </div>
 
@@ -439,28 +344,28 @@
                             <span class="input-prefix-text">%</span>
                             <input type="number" class="styled-number" id="decayInput" value="5" step="0.1">
                             <div class="stepper-btns">
-                                <button class="stepper-btn" onclick="stepInput('decayInput', 1)"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 15l7-7 7 7"/></svg></button>
-                                <button class="stepper-btn" onclick="stepInput('decayInput', -1)"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7"/></svg></button>
+                                <button class="stepper-btn" onclick="stepInput('decayInput',1)"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 15l7-7 7 7"/></svg></button>
+                                <button class="stepper-btn" onclick="stepInput('decayInput',-1)"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7"/></svg></button>
                             </div>
                         </div>
                         <div class="helper-text">
                             <svg class="helper-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                            <span>Set to 0 for no decay. Reduces growth rate each year by this percentage.</span>
+                            <span>Set to 0 for no decay. Reduces growth rate each year by this %.</span>
                         </div>
                     </div>
 
                     <div class="input-group">
-                        <div class="input-label">Price to <span id="ratioMetricLabel">Free Cash Flow</span> Ratio <i class="info-icon" title="Terminal P/FCF multiple">?</i></div>
+                        <div class="input-label">Price to <span id="ratioMetricLabel">Free Cash Flow</span> Ratio <i class="info-icon" title="Terminal multiple used to compute future price">?</i></div>
                         <div class="number-input-wrapper">
                             <input type="number" class="styled-number no-prefix" id="ratioInput" value="25" step="0.01">
                             <div class="stepper-btns">
-                                <button class="stepper-btn" onclick="stepInput('ratioInput', 1)"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 15l7-7 7 7"/></svg></button>
-                                <button class="stepper-btn" onclick="stepInput('ratioInput', -1)"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7"/></svg></button>
+                                <button class="stepper-btn" onclick="stepInput('ratioInput',1)"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 15l7-7 7 7"/></svg></button>
+                                <button class="stepper-btn" onclick="stepInput('ratioInput',-1)"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7"/></svg></button>
                             </div>
                         </div>
                         <div class="helper-text">
                             <svg class="helper-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                            <span id="ratioHelperText">Average ratio over the past 5 year(s) is: —</span>
+                            <span id="ratioHelperText">Current ratio computed from live data: —</span>
                         </div>
                     </div>
 
@@ -470,8 +375,8 @@
                             <span class="input-prefix-text">%</span>
                             <input type="number" class="styled-number" id="returnInput" value="10" step="0.1">
                             <div class="stepper-btns">
-                                <button class="stepper-btn" onclick="stepInput('returnInput', 1)"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 15l7-7 7 7"/></svg></button>
-                                <button class="stepper-btn" onclick="stepInput('returnInput', -1)"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7"/></svg></button>
+                                <button class="stepper-btn" onclick="stepInput('returnInput',1)"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 15l7-7 7 7"/></svg></button>
+                                <button class="stepper-btn" onclick="stepInput('returnInput',-1)"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7"/></svg></button>
                             </div>
                         </div>
                         <div class="helper-text">
@@ -486,13 +391,13 @@
                             <span class="input-prefix-text">%</span>
                             <input type="number" class="styled-number" id="dividendGrowthInput" value="5" step="0.01">
                             <div class="stepper-btns">
-                                <button class="stepper-btn" onclick="stepInput('dividendGrowthInput', 1)"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 15l7-7 7 7"/></svg></button>
-                                <button class="stepper-btn" onclick="stepInput('dividendGrowthInput', -1)"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7"/></svg></button>
+                                <button class="stepper-btn" onclick="stepInput('dividendGrowthInput',1)"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 15l7-7 7 7"/></svg></button>
+                                <button class="stepper-btn" onclick="stepInput('dividendGrowthInput',-1)"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7"/></svg></button>
                             </div>
                         </div>
                         <div class="helper-text">
                             <svg class="helper-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                            <span id="divGrowthHelperText">Annual dividend growth over the past 5 year(s) is: —</span>
+                            <span id="divGrowthHelperText">Estimated from dividend data</span>
                         </div>
                     </div>
 
@@ -502,34 +407,35 @@
                             <span class="input-prefix-text">%</span>
                             <input type="number" class="styled-number" id="shareChangeInput" value="-1" step="0.01">
                             <div class="stepper-btns">
-                                <button class="stepper-btn" onclick="stepInput('shareChangeInput', 0.5)"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 15l7-7 7 7"/></svg></button>
-                                <button class="stepper-btn" onclick="stepInput('shareChangeInput', -0.5)"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7"/></svg></button>
+                                <button class="stepper-btn" onclick="stepInput('shareChangeInput',0.5)"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 15l7-7 7 7"/></svg></button>
+                                <button class="stepper-btn" onclick="stepInput('shareChangeInput',-0.5)"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7"/></svg></button>
                             </div>
                         </div>
                         <div class="helper-text">
                             <svg class="helper-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                            <span id="sharesHelperText">Annual diluted shares growth over the past 5 year(s) is: —</span>
+                            <span id="sharesHelperText">Negative = buybacks (e.g. −1 = 1% annual buyback)</span>
                         </div>
                     </div>
 
                     <div class="input-group">
-                        <div class="input-label">Custom <span id="customMetricLabel">Free Cash Flow</span> Starting Point <i class="info-icon" title="Override the base metric value (in millions)">?</i></div>
+                        <div class="input-label">Custom <span id="customMetricLabel">FCF</span>/Share Starting Point <i class="info-icon" title="Override the auto-detected base value per share">?</i></div>
                         <div class="number-input-wrapper">
-                            <input type="number" class="styled-number no-prefix" id="customFCFInput" value="" placeholder="Auto">
+                            <span class="input-prefix-text">$</span>
+                            <input type="number" class="styled-number" id="customFCFInput" value="" placeholder="Auto">
                             <div class="stepper-btns">
-                                <button class="stepper-btn" onclick="stepInput('customFCFInput', 100)"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 15l7-7 7 7"/></svg></button>
-                                <button class="stepper-btn" onclick="stepInput('customFCFInput', -100)"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7"/></svg></button>
+                                <button class="stepper-btn" onclick="stepInput('customFCFInput',1)"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 15l7-7 7 7"/></svg></button>
+                                <button class="stepper-btn" onclick="stepInput('customFCFInput',-1)"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7"/></svg></button>
                             </div>
                         </div>
                         <div class="helper-text">
                             <svg class="helper-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                            <span id="customFCFHelperText">Most recent value is: — (in millions)</span>
+                            <span id="customFCFHelperText">Most recent value per share: —</span>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- RIGHT -->
+            <!-- RIGHT PANEL -->
             <div>
                 <div class="dcf-analysis undervalued" id="dcfAnalysisBox">
                     <h3>DCF Analysis</h3>
@@ -558,7 +464,7 @@
                         <div class="result-badge" id="fairValueBadge"></div>
                     </div>
                     <div class="result-box">
-                        <div class="result-label">CAGR <i class="info-icon" title="Compound Annual Growth Rate">?</i></div>
+                        <div class="result-label">CAGR <i class="info-icon" title="Compound Annual Growth Rate from today's price">?</i></div>
                         <div class="result-value" id="cagr">—</div>
                     </div>
                 </div>
@@ -568,8 +474,8 @@
                         <h3 class="chart-title">Stock Price Projection</h3>
                         <div class="chart-toggles">
                             <button class="chart-toggle active" data-chart="price" data-series="ratio" onclick="togglePriceChart(this,'ratio')">Stock Price At Ratio</button>
-                            <button class="chart-toggle" data-chart="price" data-series="price" onclick="togglePriceChart(this,'price')">Stock Price</button>
-                            <button class="chart-toggle" data-chart="price" data-series="dcf" onclick="togglePriceChart(this,'dcf')">DCF Fair Value Price</button>
+                            <button class="chart-toggle" data-chart="price" data-series="price" onclick="togglePriceChart(this,'price')">Stock Price (Today)</button>
+                            <button class="chart-toggle" data-chart="price" data-series="dcf" onclick="togglePriceChart(this,'dcf')">DCF Fair Value</button>
                         </div>
                     </div>
                     <div class="chart-wrapper"><canvas id="stockPriceChart"></canvas></div>
@@ -577,11 +483,10 @@
 
                 <div class="chart-container">
                     <div class="chart-header">
-                        <h3 class="chart-title" id="chart2Title">Free Cash Flow: Historical &amp; Projected</h3>
+                        <h3 class="chart-title" id="chart2Title">Free Cash Flow / Share: Projected</h3>
                         <div class="chart-toggles">
-                            <button class="chart-toggle active-green active" onclick="toggleMetricChart(this,'historical')">Historical Data</button>
-                            <button class="chart-toggle" onclick="toggleMetricChart(this,'projected')">Projected (No Decay)</button>
-                            <button class="chart-toggle" onclick="toggleMetricChart(this,'projected_decay')">Projected (With Decay)</button>
+                            <button class="chart-toggle active-green active" onclick="toggleMetricChart(this,'projected')">No Decay</button>
+                            <button class="chart-toggle" onclick="toggleMetricChart(this,'projected_decay')">With Decay</button>
                         </div>
                     </div>
                     <div class="chart-wrapper"><canvas id="cashFlowChart"></canvas></div>
@@ -591,10 +496,10 @@
     </main>
 </div>
 
+<!-- Firebase Auth -->
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-
     const app = initializeApp({
         apiKey: "AIzaSyD4dkPbO1C-bZiSokalUnwNqOTpeAyrOU0",
         authDomain: "stockmaster-30835.firebaseapp.com",
@@ -604,189 +509,64 @@
         appId: "1:506097874613:web:0d15d2bd1575a55c8ab0fc",
     });
     const auth = getAuth(app);
-
     onAuthStateChanged(auth, (user) => {
         if (!user) { window.location.href = "login.html"; return; }
         document.querySelector('.user-avatar').textContent = user.email.charAt(0).toUpperCase();
     });
-
-    const userAvatar = document.getElementById('userAvatar');
-    const dropdownMenu = document.getElementById('dropdownMenu');
-    userAvatar.addEventListener('click', (e) => { e.stopPropagation(); dropdownMenu.classList.toggle('active'); });
-    document.addEventListener('click', () => dropdownMenu.classList.remove('active'));
+    document.getElementById('userAvatar').addEventListener('click', (e) => { e.stopPropagation(); document.getElementById('dropdownMenu').classList.toggle('active'); });
+    document.addEventListener('click', () => document.getElementById('dropdownMenu').classList.remove('active'));
     document.getElementById('signOutBtn').addEventListener('click', async () => { await signOut(auth); window.location.href = "index.html"; });
 </script>
 
-<script>
+<script type="module">
+import fmpAPI from './fmp-api.js';
 // ============================================================
-// FMP API — uses fmp-api.js module (already loaded on the page)
-// Inline fallback for cache + search
+// FMP API  — delegates to fmpAPI (fmp-api.js) — /api/v3 free tier
+//   /quote/{sym}            → price, eps, pe, marketCap, lastAnnualDividend, sharesOutstanding
+//   /ratios/{sym}           → priceEarningsRatio, priceToSalesRatio, priceToFreeCashFlowsRatio, etc.
+//   /key-metrics/{sym}      → freeCashFlowPerShare, operatingCashFlowPerShare, revenuePerShare,
+//                             earningsYield, freeCashFlowYield, evToEbitda, grahamNumber, etc.
+//   /income-statement/{sym} → revenue, netIncome, eps, shares outstanding history
+//   /cash-flow-statement/{sym} → FCF, OCF, SBC, capex history
+//   /financial-growth/{sym} → YoY growth rates for revenue, eps, FCF, dividends
+//   /search                 → search
 // ============================================================
-const FMP_KEY  = 'RxYKGPJbSbTuLhW15Bdrop3OxJ2tiXDf';
-const FMP_BASE = 'https://financialmodelingprep.com/stable';
-const CACHE_TTL = 3600000;
 
-function cacheGet(key) {
-    try {
-        const raw = localStorage.getItem(key);
-        if (!raw) return null;
-        const d = JSON.parse(raw);
-        if (Date.now() - d.ts > CACHE_TTL) { localStorage.removeItem(key); return null; }
-        return d.v;
-    } catch { return null; }
-}
-function cacheSet(key, v) {
-    try { localStorage.setItem(key, JSON.stringify({ v, ts: Date.now() })); } catch {}
-}
-
-async function fmpGet(endpoint, params = {}) {
-    const qs  = new URLSearchParams({ ...params, apikey: FMP_KEY }).toString();
-    const key = `fmp_${endpoint}_${qs}`;
-    const hit = cacheGet(key);
-    if (hit) return hit;
-    const res = await fetch(`${FMP_BASE}${endpoint}?${qs}`);
-    if (!res.ok) throw new Error(`FMP ${res.status}: ${endpoint}`);
-    const data = await res.json();
-    cacheSet(key, data);
-    return data;
-}
-
-async function fmpSearch(q) {
-    if (!q) return [];
-    return fmpGet('/search-symbol', { query: q, limit: 10 });
-}
-
-// ============================================================
-// SAFE FIELD READER
-// ============================================================
-function safeNum(row, ...keys) {
-    // First pass: prefer non-zero
+// Safe number reader — returns first valid non-zero, then first zero, then null
+function num(obj, ...keys) {
     for (const k of keys) {
-        const v = row?.[k];
-        if (v != null && v !== '' && isFinite(Number(v)) && Number(v) !== 0) return Number(v);
+        const v = obj?.[k];
+        if (v != null && v !== '' && isFinite(+v) && +v !== 0) return +v;
     }
-    // Second pass: accept zero
     for (const k of keys) {
-        const v = row?.[k];
-        if (v != null && v !== '' && isFinite(Number(v))) return Number(v);
+        const v = obj?.[k];
+        if (v != null && v !== '' && isFinite(+v)) return +v;
     }
     return null;
-}
-
-// ── Raw field extractors ──────────────────────────────────────
-function extractFCF(cf) {
-    const direct = safeNum(cf, 'freeCashFlow');
-    if (direct != null) return direct;
-    const ocf   = safeNum(cf, 'operatingCashFlow', 'netCashProvidedByOperatingActivities');
-    const capex = safeNum(cf, 'capitalExpenditure', 'capitalExpenditures', 'purchasesOfPropertyPlantAndEquipment');
-    if (ocf != null && capex != null) return ocf - Math.abs(capex);
-    return ocf ?? null;
-}
-function extractOCF(cf) {
-    return safeNum(cf, 'operatingCashFlow', 'netCashProvidedByOperatingActivities');
-}
-function extractOI(inc) {
-    return safeNum(inc, 'operatingIncome', 'ebit');
-}
-function extractNI(inc) {
-    return safeNum(inc, 'netIncome', 'netIncomeApplicableToCommonShares', 'netIncomeFromContinuingOperations');
-}
-function extractRevenue(inc) {
-    return safeNum(inc, 'revenue', 'totalRevenue', 'revenues');
-}
-function extractShares(inc) {
-    return safeNum(inc,
-        'weightedAverageShsOutDil', 'weightedAverageSharesOutstandingDiluted',
-        'dilutedAverageShares',     'weightedAverageShsOut'
-    );
-}
-
-// ============================================================
-// RATIO CALCULATION FROM RAW DATA
-// Instead of fetching /ratios, we compute P/FCF, P/OCF, P/E, P/S
-// directly from income + cashflow + the current stock price.
-//
-// For historical per-year ratios we use:
-//   price_at_year ≈ EPS × P/E_current  (rough) — but simpler & more
-//   reliable: use marketCap from quote / metric_value_for_that_year.
-//   Since we don't have historical prices, we use the CURRENT price
-//   as a proxy and compute "what would the ratio be if price stayed
-//   constant" — this gives a good average multiple baseline.
-// ============================================================
-function computeHistoricalRatios(metric, years) {
-    if (!stockData) return [];
-    const price      = stockData.quote?.price || 0;
-    const cfRows     = stockData.cf.slice(0, years).reverse();   // oldest → newest
-    const incRows    = stockData.inc.slice(0, years).reverse();
-    const sharesRef  = getSharesOutstanding();                    // most recent diluted shares
-
-    const ratios = [];
-
-    const n = Math.min(cfRows.length, incRows.length);
-    for (let i = 0; i < n; i++) {
-        const cf  = cfRows[i]  || {};
-        const inc = incRows[i] || {};
-
-        // shares for that year (fall back to current)
-        const shares = extractShares(inc) || sharesRef;
-        if (!shares || shares <= 0) { ratios.push(null); continue; }
-
-        let metricTotal = null;
-        if      (metric === 'fcf') metricTotal = extractFCF(cf);
-        else if (metric === 'ocf') metricTotal = extractOCF(cf);
-        else if (metric === 'oi')  metricTotal = extractOI(inc);
-        else if (metric === 'ni')  metricTotal = extractNI(inc);
-
-        if (metricTotal == null || metricTotal <= 0) { ratios.push(null); continue; }
-
-        const metricPerShare = metricTotal / shares;
-        const ratio = price / metricPerShare;
-        // Sanity-check: ignore ratios that look absurd (>500 or negative)
-        if (ratio > 0 && ratio < 500) ratios.push(ratio);
-        else ratios.push(null);
-    }
-    return ratios;
-}
-
-function calcAvgRatio(metric, years) {
-    const ratios = computeHistoricalRatios(metric, years).filter(v => v != null);
-    if (!ratios.length) {
-        // Last resort: use current quote fields
-        const q = stockData?.quote || {};
-        if (metric === 'ni')  return safeNum(q, 'pe', 'priceEarningsRatio') ?? null;
-        if (metric === 'fcf') return safeNum(q, 'priceToFreeCashFlowsRatioTTM') ?? null;
-        if (metric === 'ocf') return safeNum(q, 'priceToOperatingCashFlowsRatioTTM') ?? null;
-        return null;
-    }
-    return ratios.reduce((a, b) => a + b, 0) / ratios.length;
 }
 
 // ============================================================
 // THEME
 // ============================================================
 const html = document.documentElement;
-
-function applyTheme(theme) {
-    html.setAttribute('data-theme', theme);
-    document.getElementById('sunIcon').style.display  = theme === 'dark' ? 'block' : 'none';
-    document.getElementById('moonIcon').style.display = theme === 'dark' ? 'none'  : 'block';
+function applyTheme(t) {
+    html.setAttribute('data-theme', t);
+    document.getElementById('sunIcon').style.display  = t === 'dark' ? 'block' : 'none';
+    document.getElementById('moonIcon').style.display = t === 'dark' ? 'none'  : 'block';
 }
 applyTheme(localStorage.getItem('theme') || 'dark');
-
 document.getElementById('themeToggle').addEventListener('click', () => {
-    const n = html.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
-    localStorage.setItem('theme', n);
-    applyTheme(n);
+    const next = html.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+    localStorage.setItem('theme', next); applyTheme(next);
     if (stockData) updateCharts();
 });
 
 // ============================================================
-// STEPPER
+// STEPPERS
 // ============================================================
 function stepInput(id, step) {
     const el = document.getElementById(id);
-    const v  = parseFloat(el.value) || 0;
-    el.value = parseFloat((v + step).toFixed(4));
+    el.value = parseFloat(((parseFloat(el.value) || 0) + step).toFixed(4));
     triggerCalculation();
 }
 window.stepInput = stepInput;
@@ -797,25 +577,25 @@ window.stepInput = stepInput;
 let stockData = null;
 let priceChart = null;
 let metricChart = null;
-let activeMetricSeries = 'historical';
+let activeMetricSeries = 'projected';
 let activePriceSeries  = 'ratio';
 
 // ============================================================
 // SEARCH
 // ============================================================
-const stockSearchEl  = document.getElementById('stockSearch');
+const stockSearchEl   = document.getElementById('stockSearch');
 const searchResultsEl = document.getElementById('searchResults');
 
 stockSearchEl.addEventListener('input', async (e) => {
     const q = e.target.value.trim();
     if (q.length < 1) { searchResultsEl.classList.remove('active'); return; }
     try {
-        const data = await fmpSearch(q);
-        if (data && data.length > 0) {
-            searchResultsEl.innerHTML = data.map(s => `
-                <div class="search-result-item" data-symbol="${s.symbol}">
+        const data = await fmpAPI.searchStocks(q);
+        if (data?.length > 0) {
+            searchResultsEl.innerHTML = data.map(s =>
+                `<div class="search-result-item" data-symbol="${s.symbol}">
                     <span class="result-symbol">${s.symbol}</span>
-                    <span class="result-name">${s.name || ''}</span>
+                    <span class="result-name">${s.name || s.companyName || ''}</span>
                 </div>`).join('');
             searchResultsEl.classList.add('active');
             searchResultsEl.querySelectorAll('.search-result-item').forEach(item => {
@@ -829,232 +609,233 @@ stockSearchEl.addEventListener('input', async (e) => {
             searchResultsEl.innerHTML = '<div class="search-result-item"><span class="result-name">No results found</span></div>';
             searchResultsEl.classList.add('active');
         }
-    } catch (err) { console.error(err); }
+    } catch(err) { console.error(err); }
 });
 document.addEventListener('click', (e) => {
     if (!stockSearchEl.contains(e.target)) searchResultsEl.classList.remove('active');
 });
 
 // ============================================================
-// LOAD STOCK  — fixed field extraction
+// LOAD STOCK  — uses fmpAPI (fmp-api.js) with /api/v3 free endpoints
 // ============================================================
 async function loadStock(symbol) {
     symbol = symbol.toUpperCase().trim();
     document.getElementById('welcomeSection').style.display = 'none';
     document.getElementById('dcfContent').style.display     = 'grid';
     document.getElementById('stockSymbol').textContent      = symbol;
-    document.getElementById('stockCompanyName').textContent = '—';
+    document.getElementById('stockCompanyName').textContent = 'Loading…';
     document.getElementById('stockNameSpan').textContent    = symbol;
     document.getElementById('loadingIndicator').style.display = 'block';
     document.getElementById('autoFillBtn').disabled = true;
-    showStatus('Loading data for ' + symbol + '...', 'loading');
+    document.getElementById('liveDataCards').style.display  = 'none';
+    showStatus('Loading ' + symbol + '…', 'loading');
 
     try {
-        // Fetch uniquement ce dont on a besoin — plus de /ratios
-        const [quoteRaw, cfRaw, incRaw, grwRaw] = await Promise.all([
-            fmpGet('/quote',                { symbol }),
-            fmpGet('/cash-flow-statement',  { symbol, limit: 10 }),
-            fmpGet('/income-statement',     { symbol, limit: 10 }),
-            fmpGet('/financial-growth',     { symbol, limit: 10 }),
+        // ── Fetch all free endpoints in parallel via fmpAPI ───────
+        const [qRaw, ratRaw, kmRaw, incRaw, cfRaw, grwRaw] = await Promise.all([
+            fmpAPI.makeRequest(`/quote/${symbol}`),
+            fmpAPI.makeRequest(`/ratios/${symbol}`,              { limit: 5  }).catch(() => []),
+            fmpAPI.makeRequest(`/key-metrics/${symbol}`,         { limit: 5  }).catch(() => []),
+            fmpAPI.makeRequest(`/income-statement/${symbol}`,    { limit: 10 }).catch(() => []),
+            fmpAPI.makeRequest(`/cash-flow-statement/${symbol}`, { limit: 10 }).catch(() => []),
+            fmpAPI.makeRequest(`/financial-growth/${symbol}`,    { limit: 5  }).catch(() => []),
         ]);
 
-        const q   = Array.isArray(quoteRaw) ? quoteRaw[0] : (quoteRaw || {});
-        const cf  = Array.isArray(cfRaw)    ? cfRaw       : [];
-        const inc = Array.isArray(incRaw)   ? incRaw      : [];
-        const grw = Array.isArray(grwRaw)   ? grwRaw      : [];
+        const q   = Array.isArray(qRaw)   ? qRaw[0]  : (qRaw   || {});
+        const r   = Array.isArray(ratRaw) ? ratRaw[0] : (ratRaw || {});
+        const m   = Array.isArray(kmRaw)  ? kmRaw[0]  : (kmRaw  || {});
+        const inc = Array.isArray(incRaw) ? incRaw    : [];
+        const cf  = Array.isArray(cfRaw)  ? cfRaw     : [];
+        const grw = Array.isArray(grwRaw) ? grwRaw    : [];
 
-        if (!q || !q.price) throw new Error(`No quote data for "${symbol}". Check the ticker symbol.`);
+        if (!q?.price) throw new Error(`No quote data for "${symbol}". Check the ticker symbol.`);
 
-        // ── Debug: log the first row so we can see actual field names ──
-        if (cf.length)  console.log('[DCF] cashflow[0] keys:', Object.keys(cf[0]));
-        if (inc.length) console.log('[DCF] income[0]  keys:', Object.keys(inc[0]));
+        console.log('[DCF] quote keys:',      Object.keys(q));
+        console.log('[DCF] ratios keys:',     Object.keys(r));
+        console.log('[DCF] key-metrics keys:', Object.keys(m));
 
-        stockData = { symbol, quote: q, cf, inc, grw };
+        const price = num(q, 'price');
 
-        // Show debug info in UI
-        const fcfSample = cf.length ? extractFCF(cf[0]) : null;
-        const ocfSample = cf.length ? extractOCF(cf[0]) : null;
-        const niSample  = inc.length ? extractNI(inc[0]) : null;
-        showDebug(`${cf.length} CF rows · ${inc.length} income rows | FCF[0]: ${fmtM(fcfSample)} | OCF[0]: ${fmtM(ocfSample)} | NI[0]: ${fmtM(niSample)}`);
+        // ── EPS & P/E ────────────────────────────────────────────
+        const eps   = num(q, 'eps') ?? num(inc[0], 'epsdiluted', 'eps');
+        const peRat = num(r, 'priceEarningsRatio') ?? num(q, 'pe') ?? (eps && price && eps > 0 ? price / eps : null);
 
+        // ── FCF per share  (/key-metrics: freeCashFlowPerShare) ──
+        let fcfps = num(m, 'freeCashFlowPerShare');
+        // Fallback: compute from most recent CF statement
+        if (fcfps == null && cf[0]) {
+            const fcfTotal = num(cf[0], 'freeCashFlow');
+            const shares   = num(inc[0], 'weightedAverageShsOutDil', 'weightedAverageShsOut') ?? num(q, 'sharesOutstanding');
+            if (fcfTotal != null && shares && shares > 0) fcfps = fcfTotal / shares;
+        }
+        // Fallback: derive from P/FCF ratio
+        const pfcfFromRatios = num(r, 'priceToFreeCashFlowsRatio');
+        if (fcfps == null && pfcfFromRatios && pfcfFromRatios > 0 && price) fcfps = price / pfcfFromRatios;
+
+        // ── OCF per share  (/key-metrics: operatingCashFlowPerShare) ─
+        let ocfps = num(m, 'operatingCashFlowPerShare');
+        if (ocfps == null && cf[0]) {
+            const ocfTotal = num(cf[0], 'operatingCashFlow');
+            const shares   = num(inc[0], 'weightedAverageShsOutDil', 'weightedAverageShsOut') ?? num(q, 'sharesOutstanding');
+            if (ocfTotal != null && shares && shares > 0) ocfps = ocfTotal / shares;
+        }
+
+        // ── Revenue per share  (/key-metrics: revenuePerShare) ───
+        let revps = num(m, 'revenuePerShare');
+        if (revps == null && inc[0]) {
+            const rev    = num(inc[0], 'revenue');
+            const shares = num(inc[0], 'weightedAverageShsOutDil', 'weightedAverageShsOut') ?? num(q, 'sharesOutstanding');
+            if (rev != null && shares && shares > 0) revps = rev / shares;
+        }
+
+        // ── Valuation ratios ─────────────────────────────────────
+        const pfcf = num(r, 'priceToFreeCashFlowsRatio') ?? (fcfps && fcfps > 0 && price ? price / fcfps : null);
+        const pocf = num(r, 'priceToOperatingCashFlowsRatio') ?? (ocfps && ocfps > 0 && price ? price / ocfps : null);
+        const ps   = num(r, 'priceToSalesRatio') ?? (revps && revps > 0 && price ? price / revps : null);
+
+        // ── Dividend ─────────────────────────────────────────────
+        const div = num(q, 'lastAnnualDividend') || 0;
+
+        // ── Buyback yield  (/key-metrics: buybackYield) ──────────
+        const buybackYield = num(m, 'buybackYield');
+
+        stockData = { symbol, quote: q, ratios: r, metrics: m, income: inc, cashflow: cf, growth: grw,
+            derived: { price, eps, peRat, fcfps, ocfps, revps, pfcf, pocf, ps, div, buybackYield } };
+
+        // ── Company name ─────────────────────────────────────────
         document.getElementById('stockCompanyName').textContent = q.name || q.companyName || symbol;
+
+        // ── Live data cards ───────────────────────────────────────
+        const fmt2 = v => v != null ? '$' + v.toFixed(2) : 'N/A';
+        const fmt1 = v => v != null ? v.toFixed(1) : 'N/A';
+        document.getElementById('dc_eps').textContent   = fmt2(eps);
+        document.getElementById('dc_pe').textContent    = fmt1(peRat);
+        document.getElementById('dc_fcfps').textContent = fmt2(fcfps);
+        document.getElementById('dc_pfcf').textContent  = fmt1(pfcf);
+        document.getElementById('dc_revps').textContent = fmt2(revps);
+        document.getElementById('dc_div').textContent   = fmt2(div);
+
+        document.getElementById('liveDataCards').style.display  = 'block';
         document.getElementById('loadingIndicator').style.display = 'none';
         document.getElementById('autoFillBtn').disabled = false;
         hideStatus();
         autoFill();
 
-    } catch (err) {
+    } catch(err) {
         showStatus('Error: ' + err.message, 'error');
         document.getElementById('loadingIndicator').style.display = 'none';
-        console.error('loadStock error:', err);
+        console.error(err);
     }
 }
-
-function fmtM(v) { if (v == null) return 'N/A'; return '$' + (v / 1e9).toFixed(2) + 'B'; }
 
 function showStatus(msg, type) {
     const el = document.getElementById('statusMsg');
     el.textContent = msg; el.className = `status-msg status-${type}`; el.style.display = 'block';
 }
 function hideStatus() { document.getElementById('statusMsg').style.display = 'none'; }
-function showDebug(msg) {
-    const el = document.getElementById('debugPanel');
-    el.innerHTML = '<strong>Data check:</strong> ' + msg;
-    el.classList.add('show');
-}
 
 // ============================================================
-// DATA HELPERS
+// HELPERS
 // ============================================================
-function getMetricValues(metric, years) {
-    if (!stockData) return [];
-    // Data comes newest-first from FMP; slice then reverse to get oldest→newest
-    const cf  = stockData.cf.slice(0, years).reverse();
-    const inc = stockData.inc.slice(0, years).reverse();
+const METRIC_LABELS = {
+    fcf: 'Free Cash Flow', eps: 'Earnings (EPS)', rev: 'Revenue', ocf: 'Operating Cash Flow'
+};
+function getMetricLabel(metric) { return METRIC_LABELS[metric] || 'Free Cash Flow'; }
 
-    switch (metric) {
-        case 'fcf': return cf.map(r => extractFCF(r) ?? 0);
-        case 'ocf': return cf.map(r => extractOCF(r) ?? 0);
-        case 'oi':  return inc.map(r => extractOI(r)  ?? 0);
-        case 'ni':  return inc.map(r => extractNI(r)  ?? 0);
-        default:    return cf.map(r => extractFCF(r)  ?? 0);
-    }
+function getBasePerShare(metric) {
+    if (!stockData?.derived) return null;
+    const d = stockData.derived;
+    return { fcf: d.fcfps, eps: d.eps, rev: d.revps, ocf: d.ocfps }[metric] ?? null;
 }
 
-// Returns the most recent NON-ZERO metric value (total, not per-share)
-function getMostRecentMetric(metric) {
-    if (!stockData) return null;
-    const src = (metric === 'oi' || metric === 'ni') ? stockData.inc : stockData.cf;
-    for (const row of src) {
-        let v = null;
-        if (metric === 'fcf') v = extractFCF(row);
-        else if (metric === 'ocf') v = extractOCF(row);
-        else if (metric === 'oi')  v = extractOI(row);
-        else if (metric === 'ni')  v = extractNI(row);
-        if (v != null && v !== 0) return v;
-    }
-    return null;
+function getCurrentRatio(metric) {
+    if (!stockData?.derived) return null;
+    const d = stockData.derived;
+    return { fcf: d.pfcf, eps: d.peRat, rev: d.ps, ocf: d.pocf }[metric] ?? null;
 }
 
-function calcCAGR(values) {
-    // Filter out zeros for CAGR calc (zeros break log math)
-    const filtered = values.filter(v => v > 0);
-    if (filtered.length < 2) return null;
-    const first = filtered[0], last = filtered[filtered.length - 1];
-    if (!first || first <= 0) return null;
-    return (Math.pow(last / first, 1 / (filtered.length - 1)) - 1) * 100;
-}
-
-// calcAvgRatio is now computed from raw income/cashflow data above
-
-function getDivGrowth(years) {
-    if (!stockData || !stockData.grw.length) return null;
-    const rows = stockData.grw.slice(0, years);
-    const vals = rows
-        .map(r => safeNum(r, 'dividendsperShareGrowth', 'dividendGrowth'))
-        .filter(v => v != null && isFinite(v));
-    if (!vals.length) return null;
-    return (vals.reduce((a, b) => a + b, 0) / vals.length) * 100;
-}
-
-function getShareGrowth(years) {
-    if (!stockData || stockData.inc.length < 2) return null;
-    const rows = stockData.inc.slice(0, years).reverse();
-    if (rows.length < 2) return null;
-    const first = extractShares(rows[0]);
-    const last  = extractShares(rows[rows.length - 1]);
-    if (!first || first <= 0) return null;
-    return (Math.pow(last / first, 1 / (rows.length - 1)) - 1) * 100;
-}
-
-function getMetricLabel(metric) {
-    return { fcf: 'Free Cash Flow', ocf: 'Operating Cash Flow', oi: 'Operating Income', ni: 'Net Income' }[metric] || 'Free Cash Flow';
+// Implied growth heuristic: for growth stocks PEG ≈ 1 → growth% ≈ P/E
+// Capped at [3%, 35%] to stay reasonable
+function impliedGrowth(metric) {
+    const ratio = getCurrentRatio(metric);
+    if (!ratio || ratio <= 0) return 12;
+    return parseFloat(Math.min(35, Math.max(3, ratio / 2)).toFixed(2));
 }
 
 // ============================================================
 // AUTO-FILL
 // ============================================================
 document.getElementById('autoFillBtn').addEventListener('click', autoFill);
-document.getElementById('yearsInput').addEventListener('input', () => {
-    document.getElementById('autoFillYearsLabel').textContent = document.getElementById('yearsInput').value || 5;
-    triggerCalculation();
-});
+document.getElementById('yearsInput').addEventListener('input', triggerCalculation);
 
 function autoFill() {
     if (!stockData) return;
     const metric = document.getElementById('metricSelect').value;
-    const years  = Math.min(parseInt(document.getElementById('yearsInput').value) || 5, 10);
     const label  = getMetricLabel(metric);
 
-    // Update all metric labels
-    document.getElementById('metricLabel').textContent       = label;
-    document.getElementById('ratioMetricLabel').textContent  = label;
-    document.getElementById('customMetricLabel').textContent = label;
+    ['metricLabel','ratioMetricLabel','customMetricLabel'].forEach(id =>
+        document.getElementById(id).textContent = label);
 
-    // Growth rate
-    const values = getMetricValues(metric, years);
-    const growthRate = calcCAGR(values);
-    if (growthRate !== null) {
-        document.getElementById('growthInput').value = growthRate.toFixed(2);
-        document.getElementById('growthHelperText').textContent =
-            `Annual ${label} growth over the past ${years} year(s) is: ${growthRate.toFixed(2)}%`;
+    // Base per-share
+    const base = getBasePerShare(metric);
+    if (base != null) {
+        document.getElementById('customFCFInput').value = base.toFixed(2);
+        document.getElementById('customFCFHelperText').textContent =
+            `Most recent ${label}/share: $${base.toFixed(2)} (from live data)`;
     } else {
-        document.getElementById('growthHelperText').textContent =
-            `Could not compute ${label} growth (insufficient positive data).`;
+        document.getElementById('customFCFInput').value = '';
+        document.getElementById('customFCFHelperText').textContent =
+            `${label}/share not available — please enter manually.`;
     }
 
-    // Average ratio
-    const avgRatio = calcAvgRatio(metric, years);
-    if (avgRatio !== null) {
-        document.getElementById('ratioInput').value = avgRatio.toFixed(2);
+    // Current ratio
+    const ratio = getCurrentRatio(metric);
+    if (ratio != null && ratio > 0 && ratio < 1000) {
+        document.getElementById('ratioInput').value = ratio.toFixed(1);
         document.getElementById('ratioHelperText').textContent =
-            `Average Price to ${label} over the past ${years} year(s) is: ${avgRatio.toFixed(2)}`;
+            `Current Price/${label} = ${ratio.toFixed(1)} (computed from live data)`;
     } else {
-        document.getElementById('ratioHelperText').textContent = `Average ratio: data not available.`;
+        document.getElementById('ratioHelperText').textContent =
+            `Ratio not available — please enter manually.`;
     }
 
-    // Dividend growth
-    const divGrowth = getDivGrowth(years);
-    if (divGrowth !== null) {
-        document.getElementById('dividendGrowthInput').value = divGrowth.toFixed(2);
+    // Implied growth
+    const g = impliedGrowth(metric);
+    document.getElementById('growthInput').value = g;
+    document.getElementById('growthHelperText').textContent =
+        `Suggested growth rate implied from current valuation ratio: ${g}%`;
+
+    // Dividend
+    const div = stockData.derived.div;
+    if (div > 0) {
+        document.getElementById('dividendGrowthInput').value = '5.00';
         document.getElementById('divGrowthHelperText').textContent =
-            `Annual dividend growth over the past ${years} year(s) is: ${divGrowth.toFixed(2)}%`;
-    }
-
-    // Share count change
-    const shareGrowth = getShareGrowth(years);
-    if (shareGrowth !== null) {
-        document.getElementById('shareChangeInput').value = shareGrowth.toFixed(2);
-        document.getElementById('sharesHelperText').textContent =
-            `Annual diluted shares growth over the past ${years} year(s) is: ${shareGrowth.toFixed(2)}%`;
-    }
-
-    // Most recent metric value → custom starting point
-    const mostRecent = getMostRecentMetric(metric);
-    if (mostRecent != null) {
-        const inMillions = Math.round(mostRecent / 1e6);
-        document.getElementById('customFCFInput').value = inMillions;
-        document.getElementById('customFCFHelperText').textContent =
-            `Most recent ${label} value is: ${inMillions.toLocaleString()} M ($${(mostRecent / 1e9).toFixed(2)}B)`;
+            `Annual dividend: $${div.toFixed(2)}/share. Growth estimate: 5% (adjust as needed).`;
     } else {
-        document.getElementById('customFCFHelperText').textContent =
-            `Most recent ${label}: data not available.`;
+        document.getElementById('dividendGrowthInput').value = '0.00';
+        document.getElementById('divGrowthHelperText').textContent = 'No dividend detected.';
+    }
+
+    // Share count change from buyback yield
+    const by = stockData.derived.buybackYield;
+    if (by != null) {
+        document.getElementById('shareChangeInput').value = (-(by * 100)).toFixed(2);
+        document.getElementById('sharesHelperText').textContent =
+            `Buyback yield (TTM): ${(by * 100).toFixed(2)}% → estimated share reduction.`;
+    } else {
+        document.getElementById('sharesHelperText').textContent =
+            'Negative = buybacks (e.g. −1 = 1%/yr). Enter manually.';
     }
 
     triggerCalculation();
 }
 
-// ============================================================
-// METRIC SELECT CHANGE
-// ============================================================
 document.getElementById('metricSelect').addEventListener('change', () => { if (stockData) autoFill(); });
-
-['growthInput','decayInput','ratioInput','returnInput','dividendGrowthInput','shareChangeInput','customFCFInput'].forEach(id => {
-    document.getElementById(id).addEventListener('input', triggerCalculation);
-});
+['growthInput','decayInput','ratioInput','returnInput','dividendGrowthInput','shareChangeInput','customFCFInput']
+    .forEach(id => document.getElementById(id).addEventListener('input', triggerCalculation));
 
 // ============================================================
-// CALCULATION  — uses shares from income statement
+// CALCULATION  — per-share model
 // ============================================================
 function triggerCalculation() {
     if (!stockData) return;
@@ -1063,120 +844,76 @@ function triggerCalculation() {
     updateCharts(r);
 }
 
-function getSharesOutstanding() {
-    if (!stockData || !stockData.inc.length) return 1e9; // fallback 1B shares
-    for (const row of stockData.inc) {
-        const s = extractShares(row);
-        if (s && s > 0) return s;
-    }
-    return 1e9;
-}
-
 function calculateDCF() {
-    const currentPrice = stockData.quote?.price || 0;
-    const sharesOut    = getSharesOutstanding();
+    const currentPrice  = stockData.derived.price || 0;
+    const growthRate    = parseFloat(document.getElementById('growthInput').value)          / 100;
+    const decayRate     = parseFloat(document.getElementById('decayInput').value)           / 100;
+    const ratio         = parseFloat(document.getElementById('ratioInput').value);
+    const desiredReturn = parseFloat(document.getElementById('returnInput').value)          / 100;
+    const divGrowthRate = parseFloat(document.getElementById('dividendGrowthInput').value)  / 100;
+    const shareChange   = parseFloat(document.getElementById('shareChangeInput').value)     / 100;
+    const years         = parseInt(document.getElementById('yearsInput').value)             || 5;
+    const metric        = document.getElementById('metricSelect').value;
 
-    const growthRate   = parseFloat(document.getElementById('growthInput').value)         / 100;
-    const decayRate    = parseFloat(document.getElementById('decayInput').value)          / 100;
-    const ratio        = parseFloat(document.getElementById('ratioInput').value);
-    const desiredReturn= parseFloat(document.getElementById('returnInput').value)         / 100;
-    const divGrowthRate= parseFloat(document.getElementById('dividendGrowthInput').value) / 100;
-    const shareChange  = parseFloat(document.getElementById('shareChangeInput').value)    / 100;
-    const years        = parseInt(document.getElementById('yearsInput').value)            || 5;
+    const customVal = parseFloat(document.getElementById('customFCFInput').value);
+    const basePS = (!isNaN(customVal) && customVal !== 0) ? customVal : (getBasePerShare(metric) ?? 0);
 
-    // Base metric — prefer custom input, then auto-detect
-    const metric       = document.getElementById('metricSelect').value;
-    const customMM     = parseFloat(document.getElementById('customFCFInput').value);
-    let baseTotal;
-    if (!isNaN(customMM) && customMM !== 0) {
-        baseTotal = customMM * 1e6;
-    } else {
-        baseTotal = getMostRecentMetric(metric) ?? 0;
-    }
+    const lastDiv = stockData.derived.div || 0;
 
-    let basePerShare = sharesOut > 0 ? baseTotal / sharesOut : 0;
-
-    // Current dividend per share
-    const lastDiv = stockData.quote?.lastAnnualDividend || 0;
-
-    // ── PROJECT metric per share (no decay) ──
-    const projectedMetric      = [];
-    const projectedMetricDecay = [];
-    let mPS   = basePerShare;
-    let mPSD  = basePerShare;
-    let gD    = growthRate;
-    let shrMul = 1;
+    // ── Project metric per share ──────────────────────────────
+    const projNoDecay   = [];
+    const projWithDecay = [];
+    let mPS = basePS, mPSD = basePS, gD = growthRate, shrMul = 1;
 
     for (let i = 1; i <= years; i++) {
-        mPS  *= (1 + growthRate);
-        shrMul *= (1 + shareChange);
-        projectedMetric.push(mPS / shrMul);
+        mPS     *= (1 + growthRate);
+        shrMul  *= (1 + shareChange);
+        projNoDecay.push(mPS / shrMul);
 
         mPSD *= (1 + gD);
-        projectedMetricDecay.push(mPSD);
+        projWithDecay.push(mPSD);
         gD = Math.max(0, gD - decayRate);
     }
 
-    // Future price from projected metric × ratio
-    const finalMetric       = projectedMetric[years - 1]      || 0;
-    const futureStockPrice  = finalMetric * ratio;
+    const futureStockPrice = (projNoDecay[years - 1] || 0) * ratio;
 
     // Total dividends (undiscounted)
-    let totalDivs = 0;
-    let div = lastDiv;
-    for (let i = 0; i < years; i++) {
-        div *= (1 + divGrowthRate);
-        totalDivs += div;
-    }
+    let totalDivs = 0, div = lastDiv;
+    for (let i = 0; i < years; i++) { div *= (1 + divGrowthRate); totalDivs += div; }
 
-    // Fair value = PV of (futurePrice + totalDivs) @ desired return
-    const fairValue = (futureStockPrice + totalDivs) / Math.pow(1 + desiredReturn, years);
-
-    // CAGR from current price to (future + dividends)
+    const fairValue   = (futureStockPrice + totalDivs) / Math.pow(1 + desiredReturn, years);
     const totalReturn = futureStockPrice + totalDivs;
-    const cagr = currentPrice > 0
-        ? (Math.pow(totalReturn / currentPrice, 1 / years) - 1) * 100
-        : 0;
+    const cagr        = currentPrice > 0 ? (Math.pow(totalReturn / currentPrice, 1 / years) - 1) * 100 : 0;
+    const upside      = currentPrice > 0 ? ((fairValue - currentPrice) / currentPrice) * 100 : 0;
 
-    const upside = currentPrice > 0
-        ? ((fairValue - currentPrice) / currentPrice) * 100
-        : 0;
-
-    return {
-        currentPrice, futureStockPrice,
-        totalDivs, fairValue, cagr, upside, years,
-        projectedMetric, projectedMetricDecay,
-        baseTotal,
-        sharesOut,
-        desiredReturn: desiredReturn * 100,
-    };
+    return { currentPrice, futureStockPrice, totalDivs, fairValue, cagr, upside, years,
+             projNoDecay, projWithDecay, basePS,
+             desiredReturn: desiredReturn * 100, growthRate: growthRate * 100 };
 }
 
 // ============================================================
 // UI UPDATE
 // ============================================================
-function fmtPrice(n)  { if (!n && n !== 0) return '—'; return '$' + n.toFixed(2); }
-function fmtPct(n)    { return (n >= 0 ? '+' : '') + n.toFixed(2) + '%'; }
+function fmtP(x) { return x == null ? '—' : '$' + x.toFixed(2); }
+function fmtPct(x) { return (x >= 0 ? '+' : '') + x.toFixed(2) + '%'; }
 
 function updateUI(r) {
-    document.getElementById('currentPrice').textContent = fmtPrice(r.currentPrice);
-    document.getElementById('futurePrice').textContent  = fmtPrice(r.futureStockPrice);
+    document.getElementById('currentPrice').textContent = fmtP(r.currentPrice);
+    document.getElementById('futurePrice').textContent  = fmtP(r.futureStockPrice);
 
-    const futurePct  = r.currentPrice > 0 ? ((r.futureStockPrice - r.currentPrice) / r.currentPrice) * 100 : 0;
-    const fpBadge    = document.getElementById('futurePriceBadge');
-    fpBadge.textContent  = fmtPct(futurePct);
-    fpBadge.className    = 'result-badge ' + (futurePct >= 0 ? 'badge-success' : 'badge-danger');
+    const fpPct = r.currentPrice > 0 ? ((r.futureStockPrice - r.currentPrice) / r.currentPrice) * 100 : 0;
+    const fpB   = document.getElementById('futurePriceBadge');
+    fpB.textContent = fmtPct(fpPct);
+    fpB.className   = 'result-badge ' + (fpPct >= 0 ? 'badge-success' : 'badge-danger');
 
-    document.getElementById('dividends').textContent = fmtPrice(r.totalDivs);
-    document.getElementById('fairValue').textContent = fmtPrice(r.fairValue);
+    document.getElementById('dividends').textContent = fmtP(r.totalDivs);
+    document.getElementById('fairValue').textContent = fmtP(r.fairValue);
 
-    const fvBadge = document.getElementById('fairValueBadge');
-    fvBadge.textContent = fmtPct(r.upside);
-    fvBadge.className   = 'result-badge ' + (r.upside >= 0 ? 'badge-success' : 'badge-danger');
-
+    const fvB = document.getElementById('fairValueBadge');
+    fvB.textContent = fmtPct(r.upside);
+    fvB.className   = 'result-badge ' + (r.upside >= 0 ? 'badge-success' : 'badge-danger');
     document.getElementById('cagr').textContent = r.cagr.toFixed(2) + '%';
 
-    // Analysis box
     const under = r.upside >= 0;
     document.getElementById('dcfAnalysisBox').className = 'dcf-analysis ' + (under ? 'undervalued' : 'overvalued');
 
@@ -1190,7 +927,7 @@ function updateUI(r) {
 
     const buyEl = document.getElementById('buyPriceText');
     buyEl.className   = under ? 'highlight-green' : 'highlight-red';
-    buyEl.textContent = fmtPrice(r.fairValue);
+    buyEl.textContent = fmtP(r.fairValue);
 
     document.getElementById('desiredReturnText').textContent = r.desiredReturn.toFixed(1);
 }
@@ -1198,12 +935,9 @@ function updateUI(r) {
 // ============================================================
 // CHARTS
 // ============================================================
-function getChartColors() {
+function chartColors() {
     const dark = html.getAttribute('data-theme') !== 'light';
-    return {
-        grid: dark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.07)',
-        tick: dark ? '#94A3B8' : '#6B7280',
-    };
+    return { grid: dark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.07)', tick: dark ? '#94A3B8' : '#6B7280' };
 }
 
 function updateCharts(r) {
@@ -1212,62 +946,43 @@ function updateCharts(r) {
     updateMetricChart(r);
 }
 
-// ── PRICE CHART ────────────────────────────────────────────────
-function buildPriceDatasets(r) {
-    const years = r.years;
-    const yr0   = new Date().getFullYear();
-    const labels = Array.from({ length: years + 1 }, (_, i) => (yr0 + i).toString());
-
-    const growthRate    = parseFloat(document.getElementById('growthInput').value) / 100;
-    const ratio         = parseFloat(document.getElementById('ratioInput').value);
-    const desiredReturn = parseFloat(document.getElementById('returnInput').value) / 100;
-    const sharesOut     = r.sharesOut || getSharesOutstanding();
-
-    // Stock At Ratio: project metric per share × ratio, year by year
-    let mPS = r.baseTotal > 0 ? r.baseTotal / sharesOut : 0;
-    const ratioData = [r.currentPrice];
-    for (let i = 0; i < years; i++) {
-        mPS *= (1 + growthRate);
-        ratioData.push(mPS * ratio);
-    }
-
-    // DCF Fair Value: discount ratioData[years] back each year
-    const futureTotal = ratioData[years];
-    const dcfData = [r.currentPrice];
-    for (let i = 1; i <= years; i++) {
-        dcfData.push(futureTotal / Math.pow(1 + desiredReturn, years - i + 1));
-    }
-
-    // Flat current price line
-    const flatData = Array(years + 1).fill(r.currentPrice);
-
-    return {
-        labels,
-        datasets: {
-            ratio: { label: 'Stock Price At Ratio',  data: ratioData, borderColor: '#10B981', backgroundColor: 'rgba(16,185,129,0.1)',  tension: 0.4, fill: true  },
-            price: { label: 'Stock Price (Today)',   data: flatData,  borderColor: '#FF7A00', backgroundColor: 'rgba(255,122,0,0.07)',   tension: 0,   borderDash: [6,4] },
-            dcf:   { label: 'DCF Fair Value',        data: dcfData,   borderColor: '#3b82f6', backgroundColor: 'rgba(59,130,246,0.08)',  tension: 0.4, fill: true, borderDash: [6,3] },
-        }
-    };
-}
-
+// ── PRICE CHART ──────────────────────────────────────────────
 function updatePriceChart(r) {
-    const c = getChartColors();
+    const c   = chartColors();
     const ctx = document.getElementById('stockPriceChart').getContext('2d');
     if (priceChart) { priceChart.destroy(); priceChart = null; }
 
-    const { labels, datasets } = buildPriceDatasets(r);
-    const ds = datasets[activePriceSeries] || datasets.ratio;
+    const yr0 = new Date().getFullYear();
+    const labels = Array.from({ length: r.years + 1 }, (_, i) => String(yr0 + i));
+
+    const gr  = r.growthRate / 100;
+    const rt  = parseFloat(document.getElementById('ratioInput').value);
+    const dr  = parseFloat(document.getElementById('returnInput').value) / 100;
+
+    let mPS = r.basePS;
+    const ratioData = [r.currentPrice];
+    for (let i = 0; i < r.years; i++) { mPS *= (1 + gr); ratioData.push(mPS * rt); }
+
+    const futTot = ratioData[r.years];
+    const dcfData = [r.currentPrice];
+    for (let i = 1; i <= r.years; i++) dcfData.push(futTot / Math.pow(1 + dr, r.years - i + 1));
+
+    const flatData = Array(r.years + 1).fill(r.currentPrice);
+
+    const datasets = {
+        ratio: { label: 'Stock Price At Ratio', data: ratioData, borderColor: '#10B981', backgroundColor: 'rgba(16,185,129,0.1)', tension: 0.4, fill: true },
+        price: { label: 'Stock Price (Today)',  data: flatData,  borderColor: '#FF7A00', backgroundColor: 'rgba(255,122,0,0.07)', tension: 0, borderDash: [6,4] },
+        dcf:   { label: 'DCF Fair Value',       data: dcfData,   borderColor: '#3b82f6', backgroundColor: 'rgba(59,130,246,0.08)', tension: 0.4, fill: true, borderDash: [6,3] },
+    };
 
     priceChart = new Chart(ctx, {
         type: 'line',
-        data: { labels, datasets: [ds] },
+        data: { labels, datasets: [datasets[activePriceSeries] || datasets.ratio] },
         options: {
             responsive: true, maintainAspectRatio: false,
             interaction: { mode: 'index', intersect: false },
-            plugins: {
-                legend: { display: false },
-                tooltip: { backgroundColor: '#1e293b', titleColor: '#F1F5F9', bodyColor: '#94A3B8', borderColor: '#334155', borderWidth: 1, callbacks: { label: ctx => ' $' + ctx.parsed.y.toFixed(2) } }
+            plugins: { legend: { display: false },
+                tooltip: { backgroundColor: '#1e293b', titleColor: '#F1F5F9', bodyColor: '#94A3B8', borderColor: '#334155', borderWidth: 1, callbacks: { label: c => ' $' + c.parsed.y.toFixed(2) } }
             },
             scales: {
                 y: { beginAtZero: false, grid: { color: c.grid }, ticks: { color: c.tick, callback: v => '$' + v.toFixed(0) } },
@@ -1276,7 +991,6 @@ function updatePriceChart(r) {
         }
     });
     priceChart._datasets = datasets;
-    priceChart._labels   = labels;
 }
 
 window.togglePriceChart = function(btn, series) {
@@ -1290,100 +1004,64 @@ window.togglePriceChart = function(btn, series) {
     priceChart.update();
 };
 
-// ── METRIC CHART ───────────────────────────────────────────────
+// ── METRIC CHART ─────────────────────────────────────────────
 function updateMetricChart(r) {
     const metric = document.getElementById('metricSelect').value;
     const label  = getMetricLabel(metric);
-    const years  = r.years;
     const yr0    = new Date().getFullYear();
-    const c      = getChartColors();
+    const c      = chartColors();
 
     document.getElementById('chart2Title').textContent =
-        `${label}: Historical (${yr0 - 10}–${yr0}) and Projected (${yr0}–${yr0 + years})`;
+        `${label}/Share: Projection (${yr0}–${yr0 + r.years})`;
 
     const ctx = document.getElementById('cashFlowChart').getContext('2d');
     if (metricChart) { metricChart.destroy(); metricChart = null; }
 
-    // Historical (up to 10 rows, reversed to oldest→newest)
-    const rawHist = getMetricValues(metric, 10);
-    const histLabels = rawHist.map((_, i) => (yr0 - rawHist.length + i).toString());
-    const histData   = rawHist.map((v, i) => ({ x: histLabels[i], y: v / 1e9 }));
-
-    // Projected: start from last historical point
-    const growthRate = parseFloat(document.getElementById('growthInput').value) / 100;
-    const decayRate  = parseFloat(document.getElementById('decayInput').value)  / 100;
-    const base       = rawHist.length ? rawHist[rawHist.length - 1] : (r.baseTotal || 0);
-
-    const projLabels = [(yr0).toString()];
-    const projData   = [{ x: yr0.toString(), y: base / 1e9 }];
-    const projDecay  = [{ x: yr0.toString(), y: base / 1e9 }];
-
-    let pv = base, pvD = base, gD = growthRate;
-    for (let i = 1; i <= years; i++) {
-        const lbl = (yr0 + i).toString();
-        pv *= (1 + growthRate);
-        projData.push({ x: lbl, y: pv / 1e9 });
-
-        pvD *= (1 + gD);
-        projDecay.push({ x: lbl, y: pvD / 1e9 });
-        gD = Math.max(0, gD - decayRate);
-    }
-
-    const makeDs = (data, bg, lbl) => ({
-        label: lbl,
-        data,
-        backgroundColor: bg,
-        borderRadius: 4,
-        borderSkipped: false,
+    const make = (arr, color, lbl) => ({
+        label: lbl, backgroundColor: color, borderRadius: 4, borderSkipped: false,
+        data: [{ x: String(yr0), y: r.basePS }].concat(arr.map((v, i) => ({ x: String(yr0 + i + 1), y: v })))
     });
 
-    const activeData = activeMetricSeries === 'historical' ? histData
-        : activeMetricSeries === 'projected' ? projData : projDecay;
-    const activeBg  = activeMetricSeries === 'historical' ? '#10B981'
-        : activeMetricSeries === 'projected' ? '#3b82f6' : '#f59e0b';
-    const activeLbl = activeMetricSeries === 'historical' ? `${label} (Historical)`
-        : activeMetricSeries === 'projected' ? `${label} (Projected, No Decay)` : `${label} (Projected, With Decay)`;
+    const noDecayDs   = make(r.projNoDecay,   '#3b82f6', `${label}/Share (No Decay)`);
+    const withDecayDs = make(r.projWithDecay, '#f59e0b', `${label}/Share (With Decay)`);
+    const activeDs    = activeMetricSeries === 'projected_decay' ? withDecayDs : noDecayDs;
 
     metricChart = new Chart(ctx, {
         type: 'bar',
-        data: { datasets: [makeDs(activeData, activeBg, activeLbl)] },
+        data: { datasets: [activeDs] },
         options: {
             responsive: true, maintainAspectRatio: false,
-            plugins: {
-                legend: { display: false },
-                tooltip: { backgroundColor: '#1e293b', titleColor: '#F1F5F9', bodyColor: '#94A3B8', borderColor: '#334155', borderWidth: 1, callbacks: { label: ctx => ' $' + ctx.parsed.y.toFixed(2) + 'B' } }
+            plugins: { legend: { display: false },
+                tooltip: { backgroundColor: '#1e293b', titleColor: '#F1F5F9', bodyColor: '#94A3B8', borderColor: '#334155', borderWidth: 1, callbacks: { label: c => ' $' + c.parsed.y.toFixed(2) } }
             },
             scales: {
                 x: { type: 'category', grid: { color: c.grid }, ticks: { color: c.tick } },
-                y: { grid: { color: c.grid }, ticks: { color: c.tick, callback: v => '$' + v.toFixed(1) + 'B' } }
+                y: { grid: { color: c.grid }, ticks: { color: c.tick, callback: v => '$' + v.toFixed(2) } }
             }
         }
     });
-
-    metricChart._hist      = histData;
-    metricChart._proj      = projData;
-    metricChart._projDecay = projDecay;
+    metricChart._noDecay   = noDecayDs;
+    metricChart._withDecay = withDecayDs;
     metricChart._label     = label;
 }
 
 window.toggleMetricChart = function(btn, series) {
     activeMetricSeries = series;
-    document.querySelectorAll('[onclick^="toggleMetricChart"]').forEach(b => b.classList.remove('active', 'active-green'));
-    btn.classList.add('active', 'active-green');
+    document.querySelectorAll('[onclick^="toggleMetricChart"]').forEach(b => b.classList.remove('active','active-green'));
+    btn.classList.add('active','active-green');
     if (!metricChart) return;
-    const lbl = metricChart._label;
-    const map = {
-        historical:     { data: metricChart._hist,      bg: '#10B981', label: `${lbl} (Historical)` },
-        projected:      { data: metricChart._proj,      bg: '#3b82f6', label: `${lbl} (Projected, No Decay)` },
-        projected_decay:{ data: metricChart._projDecay, bg: '#f59e0b', label: `${lbl} (Projected, With Decay)` },
-    };
-    const s = map[series];
-    if (!s) return;
-    metricChart.data.datasets[0].data            = s.data;
-    metricChart.data.datasets[0].backgroundColor = s.bg;
-    metricChart.data.datasets[0].label           = s.label;
+    const ds = series === 'projected_decay' ? metricChart._withDecay : metricChart._noDecay;
+    metricChart.data.datasets[0].data            = ds.data;
+    metricChart.data.datasets[0].backgroundColor = ds.backgroundColor;
+    metricChart.data.datasets[0].label           = ds.label;
     metricChart.update();
 };
+
+// Expose remaining functions for HTML onclick attributes
+window.loadStock       = loadStock;
+window.autoFill        = autoFill;
+window.triggerCalculation = triggerCalculation;
+window.stepInput       = stepInput;
 </script>
 </body>
 </html>
