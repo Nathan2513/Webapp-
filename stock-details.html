@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Stock Details — StockMaster</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="fmp-api.js"></script>
     <style>
         :root { --primary-orange:#FF7A00; --bg-main:#F9FAFB; --bg-topbar:#FFFFFF; --text-primary:#111827; --text-secondary:#6B7280; --border-color:#E5E7EB; --hover-bg:#F3F4F6; --shadow-lg:0 10px 25px -5px rgba(0,0,0,0.1); --success-color:#10B981; --danger-color:#EF4444; }
         [data-theme="dark"] { --bg-main:#0F172A; --bg-topbar:#1E293B; --text-primary:#F1F5F9; --text-secondary:#94A3B8; --border-color:#334155; --hover-bg:#334155; }
@@ -247,7 +248,9 @@ window.scorePageGo=scorePageGo;
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-    import fmpAPI from './fmp-api.js';
+
+    // fmpAPI loaded via <script src="fmp-api.js"> in <head>
+    const fmpAPI = window.fmpAPI;
 
     initializeApp({apiKey:"AIzaSyD4dkPbO1C-bZiSokalUnwNqOTpeAyrOU0",authDomain:"stockmaster-30835.firebaseapp.com",projectId:"stockmaster-30835",storageBucket:"stockmaster-30835.firebasestorage.app",messagingSenderId:"506097874613",appId:"1:506097874613:web:0d15d2bd1575a55c8ab0fc"});
     const auth=getAuth();
