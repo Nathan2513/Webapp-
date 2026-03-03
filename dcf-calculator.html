@@ -12,6 +12,7 @@
     </script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script type="module" src="fmp-api.js"></script>
 
     <style>
         :root {
@@ -519,7 +520,10 @@
 </script>
 
 <script type="module">
-import fmpAPI from './fmp-api.js';
+// fmpAPI loaded via <script type="module" src="fmp-api.js"> in <head>
+// window.fmpAPI is set synchronously when fmp-api.js executes
+const fmpAPI = window.fmpAPI;
+
 // ============================================================
 // FMP API  — delegates to fmpAPI (fmp-api.js) — /api/v3 free tier
 //   /quote/{sym}            → price, eps, pe, marketCap, lastAnnualDividend, sharesOutstanding
