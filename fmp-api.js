@@ -1,5 +1,6 @@
 // FMP API Manager with Intelligent Caching
 // Architecture: /api/v3/{endpoint}/{symbol} (free plan compatible)
+// Load with: <script src="fmp-api.js"> — sets window.fmpAPI globally
 
 class FMPCache {
     constructor() {
@@ -98,6 +99,9 @@ class FMPCache {
     async getKeyMetrics(sym, l=5)       { return this.makeRequest(`/key-metrics/${sym}`, { limit: l }); }
     async getRatios(sym, l=5)           { return this.makeRequest(`/ratios/${sym}`, { limit: l }); }
     async getDividendHistory(sym)       { return this.makeRequest(`/historical/stock_dividend/${sym}`); }
+
+    // Alias for financial-tabs-enhancement.js compatibility
+    async getFinancialRatios(sym, l=5)  { return this.getRatios(sym, l); }
 
     // Search: symbol goes in ?query= (no path segment)
     async searchStocks(query) {
@@ -257,5 +261,4 @@ class FMPCache {
 
 const fmpAPI = new FMPCache();
 window.fmpAPI = fmpAPI;
-
-export default fmpAPI;
+// Use via: window.fmpAPI  (loaded with <script src="fmp-api.js">)
