@@ -619,7 +619,8 @@
 
 <script>
 // ============================================================
-// FMP API — lightweight inline version (same key/base as fmp-api.js)
+// FMP API — uses fmp-api.js module (already loaded on the page)
+// Inline fallback for cache + search
 // ============================================================
 const FMP_KEY  = 'RxYKGPJbSbTuLhW15Bdrop3OxJ2tiXDf';
 const FMP_BASE = 'https://financialmodelingprep.com/stable';
@@ -639,7 +640,7 @@ function cacheSet(key, v) {
 }
 
 async function fmpGet(endpoint, params = {}) {
-    const qs = new URLSearchParams({ ...params, apikey: FMP_KEY }).toString();
+    const qs  = new URLSearchParams({ ...params, apikey: FMP_KEY }).toString();
     const key = `fmp_${endpoint}_${qs}`;
     const hit = cacheGet(key);
     if (hit) return hit;
@@ -656,17 +657,15 @@ async function fmpSearch(q) {
 }
 
 // ============================================================
-// SAFE FIELD READER — handles all known FMP /stable/ field variants
+// SAFE FIELD READER
 // ============================================================
 function safeNum(row, ...keys) {
+    // First pass: prefer non-zero
     for (const k of keys) {
         const v = row?.[k];
-        if (v != null && v !== '' && isFinite(Number(v))) {
-            const n = Number(v);
-            if (n !== 0) return n;   // prefer non-zero values
-        }
+        if (v != null && v !== '' && isFinite(Number(v)) && Number(v) !== 0) return Number(v);
     }
-    // Second pass: accept zero if that's all we have
+    // Second pass: accept zero
     for (const k of keys) {
         const v = row?.[k];
         if (v != null && v !== '' && isFinite(Number(v))) return Number(v);
@@ -674,56 +673,92 @@ function safeNum(row, ...keys) {
     return null;
 }
 
-// Extract FCF from a cash-flow row — tries every known FMP field name
+// ── Raw field extractors ──────────────────────────────────────
 function extractFCF(cf) {
-    // freeCashFlow is the most reliable when present and non-zero
     const direct = safeNum(cf, 'freeCashFlow');
     if (direct != null) return direct;
-    // Fallback: operatingCF - capex
     const ocf   = safeNum(cf, 'operatingCashFlow', 'netCashProvidedByOperatingActivities');
     const capex = safeNum(cf, 'capitalExpenditure', 'capitalExpenditures', 'purchasesOfPropertyPlantAndEquipment');
     if (ocf != null && capex != null) return ocf - Math.abs(capex);
-    if (ocf != null) return ocf;
-    return null;
+    return ocf ?? null;
 }
-
-// Extract OCF
 function extractOCF(cf) {
     return safeNum(cf, 'operatingCashFlow', 'netCashProvidedByOperatingActivities');
 }
-
-// Extract Operating Income
 function extractOI(inc) {
     return safeNum(inc, 'operatingIncome', 'ebit');
 }
-
-// Extract Net Income
 function extractNI(inc) {
     return safeNum(inc, 'netIncome', 'netIncomeApplicableToCommonShares', 'netIncomeFromContinuingOperations');
 }
-
-// Extract diluted shares
+function extractRevenue(inc) {
+    return safeNum(inc, 'revenue', 'totalRevenue', 'revenues');
+}
 function extractShares(inc) {
     return safeNum(inc,
-        'weightedAverageShsOutDil',
-        'weightedAverageSharesOutstandingDiluted',
-        'dilutedAverageShares',
-        'weightedAverageShsOut'
+        'weightedAverageShsOutDil', 'weightedAverageSharesOutstandingDiluted',
+        'dilutedAverageShares',     'weightedAverageShsOut'
     );
 }
 
-// Extract P/FCF ratio from ratios row
-function extractPFCF(r) {
-    return safeNum(r, 'priceToFreeCashFlowsRatio', 'pfcfRatio', 'priceFreeCashFlowRatio');
+// ============================================================
+// RATIO CALCULATION FROM RAW DATA
+// Instead of fetching /ratios, we compute P/FCF, P/OCF, P/E, P/S
+// directly from income + cashflow + the current stock price.
+//
+// For historical per-year ratios we use:
+//   price_at_year ≈ EPS × P/E_current  (rough) — but simpler & more
+//   reliable: use marketCap from quote / metric_value_for_that_year.
+//   Since we don't have historical prices, we use the CURRENT price
+//   as a proxy and compute "what would the ratio be if price stayed
+//   constant" — this gives a good average multiple baseline.
+// ============================================================
+function computeHistoricalRatios(metric, years) {
+    if (!stockData) return [];
+    const price      = stockData.quote?.price || 0;
+    const cfRows     = stockData.cf.slice(0, years).reverse();   // oldest → newest
+    const incRows    = stockData.inc.slice(0, years).reverse();
+    const sharesRef  = getSharesOutstanding();                    // most recent diluted shares
+
+    const ratios = [];
+
+    const n = Math.min(cfRows.length, incRows.length);
+    for (let i = 0; i < n; i++) {
+        const cf  = cfRows[i]  || {};
+        const inc = incRows[i] || {};
+
+        // shares for that year (fall back to current)
+        const shares = extractShares(inc) || sharesRef;
+        if (!shares || shares <= 0) { ratios.push(null); continue; }
+
+        let metricTotal = null;
+        if      (metric === 'fcf') metricTotal = extractFCF(cf);
+        else if (metric === 'ocf') metricTotal = extractOCF(cf);
+        else if (metric === 'oi')  metricTotal = extractOI(inc);
+        else if (metric === 'ni')  metricTotal = extractNI(inc);
+
+        if (metricTotal == null || metricTotal <= 0) { ratios.push(null); continue; }
+
+        const metricPerShare = metricTotal / shares;
+        const ratio = price / metricPerShare;
+        // Sanity-check: ignore ratios that look absurd (>500 or negative)
+        if (ratio > 0 && ratio < 500) ratios.push(ratio);
+        else ratios.push(null);
+    }
+    return ratios;
 }
-function extractPOCF(r) {
-    return safeNum(r, 'priceToOperatingCashFlowsRatio', 'pocfRatio', 'priceOperatingCashFlowsRatio');
-}
-function extractPE(r) {
-    return safeNum(r, 'priceEarningsRatio', 'peRatio', 'pe');
-}
-function extractPS(r) {
-    return safeNum(r, 'priceToSalesRatio', 'psRatio', 'priceToSalesRatioTTM');
+
+function calcAvgRatio(metric, years) {
+    const ratios = computeHistoricalRatios(metric, years).filter(v => v != null);
+    if (!ratios.length) {
+        // Last resort: use current quote fields
+        const q = stockData?.quote || {};
+        if (metric === 'ni')  return safeNum(q, 'pe', 'priceEarningsRatio') ?? null;
+        if (metric === 'fcf') return safeNum(q, 'priceToFreeCashFlowsRatioTTM') ?? null;
+        if (metric === 'ocf') return safeNum(q, 'priceToOperatingCashFlowsRatioTTM') ?? null;
+        return null;
+    }
+    return ratios.reduce((a, b) => a + b, 0) / ratios.length;
 }
 
 // ============================================================
@@ -815,19 +850,17 @@ async function loadStock(symbol) {
     showStatus('Loading data for ' + symbol + '...', 'loading');
 
     try {
-        // Fetch all endpoints in parallel — LIMIT 10 for historical breadth
-        const [quoteRaw, cfRaw, incRaw, ratRaw, grwRaw] = await Promise.all([
+        // Fetch uniquement ce dont on a besoin — plus de /ratios
+        const [quoteRaw, cfRaw, incRaw, grwRaw] = await Promise.all([
             fmpGet('/quote',                { symbol }),
             fmpGet('/cash-flow-statement',  { symbol, limit: 10 }),
             fmpGet('/income-statement',     { symbol, limit: 10 }),
-            fmpGet('/ratios',               { symbol, limit: 10 }),
             fmpGet('/financial-growth',     { symbol, limit: 10 }),
         ]);
 
         const q   = Array.isArray(quoteRaw) ? quoteRaw[0] : (quoteRaw || {});
         const cf  = Array.isArray(cfRaw)    ? cfRaw       : [];
         const inc = Array.isArray(incRaw)   ? incRaw      : [];
-        const rat = Array.isArray(ratRaw)   ? ratRaw      : [];
         const grw = Array.isArray(grwRaw)   ? grwRaw      : [];
 
         if (!q || !q.price) throw new Error(`No quote data for "${symbol}". Check the ticker symbol.`);
@@ -835,15 +868,14 @@ async function loadStock(symbol) {
         // ── Debug: log the first row so we can see actual field names ──
         if (cf.length)  console.log('[DCF] cashflow[0] keys:', Object.keys(cf[0]));
         if (inc.length) console.log('[DCF] income[0]  keys:', Object.keys(inc[0]));
-        if (rat.length) console.log('[DCF] ratios[0]  keys:', Object.keys(rat[0]));
 
-        stockData = { symbol, quote: q, cf, inc, rat, grw };
+        stockData = { symbol, quote: q, cf, inc, grw };
 
         // Show debug info in UI
         const fcfSample = cf.length ? extractFCF(cf[0]) : null;
         const ocfSample = cf.length ? extractOCF(cf[0]) : null;
         const niSample  = inc.length ? extractNI(inc[0]) : null;
-        showDebug(`Loaded ${cf.length} CF rows, ${inc.length} income rows, ${rat.length} ratio rows | FCF[0]: ${fmtM(fcfSample)} | OCF[0]: ${fmtM(ocfSample)} | NI[0]: ${fmtM(niSample)}`);
+        showDebug(`${cf.length} CF rows · ${inc.length} income rows | FCF[0]: ${fmtM(fcfSample)} | OCF[0]: ${fmtM(ocfSample)} | NI[0]: ${fmtM(niSample)}`);
 
         document.getElementById('stockCompanyName').textContent = q.name || q.companyName || symbol;
         document.getElementById('loadingIndicator').style.display = 'none';
@@ -913,20 +945,7 @@ function calcCAGR(values) {
     return (Math.pow(last / first, 1 / (filtered.length - 1)) - 1) * 100;
 }
 
-function calcAvgRatio(metric, years) {
-    if (!stockData || !stockData.rat.length) return null;
-    const rows = stockData.rat.slice(0, years);
-    let extractor;
-    if      (metric === 'fcf') extractor = extractPFCF;
-    else if (metric === 'ocf') extractor = extractPOCF;
-    else if (metric === 'oi')  extractor = extractPOCF;
-    else if (metric === 'ni')  extractor = extractPE;
-    else extractor = extractPFCF;
-
-    const vals = rows.map(extractor).filter(v => v != null && v > 0 && v < 1000);
-    if (!vals.length) return null;
-    return vals.reduce((a, b) => a + b, 0) / vals.length;
-}
+// calcAvgRatio is now computed from raw income/cashflow data above
 
 function getDivGrowth(years) {
     if (!stockData || !stockData.grw.length) return null;
