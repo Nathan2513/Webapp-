@@ -795,17 +795,20 @@ async function loadStock(symbol) {
     hideDataCheck();
 
     try {
-        // getDCFData() fetches: quote · cash-flow (10y) · income (10y) · financial-growth (5y) · discounted-cash-flow
-        // All requests are batched + cached by fmpAPI
-        const raw = await fmpAPI.getDCFData(symbol);
+        // Use getFullScreenerData() — same endpoints as Stock Screener (limit=5, works on free plan)
+        // Then fetch financial-growth separately (it's free and cached already)
+        const [raw, grwRaw] = await Promise.all([
+            fmpAPI.getFullScreenerData(symbol),
+            fmpAPI.makeRequest('/financial-growth', { symbol, limit: 5 }).catch(() => []),
+        ]);
 
-        // raw = { profile, quote, cashFlow[], income[], growth[], dcf }
+        // raw = { profile, quote, ratios, metrics, income[], balance[], cashflow[], ratiosHistory[] }
         const q   = raw.quote    || {};
-        const cf  = raw.cashFlow || [];
+        const cf  = raw.cashflow || [];   // NOTE: getFullScreenerData uses "cashflow" (no capital F)
         const inc = raw.income   || [];
-        const grw = raw.growth   || [];
+        const grw = Array.isArray(grwRaw) ? grwRaw : [];
 
-        if (!q.price && !q.price === 0) {
+        if (!q || !q.price) {
             throw new Error(`No price data for "${symbol}". Please verify the ticker.`);
         }
 
@@ -815,6 +818,9 @@ async function loadStock(symbol) {
         if (grw.length) console.log('[DCF] growth[0]  keys →', Object.keys(grw[0]).join(', '));
 
         stockData = { symbol, quote: q, cashFlow: cf, income: inc, growth: grw };
+
+        // Also store raw for reference
+        stockData._raw = raw;
 
         // ── Data quality badge ──
         const fcfSample = cf.length  ? extractFCF(cf[0]) : null;
