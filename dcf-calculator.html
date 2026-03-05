@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StockMaster - DCF Calculator</title>
+    <title>DCF Calculator - StockMaster</title>
     <script>
         (function() {
             const t = localStorage.getItem('theme') || 'dark';
@@ -320,7 +320,7 @@
     <header class="topbar">
         <a href="webapp.html" class="topbar-logo">
             <img src="logo.png" alt="Logo" onerror="this.style.display='none'">
-            StockMaster.
+            StockMaster
         </a>
         <nav class="topbar-nav">
             <a href="webapp.html" class="nav-btn">
@@ -371,7 +371,7 @@
             <div class="welcome-icon">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
             </div>
-            <h2>DCF Calculator</h2>
+            <h2>Professional DCF Calculator</h2>
             <p>Analyze the intrinsic value of any stock in a few clicks. Choose your metric, set your assumptions and get a detailed valuation.</p>
             <div class="search-container">
                 <div class="search-wrapper">
@@ -1298,18 +1298,22 @@ function buildPriceChart(r) {
     }
 
     // ── White line: same as greenHist (overlaid, thinner) ─────────────────
-    // reuse greenHistData for white line
     const whiteData = greenHistData.map(p => ({ ...p }));
 
-    // ── Blue dashed: DCF Fair Value (future only) ──────────────────────────
+    // ── Blue dashed: DCF Fair Value — starts from yr0 at fairValue, not currentPrice ──
+    // Fair value = what you should pay TODAY to get desired return → it's already "present value"
+    // We show it growing from fairValue at yr0 toward futurePrice at yr0+n
     const futurePrice = greenProjData[greenProjData.length - 1].y || r.futureStockPrice;
     const blueData = [];
+    // Nulls for all past years
     for (let i = histLen - 1; i >= 1; i--) blueData.push({ x: (yr0 - i).toString(), y: null });
-    blueData.push({ x: yr0.toString(), y: r.currentPrice });
+    // Start at fair value (not current price) — this is the "correct entry point"
+    blueData.push({ x: yr0.toString(), y: r.fairValue });
+    // Grow toward terminal value year by year
     for (let i = 1; i <= r.years; i++) {
         blueData.push({
             x: (yr0 + i).toString(),
-            y: futurePrice / Math.pow(1 + disc, r.years - i + 1)
+            y: r.fairValue * Math.pow(1 + disc, i)
         });
     }
 
@@ -1331,21 +1335,7 @@ function buildPriceChart(r) {
                     spanGaps: false,
                     order: 3,
                 },
-                // Green historical line (no fill, stops at current year)
-                {
-                    label: metricRatioLabel + ' (hist)',
-                    data: greenHistData,
-                    borderColor: '#10B981',
-                    backgroundColor: 'transparent',
-                    borderWidth: 2,
-                    tension: 0.35,
-                    pointRadius: 3,
-                    pointBackgroundColor: '#10B981',
-                    fill: false,
-                    spanGaps: false,
-                    order: 2,
-                },
-                // White historical price line (on top of green hist)
+                // White historical price line
                 {
                     label: 'Stock Price',
                     data: whiteData,
