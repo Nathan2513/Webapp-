@@ -585,9 +585,9 @@
                     <div class="chart-header">
                         <h3 class="chart-title">Stock Price — Historical & Projection</h3>
                         <div style="display:flex;align-items:center;gap:20px;font-size:0.8rem;color:var(--text-secondary);">
-                            <span style="display:flex;align-items:center;gap:6px;"><span style="display:inline-block;width:24px;height:2px;background:rgba(255,255,255,0.7);"></span>Stock Price</span>
-                            <span style="display:flex;align-items:center;gap:6px;"><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#10B981;"></span><span id="priceChartLegendLabel">Price/OCF Ratio</span></span>
-                            <span style="display:flex;align-items:center;gap:6px;"><span style="display:inline-block;width:20px;border-top:2px dashed #3b82f6;"></span>DCF Fair Value</span>
+                            <span style="display:flex;align-items:center;gap:6px;"><span style="display:inline-block;width:20px;height:2px;background:rgba(255,255,255,0.75);"></span>Stock Price</span>
+                            <span style="display:flex;align-items:center;gap:6px;"><span style="display:inline-block;width:20px;height:2px;background:#FF7A00;"></span>DCF Fair Value</span>
+                            <span style="display:flex;align-items:center;gap:6px;"><span style="display:inline-block;width:20px;border-top:2px dashed rgba(255,255,255,0.4);"></span>Target</span>
                         </div>
                     </div>
                     <div class="chart-wrapper"><canvas id="stockPriceChart"></canvas></div>
@@ -1317,24 +1317,22 @@ function buildPriceChart(r) {
         });
     }
 
+    // ── Connector dotted line: last historical price → last fair value point ──
+    const lastHistPrice = whiteData.filter(p => p.y !== null).slice(-1)[0]?.y || r.currentPrice;
+    const lastFairValue = r.fairValue * Math.pow(1 + disc, r.years);
+    const connectorData = [];
+    for (let i = histLen - 1; i >= 1; i--) connectorData.push({ x: (yr0 - i).toString(), y: null });
+    connectorData.push({ x: yr0.toString(), y: lastHistPrice });
+    for (let i = 1; i <= r.years; i++) {
+        connectorData.push({ x: (yr0 + i).toString(), y: null });
+    }
+    // last projected year: connect to last fair value
+    connectorData[connectorData.length - 1] = { x: (yr0 + r.years).toString(), y: lastFairValue };
+
     priceChart = new Chart(ctx, {
         type: 'line',
         data: {
             datasets: [
-                // Green projected line with fill (future only)
-                {
-                    label: metricRatioLabel,
-                    data: greenProjData,
-                    borderColor: '#10B981',
-                    backgroundColor: 'rgba(16,185,129,0.15)',
-                    borderWidth: 2.5,
-                    tension: 0.35,
-                    pointRadius: 4,
-                    pointBackgroundColor: '#10B981',
-                    fill: 'origin',
-                    spanGaps: false,
-                    order: 3,
-                },
                 // White historical price line
                 {
                     label: 'Stock Price',
@@ -1348,20 +1346,33 @@ function buildPriceChart(r) {
                     spanGaps: false,
                     order: 1,
                 },
-                // Blue dashed DCF Fair Value
+                // Orange solid DCF Fair Value line
                 {
                     label: 'DCF Fair Value',
                     data: blueData,
-                    borderColor: '#3b82f6',
+                    borderColor: '#FF7A00',
                     backgroundColor: 'transparent',
-                    borderWidth: 2,
-                    borderDash: [8, 4],
+                    borderWidth: 2.5,
                     tension: 0.35,
                     pointRadius: (ctx) => ctx.parsed.y !== null ? 4 : 0,
-                    pointBackgroundColor: '#3b82f6',
+                    pointBackgroundColor: '#FF7A00',
                     fill: false,
                     spanGaps: false,
                     order: 0,
+                },
+                // Dotted connector: last hist price → last fair value
+                {
+                    label: '_connector',
+                    data: connectorData,
+                    borderColor: 'rgba(255,255,255,0.4)',
+                    backgroundColor: 'transparent',
+                    borderWidth: 1.5,
+                    borderDash: [5, 5],
+                    tension: 0,
+                    pointRadius: 0,
+                    fill: false,
+                    spanGaps: true,
+                    order: 2,
                 },
             ]
         },
@@ -1377,7 +1388,7 @@ function buildPriceChart(r) {
                     bodyColor: '#94A3B8',
                     borderColor: '#334155',
                     borderWidth: 1,
-                    filter: (item) => item.parsed.y !== null && !item.dataset.label.endsWith('(hist)'),
+                    filter: (item) => item.parsed.y !== null && !item.dataset.label.startsWith('_'),
                     callbacks: {
                         label: ctx => ` ${ctx.dataset.label}: $${ctx.parsed.y.toFixed(2)}`
                     }
