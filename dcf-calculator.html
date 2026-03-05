@@ -253,7 +253,7 @@
         .auto-fill-btn svg { width: 16px; height: 16px; }
 
         /* RESULTS */
-        .results-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+        .results-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 20px; }
         .result-box { background: var(--bg-main); padding: 18px; border-radius: 12px; border: 1px solid var(--border-color); }
         .result-label { display: flex; align-items: center; gap: 6px; font-size: 0.83rem; color: var(--text-secondary); margin-bottom: 8px; font-weight: 500; }
         .result-value { font-size: 1.5rem; font-weight: 800; color: var(--text-primary); }
@@ -561,6 +561,7 @@
                         <div class="result-label">CAGR <i class="info-icon" title="Compound Annual Growth Rate">?</i></div>
                         <div class="result-value" id="cagr">—</div>
                     </div>
+                    <div class="result-box" style="visibility:hidden;"></div>
                 </div>
 
                 <div class="chart-container">
@@ -578,10 +579,10 @@
                 <div class="chart-container">
                     <div class="chart-header">
                         <h3 class="chart-title" id="chart2Title">Free Cash Flow: Historical &amp; Projected</h3>
-                        <div style="display:flex;align-items:center;gap:20px;font-size:0.8rem;color:var(--text-secondary);">
-                            <span style="display:flex;align-items:center;gap:6px;"><span style="display:inline-block;width:12px;height:12px;border-radius:2px;background:#10B981;"></span>Historical</span>
-                            <span style="display:flex;align-items:center;gap:6px;"><span style="display:inline-block;width:12px;height:12px;border-radius:2px;background:#3b82f6;"></span>Projected</span>
-                            <span style="display:flex;align-items:center;gap:6px;"><span style="display:inline-block;width:12px;height:12px;border-radius:2px;background:#f59e0b;"></span>With Decay</span>
+                        <div class="chart-toggles">
+                            <button class="chart-toggle active-green active" id="toggleHist" onclick="switchMetricChart(this,'historical')">Historical</button>
+                            <button class="chart-toggle" id="toggleProj" onclick="switchMetricChart(this,'projected')">Projected</button>
+                            <button class="chart-toggle" id="toggleDecay" onclick="switchMetricChart(this,'projected_decay')">With Decay</button>
                         </div>
                     </div>
                     <div class="chart-wrapper"><canvas id="cashFlowChart"></canvas></div>
@@ -740,6 +741,11 @@ document.getElementById('themeToggle').addEventListener('click', () => {
 window.stepInput = function(id, step) {
     const el = document.getElementById(id);
     el.value = parseFloat(((parseFloat(el.value) || 0) + step).toFixed(4));
+    // Keep auto-fill label in sync when years stepper is used
+    if (id === 'yearsInput') {
+        const y = Math.max(1, parseInt(el.value) || 5);
+        document.getElementById('autoFillYearsLabel').textContent = y;
+    }
     triggerCalculation();
 };
 
@@ -1205,112 +1211,140 @@ function updateCharts(r) {
     buildMetricChart(r);
 }
 
-// ── Price Chart ───────────────────────────────────────────────────────────────
-// Shows 3 curves simultaneously, like StockUnlock:
-//  1. White line  = actual historical stock price (from quote field, approximated from income)
-//  2. Green area  = Stock Price At Ratio (projected)
-//  3. Blue dashed = DCF Fair Value (projected)
+// ── Price Chart  (StockUnlock style) ─────────────────────────────────────────
+// Layout identical to StockUnlock AAPL chart:
+//   • Wide green fill area  = "Price At Ratio" covering BOTH historical & projected period
+//     - Historical portion : metric/share × ratio for each past year  
+//     - Projected portion  : compounded projection
+//   • White solid line     = real stock price (historical) then flat at current price
+//   • Blue dashed line     = DCF Fair Value growing from current price to terminal value
 //
-// For historical price we use:  EPS × historical P/E ≈ price
-// Since FMP free plan doesn't give us historical price series,
-// we reconstruct it from: netIncome / shares × current P/E as a proxy,
-// then anchor the last point to the real current price.
+// X axis spans:  (yr0 - histLen) … yr0 … (yr0 + projYears)
+// The two series share the SAME x-axis labels so the join is seamless.
 
 function buildPriceChart(r) {
-    const c   = chartColors();
-    const ctx = document.getElementById('stockPriceChart').getContext('2d');
+    const c      = chartColors();
+    const ctx    = document.getElementById('stockPriceChart').getContext('2d');
     if (priceChart) { priceChart.destroy(); priceChart = null; }
 
     const yr0    = new Date().getFullYear();
     const metric = document.getElementById('metricSelect').value;
     const ratio  = r.ratio;
     const disc   = r.desiredReturn / 100;
-
-    // ── 1. Historical price approximation ──────────────────────────────────
-    // Use metric value per share × current ratio as proxy for historical price
-    // Oldest → newest (up to 5 years back)
-    const histCF  = (stockData?.cashFlow || []).slice(0, 5).reverse();
-    const histInc = (stockData?.income   || []).slice(0, 5).reverse();
-
-    const histPoints = [];
     const shares = r.shares;
 
-    for (let i = 0; i < Math.min(histCF.length, histInc.length); i++) {
-        const total = extractMetric(metric, histCF[i], histInc[i]);
-        if (total != null && total > 0 && shares > 0) {
-            const pps = (total / shares) * ratio;
-            const year = yr0 - (histCF.length - 1 - i);
-            histPoints.push({ x: year.toString(), y: pps });
-        }
-    }
+    // ── Build unified label set ────────────────────────────────────────────
+    // Historical: use up to 5 income/CF rows (oldest → newest)
+    const hCF  = (stockData?.cashFlow || []).slice(0, 5).reverse();
+    const hInc = (stockData?.income   || []).slice(0, 5).reverse();
+    const histLen = Math.min(hCF.length, hInc.length);
 
-    // Anchor last historical point to the REAL current price
-    if (histPoints.length > 0) {
-        histPoints[histPoints.length - 1].y = r.currentPrice;
-    }
+    // All x labels: past years + current + future years
+    const allLabels = [];
+    for (let i = histLen - 1; i >= 1; i--) allLabels.push((yr0 - i).toString());
+    allLabels.push(yr0.toString());
+    for (let i = 1; i <= r.years; i++) allLabels.push((yr0 + i).toString());
 
-    // ── 2. Projected: Stock Price At Ratio ─────────────────────────────────
-    const projRatioPoints = [{ x: yr0.toString(), y: r.currentPrice }];
+    // ── Green area: metric/share × ratio (historical reconstruction + projection) ──
+    const greenData = [];
+
+    // Historical portion (oldest → second-to-last)
+    for (let i = 0; i < histLen - 1; i++) {
+        const total = extractMetric(metric, hCF[i], hInc[i]);
+        const yr    = (yr0 - (histLen - 1 - i)).toString();
+        const y     = (total != null && total > 0 && shares > 0)
+            ? (total / shares) * ratio
+            : null;
+        greenData.push({ x: yr, y });
+    }
+    // Anchor current year to real price
+    greenData.push({ x: yr0.toString(), y: r.currentPrice });
+    // Projected portion
     let mPS = r.basePerShare;
     for (let i = 1; i <= r.years; i++) {
         mPS *= (1 + r.growthRate);
-        projRatioPoints.push({ x: (yr0 + i).toString(), y: mPS * ratio });
+        greenData.push({ x: (yr0 + i).toString(), y: mPS * ratio });
     }
 
-    // ── 3. DCF Fair Value line ──────────────────────────────────────────────
-    const futureRatioPrice = projRatioPoints[projRatioPoints.length - 1].y;
-    const dcfPoints = [{ x: yr0.toString(), y: r.currentPrice }];
+    // ── White line: real historical price approximation ────────────────────
+    // Same as green but kept as a separate thin white line
+    const whiteData = [];
+    for (let i = 0; i < histLen - 1; i++) {
+        const total = extractMetric(metric, hCF[i], hInc[i]);
+        const yr    = (yr0 - (histLen - 1 - i)).toString();
+        const y     = (total != null && total > 0 && shares > 0)
+            ? (total / shares) * ratio
+            : null;
+        whiteData.push({ x: yr, y });
+    }
+    whiteData.push({ x: yr0.toString(), y: r.currentPrice });
+    // White line stops at current year (no future)
+    // Fill nulls for future years so both datasets share the same labels
     for (let i = 1; i <= r.years; i++) {
-        dcfPoints.push({
+        whiteData.push({ x: (yr0 + i).toString(), y: null });
+    }
+
+    // ── Blue dashed: DCF Fair Value ────────────────────────────────────────
+    // Null for past years, then grows from current price to fair value
+    const futurePrice = greenData[greenData.length - 1].y || r.futureStockPrice;
+    const blueData = [];
+    // Past years: null
+    for (let i = histLen - 1; i >= 1; i--) blueData.push({ x: (yr0 - i).toString(), y: null });
+    // Current year = current price
+    blueData.push({ x: yr0.toString(), y: r.currentPrice });
+    // Future years: discount future price backwards from terminal value
+    for (let i = 1; i <= r.years; i++) {
+        blueData.push({
             x: (yr0 + i).toString(),
-            y: futureRatioPrice / Math.pow(1 + disc, r.years - i + 1)
+            y: futurePrice / Math.pow(1 + disc, r.years - i + 1)
         });
     }
 
-    // ── Chart config ────────────────────────────────────────────────────────
     priceChart = new Chart(ctx, {
         type: 'line',
         data: {
             datasets: [
-                // Historical price — white line
+                // Green fill area (behind everything)
                 {
-                    label: 'Stock Price (est.)',
-                    data: histPoints,
-                    borderColor: 'rgba(255,255,255,0.75)',
-                    backgroundColor: 'transparent',
-                    borderWidth: 2,
-                    tension: 0.3,
-                    pointRadius: 3,
-                    pointBackgroundColor: 'rgba(255,255,255,0.75)',
-                    fill: false,
-                    order: 1,
-                },
-                // Projected: Price At Ratio — green fill
-                {
-                    label: 'Stock Price At Ratio',
-                    data: projRatioPoints,
+                    label: 'Price At Ratio',
+                    data: greenData,
                     borderColor: '#10B981',
-                    backgroundColor: 'rgba(16,185,129,0.15)',
-                    borderWidth: 2.5,
-                    tension: 0.4,
-                    pointRadius: 4,
+                    backgroundColor: 'rgba(16,185,129,0.18)',
+                    borderWidth: 2,
+                    tension: 0.35,
+                    pointRadius: (ctx) => ctx.dataIndex === histLen - 1 ? 5 : 3,
                     pointBackgroundColor: '#10B981',
                     fill: 'origin',
-                    order: 2,
+                    spanGaps: true,
+                    order: 3,
                 },
-                // DCF Fair Value — blue dashed
+                // White historical price line (on top of green)
+                {
+                    label: 'Stock Price',
+                    data: whiteData,
+                    borderColor: 'rgba(255,255,255,0.85)',
+                    backgroundColor: 'transparent',
+                    borderWidth: 2,
+                    tension: 0.35,
+                    pointRadius: 0,
+                    fill: false,
+                    spanGaps: false,
+                    order: 1,
+                },
+                // Blue dashed DCF Fair Value
                 {
                     label: 'DCF Fair Value',
-                    data: dcfPoints,
+                    data: blueData,
                     borderColor: '#3b82f6',
                     backgroundColor: 'transparent',
                     borderWidth: 2,
-                    borderDash: [7, 4],
-                    tension: 0.4,
-                    pointRadius: 4,
+                    borderDash: [8, 4],
+                    tension: 0.35,
+                    pointRadius: (ctx) => ctx.parsed.y !== null ? 4 : 0,
                     pointBackgroundColor: '#3b82f6',
                     fill: false,
-                    order: 3,
+                    spanGaps: false,
+                    order: 2,
                 },
             ]
         },
@@ -1326,6 +1360,7 @@ function buildPriceChart(r) {
                     bodyColor: '#94A3B8',
                     borderColor: '#334155',
                     borderWidth: 1,
+                    filter: (item) => item.parsed.y !== null,
                     callbacks: {
                         label: ctx => ` ${ctx.dataset.label}: $${ctx.parsed.y.toFixed(2)}`
                     }
@@ -1335,7 +1370,7 @@ function buildPriceChart(r) {
                 x: {
                     type: 'category',
                     grid: { color: c.grid },
-                    ticks: { color: c.tick }
+                    ticks: { color: c.tick, maxTicksLimit: 10 }
                 },
                 y: {
                     beginAtZero: false,
@@ -1347,11 +1382,10 @@ function buildPriceChart(r) {
     });
 }
 
-// togglePriceChart kept as no-op (buttons removed)
-window.togglePriceChart = function() {};
+window.togglePriceChart = function() {}; // no-op, buttons removed
 
 // ── Metric Chart ──────────────────────────────────────────────────────────────
-// Shows 3 datasets simultaneously: historical bars + projected bars (no decay) + projected (with decay)
+// 3-button toggle: Historical / Projected / With Decay — single series at a time
 function buildMetricChart(r) {
     const metric = document.getElementById('metricSelect').value;
     const label  = getMetricLabel(metric);
@@ -1363,26 +1397,21 @@ function buildMetricChart(r) {
     const ctx = document.getElementById('cashFlowChart').getContext('2d');
     if (metricChart) { metricChart.destroy(); metricChart = null; }
 
-    // ── Historical (oldest → newest) ─────────────────────────────────────────
     const rawHist = getMetricSeries(metric, 5);
     const histData = rawHist.map((v, i) => ({
         x: (yr0 - rawHist.length + i).toString(),
         y: v / 1e9
     }));
 
-    // ── Projected from last historical value ──────────────────────────────────
-    const base    = rawHist.length ? rawHist[rawHist.length - 1] : (r.baseTotal || 0);
-    const decayR  = parseFloat(document.getElementById('decayInput').value) / 100;
-
-    const projNoDecayData  = [];
-    const projWithDecayData = [];
+    const base   = rawHist.length ? rawHist[rawHist.length - 1] : (r.baseTotal || 0);
+    const decayR = parseFloat(document.getElementById('decayInput').value) / 100;
+    const projNoDecayData = [], projWithDecayData = [];
     let pv = base, pvD = base, gD = r.growthRate;
 
     for (let i = 1; i <= r.years; i++) {
         const lbl = (yr0 + i).toString();
         pv  *= (1 + r.growthRate);
         projNoDecayData.push({ x: lbl, y: pv / 1e9 });
-
         pvD *= (1 + gD);
         projWithDecayData.push({ x: lbl, y: pvD / 1e9 });
         gD = Math.max(0, gD - decayR);
@@ -1390,60 +1419,56 @@ function buildMetricChart(r) {
 
     metricChart = new Chart(ctx, {
         type: 'bar',
-        data: {
-            datasets: [
-                {
-                    label: `${label} (Historical)`,
-                    data: histData,
-                    backgroundColor: '#10B981',
-                    borderRadius: 4,
-                    borderSkipped: false,
-                    order: 1,
-                },
-                {
-                    label: `${label} (Projected)`,
-                    data: projNoDecayData,
-                    backgroundColor: 'rgba(59,130,246,0.75)',
-                    borderRadius: 4,
-                    borderSkipped: false,
-                    order: 2,
-                },
-                {
-                    label: `${label} (With Decay)`,
-                    data: projWithDecayData,
-                    backgroundColor: 'rgba(245,158,11,0.55)',
-                    borderRadius: 4,
-                    borderSkipped: false,
-                    order: 3,
-                },
-            ]
-        },
+        data: { datasets: [{ label: `${label} (Historical)`, data: histData, backgroundColor: '#10B981', borderRadius: 4, borderSkipped: false }] },
         options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            interaction: { mode: 'index', intersect: false },
+            responsive: true, maintainAspectRatio: false,
             plugins: {
                 legend: { display: false },
-                tooltip: {
-                    backgroundColor: '#1e293b',
-                    titleColor: '#F1F5F9',
-                    bodyColor: '#94A3B8',
-                    borderColor: '#334155',
-                    borderWidth: 1,
-                    callbacks: {
-                        label: ctx => ` ${ctx.dataset.label}: $${ctx.parsed.y.toFixed(2)}B`
-                    }
-                }
+                tooltip: { backgroundColor:'#1e293b', titleColor:'#F1F5F9', bodyColor:'#94A3B8', borderColor:'#334155', borderWidth:1, callbacks:{ label: ctx => ` $${ctx.parsed.y.toFixed(2)}B` } }
             },
             scales: {
-                x: { type: 'category', grid: { color: c.grid }, ticks: { color: c.tick } },
-                y: { grid: { color: c.grid }, ticks: { color: c.tick, callback: v => '$' + v.toFixed(1) + 'B' } }
+                x: { type:'category', grid:{color:c.grid}, ticks:{color:c.tick} },
+                y: { grid:{color:c.grid}, ticks:{color:c.tick, callback: v => '$'+v.toFixed(1)+'B'} }
             }
         }
     });
+
+    metricChart._hist      = histData;
+    metricChart._proj      = projNoDecayData;
+    metricChart._projDecay = projWithDecayData;
+    metricChart._label     = label;
+
+    // Reset buttons
+    ['toggleHist','toggleProj','toggleDecay'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.classList.remove('active','active-green');
+    });
+    const h = document.getElementById('toggleHist');
+    if (h) h.classList.add('active','active-green');
+    activeMetricSeries = 'historical';
 }
 
-// toggleMetricChart kept as no-op (buttons removed)
+window.switchMetricChart = function(btn, series) {
+    activeMetricSeries = series;
+    ['toggleHist','toggleProj','toggleDecay'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.classList.remove('active','active-green');
+    });
+    btn.classList.add('active','active-green');
+    if (!metricChart) return;
+    const lbl = metricChart._label;
+    const map = {
+        historical:      { data:metricChart._hist,      bg:'#10B981', label:`${lbl} (Historical)` },
+        projected:       { data:metricChart._proj,      bg:'#3b82f6', label:`${lbl} (Projected)` },
+        projected_decay: { data:metricChart._projDecay, bg:'#f59e0b', label:`${lbl} (With Decay)` },
+    };
+    const s = map[series];
+    if (!s) return;
+    metricChart.data.datasets[0].data            = s.data;
+    metricChart.data.datasets[0].backgroundColor = s.bg;
+    metricChart.data.datasets[0].label           = s.label;
+    metricChart.update();
+};
 window.toggleMetricChart = function() {};
 
 // ═════════════════════════════════════════════════════════════════════════════
