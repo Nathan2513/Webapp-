@@ -39,6 +39,8 @@
             transition: background-color 0.3s ease;
         }
         .app-container { display: flex; flex-direction: column; height: 100vh; }
+        
+        /* TOPBAR */
         .topbar {
             background-color: var(--bg-topbar);
             border-bottom: 1px solid var(--border-color);
@@ -48,46 +50,110 @@
             align-items: center;
             justify-content: space-between;
         }
-        .topbar-logo { display: flex; align-items: center; gap: 12px; font-weight: 800; font-size: 1.4rem; color: var(--text-primary); text-decoration: none; }
+        .topbar-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 800;
+            font-size: 1.4rem;
+            color: var(--text-primary);
+            text-decoration: none;
+        }
         .topbar-logo img { height: 45px; width: auto; }
         .topbar-nav { display: flex; gap: 10px; flex: 1; justify-content: center; }
-        .nav-btn { padding: 10px 20px; border-radius: 10px; font-weight: 600; font-size: 0.95rem; cursor: pointer; transition: all 0.2s ease; border: 2px solid var(--border-color); background: var(--bg-topbar); color: var(--text-secondary); text-decoration: none; display: inline-flex; align-items: center; gap: 8px; }
+        .nav-btn {
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 2px solid var(--border-color);
+            background: var(--bg-topbar);
+            color: var(--text-secondary);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
         .nav-btn:hover { background-color: var(--hover-bg); color: var(--text-primary); transform: translateY(-2px); }
         .nav-btn.active { background-color: var(--primary-orange); color: white; border-color: var(--primary-orange); }
         .nav-btn svg { width: 18px; height: 18px; }
         .topbar-actions { display: flex; align-items: center; gap: 15px; }
-        .theme-toggle { background-color: var(--hover-bg); border: 1px solid var(--border-color); border-radius: 10px; padding: 10px 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .theme-toggle {
+            background-color: var(--hover-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 10px 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
         .theme-toggle svg { width: 20px; height: 20px; color: var(--text-primary); }
         .user-menu { position: relative; }
-        .user-avatar { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, var(--primary-orange), #ff9f40); display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; cursor: pointer; }
-        .dropdown-menu { position: absolute; top: 55px; right: 0; background: var(--bg-topbar); border: 1px solid var(--border-color); border-radius: 12px; box-shadow: var(--shadow-lg); min-width: 220px; opacity: 0; visibility: hidden; z-index: 1000; }
+        .user-avatar {
+            width: 40px; height: 40px; border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-orange), #ff9f40);
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-weight: 700; cursor: pointer;
+        }
+        .dropdown-menu {
+            position: absolute; top: 55px; right: 0;
+            background: var(--bg-topbar); border: 1px solid var(--border-color);
+            border-radius: 12px; box-shadow: var(--shadow-lg);
+            min-width: 220px; opacity: 0; visibility: hidden; z-index: 1000;
+        }
         .dropdown-menu.active { opacity: 1; visibility: visible; }
         .dropdown-item { padding: 14px 20px; cursor: pointer; color: var(--text-primary); display: flex; align-items: center; gap: 12px; }
         .dropdown-item:hover { background-color: var(--hover-bg); }
         .dropdown-item:last-child { color: #ef4444; border-top: 1px solid var(--border-color); }
         .dropdown-item svg { width: 18px; height: 18px; }
+        
+        /* MAIN */
         .main-content { flex: 1; padding: 30px; overflow-y: auto; }
         .screener-home { max-width: 1200px; margin: 0 auto; padding: 40px 32px 60px; }
+
         .sh-top-row { display: flex; align-items: center; justify-content: space-between; gap: 40px; margin-bottom: 36px; }
-        .sh-brand-title { font-size: 2.2rem; font-weight: 800; letter-spacing: -0.04em; line-height: 1.1; background: linear-gradient(135deg, var(--text-primary) 0%, var(--primary-orange) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .sh-brand-title {
+            font-size: 2.2rem; font-weight: 800; letter-spacing: -0.04em; line-height: 1.1;
+            background: linear-gradient(135deg, var(--text-primary) 0%, var(--primary-orange) 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
         .sh-brand-sub { margin-top: 8px; font-size: 0.9rem; color: var(--text-secondary); }
         .sh-search-col { flex: 1; max-width: 560px; }
+
         .search-bar-wrap { position: relative; }
-        .search-bar-inner { display: flex; align-items: center; background: var(--bg-topbar); border: 1.5px solid var(--border-color); border-radius: 14px; padding: 0 18px; gap: 12px; transition: all 0.2s; box-shadow: 0 2px 10px rgba(0,0,0,0.06); }
+        .search-bar-inner {
+            display: flex; align-items: center; background: var(--bg-topbar);
+            border: 1.5px solid var(--border-color); border-radius: 14px;
+            padding: 0 18px; gap: 12px; transition: all 0.2s;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+        }
         .search-bar-inner:focus-within { border-color: var(--primary-orange); box-shadow: 0 0 0 3px rgba(255,122,0,0.1); }
         .search-bar-icon { color: var(--text-secondary); display:flex; flex-shrink:0; }
         .search-bar-icon svg { width: 20px; height: 20px; }
         .search-input { flex: 1; padding: 17px 0; border: none; background: transparent; font-size: 1rem; color: var(--text-primary); font-family: inherit; }
         .search-input:focus { outline: none; }
         .search-input::placeholder { color: var(--text-secondary); }
-        .search-results { position: absolute; top: calc(100% + 6px); left: 0; right: 0; background: var(--bg-topbar); border: 1px solid var(--border-color); border-radius: 12px; box-shadow: var(--shadow-lg); max-height: 320px; overflow-y: auto; z-index: 200; display: none; }
+        .search-results {
+            position: absolute; top: calc(100% + 6px); left: 0; right: 0;
+            background: var(--bg-topbar); border: 1px solid var(--border-color);
+            border-radius: 12px; box-shadow: var(--shadow-lg);
+            max-height: 320px; overflow-y: auto; z-index: 200; display: none;
+        }
         .search-results.active { display: block; }
-        .search-result-item { padding: 12px 18px; cursor: pointer; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; gap: 12px; transition: background 0.12s; }
+        .search-result-item {
+            padding: 12px 18px; cursor: pointer; border-bottom: 1px solid var(--border-color);
+            display: flex; align-items: center; gap: 12px; transition: background 0.12s;
+        }
         .search-result-item:last-child { border-bottom: none; }
         .search-result-item:hover { background: var(--hover-bg); }
         .result-symbol { font-weight: 700; color: var(--primary-orange); font-size: 0.9rem; min-width: 55px; }
         .result-name { color: var(--text-secondary); font-size: 0.85rem; flex: 1; }
         .result-type-badge { font-size: 0.75rem; font-weight: 600; color: var(--text-secondary); background: var(--hover-bg); border: 1px solid var(--border-color); padding: 2px 9px; border-radius: 5px; white-space: nowrap; flex-shrink: 0; }
+
+        /* FILTERS */
         .sh-filters-bar { background: var(--bg-topbar); border: 1px solid var(--border-color); border-radius: 14px; margin-bottom: 24px; overflow: visible; }
         .sh-filters-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 20px; border-bottom: 1px solid var(--border-color); }
         .sh-filters-left { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
@@ -113,6 +179,8 @@
         .filters-reset-btn { font-size: 0.8rem; color: var(--text-secondary); background: none; border: 1px solid var(--border-color); cursor: pointer; padding: 5px 12px; border-radius: 7px; transition: all 0.15s; display: none; font-family: inherit; }
         .filters-reset-btn:hover { background: var(--hover-bg); color: var(--text-primary); }
         .filters-reset-btn.visible { display: block; }
+
+        /* FILTER PICKER */
         .filter-picker-overlay { position: fixed; inset: 0; z-index: 300; display: none; }
         .filter-picker-overlay.open { display: block; }
         .filter-picker { position: fixed; background: var(--bg-topbar); border: 1px solid var(--border-color); border-radius: 12px; box-shadow: 0 16px 40px rgba(0,0,0,0.15); width: 300px; max-height: 420px; overflow: hidden; display: flex; flex-direction: column; z-index: 301; }
@@ -124,6 +192,8 @@
         .fp-item { padding: 9px 14px; font-size: 0.85rem; color: var(--text-primary); cursor: pointer; transition: background 0.1s; display: flex; justify-content: space-between; align-items: center; }
         .fp-item:hover { background: var(--hover-bg); }
         .fp-item-badge { font-size: 0.7rem; color: var(--text-secondary); background: var(--hover-bg); border: 1px solid var(--border-color); padding: 2px 7px; border-radius: 4px; }
+
+        /* TABLE */
         .sh-table-wrap { background: var(--bg-topbar); border: 1px solid var(--border-color); border-radius: 14px; overflow: hidden; }
         .sh-table-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 20px; border-bottom: 1px solid var(--border-color); background: var(--hover-bg); }
         .sh-table-title { font-size: 0.82rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.06em; }
@@ -260,59 +330,6 @@
         </main>
     </div>
 
-    <!-- FMP API (sets window.fmpAPI — NO ES module export) -->
-    <script src="fmp-api.js"></script>
-
-    <!-- Firebase (type=module, isolated scope) -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-
-        const app = initializeApp({
-            apiKey: "AIzaSyD4dkPbO1C-bZiSokalUnwNqOTpeAyrOU0",
-            authDomain: "stockmaster-30835.firebaseapp.com",
-            projectId: "stockmaster-30835",
-            storageBucket: "stockmaster-30835.firebasestorage.app",
-            messagingSenderId: "506097874613",
-            appId: "1:506097874613:web:0d15d2bd1575a55c8ab0fc"
-        });
-        const auth = getAuth(app);
-
-        onAuthStateChanged(auth, user => {
-            if (!user) { window.location.href = "login.html"; return; }
-            document.querySelector('.user-avatar').textContent = user.email.charAt(0).toUpperCase();
-        });
-
-        document.getElementById('userAvatar').addEventListener('click', e => {
-            e.stopPropagation();
-            document.getElementById('dropdownMenu').classList.toggle('active');
-        });
-        document.addEventListener('click', e => {
-            if (!document.getElementById('userAvatar').contains(e.target))
-                document.getElementById('dropdownMenu').classList.remove('active');
-        });
-        document.getElementById('signOutBtn').addEventListener('click', async () => {
-            await signOut(auth); window.location.href = "index.html";
-        });
-
-        // Theme
-        const themeToggle = document.getElementById('themeToggle');
-        const sunIcon = document.getElementById('sunIcon');
-        const moonIcon = document.getElementById('moonIcon');
-        const html = document.documentElement;
-        const currentTheme = localStorage.getItem('theme') || 'dark';
-        html.setAttribute('data-theme', currentTheme);
-        if (currentTheme === 'dark') { sunIcon.style.display = 'none'; moonIcon.style.display = 'block'; }
-        themeToggle.addEventListener('click', () => {
-            const newTheme = html.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
-            html.setAttribute('data-theme', newTheme);
-            localStorage.setItem('theme', newTheme);
-            sunIcon.style.display = newTheme === 'dark' ? 'none' : 'block';
-            moonIcon.style.display = newTheme === 'dark' ? 'block' : 'none';
-        });
-    </script>
-
-    <!-- Screener logic (plain script — uses window.fmpAPI) -->
     <script>
 // ============================================================
 // SCREENER — FILTER ENGINE + TABLE
@@ -356,102 +373,57 @@ let filteredData  = [];
 let sortKey       = 'marketCap';
 let sortDir       = 'desc';
 
+// ── NAVIGATION (THE FIX) ──────────────────────────────────────
+// showStockDetails must be in global scope because it's called from onclick=""
 function showStockDetails(symbol) {
     window.location.href = 'stock-details.html?symbol=' + encodeURIComponent(symbol);
 }
 window.showStockDetails = showStockDetails;
 
-// ── LOAD DATA — uses only free FMP endpoints via fmp-api.js ──
-// Loads each stock individually from the static list using fmpAPI.getQuote()
-// No /stable/company-screener (premium), no /search needed here.
-const DEFAULT_SYMBOLS = [
-    'AAPL','MSFT','NVDA','AMZN','META','GOOGL','TSLA','BRK-B','JPM','V',
-    'JNJ','LLY','XOM','WMT','MA','COST','HD','ABBV','AVGO','NFLX',
-    'ASML','NOVO-B.CO','SAP','LVMH','MC.PA'
-];
-
+// ── LOAD DATA ─────────────────────────────────────────────────
 async function loadScreenerData() {
     const body = document.getElementById('screenerTableBody');
     body.innerHTML = '<div class="sh-loading"><div class="sh-loading-spinner"></div>Loading stocks...</div>';
 
-    // Wait for fmpAPI to be available (loaded via <script src="fmp-api.js">)
-    if (typeof window.fmpAPI === 'undefined') {
-        body.innerHTML = '<div class="sh-loading">API not loaded. Please refresh.</div>';
-        return;
-    }
-
-    // Fetch quotes for all default symbols in parallel
-    const results = await Promise.allSettled(
-        DEFAULT_SYMBOLS.map(sym => window.fmpAPI.getQuote(sym))
-    );
-
-    screenerData = [];
-    results.forEach((res, i) => {
-        if (res.status === 'fulfilled') {
-            const raw = res.value;
-            const q = Array.isArray(raw) ? raw[0] : raw;
-            if (q && q.symbol) {
-                screenerData.push({
-                    symbol:                  q.symbol,
-                    companyName:             q.name || q.companyName || q.symbol,
-                    sector:                  q.sector || 'N/A',
-                    marketCap:               q.marketCap || 0,
-                    price:                   q.price || 0,
-                    changes:                 q.changesPercentage || q.change || 0,
-                    // Ratios from quote object
-                    pe:                      q.pe || null,
-                    priceEarningsRatioTTM:   q.pe || null,
-                    priceToSalesRatioTTM:    null, // needs income stmt
-                    returnOnEquityTTM:       null,
-                    netProfitMarginTTM:      null,
-                    revenueGrowthTTM:        null,
-                    // will be enriched async below
-                    _enriched: false,
-                });
-            }
-        }
-    });
-
-    applyFiltersAndRender();
-
-    // Enrich with real ratios in background (non-blocking)
-    enrichWithRatios();
-}
-
-async function enrichWithRatios() {
-    // Enrich each stock with computed ratios from free statements
-    // Done in small batches to avoid hammering the API
-    const BATCH = 5;
-    for (let i = 0; i < screenerData.length; i += BATCH) {
-        const batch = screenerData.slice(i, i + BATCH);
-        await Promise.allSettled(batch.map(async stock => {
-            try {
-                const data = await window.fmpAPI.getFullScreenerData(stock.symbol);
-                const r = data.ratios || {};
-                const g = (data.growth && data.growth[0]) || {};
-                stock.priceToSalesRatioTTM          = r.priceToSalesRatioTTM ?? null;
-                stock.priceToBookRatioTTM            = r.priceToBookRatioTTM ?? null;
-                stock.priceToFreeCashFlowsRatioTTM   = r.priceToFreeCashFlowsRatioTTM ?? null;
-                stock.enterpriseValueMultipleTTM     = r.enterpriseValueMultipleTTM ?? null;
-                stock.returnOnEquityTTM              = r.returnOnEquityTTM ?? null;
-                stock.returnOnAssetsTTM              = r.returnOnAssetsTTM ?? null;
-                stock.roicTTM                        = r.roicTTM ?? null;
-                stock.netProfitMarginTTM             = r.netProfitMarginTTM ?? null;
-                stock.grossProfitMarginTTM           = r.grossProfitMarginTTM ?? null;
-                stock.operatingProfitMarginTTM       = r.operatingProfitMarginTTM ?? null;
-                stock.freeCashFlowMarginTTM          = r.freeCashFlowMarginTTM ?? null;
-                stock.currentRatioTTM                = r.currentRatioTTM ?? null;
-                stock.debtEquityRatioTTM             = r.debtEquityRatioTTM ?? null;
-                stock.quickRatioTTM                  = r.quickRatioTTM ?? null;
-                stock.dividendYieldTTM               = r.dividendYieldTTM ?? null;
-                stock.payoutRatioTTM                 = r.payoutRatioTTM ?? null;
-                stock.revenueGrowthTTM               = g.revenueGrowth ?? null;
-                stock._enriched = true;
-            } catch(e) { /* silently skip */ }
-        }));
-        // Re-render after each batch so user sees data appearing
+    try {
+        const apiKey = 'RxYKGPJbSbTuLhW15Bdrop3OxJ2tiXDf';
+        const url = `https://financialmodelingprep.com/stable/company-screener?isActivelyTrading=true&limit=200&marketCapMoreThan=1000000000&apikey=${apiKey}`;
+        const resp = await fetch(url);
+        if (!resp.ok) throw new Error('API error');
+        const data = await resp.json();
+        if (!Array.isArray(data)) throw new Error('Bad data');
+        screenerData = data;
+        applyFiltersAndRender();
+    } catch(e) {
+        console.error('Screener load error:', e);
+        screenerData = getStaticStocks();
         applyFiltersAndRender();
     }
+}
+
+function getStaticStocks() {
+    return [
+        { symbol:'AAPL',  companyName:'Apple Inc.',               sector:'Technology',             marketCap:3480000000000, pe:33.2, priceToSalesRatioTTM:8.4,  returnOnEquityTTM:1.47,  revenueGrowthTTM:2.1,   netProfitMarginTTM:0.263, price:222.5,  changes:0.82  },
+        { symbol:'MSFT',  companyName:'Microsoft Corporation',    sector:'Technology',             marketCap:3020000000000, pe:37.8, priceToSalesRatioTTM:13.2, returnOnEquityTTM:0.38,  revenueGrowthTTM:15.7,  netProfitMarginTTM:0.365, price:415.3,  changes:-0.34 },
+        { symbol:'NVDA',  companyName:'NVIDIA Corporation',       sector:'Technology',             marketCap:2740000000000, pe:52.1, priceToSalesRatioTTM:29.8, returnOnEquityTTM:1.23,  revenueGrowthTTM:122.4, netProfitMarginTTM:0.557, price:111.2,  changes:1.47  },
+        { symbol:'AMZN',  companyName:'Amazon.com Inc.',          sector:'Consumer Cyclical',      marketCap:2210000000000, pe:44.6, priceToSalesRatioTTM:3.4,  returnOnEquityTTM:0.21,  revenueGrowthTTM:10.1,  netProfitMarginTTM:0.076, price:211.4,  changes:0.61  },
+        { symbol:'META',  companyName:'Meta Platforms Inc.',      sector:'Communication Services', marketCap:1490000000000, pe:28.3, priceToSalesRatioTTM:8.8,  returnOnEquityTTM:0.34,  revenueGrowthTTM:22.1,  netProfitMarginTTM:0.381, price:590.2,  changes:-0.21 },
+        { symbol:'GOOGL', companyName:'Alphabet Inc.',            sector:'Communication Services', marketCap:2080000000000, pe:24.1, priceToSalesRatioTTM:6.1,  returnOnEquityTTM:0.28,  revenueGrowthTTM:13.6,  netProfitMarginTTM:0.274, price:174.5,  changes:0.33  },
+        { symbol:'TSLA',  companyName:'Tesla Inc.',               sector:'Consumer Cyclical',      marketCap:820000000000,  pe:81.4, priceToSalesRatioTTM:8.1,  returnOnEquityTTM:0.12,  revenueGrowthTTM:1.1,   netProfitMarginTTM:0.072, price:258.1,  changes:-1.22 },
+        { symbol:'BRK-B', companyName:'Berkshire Hathaway',      sector:'Financials',             marketCap:1070000000000, pe:21.8, priceToSalesRatioTTM:2.2,  returnOnEquityTTM:0.12,  revenueGrowthTTM:3.4,   netProfitMarginTTM:0.141, price:465.3,  changes:0.15  },
+        { symbol:'JPM',   companyName:'JPMorgan Chase & Co.',    sector:'Financials',             marketCap:764000000000,  pe:13.4, priceToSalesRatioTTM:3.8,  returnOnEquityTTM:0.17,  revenueGrowthTTM:12.2,  netProfitMarginTTM:0.276, price:254.8,  changes:-0.44 },
+        { symbol:'V',     companyName:'Visa Inc.',               sector:'Financials',             marketCap:622000000000,  pe:30.2, priceToSalesRatioTTM:16.4, returnOnEquityTTM:0.51,  revenueGrowthTTM:10.3,  netProfitMarginTTM:0.543, price:314.7,  changes:0.28  },
+        { symbol:'JNJ',   companyName:'Johnson & Johnson',       sector:'Healthcare',             marketCap:381000000000,  pe:22.1, priceToSalesRatioTTM:4.6,  returnOnEquityTTM:0.22,  revenueGrowthTTM:4.3,   netProfitMarginTTM:0.198, price:157.2,  changes:0.41  },
+        { symbol:'LLY',   companyName:'Eli Lilly and Co.',       sector:'Healthcare',             marketCap:761000000000,  pe:74.2, priceToSalesRatioTTM:22.3, returnOnEquityTTM:0.84,  revenueGrowthTTM:44.7,  netProfitMarginTTM:0.281, price:801.3,  changes:1.12  },
+        { symbol:'XOM',   companyName:'Exxon Mobil Corporation', sector:'Energy',                 marketCap:488000000000,  pe:14.2, priceToSalesRatioTTM:1.4,  returnOnEquityTTM:0.14,  revenueGrowthTTM:-3.8,  netProfitMarginTTM:0.101, price:114.3,  changes:-0.62 },
+        { symbol:'WMT',   companyName:'Walmart Inc.',            sector:'Consumer Defensive',     marketCap:739000000000,  pe:36.8, priceToSalesRatioTTM:0.9,  returnOnEquityTTM:0.21,  revenueGrowthTTM:5.1,   netProfitMarginTTM:0.024, price:91.4,   changes:0.55  },
+        { symbol:'MA',    companyName:'Mastercard Incorporated', sector:'Financials',             marketCap:482000000000,  pe:36.1, priceToSalesRatioTTM:17.8, returnOnEquityTTM:2.14,  revenueGrowthTTM:12.8,  netProfitMarginTTM:0.448, price:514.2,  changes:0.19  },
+        { symbol:'COST',  companyName:'Costco Wholesale Corp.',  sector:'Consumer Defensive',     marketCap:422000000000,  pe:52.3, priceToSalesRatioTTM:1.4,  returnOnEquityTTM:0.31,  revenueGrowthTTM:7.8,   netProfitMarginTTM:0.026, price:952.1,  changes:0.38  },
+        { symbol:'HD',    companyName:'Home Depot Inc.',         sector:'Consumer Cyclical',      marketCap:394000000000,  pe:24.8, priceToSalesRatioTTM:2.6,  returnOnEquityTTM:99.9,  revenueGrowthTTM:4.5,   netProfitMarginTTM:0.104, price:396.4,  changes:-0.18 },
+        { symbol:'ABBV',  companyName:'AbbVie Inc.',             sector:'Healthcare',             marketCap:325000000000,  pe:56.7, priceToSalesRatioTTM:5.9,  returnOnEquityTTM:99.9,  revenueGrowthTTM:3.7,   netProfitMarginTTM:0.103, price:184.1,  changes:0.72  },
+        { symbol:'AVGO',  companyName:'Broadcom Inc.',           sector:'Technology',             marketCap:898000000000,  pe:67.4, priceToSalesRatioTTM:12.3, returnOnEquityTTM:0.34,  revenueGrowthTTM:23.9,  netProfitMarginTTM:0.224, price:215.4,  changes:1.08  },
+        { symbol:'NFLX',  companyName:'Netflix Inc.',            sector:'Communication Services', marketCap:421000000000,  pe:47.2, priceToSalesRatioTTM:9.7,  returnOnEquityTTM:0.38,  revenueGrowthTTM:14.8,  netProfitMarginTTM:0.196, price:976.3,  changes:0.94  },
+    ];
 }
 
 // ── FILTERS ───────────────────────────────────────────────────
@@ -466,49 +438,49 @@ function applyFiltersAndRender() {
                 if (def.id === 'sector' && (stock.sector || '') !== val) return false;
                 if (def.id === 'mkt_cap') {
                     const cap = stock.marketCap || 0;
-                    if (val === 'Mega (>200B)'  && cap < 200e9)  return false;
-                    if (val === 'Large (>10B)'  && cap < 10e9)   return false;
-                    if (val === 'Mid (>2B)'     && cap < 2e9)    return false;
-                    if (val === 'Small (>300M)' && cap < 300e6)  return false;
+                    if (val === 'Mega (>200B)'  && cap < 200e9) return false;
+                    if (val === 'Large (>10B)'  && cap < 10e9)  return false;
+                    if (val === 'Mid (>2B)'     && cap < 2e9)   return false;
+                    if (val === 'Small (>300M)' && cap < 300e6) return false;
                     if (val === 'Micro (<300M)' && cap >= 300e6) return false;
                 }
                 continue;
             }
             const fieldMap = {
-                pe:          v => v.pe || v.priceEarningsRatioTTM,
-                pb:          v => v.priceToBookRatioTTM,
-                ps:          v => v.priceToSalesRatioTTM,
-                pfcf:        v => v.priceToFreeCashFlowsRatioTTM,
-                ev_ebitda:   v => v.enterpriseValueMultipleTTM,
-                peg:         v => v.pegRatioTTM,
-                gross_m:     v => (v.grossProfitMarginTTM || 0) * 100,
-                op_m:        v => (v.operatingProfitMarginTTM || 0) * 100,
-                net_m:       v => (v.netProfitMarginTTM || 0) * 100,
-                fcf_m:       v => (v.freeCashFlowMarginTTM || 0) * 100,
-                roe:         v => (v.returnOnEquityTTM || 0) * 100,
-                roa:         v => (v.returnOnAssetsTTM || 0) * 100,
-                roic:        v => (v.roicTTM || 0) * 100,
-                ebitda_m:    v => (v.ebitdaMarginTTM || 0) * 100,
-                rev_g:       v => (v.revenueGrowthTTM || 0) * 100,
-                eps_g:       v => (v.epsgrowthTTM || 0) * 100,
-                ni_g:        v => (v.netIncomeGrowthTTM || 0) * 100,
-                fcf_g:       v => (v.freeCashFlowGrowthTTM || 0) * 100,
-                ocf_g:       v => (v.operatingCashFlowGrowthTTM || 0) * 100,
-                cur_r:       v => v.currentRatioTTM,
-                de:          v => v.debtEquityRatioTTM,
+                pe: v => v.pe || v.priceEarningsRatioTTM,
+                pb: v => v.priceToBookRatioTTM,
+                ps: v => v.priceToSalesRatioTTM,
+                pfcf: v => v.priceToFreeCashFlowsRatioTTM,
+                ev_ebitda: v => v.enterpriseValueMultipleTTM,
+                peg: v => v.pegRatioTTM,
+                gross_m: v => (v.grossProfitMarginTTM || 0) * 100,
+                op_m:    v => (v.operatingProfitMarginTTM || 0) * 100,
+                net_m:   v => (v.netProfitMarginTTM || v.netIncomeRatio || 0) * 100,
+                fcf_m:   v => (v.freeCashFlowMarginTTM || 0) * 100,
+                roe:     v => (v.returnOnEquityTTM || 0) * 100,
+                roa:     v => (v.returnOnAssetsTTM || 0) * 100,
+                roic:    v => (v.roicTTM || 0) * 100,
+                ebitda_m:v => (v.ebitdaMarginTTM || 0) * 100,
+                rev_g:   v => (v.revenueGrowthTTM || v.revenueGrowth || 0) * 100,
+                eps_g:   v => (v.epsgrowthTTM || 0) * 100,
+                ni_g:    v => (v.netIncomeGrowthTTM || 0) * 100,
+                fcf_g:   v => (v.freeCashFlowGrowthTTM || 0) * 100,
+                ocf_g:   v => (v.operatingCashFlowGrowthTTM || 0) * 100,
+                cur_r:   v => v.currentRatioTTM,
+                de:      v => v.debtEquityRatioTTM,
                 debt_ebitda: v => v.debtToEBITDATTM,
-                int_cov:     v => v.interestCoverageTTM,
-                quick_r:     v => v.quickRatioTTM,
-                div_y:       v => (v.dividendYieldTTM || 0) * 100,
-                payout:      v => (v.payoutRatioTTM || 0) * 100,
+                int_cov: v => v.interestCoverageTTM,
+                quick_r: v => v.quickRatioTTM,
+                div_y:   v => (v.dividendYieldTTM || 0) * 100,
+                payout:  v => (v.payoutRatioTTM || 0) * 100,
             };
             const getValue = fieldMap[def.id];
             if (!getValue) continue;
             const raw = getValue(stock);
             if (raw == null || isNaN(raw)) continue;
             const v = parseFloat(raw);
-            if (def.type === 'min'   && f.min !== '' && v < parseFloat(f.min)) return false;
-            if (def.type === 'max'   && f.max !== '' && v > parseFloat(f.max)) return false;
+            if (def.type === 'min' && f.min !== '' && v < parseFloat(f.min)) return false;
+            if (def.type === 'max' && f.max !== '' && v > parseFloat(f.max)) return false;
             if (def.type === 'range') {
                 if (f.min !== '' && v < parseFloat(f.min)) return false;
                 if (f.max !== '' && v > parseFloat(f.max)) return false;
@@ -526,17 +498,7 @@ function applyFiltersAndRender() {
 }
 
 function getSortValue(stock, key) {
-    const map = {
-        symbol:    s => s.symbol,
-        marketCap: s => s.marketCap,
-        pe:        s => s.pe || s.priceEarningsRatioTTM,
-        ps:        s => s.priceToSalesRatioTTM,
-        roe:       s => s.returnOnEquityTTM,
-        rev_g:     s => s.revenueGrowthTTM,
-        net_m:     s => s.netProfitMarginTTM,
-        price:     s => s.price,
-        changes:   s => s.changes,
-    };
+    const map = { symbol: s => s.symbol, marketCap: s => s.marketCap, pe: s => s.pe || s.priceEarningsRatioTTM, ps: s => s.priceToSalesRatioTTM, roe: s => s.returnOnEquityTTM, rev_g: s => s.revenueGrowthTTM, net_m: s => s.netProfitMarginTTM, price: s => s.price, changes: s => s.changes };
     const fn = map[key];
     return fn ? fn(stock) : null;
 }
@@ -544,13 +506,14 @@ function getSortValue(stock, key) {
 function fmtCap(v) {
     if (!v) return '—';
     if (v >= 1e12) return (v/1e12).toFixed(2) + 'T';
-    if (v >= 1e9)  return (v/1e9).toFixed(1)  + 'B';
-    if (v >= 1e6)  return (v/1e6).toFixed(0)  + 'M';
+    if (v >= 1e9)  return (v/1e9).toFixed(1) + 'B';
+    if (v >= 1e6)  return (v/1e6).toFixed(0) + 'M';
     return v;
 }
-function fmtPct(v, asDecimal) {
+
+function fmtPct(v, raw) {
     if (v == null || v === '' || isNaN(v)) return '—';
-    const n = asDecimal ? v * 100 : v;
+    const n = raw ? v * 100 : v;
     return n.toFixed(1) + '%';
 }
 
@@ -589,21 +552,22 @@ function renderTable() {
         const pe   = s.pe || s.priceEarningsRatioTTM;
         const ps   = s.priceToSalesRatioTTM;
         const roe  = s.returnOnEquityTTM;
-        const netM = s.netProfitMarginTTM;
-        const revG = s.revenueGrowthTTM;
-        const chg  = s.changes || 0;
+        const netM = s.netProfitMarginTTM || s.netIncomeRatio;
+        const revG = s.revenueGrowthTTM || s.revenueGrowth;
+        const chg  = s.changes || s.changesPercentage || 0;
         const chgClass = chg >= 0 ? 'change-pos' : 'change-neg';
         const chgStr   = (chg >= 0 ? '+' : '') + parseFloat(chg).toFixed(2) + '%';
-        const enrichDot = s._enriched ? '' : ' <span style="opacity:0.4;font-size:0.7em">⟳</span>';
+
+        // ✅ onclick calls showStockDetails which is defined above in global scope
         return `<tr onclick="showStockDetails('${s.symbol}')" style="cursor:pointer">
-            <td><div class="sh-td-symbol">${s.symbol}${enrichDot}</div><div class="sh-td-name">${s.companyName || ''}</div></td>
+            <td><div class="sh-td-symbol">${s.symbol}</div><div class="sh-td-name">${s.companyName || ''}</div></td>
             <td><span class="sh-td-sector">${s.sector || '—'}</span></td>
             <td>${fmtCap(s.marketCap)}</td>
             <td>${pe ? parseFloat(pe).toFixed(1) : '—'}</td>
             <td>${ps ? parseFloat(ps).toFixed(1) : '—'}</td>
             <td>${fmtPct(netM, true)}</td>
             <td>${fmtPct(roe, true)}</td>
-            <td class="${revG != null ? (revG >= 0 ? 'change-pos' : 'change-neg') : ''}">${fmtPct(revG, true)}</td>
+            <td class="${revG >= 0 ? 'change-pos' : 'change-neg'}">${fmtPct(revG, true)}</td>
             <td class="${chgClass}">${chgStr}</td>
         </tr>`;
     }).join('');
@@ -634,8 +598,11 @@ function openFilterPicker(e) {
     picker.style.left = Math.min(rect.left, window.innerWidth - 310) + 'px';
     setTimeout(() => document.getElementById('filterPickerSearch').focus(), 30);
 }
+
 function closeFilterPicker() { document.getElementById('filterPickerOverlay').classList.remove('open'); }
+
 function filterPickerSearch(q) { renderPickerList(q.toLowerCase().trim()); }
+
 function renderPickerList(q) {
     const list = document.getElementById('filterPickerList');
     const groups = {};
@@ -655,6 +622,7 @@ function renderPickerList(q) {
     if (!html) html = '<div style="padding:24px;text-align:center;color:var(--text-secondary);font-size:0.85rem;">No filters found</div>';
     list.innerHTML = html;
 }
+
 function addFilter(id) {
     const def = FILTER_DEFS.find(d => d.id === id);
     if (!def || activeFilters[id]) return;
@@ -663,9 +631,11 @@ function addFilter(id) {
     renderFilterChips();
     applyFiltersAndRender();
 }
+
 function removeFilter(id) { delete activeFilters[id]; renderFilterChips(); applyFiltersAndRender(); }
 function resetAllFilters() { activeFilters = {}; renderFilterChips(); applyFiltersAndRender(); }
 function updateFilter(id, field, value) { if (!activeFilters[id]) return; activeFilters[id][field] = value; applyFiltersAndRender(); }
+
 function renderFilterChips() {
     const row = document.getElementById('filterChipsRow');
     const resetBtn = document.getElementById('filtersResetBtn');
@@ -697,64 +667,105 @@ window.resetAllFilters    = resetAllFilters;
 window.updateFilter       = updateFilter;
 window.setSort            = setSort;
 
-// ── SEARCH BAR (debounced, uses window.fmpAPI) ────────────────
-function initSearch() {
-    const stockSearch   = document.getElementById('stockSearch');
-    const searchResults = document.getElementById('searchResults');
-    let searchTimeout;
-
-    stockSearch.addEventListener('input', e => {
-        const query = e.target.value.trim().toUpperCase();
-        if (query.length < 1) { searchResults.classList.remove('active'); return; }
-        clearTimeout(searchTimeout);
-        searchTimeout = setTimeout(async () => {
-            try {
-                searchResults.innerHTML = '<div class="search-result-item"><span class="result-symbol">Searching...</span></div>';
-                searchResults.classList.add('active');
-                const results = await window.fmpAPI.searchStocks(query);
-                if (results && results.length > 0) {
-                    const stocks = results.slice(0, 8);
-                    searchResults.innerHTML = stocks.map(stock => `
-                        <div class="search-result-item" onclick="showStockDetails('${stock.symbol}')">
-                            <span class="result-symbol">${stock.symbol}</span>
-                            <span class="result-name">${stock.name || stock.companyName || ''}</span>
-                            <span class="result-type-badge">Stock</span>
-                        </div>`).join('');
-                } else {
-                    // No results from search → offer direct navigation
-                    searchResults.innerHTML = `<div class="search-result-item" onclick="showStockDetails('${query}')">
-                        <span class="result-symbol">${query}</span>
-                        <span class="result-name">Press Enter or click to open</span>
-                        <span class="result-type-badge">Direct</span>
-                    </div>`;
-                }
-                searchResults.classList.add('active');
-            } catch (err) {
-                searchResults.innerHTML = '<div class="search-result-item">Search error</div>';
-            }
-        }, 300);
-    });
-
-    stockSearch.addEventListener('keydown', e => {
-        if (e.key === 'Enter') {
-            const sym = stockSearch.value.trim().toUpperCase();
-            if (sym) { searchResults.classList.remove('active'); showStockDetails(sym); }
-        }
-    });
-
-    document.addEventListener('click', e => {
-        if (!stockSearch.contains(e.target) && !searchResults.contains(e.target))
-            searchResults.classList.remove('active');
-    });
-}
-
 // ── INIT ──────────────────────────────────────────────────────
 if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => { loadScreenerData(); initSearch(); });
+    document.addEventListener('DOMContentLoaded', loadScreenerData);
 } else {
     loadScreenerData();
-    initSearch();
 }
+    </script>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import fmpAPI from './fmp-api.js';
+
+        const app = initializeApp({
+            apiKey: "AIzaSyD4dkPbO1C-bZiSokalUnwNqOTpeAyrOU0",
+            authDomain: "stockmaster-30835.firebaseapp.com",
+            projectId: "stockmaster-30835",
+            storageBucket: "stockmaster-30835.firebasestorage.app",
+            messagingSenderId: "506097874613",
+            appId: "1:506097874613:web:0d15d2bd1575a55c8ab0fc"
+        });
+        const auth = getAuth(app);
+
+        onAuthStateChanged(auth, user => {
+            if (!user) { window.location.href = "login.html"; return; }
+            document.querySelector('.user-avatar').textContent = user.email.charAt(0).toUpperCase();
+        });
+
+        // User menu
+        const userAvatar = document.getElementById('userAvatar');
+        const dropdownMenu = document.getElementById('dropdownMenu');
+        userAvatar.addEventListener('click', e => { e.stopPropagation(); dropdownMenu.classList.toggle('active'); });
+        document.addEventListener('click', e => { if (!userAvatar.contains(e.target)) dropdownMenu.classList.remove('active'); });
+        document.getElementById('signOutBtn').addEventListener('click', async () => { await signOut(auth); window.location.href = "index.html"; });
+
+        // Theme
+        const themeToggle = document.getElementById('themeToggle');
+        const sunIcon = document.getElementById('sunIcon');
+        const moonIcon = document.getElementById('moonIcon');
+        const html = document.documentElement;
+        const currentTheme = localStorage.getItem('theme') || 'dark';
+        html.setAttribute('data-theme', currentTheme);
+        if (currentTheme === 'dark') { sunIcon.style.display = 'none'; moonIcon.style.display = 'block'; }
+        themeToggle.addEventListener('click', () => {
+            const newTheme = html.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            sunIcon.style.display = newTheme === 'dark' ? 'none' : 'block';
+            moonIcon.style.display = newTheme === 'dark' ? 'block' : 'none';
+        });
+
+        // Search bar → navigates directly to stock-details
+        const stockSearch = document.getElementById('stockSearch');
+        const searchResults = document.getElementById('searchResults');
+        let searchTimeout;
+
+        stockSearch.addEventListener('input', async e => {
+            const query = e.target.value.trim().toUpperCase();
+            if (query.length < 1) { searchResults.classList.remove('active'); return; }
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(async () => {
+                try {
+                    searchResults.innerHTML = '<div class="search-result-item"><span class="result-symbol">Searching...</span></div>';
+                    searchResults.classList.add('active');
+                    const results = await fmpAPI.searchStocks(query);
+                    if (results && results.length > 0) {
+                        const stocks = results.filter(r => {
+                            const exch = (r.exchangeShortName || r.exchange || '').toUpperCase();
+                            return exch.includes('NASDAQ') || exch.includes('NYSE') || exch.includes('AMEX');
+                        }).slice(0, 8);
+                        if (stocks.length > 0) {
+                            searchResults.innerHTML = stocks.map(stock => `
+                                <div class="search-result-item" onclick="showStockDetails('${stock.symbol}')">
+                                    <span class="result-symbol">${stock.symbol}</span>
+                                    <span class="result-name">${stock.name || stock.companyName || ''}</span>
+                                    <span class="result-type-badge">Stock</span>
+                                </div>`).join('');
+                            searchResults.classList.add('active');
+                        } else {
+                            searchResults.innerHTML = '<div class="search-result-item">No stocks found</div>';
+                        }
+                    }
+                } catch (error) {
+                    searchResults.innerHTML = '<div class="search-result-item">Search error</div>';
+                }
+            }, 300);
+        });
+
+        stockSearch.addEventListener('keydown', e => {
+            if (e.key === 'Enter') {
+                const sym = stockSearch.value.trim().toUpperCase();
+                if (sym) { searchResults.classList.remove('active'); showStockDetails(sym); }
+            }
+        });
+
+        document.addEventListener('click', e => {
+            if (!stockSearch.contains(e.target) && !searchResults.contains(e.target))
+                searchResults.classList.remove('active');
+        });
     </script>
 </body>
 </html>
