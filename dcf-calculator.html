@@ -252,11 +252,27 @@
         .auto-fill-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
         .auto-fill-btn svg { width: 16px; height: 16px; }
 
-        /* RESULTS */
-        .results-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 20px; }
-        .result-box { background: var(--bg-main); padding: 18px; border-radius: 12px; border: 1px solid var(--border-color); }
-        .result-label { display: flex; align-items: center; gap: 6px; font-size: 0.83rem; color: var(--text-secondary); margin-bottom: 8px; font-weight: 500; }
-        .result-value { font-size: 1.5rem; font-weight: 800; color: var(--text-primary); }
+        /* RESULTS STRIP */
+        .results-strip {
+            display: flex; align-items: stretch;
+            background: var(--bg-card); border: 1px solid var(--border-color);
+            border-radius: 16px; margin-bottom: 20px; overflow: hidden;
+        }
+        .strip-item {
+            flex: 1; padding: 18px 20px; display: flex; flex-direction: column;
+            align-items: flex-start; justify-content: center; min-width: 0;
+        }
+        .strip-divider {
+            width: 1px; background: var(--border-color); flex-shrink: 0; margin: 14px 0;
+        }
+        .strip-label {
+            font-size: 0.78rem; font-weight: 600; color: var(--text-secondary);
+            text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 6px; white-space: nowrap;
+        }
+        .strip-value {
+            font-size: 1.5rem; font-weight: 800; color: var(--text-primary); line-height: 1.1;
+        }
+        .strip-value-sm { font-size: 1.2rem; }
         .result-badge { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 6px; font-size: 0.82rem; font-weight: 700; margin-top: 8px; }
         .badge-success { background-color: rgba(16,185,129,0.15); color: var(--success-color); }
         .badge-danger { background-color: rgba(239,68,68,0.15); color: var(--danger-color); }
@@ -293,10 +309,8 @@
         .status-error { background: rgba(239,68,68,0.1); color: #EF4444; border: 1px solid rgba(239,68,68,0.2); }
         .status-loading { background: rgba(255,122,0,0.1); color: var(--primary-orange); border: 1px solid rgba(255,122,0,0.2); }
 
-        /* DATA BADGE */
-        .data-check { background: rgba(16,185,129,0.08); border: 1px solid rgba(16,185,129,0.2); border-radius: 10px; padding: 10px 14px; margin-bottom: 16px; font-size: 0.78rem; color: var(--text-secondary); display: none; }
-        .data-check.show { display: block; }
-        .data-check strong { color: #10B981; }
+        /* DATA BADGE — hidden from users */
+        .data-check { display: none !important; }
 
         @media (max-width: 1200px) { .dcf-layout { grid-template-columns: 1fr; } .topbar-nav { display: none; } }
     </style>
@@ -306,7 +320,7 @@
     <header class="topbar">
         <a href="webapp.html" class="topbar-logo">
             <img src="logo.png" alt="Logo" onerror="this.style.display='none'">
-            StockMaster.
+            StockMaster
         </a>
         <nav class="topbar-nav">
             <a href="webapp.html" class="nav-btn">
@@ -357,7 +371,7 @@
             <div class="welcome-icon">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
             </div>
-            <h2>DCF Calculator</h2>
+            <h2>Professional DCF Calculator</h2>
             <p>Analyze the intrinsic value of any stock in a few clicks. Choose your metric, set your assumptions and get a detailed valuation.</p>
             <div class="search-container">
                 <div class="search-wrapper">
@@ -538,39 +552,42 @@
                     <a class="expand-link" id="expandLink">How is this calculated?</a>
                 </div>
 
-                <div class="results-grid">
-                    <div class="result-box">
-                        <div class="result-label">Today's Stock Price <i class="info-icon" title="Current market price">?</i></div>
-                        <div class="result-value" id="currentPrice">—</div>
+                <div class="results-strip">
+                    <div class="strip-item">
+                        <div class="strip-label">Today's Price</div>
+                        <div class="strip-value" id="currentPrice">—</div>
                     </div>
-                    <div class="result-box">
-                        <div class="result-label">Future Stock Price <i class="info-icon" title="Projected price at end of projection period">?</i></div>
-                        <div class="result-value" id="futurePrice">—</div>
-                        <div class="result-badge badge-success" id="futurePriceBadge"></div>
+                    <div class="strip-divider"></div>
+                    <div class="strip-item">
+                        <div class="strip-label">Future Price</div>
+                        <div class="strip-value" id="futurePrice">—</div>
+                        <div class="result-badge badge-success" id="futurePriceBadge" style="margin-top:4px;"></div>
                     </div>
-                    <div class="result-box">
-                        <div class="result-label">Total Dividends Paid <i class="info-icon" title="Cumulative dividends over projection period">?</i></div>
-                        <div class="result-value" id="dividends">—</div>
+                    <div class="strip-divider"></div>
+                    <div class="strip-item">
+                        <div class="strip-label">Fair Value</div>
+                        <div class="strip-value" id="fairValue">—</div>
+                        <div class="result-badge" id="fairValueBadge" style="margin-top:4px;"></div>
                     </div>
-                    <div class="result-box">
-                        <div class="result-label">Fair Value <i class="info-icon" title="Discounted future price to today">?</i></div>
-                        <div class="result-value" id="fairValue">—</div>
-                        <div class="result-badge" id="fairValueBadge"></div>
+                    <div class="strip-divider"></div>
+                    <div class="strip-item">
+                        <div class="strip-label">CAGR</div>
+                        <div class="strip-value" id="cagr">—</div>
                     </div>
-                    <div class="result-box">
-                        <div class="result-label">CAGR <i class="info-icon" title="Compound Annual Growth Rate">?</i></div>
-                        <div class="result-value" id="cagr">—</div>
+                    <div class="strip-divider"></div>
+                    <div class="strip-item">
+                        <div class="strip-label">Dividends</div>
+                        <div class="strip-value strip-value-sm" id="dividends">—</div>
                     </div>
-                    <div class="result-box" style="visibility:hidden;"></div>
                 </div>
 
                 <div class="chart-container">
                     <div class="chart-header">
                         <h3 class="chart-title">Stock Price — Historical & Projection</h3>
                         <div style="display:flex;align-items:center;gap:20px;font-size:0.8rem;color:var(--text-secondary);">
-                            <span style="display:flex;align-items:center;gap:6px;"><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#ffffff;opacity:0.7;"></span>Stock Price</span>
-                            <span style="display:flex;align-items:center;gap:6px;"><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#10B981;"></span>Price At Ratio</span>
-                            <span style="display:flex;align-items:center;gap:6px;"><span style="display:inline-block;width:24px;height:2px;background:#3b82f6;border-top:2px dashed #3b82f6;"></span>DCF Fair Value</span>
+                            <span style="display:flex;align-items:center;gap:6px;"><span style="display:inline-block;width:24px;height:2px;background:rgba(255,255,255,0.7);"></span>Stock Price</span>
+                            <span style="display:flex;align-items:center;gap:6px;"><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#10B981;"></span><span id="priceChartLegendLabel">Price/OCF Ratio</span></span>
+                            <span style="display:flex;align-items:center;gap:6px;"><span style="display:inline-block;width:20px;border-top:2px dashed #3b82f6;"></span>DCF Fair Value</span>
                         </div>
                     </div>
                     <div class="chart-wrapper"><canvas id="stockPriceChart"></canvas></div>
@@ -1233,8 +1250,15 @@ function buildPriceChart(r) {
     const disc   = r.desiredReturn / 100;
     const shares = r.shares;
 
-    // ── Build unified label set ────────────────────────────────────────────
-    // Historical: use up to 5 income/CF rows (oldest → newest)
+    // Update legend label to match selected metric
+    const metricRatioLabel = {
+        fcf: 'Price/FCF Ratio', ocf: 'Price/OCF Ratio',
+        oi:  'Price/OI Ratio',  ni:  'P/E Ratio'
+    }[metric] || 'Price At Ratio';
+    const legendEl = document.getElementById('priceChartLegendLabel');
+    if (legendEl) legendEl.textContent = metricRatioLabel;
+
+    // Historical: up to 5 rows (oldest → newest)
     const hCF  = (stockData?.cashFlow || []).slice(0, 5).reverse();
     const hInc = (stockData?.income   || []).slice(0, 5).reverse();
     const histLen = Math.min(hCF.length, hInc.length);
@@ -1245,54 +1269,43 @@ function buildPriceChart(r) {
     allLabels.push(yr0.toString());
     for (let i = 1; i <= r.years; i++) allLabels.push((yr0 + i).toString());
 
-    // ── Green area: metric/share × ratio (historical reconstruction + projection) ──
-    const greenData = [];
-
-    // Historical portion (oldest → second-to-last)
+    // ── Green line: historical only (metric/share × ratio), stops at current year ──
+    const greenHistData = [];
     for (let i = 0; i < histLen - 1; i++) {
         const total = extractMetric(metric, hCF[i], hInc[i]);
         const yr    = (yr0 - (histLen - 1 - i)).toString();
         const y     = (total != null && total > 0 && shares > 0)
-            ? (total / shares) * ratio
-            : null;
-        greenData.push({ x: yr, y });
+            ? (total / shares) * ratio : null;
+        greenHistData.push({ x: yr, y });
     }
-    // Anchor current year to real price
-    greenData.push({ x: yr0.toString(), y: r.currentPrice });
-    // Projected portion
+    // Anchor to real current price — green stops here
+    greenHistData.push({ x: yr0.toString(), y: r.currentPrice });
+    // Nulls for future (so it doesn't extend)
+    for (let i = 1; i <= r.years; i++) {
+        greenHistData.push({ x: (yr0 + i).toString(), y: null });
+    }
+
+    // ── Green projected line: starts from current price, projects forward ──
+    const greenProjData = [];
+    // Nulls for past years
+    for (let i = histLen - 1; i >= 1; i--) greenProjData.push({ x: (yr0 - i).toString(), y: null });
+    // Start from current price
+    greenProjData.push({ x: yr0.toString(), y: r.currentPrice });
     let mPS = r.basePerShare;
     for (let i = 1; i <= r.years; i++) {
         mPS *= (1 + r.growthRate);
-        greenData.push({ x: (yr0 + i).toString(), y: mPS * ratio });
+        greenProjData.push({ x: (yr0 + i).toString(), y: mPS * ratio });
     }
 
-    // ── White line: real historical price approximation ────────────────────
-    // Same as green but kept as a separate thin white line
-    const whiteData = [];
-    for (let i = 0; i < histLen - 1; i++) {
-        const total = extractMetric(metric, hCF[i], hInc[i]);
-        const yr    = (yr0 - (histLen - 1 - i)).toString();
-        const y     = (total != null && total > 0 && shares > 0)
-            ? (total / shares) * ratio
-            : null;
-        whiteData.push({ x: yr, y });
-    }
-    whiteData.push({ x: yr0.toString(), y: r.currentPrice });
-    // White line stops at current year (no future)
-    // Fill nulls for future years so both datasets share the same labels
-    for (let i = 1; i <= r.years; i++) {
-        whiteData.push({ x: (yr0 + i).toString(), y: null });
-    }
+    // ── White line: same as greenHist (overlaid, thinner) ─────────────────
+    // reuse greenHistData for white line
+    const whiteData = greenHistData.map(p => ({ ...p }));
 
-    // ── Blue dashed: DCF Fair Value ────────────────────────────────────────
-    // Null for past years, then grows from current price to fair value
-    const futurePrice = greenData[greenData.length - 1].y || r.futureStockPrice;
+    // ── Blue dashed: DCF Fair Value (future only) ──────────────────────────
+    const futurePrice = greenProjData[greenProjData.length - 1].y || r.futureStockPrice;
     const blueData = [];
-    // Past years: null
     for (let i = histLen - 1; i >= 1; i--) blueData.push({ x: (yr0 - i).toString(), y: null });
-    // Current year = current price
     blueData.push({ x: yr0.toString(), y: r.currentPrice });
-    // Future years: discount future price backwards from terminal value
     for (let i = 1; i <= r.years; i++) {
         blueData.push({
             x: (yr0 + i).toString(),
@@ -1304,21 +1317,35 @@ function buildPriceChart(r) {
         type: 'line',
         data: {
             datasets: [
-                // Green fill area (behind everything)
+                // Green projected line with fill (future only)
                 {
-                    label: 'Price At Ratio',
-                    data: greenData,
+                    label: metricRatioLabel,
+                    data: greenProjData,
                     borderColor: '#10B981',
-                    backgroundColor: 'rgba(16,185,129,0.18)',
-                    borderWidth: 2,
+                    backgroundColor: 'rgba(16,185,129,0.15)',
+                    borderWidth: 2.5,
                     tension: 0.35,
-                    pointRadius: (ctx) => ctx.dataIndex === histLen - 1 ? 5 : 3,
+                    pointRadius: 4,
                     pointBackgroundColor: '#10B981',
                     fill: 'origin',
-                    spanGaps: true,
+                    spanGaps: false,
                     order: 3,
                 },
-                // White historical price line (on top of green)
+                // Green historical line (no fill, stops at current year)
+                {
+                    label: metricRatioLabel + ' (hist)',
+                    data: greenHistData,
+                    borderColor: '#10B981',
+                    backgroundColor: 'transparent',
+                    borderWidth: 2,
+                    tension: 0.35,
+                    pointRadius: 3,
+                    pointBackgroundColor: '#10B981',
+                    fill: false,
+                    spanGaps: false,
+                    order: 2,
+                },
+                // White historical price line (on top of green hist)
                 {
                     label: 'Stock Price',
                     data: whiteData,
@@ -1344,7 +1371,7 @@ function buildPriceChart(r) {
                     pointBackgroundColor: '#3b82f6',
                     fill: false,
                     spanGaps: false,
-                    order: 2,
+                    order: 0,
                 },
             ]
         },
@@ -1360,7 +1387,7 @@ function buildPriceChart(r) {
                     bodyColor: '#94A3B8',
                     borderColor: '#334155',
                     borderWidth: 1,
-                    filter: (item) => item.parsed.y !== null,
+                    filter: (item) => item.parsed.y !== null && !item.dataset.label.endsWith('(hist)'),
                     callbacks: {
                         label: ctx => ` ${ctx.dataset.label}: $${ctx.parsed.y.toFixed(2)}`
                     }
