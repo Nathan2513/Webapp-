@@ -312,7 +312,36 @@
         /* DATA BADGE — hidden from users */
         .data-check { display: none !important; }
 
-        @media (max-width: 1200px) { .dcf-layout { grid-template-columns: 1fr; } .topbar-nav { display: none; } }
+        /* INLINE SEARCH (right panel) */
+        .inline-search-wrap { margin-bottom: 16px; }
+        .inline-search-box {
+            position: relative; display: flex; align-items: center;
+            background: var(--bg-card); border: 1.5px solid var(--border-color);
+            border-radius: 12px; padding: 0 16px; transition: border-color 0.2s;
+        }
+        .inline-search-box:focus-within { border-color: var(--primary-orange); }
+        .inline-search-icon { width: 18px; height: 18px; color: var(--text-secondary); flex-shrink: 0; }
+        .inline-search-input {
+            flex: 1; padding: 13px 12px; background: transparent; border: none;
+            font-size: 0.95rem; font-family: 'Inter', sans-serif; color: var(--text-primary);
+            outline: none;
+        }
+        .inline-search-input::placeholder { color: var(--text-secondary); }
+        .inline-search-results {
+            position: absolute; top: calc(100% + 6px); left: 0; right: 0;
+            background: var(--bg-card); border: 1px solid var(--border-color);
+            border-radius: 12px; overflow: hidden; z-index: 100;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.25); display: none;
+        }
+        .inline-search-results.open { display: block; }
+        .inline-result-item {
+            padding: 12px 16px; cursor: pointer; display: flex; align-items: center;
+            gap: 12px; transition: background 0.15s; border-bottom: 1px solid var(--border-color);
+        }
+        .inline-result-item:last-child { border-bottom: none; }
+        .inline-result-item:hover { background: var(--hover-bg); }
+        .inline-result-ticker { font-weight: 700; font-size: 0.9rem; color: var(--primary-orange); min-width: 56px; }
+        .inline-result-name { font-size: 0.85rem; color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     </style>
 </head>
 <body>
@@ -545,6 +574,15 @@
 
             <!-- RIGHT PANEL -->
             <div>
+                <!-- Inline search bar -->
+                <div class="inline-search-wrap">
+                    <div class="inline-search-box">
+                        <svg class="inline-search-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                        <input type="text" id="inlineSearchInput" class="inline-search-input" placeholder="Search another stock…" autocomplete="off">
+                        <div class="inline-search-results" id="inlineSearchResults"></div>
+                    </div>
+                </div>
+
                 <div class="dcf-analysis undervalued" id="dcfAnalysisBox">
                     <h3>DCF Analysis</h3>
                     <p>Based on your inputs, <strong id="stockNameSpan">—</strong> is <span id="valuationText" class="highlight-green">—</span> and would produce a CAGR of <span id="cagrText" class="highlight-green">—</span> from today's share price.</p>
@@ -801,6 +839,40 @@ document.addEventListener('click', (e) => {
     if (!stockSearchEl.contains(e.target)) searchResultsEl.classList.remove('active');
 });
 
+// ── Inline search (right panel) ───────────────────────────────────────────────
+const inlineInput   = document.getElementById('inlineSearchInput');
+const inlineResults = document.getElementById('inlineSearchResults');
+let inlineTimer;
+
+inlineInput.addEventListener('input', () => {
+    clearTimeout(inlineTimer);
+    const q = inlineInput.value.trim();
+    if (q.length < 1) { inlineResults.classList.remove('open'); return; }
+    inlineTimer = setTimeout(async () => {
+        try {
+            const data = await fmpAPI.searchSymbol(q);
+            if (!data || data.length === 0) { inlineResults.classList.remove('open'); return; }
+            inlineResults.innerHTML = data.slice(0, 6).map(s => `
+                <div class="inline-result-item" data-symbol="${s.symbol}">
+                    <span class="inline-result-ticker">${s.symbol}</span>
+                    <span class="inline-result-name">${s.name || ''}</span>
+                </div>`).join('');
+            inlineResults.classList.add('open');
+            inlineResults.querySelectorAll('.inline-result-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    inlineResults.classList.remove('open');
+                    inlineInput.value = '';
+                    loadStock(item.dataset.symbol);
+                });
+            });
+        } catch (e) { console.error(e); }
+    }, 300);
+});
+document.addEventListener('click', (e) => {
+    if (!inlineInput.closest('.inline-search-box').contains(e.target))
+        inlineResults.classList.remove('open');
+});
+
 // ═════════════════════════════════════════════════════════════════════════════
 //  LOAD STOCK  — uses fmpAPI.getDCFData() (7 parallel, cached requests)
 // ═════════════════════════════════════════════════════════════════════════════
@@ -814,6 +886,7 @@ async function loadStock(symbol) {
     document.getElementById('stockNameSpan').textContent     = symbol;
     document.getElementById('loadingIndicator').style.display = 'block';
     document.getElementById('autoFillBtn').disabled          = true;
+    document.getElementById('inlineSearchInput').placeholder = symbol;
     showStatus('Loading data for ' + symbol + '…', 'loading');
     hideDataCheck();
 
