@@ -293,10 +293,10 @@
         .status-error { background: rgba(239,68,68,0.1); color: #EF4444; border: 1px solid rgba(239,68,68,0.2); }
         .status-loading { background: rgba(255,122,0,0.1); color: var(--primary-orange); border: 1px solid rgba(255,122,0,0.2); }
 
-        /* DEBUG PANEL */
-        .debug-panel { background: rgba(255,122,0,0.05); border: 1px solid rgba(255,122,0,0.2); border-radius: 10px; padding: 12px 16px; margin-bottom: 16px; font-size: 0.78rem; color: var(--text-secondary); display: none; }
-        .debug-panel.show { display: block; }
-        .debug-panel strong { color: var(--primary-orange); }
+        /* DATA BADGE */
+        .data-check { background: rgba(16,185,129,0.08); border: 1px solid rgba(16,185,129,0.2); border-radius: 10px; padding: 10px 14px; margin-bottom: 16px; font-size: 0.78rem; color: var(--text-secondary); display: none; }
+        .data-check.show { display: block; }
+        .data-check strong { color: #10B981; }
 
         @media (max-width: 1200px) { .dcf-layout { grid-template-columns: 1fr; } .topbar-nav { display: none; } }
     </style>
@@ -372,7 +372,7 @@
 
         <!-- DCF CONTENT -->
         <div class="dcf-layout" id="dcfContent" style="display:none;">
-            <!-- LEFT -->
+            <!-- LEFT PANEL -->
             <div>
                 <div class="card">
                     <div class="stock-header">
@@ -384,7 +384,7 @@
                     </div>
 
                     <div id="statusMsg" style="display:none;"></div>
-                    <div class="debug-panel" id="debugPanel"></div>
+                    <div class="data-check" id="dataCheck"></div>
 
                     <div class="input-group">
                         <div class="input-label">Metric to Use in Calculations <i class="info-icon" title="Choose the financial metric for your DCF projection">?</i></div>
@@ -450,7 +450,7 @@
                     </div>
 
                     <div class="input-group">
-                        <div class="input-label">Price to <span id="ratioMetricLabel">Free Cash Flow</span> Ratio <i class="info-icon" title="Terminal P/FCF multiple">?</i></div>
+                        <div class="input-label">Price to <span id="ratioMetricLabel">Free Cash Flow</span> Ratio <i class="info-icon" title="Terminal multiple used to value the stock at end of projection">?</i></div>
                         <div class="number-input-wrapper">
                             <input type="number" class="styled-number no-prefix" id="ratioInput" value="25" step="0.01">
                             <div class="stepper-btns">
@@ -529,7 +529,7 @@
                 </div>
             </div>
 
-            <!-- RIGHT -->
+            <!-- RIGHT PANEL -->
             <div>
                 <div class="dcf-analysis undervalued" id="dcfAnalysisBox">
                     <h3>DCF Analysis</h3>
@@ -591,6 +591,9 @@
     </main>
 </div>
 
+<!-- ─────────────────────────────────────────────────────────────────────────
+     FIREBASE AUTH
+     ───────────────────────────────────────────────────────────────────── -->
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
@@ -610,160 +613,111 @@
         document.querySelector('.user-avatar').textContent = user.email.charAt(0).toUpperCase();
     });
 
-    const userAvatar = document.getElementById('userAvatar');
+    const userAvatar   = document.getElementById('userAvatar');
     const dropdownMenu = document.getElementById('dropdownMenu');
     userAvatar.addEventListener('click', (e) => { e.stopPropagation(); dropdownMenu.classList.toggle('active'); });
     document.addEventListener('click', () => dropdownMenu.classList.remove('active'));
-    document.getElementById('signOutBtn').addEventListener('click', async () => { await signOut(auth); window.location.href = "index.html"; });
+    document.getElementById('signOutBtn').addEventListener('click', async () => {
+        await signOut(auth); window.location.href = "index.html";
+    });
 </script>
 
-<script>
-// ============================================================
-// FMP API — uses fmp-api.js module (already loaded on the page)
-// Inline fallback for cache + search
-// ============================================================
-const FMP_KEY  = 'RxYKGPJbSbTuLhW15Bdrop3OxJ2tiXDf';
-const FMP_BASE = 'https://financialmodelingprep.com/stable';
-const CACHE_TTL = 3600000;
+<!-- ─────────────────────────────────────────────────────────────────────────
+     MAIN DCF SCRIPT  —  uses fmpAPI (loaded from fmp-api.js via window.fmpAPI)
+     Falls back to inline fetch if the module hasn't been imported yet.
+     ───────────────────────────────────────────────────────────────────── -->
+<script type="module">
+// ─── Import the shared FMP module ────────────────────────────────────────────
+// fmpAPI is also exposed on window.fmpAPI by fmp-api.js for legacy pages,
+// but we import it directly here for full ES-module correctness.
+import fmpAPI from './fmp-api.js';
 
-function cacheGet(key) {
-    try {
-        const raw = localStorage.getItem(key);
-        if (!raw) return null;
-        const d = JSON.parse(raw);
-        if (Date.now() - d.ts > CACHE_TTL) { localStorage.removeItem(key); return null; }
-        return d.v;
-    } catch { return null; }
-}
-function cacheSet(key, v) {
-    try { localStorage.setItem(key, JSON.stringify({ v, ts: Date.now() })); } catch {}
-}
+// ═════════════════════════════════════════════════════════════════════════════
+//  FIELD EXTRACTION  — robust multi-alias reader for FMP /stable/ API
+// ═════════════════════════════════════════════════════════════════════════════
 
-async function fmpGet(endpoint, params = {}) {
-    const qs  = new URLSearchParams({ ...params, apikey: FMP_KEY }).toString();
-    const key = `fmp_${endpoint}_${qs}`;
-    const hit = cacheGet(key);
-    if (hit) return hit;
-    const res = await fetch(`${FMP_BASE}${endpoint}?${qs}`);
-    if (!res.ok) throw new Error(`FMP ${res.status}: ${endpoint}`);
-    const data = await res.json();
-    cacheSet(key, data);
-    return data;
-}
-
-async function fmpSearch(q) {
-    if (!q) return [];
-    return fmpGet('/search-symbol', { query: q, limit: 10 });
-}
-
-// ============================================================
-// SAFE FIELD READER
-// ============================================================
-function safeNum(row, ...keys) {
-    // First pass: prefer non-zero
+/**
+ * Read the first truthy numeric value from a row across several possible keys.
+ * Pass acceptZero=true only when 0 is a meaningful value (rare).
+ */
+function pick(row, keys, acceptZero = false) {
+    if (!row) return null;
     for (const k of keys) {
-        const v = row?.[k];
-        if (v != null && v !== '' && isFinite(Number(v)) && Number(v) !== 0) return Number(v);
-    }
-    // Second pass: accept zero
-    for (const k of keys) {
-        const v = row?.[k];
-        if (v != null && v !== '' && isFinite(Number(v))) return Number(v);
+        const v = row[k];
+        if (v !== undefined && v !== null && v !== '' && isFinite(Number(v))) {
+            const n = Number(v);
+            if (n !== 0 || acceptZero) return n;
+        }
     }
     return null;
 }
 
-// ── Raw field extractors ──────────────────────────────────────
+// Cash-flow fields
+const K_OCF   = ['operatingCashFlow', 'netCashProvidedByOperatingActivities',
+                  'cashFlowFromOperations', 'cashFromOperations'];
+const K_CAPEX = ['capitalExpenditure', 'capitalExpenditures',
+                  'purchasesOfPropertyPlantAndEquipment',
+                  'acquisitionsOfPropertyPlantAndEquipment',
+                  'investmentsInPropertyPlantAndEquipment'];
+const K_FCF   = ['freeCashFlow', 'freeCashFlowPerShare']; // freeCashFlowPerShare is fallback × shares
+
+// Income-statement fields
+const K_OI    = ['operatingIncome', 'ebit', 'incomeFromOperations'];
+const K_NI    = ['netIncome', 'netIncomeApplicableToCommonShares',
+                  'netIncomeFromContinuingOperations', 'consolidatedNetIncome'];
+const K_REV   = ['revenue', 'totalRevenue', 'revenues', 'netRevenue'];
+const K_SHARES= ['weightedAverageShsOutDil',
+                  'weightedAverageSharesOutstandingDiluted',
+                  'dilutedAverageShares',
+                  'weightedAverageShsOut',
+                  'commonStockSharesOutstanding',
+                  'sharesOutstanding'];
+const K_DPS   = ['dividendsPaid', 'commonDividendsPaid', 'paymentOfDividends'];
+
+// ── Extractors ────────────────────────────────────────────────────────────────
+
+function extractOCF(cf)  { return pick(cf, K_OCF); }
+function extractOI(inc)  { return pick(inc, K_OI); }
+function extractNI(inc)  { return pick(inc, K_NI); }
+function extractRev(inc) { return pick(inc, K_REV); }
+function extractShares(inc) { return pick(inc, K_SHARES); }
+
 function extractFCF(cf) {
-    const direct = safeNum(cf, 'freeCashFlow');
+    // 1. Direct freeCashFlow field
+    const direct = pick(cf, ['freeCashFlow']);
     if (direct != null) return direct;
-    const ocf   = safeNum(cf, 'operatingCashFlow', 'netCashProvidedByOperatingActivities');
-    const capex = safeNum(cf, 'capitalExpenditure', 'capitalExpenditures', 'purchasesOfPropertyPlantAndEquipment');
+
+    // 2. OCF − |CapEx|
+    const ocf   = extractOCF(cf);
+    const capex = pick(cf, K_CAPEX);
     if (ocf != null && capex != null) return ocf - Math.abs(capex);
-    return ocf ?? null;
-}
-function extractOCF(cf) {
-    return safeNum(cf, 'operatingCashFlow', 'netCashProvidedByOperatingActivities');
-}
-function extractOI(inc) {
-    return safeNum(inc, 'operatingIncome', 'ebit');
-}
-function extractNI(inc) {
-    return safeNum(inc, 'netIncome', 'netIncomeApplicableToCommonShares', 'netIncomeFromContinuingOperations');
-}
-function extractRevenue(inc) {
-    return safeNum(inc, 'revenue', 'totalRevenue', 'revenues');
-}
-function extractShares(inc) {
-    return safeNum(inc,
-        'weightedAverageShsOutDil', 'weightedAverageSharesOutstandingDiluted',
-        'dilutedAverageShares',     'weightedAverageShsOut'
-    );
+
+    // 3. Just OCF as fallback
+    return ocf;
 }
 
-// ============================================================
-// RATIO CALCULATION FROM RAW DATA
-// Instead of fetching /ratios, we compute P/FCF, P/OCF, P/E, P/S
-// directly from income + cashflow + the current stock price.
-//
-// For historical per-year ratios we use:
-//   price_at_year ≈ EPS × P/E_current  (rough) — but simpler & more
-//   reliable: use marketCap from quote / metric_value_for_that_year.
-//   Since we don't have historical prices, we use the CURRENT price
-//   as a proxy and compute "what would the ratio be if price stayed
-//   constant" — this gives a good average multiple baseline.
-// ============================================================
-function computeHistoricalRatios(metric, years) {
-    if (!stockData) return [];
-    const price      = stockData.quote?.price || 0;
-    const cfRows     = stockData.cf.slice(0, years).reverse();   // oldest → newest
-    const incRows    = stockData.inc.slice(0, years).reverse();
-    const sharesRef  = getSharesOutstanding();                    // most recent diluted shares
-
-    const ratios = [];
-
-    const n = Math.min(cfRows.length, incRows.length);
-    for (let i = 0; i < n; i++) {
-        const cf  = cfRows[i]  || {};
-        const inc = incRows[i] || {};
-
-        // shares for that year (fall back to current)
-        const shares = extractShares(inc) || sharesRef;
-        if (!shares || shares <= 0) { ratios.push(null); continue; }
-
-        let metricTotal = null;
-        if      (metric === 'fcf') metricTotal = extractFCF(cf);
-        else if (metric === 'ocf') metricTotal = extractOCF(cf);
-        else if (metric === 'oi')  metricTotal = extractOI(inc);
-        else if (metric === 'ni')  metricTotal = extractNI(inc);
-
-        if (metricTotal == null || metricTotal <= 0) { ratios.push(null); continue; }
-
-        const metricPerShare = metricTotal / shares;
-        const ratio = price / metricPerShare;
-        // Sanity-check: ignore ratios that look absurd (>500 or negative)
-        if (ratio > 0 && ratio < 500) ratios.push(ratio);
-        else ratios.push(null);
+function extractMetric(metric, cf, inc) {
+    switch (metric) {
+        case 'fcf': return extractFCF(cf);
+        case 'ocf': return extractOCF(cf);
+        case 'oi':  return extractOI(inc);
+        case 'ni':  return extractNI(inc);
+        default:    return extractFCF(cf);
     }
-    return ratios;
 }
 
-function calcAvgRatio(metric, years) {
-    const ratios = computeHistoricalRatios(metric, years).filter(v => v != null);
-    if (!ratios.length) {
-        // Last resort: use current quote fields
-        const q = stockData?.quote || {};
-        if (metric === 'ni')  return safeNum(q, 'pe', 'priceEarningsRatio') ?? null;
-        if (metric === 'fcf') return safeNum(q, 'priceToFreeCashFlowsRatioTTM') ?? null;
-        if (metric === 'ocf') return safeNum(q, 'priceToOperatingCashFlowsRatioTTM') ?? null;
-        return null;
-    }
-    return ratios.reduce((a, b) => a + b, 0) / ratios.length;
-}
+// ═════════════════════════════════════════════════════════════════════════════
+//  STATE
+// ═════════════════════════════════════════════════════════════════════════════
+let stockData  = null;   // { symbol, quote, cashFlow[], income[], growth[] }
+let priceChart  = null;
+let metricChart = null;
+let activePriceSeries  = 'ratio';
+let activeMetricSeries = 'historical';
 
-// ============================================================
-// THEME
-// ============================================================
+// ═════════════════════════════════════════════════════════════════════════════
+//  THEME
+// ═════════════════════════════════════════════════════════════════════════════
 const html = document.documentElement;
 
 function applyTheme(theme) {
@@ -780,37 +734,26 @@ document.getElementById('themeToggle').addEventListener('click', () => {
     if (stockData) updateCharts();
 });
 
-// ============================================================
-// STEPPER
-// ============================================================
-function stepInput(id, step) {
+// ═════════════════════════════════════════════════════════════════════════════
+//  STEPPER  (global so onclick="stepInput(...)" works)
+// ═════════════════════════════════════════════════════════════════════════════
+window.stepInput = function(id, step) {
     const el = document.getElementById(id);
-    const v  = parseFloat(el.value) || 0;
-    el.value = parseFloat((v + step).toFixed(4));
+    el.value = parseFloat(((parseFloat(el.value) || 0) + step).toFixed(4));
     triggerCalculation();
-}
-window.stepInput = stepInput;
+};
 
-// ============================================================
-// STATE
-// ============================================================
-let stockData = null;
-let priceChart = null;
-let metricChart = null;
-let activeMetricSeries = 'historical';
-let activePriceSeries  = 'ratio';
-
-// ============================================================
-// SEARCH
-// ============================================================
-const stockSearchEl  = document.getElementById('stockSearch');
+// ═════════════════════════════════════════════════════════════════════════════
+//  SEARCH
+// ═════════════════════════════════════════════════════════════════════════════
+const stockSearchEl   = document.getElementById('stockSearch');
 const searchResultsEl = document.getElementById('searchResults');
 
 stockSearchEl.addEventListener('input', async (e) => {
     const q = e.target.value.trim();
     if (q.length < 1) { searchResultsEl.classList.remove('active'); return; }
     try {
-        const data = await fmpSearch(q);
+        const data = await fmpAPI.searchStocks(q);
         if (data && data.length > 0) {
             searchResultsEl.innerHTML = data.map(s => `
                 <div class="search-result-item" data-symbol="${s.symbol}">
@@ -829,137 +772,182 @@ stockSearchEl.addEventListener('input', async (e) => {
             searchResultsEl.innerHTML = '<div class="search-result-item"><span class="result-name">No results found</span></div>';
             searchResultsEl.classList.add('active');
         }
-    } catch (err) { console.error(err); }
+    } catch (err) { console.error('Search error:', err); }
 });
 document.addEventListener('click', (e) => {
     if (!stockSearchEl.contains(e.target)) searchResultsEl.classList.remove('active');
 });
 
-// ============================================================
-// LOAD STOCK  — fixed field extraction
-// ============================================================
+// ═════════════════════════════════════════════════════════════════════════════
+//  LOAD STOCK  — uses fmpAPI.getDCFData() (7 parallel, cached requests)
+// ═════════════════════════════════════════════════════════════════════════════
 async function loadStock(symbol) {
     symbol = symbol.toUpperCase().trim();
-    document.getElementById('welcomeSection').style.display = 'none';
-    document.getElementById('dcfContent').style.display     = 'grid';
-    document.getElementById('stockSymbol').textContent      = symbol;
-    document.getElementById('stockCompanyName').textContent = '—';
-    document.getElementById('stockNameSpan').textContent    = symbol;
+
+    document.getElementById('welcomeSection').style.display  = 'none';
+    document.getElementById('dcfContent').style.display      = 'grid';
+    document.getElementById('stockSymbol').textContent       = symbol;
+    document.getElementById('stockCompanyName').textContent  = '—';
+    document.getElementById('stockNameSpan').textContent     = symbol;
     document.getElementById('loadingIndicator').style.display = 'block';
-    document.getElementById('autoFillBtn').disabled = true;
-    showStatus('Loading data for ' + symbol + '...', 'loading');
+    document.getElementById('autoFillBtn').disabled          = true;
+    showStatus('Loading data for ' + symbol + '…', 'loading');
+    hideDataCheck();
 
     try {
-        // Fetch uniquement ce dont on a besoin — plus de /ratios
-        const [quoteRaw, cfRaw, incRaw, grwRaw] = await Promise.all([
-            fmpGet('/quote',                { symbol }),
-            fmpGet('/cash-flow-statement',  { symbol, limit: 10 }),
-            fmpGet('/income-statement',     { symbol, limit: 10 }),
-            fmpGet('/financial-growth',     { symbol, limit: 10 }),
-        ]);
+        // getDCFData() fetches: quote · cash-flow (10y) · income (10y) · financial-growth (5y) · discounted-cash-flow
+        // All requests are batched + cached by fmpAPI
+        const raw = await fmpAPI.getDCFData(symbol);
 
-        const q   = Array.isArray(quoteRaw) ? quoteRaw[0] : (quoteRaw || {});
-        const cf  = Array.isArray(cfRaw)    ? cfRaw       : [];
-        const inc = Array.isArray(incRaw)   ? incRaw      : [];
-        const grw = Array.isArray(grwRaw)   ? grwRaw      : [];
+        // raw = { profile, quote, cashFlow[], income[], growth[], dcf }
+        const q   = raw.quote    || {};
+        const cf  = raw.cashFlow || [];
+        const inc = raw.income   || [];
+        const grw = raw.growth   || [];
 
-        if (!q || !q.price) throw new Error(`No quote data for "${symbol}". Check the ticker symbol.`);
+        if (!q.price && !q.price === 0) {
+            throw new Error(`No price data for "${symbol}". Please verify the ticker.`);
+        }
 
-        // ── Debug: log the first row so we can see actual field names ──
-        if (cf.length)  console.log('[DCF] cashflow[0] keys:', Object.keys(cf[0]));
-        if (inc.length) console.log('[DCF] income[0]  keys:', Object.keys(inc[0]));
+        // ── Log available keys once (dev aid) ──
+        if (cf.length)  console.log('[DCF] cashFlow[0] keys →', Object.keys(cf[0]).join(', '));
+        if (inc.length) console.log('[DCF] income[0]  keys →', Object.keys(inc[0]).join(', '));
+        if (grw.length) console.log('[DCF] growth[0]  keys →', Object.keys(grw[0]).join(', '));
 
-        stockData = { symbol, quote: q, cf, inc, grw };
+        stockData = { symbol, quote: q, cashFlow: cf, income: inc, growth: grw };
 
-        // Show debug info in UI
-        const fcfSample = cf.length ? extractFCF(cf[0]) : null;
-        const ocfSample = cf.length ? extractOCF(cf[0]) : null;
+        // ── Data quality badge ──
+        const fcfSample = cf.length  ? extractFCF(cf[0]) : null;
+        const ocfSample = cf.length  ? extractOCF(cf[0]) : null;
         const niSample  = inc.length ? extractNI(inc[0]) : null;
-        showDebug(`${cf.length} CF rows · ${inc.length} income rows | FCF[0]: ${fmtM(fcfSample)} | OCF[0]: ${fmtM(ocfSample)} | NI[0]: ${fmtM(niSample)}`);
+        const sharesSample = inc.length ? extractShares(inc[0]) : null;
+        showDataCheck(
+            `${cf.length} CF rows · ${inc.length} income rows · ${grw.length} growth rows | ` +
+            `FCF: ${fmtB(fcfSample)} · OCF: ${fmtB(ocfSample)} · NI: ${fmtB(niSample)} · ` +
+            `Shares: ${sharesSample ? (sharesSample / 1e6).toFixed(0) + 'M' : 'N/A'}`
+        );
 
-        document.getElementById('stockCompanyName').textContent = q.name || q.companyName || symbol;
+        const name = q.name || raw.profile?.companyName || symbol;
+        document.getElementById('stockCompanyName').textContent = name;
+        document.getElementById('stockNameSpan').textContent    = name;
         document.getElementById('loadingIndicator').style.display = 'none';
         document.getElementById('autoFillBtn').disabled = false;
         hideStatus();
+
         autoFill();
 
     } catch (err) {
         showStatus('Error: ' + err.message, 'error');
         document.getElementById('loadingIndicator').style.display = 'none';
-        console.error('loadStock error:', err);
+        console.error('[DCF] loadStock error:', err);
     }
 }
 
-function fmtM(v) { if (v == null) return 'N/A'; return '$' + (v / 1e9).toFixed(2) + 'B'; }
+// ═════════════════════════════════════════════════════════════════════════════
+//  DATA HELPERS
+// ═════════════════════════════════════════════════════════════════════════════
 
-function showStatus(msg, type) {
-    const el = document.getElementById('statusMsg');
-    el.textContent = msg; el.className = `status-msg status-${type}`; el.style.display = 'block';
-}
-function hideStatus() { document.getElementById('statusMsg').style.display = 'none'; }
-function showDebug(msg) {
-    const el = document.getElementById('debugPanel');
-    el.innerHTML = '<strong>Data check:</strong> ' + msg;
-    el.classList.add('show');
-}
-
-// ============================================================
-// DATA HELPERS
-// ============================================================
-function getMetricValues(metric, years) {
+/** Get n years of metric values, oldest → newest */
+function getMetricSeries(metric, n) {
     if (!stockData) return [];
-    // Data comes newest-first from FMP; slice then reverse to get oldest→newest
-    const cf  = stockData.cf.slice(0, years).reverse();
-    const inc = stockData.inc.slice(0, years).reverse();
-
-    switch (metric) {
-        case 'fcf': return cf.map(r => extractFCF(r) ?? 0);
-        case 'ocf': return cf.map(r => extractOCF(r) ?? 0);
-        case 'oi':  return inc.map(r => extractOI(r)  ?? 0);
-        case 'ni':  return inc.map(r => extractNI(r)  ?? 0);
-        default:    return cf.map(r => extractFCF(r)  ?? 0);
-    }
+    const cf  = stockData.cashFlow.slice(0, n).reverse();
+    const inc = stockData.income.slice(0, n).reverse();
+    return cf.map((row, i) => extractMetric(metric, row, inc[i] || {}) ?? 0);
 }
 
-// Returns the most recent NON-ZERO metric value (total, not per-share)
-function getMostRecentMetric(metric) {
+/** Most recent non-zero value for the selected metric (absolute total, not per-share) */
+function getMostRecent(metric) {
     if (!stockData) return null;
-    const src = (metric === 'oi' || metric === 'ni') ? stockData.inc : stockData.cf;
-    for (const row of src) {
-        let v = null;
-        if (metric === 'fcf') v = extractFCF(row);
-        else if (metric === 'ocf') v = extractOCF(row);
-        else if (metric === 'oi')  v = extractOI(row);
-        else if (metric === 'ni')  v = extractNI(row);
+    const src = (metric === 'oi' || metric === 'ni') ? stockData.income : stockData.cashFlow;
+    const incSrc = stockData.income;
+    for (let i = 0; i < src.length; i++) {
+        const v = extractMetric(metric, src[i], incSrc[i] || {});
         if (v != null && v !== 0) return v;
     }
     return null;
 }
 
-function calcCAGR(values) {
-    // Filter out zeros for CAGR calc (zeros break log math)
-    const filtered = values.filter(v => v > 0);
-    if (filtered.length < 2) return null;
-    const first = filtered[0], last = filtered[filtered.length - 1];
-    if (!first || first <= 0) return null;
-    return (Math.pow(last / first, 1 / (filtered.length - 1)) - 1) * 100;
+/** Current diluted share count from most recent income row */
+function getShares() {
+    if (!stockData) return null;
+    for (const row of stockData.income) {
+        const s = extractShares(row);
+        if (s && s > 0) return s;
+    }
+    // Fallback: marketCap / price
+    const mktCap = stockData.quote?.marketCap;
+    const price  = stockData.quote?.price;
+    if (mktCap && price && price > 0) return mktCap / price;
+    return null;
 }
 
-// calcAvgRatio is now computed from raw income/cashflow data above
+/** CAGR from an ordered array of values */
+function cagr(values) {
+    const pos = values.filter(v => v > 0);
+    if (pos.length < 2) return null;
+    return (Math.pow(pos[pos.length - 1] / pos[0], 1 / (pos.length - 1)) - 1) * 100;
+}
 
-function getDivGrowth(years) {
-    if (!stockData || !stockData.grw.length) return null;
-    const rows = stockData.grw.slice(0, years);
-    const vals = rows
-        .map(r => safeNum(r, 'dividendsperShareGrowth', 'dividendGrowth'))
-        .filter(v => v != null && isFinite(v));
+/**
+ * Average historical P/[metric] ratio.
+ * Computed from: price / (metricTotal / shares) for each year.
+ * Falls back to quote-level fields from FMP (pe, pfcf etc.) if no raw data.
+ */
+function avgRatio(metric, years) {
+    if (!stockData) return null;
+    const price  = stockData.quote?.price;
+    if (!price || price <= 0) return null;
+
+    const cfRows  = stockData.cashFlow.slice(0, years).reverse();
+    const incRows = stockData.income.slice(0, years).reverse();
+
+    const ratios = [];
+    const n = Math.min(cfRows.length, incRows.length);
+
+    for (let i = 0; i < n; i++) {
+        const cf  = cfRows[i]  || {};
+        const inc = incRows[i] || {};
+
+        const shares = extractShares(inc) || getShares();
+        if (!shares || shares <= 0) continue;
+
+        const total = extractMetric(metric, cf, inc);
+        if (total == null || total <= 0) continue;
+
+        const r = price / (total / shares);
+        if (r > 0 && r < 1000) ratios.push(r);
+    }
+
+    if (ratios.length > 0) {
+        return ratios.reduce((a, b) => a + b, 0) / ratios.length;
+    }
+
+    // Fallback to pre-computed TTM ratios from quote object (FMP provides these)
+    const q = stockData.quote;
+    switch (metric) {
+        case 'fcf': return pick(q, ['priceToFreeCashFlowsRatioTTM', 'pfcfRatioTTM', 'priceFreeCashFlow']);
+        case 'ocf': return pick(q, ['priceToOperatingCashFlowsRatioTTM', 'pocfRatioTTM']);
+        case 'ni':  return pick(q, ['pe', 'priceEarningsRatio', 'peRatioTTM']);
+        case 'oi':  return pick(q, ['peRatioTTM', 'pe']); // rough proxy
+        default:    return null;
+    }
+}
+
+/** Dividend growth from financial-growth endpoint */
+function divGrowthRate(years) {
+    if (!stockData || !stockData.growth.length) return null;
+    const rows = stockData.growth.slice(0, years);
+    const vals = rows.map(r =>
+        pick(r, ['dividendsperShareGrowth', 'dividendGrowth', 'dividendPerShareGrowth'], true)
+    ).filter(v => v != null && isFinite(v));
     if (!vals.length) return null;
     return (vals.reduce((a, b) => a + b, 0) / vals.length) * 100;
 }
 
-function getShareGrowth(years) {
-    if (!stockData || stockData.inc.length < 2) return null;
-    const rows = stockData.inc.slice(0, years).reverse();
+/** Share count CAGR (dilution or buyback) */
+function shareCountCAGR(years) {
+    if (!stockData || stockData.income.length < 2) return null;
+    const rows = stockData.income.slice(0, years).reverse();
     if (rows.length < 2) return null;
     const first = extractShares(rows[0]);
     const last  = extractShares(rows[rows.length - 1]);
@@ -968,15 +956,16 @@ function getShareGrowth(years) {
 }
 
 function getMetricLabel(metric) {
-    return { fcf: 'Free Cash Flow', ocf: 'Operating Cash Flow', oi: 'Operating Income', ni: 'Net Income' }[metric] || 'Free Cash Flow';
+    return { fcf:'Free Cash Flow', ocf:'Operating Cash Flow', oi:'Operating Income', ni:'Net Income' }[metric] || 'Free Cash Flow';
 }
 
-// ============================================================
-// AUTO-FILL
-// ============================================================
+// ═════════════════════════════════════════════════════════════════════════════
+//  AUTO-FILL
+// ═════════════════════════════════════════════════════════════════════════════
 document.getElementById('autoFillBtn').addEventListener('click', autoFill);
 document.getElementById('yearsInput').addEventListener('input', () => {
-    document.getElementById('autoFillYearsLabel').textContent = document.getElementById('yearsInput').value || 5;
+    document.getElementById('autoFillYearsLabel').textContent =
+        document.getElementById('yearsInput').value || 5;
     triggerCalculation();
 });
 
@@ -986,76 +975,85 @@ function autoFill() {
     const years  = Math.min(parseInt(document.getElementById('yearsInput').value) || 5, 10);
     const label  = getMetricLabel(metric);
 
-    // Update all metric labels
-    document.getElementById('metricLabel').textContent       = label;
-    document.getElementById('ratioMetricLabel').textContent  = label;
-    document.getElementById('customMetricLabel').textContent = label;
+    // Update labels
+    ['metricLabel','ratioMetricLabel','customMetricLabel'].forEach(id => {
+        document.getElementById(id).textContent = label;
+    });
 
-    // Growth rate
-    const values = getMetricValues(metric, years);
-    const growthRate = calcCAGR(values);
+    // ── Growth rate ──────────────────────────────────────────────────────────
+    const series     = getMetricSeries(metric, years);
+    const growthRate = cagr(series);
     if (growthRate !== null) {
         document.getElementById('growthInput').value = growthRate.toFixed(2);
         document.getElementById('growthHelperText').textContent =
-            `Annual ${label} growth over the past ${years} year(s) is: ${growthRate.toFixed(2)}%`;
+            `Annual ${label} growth over the past ${series.length} year(s) is: ${growthRate.toFixed(2)}%`;
     } else {
         document.getElementById('growthHelperText').textContent =
-            `Could not compute ${label} growth (insufficient positive data).`;
+            `Could not compute ${label} growth (insufficient positive data over ${years}y).`;
     }
 
-    // Average ratio
-    const avgRatio = calcAvgRatio(metric, years);
-    if (avgRatio !== null) {
-        document.getElementById('ratioInput').value = avgRatio.toFixed(2);
+    // ── P/metric ratio ───────────────────────────────────────────────────────
+    const ratio = avgRatio(metric, years);
+    if (ratio !== null) {
+        document.getElementById('ratioInput').value = ratio.toFixed(2);
         document.getElementById('ratioHelperText').textContent =
-            `Average Price to ${label} over the past ${years} year(s) is: ${avgRatio.toFixed(2)}`;
+            `Average Price to ${label} over the past ${years} year(s) is: ${ratio.toFixed(2)}x`;
     } else {
-        document.getElementById('ratioHelperText').textContent = `Average ratio: data not available.`;
+        document.getElementById('ratioHelperText').textContent =
+            `Ratio: not enough data — adjust manually.`;
     }
 
-    // Dividend growth
-    const divGrowth = getDivGrowth(years);
-    if (divGrowth !== null) {
-        document.getElementById('dividendGrowthInput').value = divGrowth.toFixed(2);
+    // ── Dividend growth ──────────────────────────────────────────────────────
+    const dg = divGrowthRate(years);
+    if (dg !== null) {
+        document.getElementById('dividendGrowthInput').value = dg.toFixed(2);
         document.getElementById('divGrowthHelperText').textContent =
-            `Annual dividend growth over the past ${years} year(s) is: ${divGrowth.toFixed(2)}%`;
+            `Annual dividend growth over the past ${years} year(s) is: ${dg.toFixed(2)}%`;
+    } else {
+        document.getElementById('divGrowthHelperText').textContent =
+            `Dividend growth: no data — set manually.`;
     }
 
-    // Share count change
-    const shareGrowth = getShareGrowth(years);
-    if (shareGrowth !== null) {
-        document.getElementById('shareChangeInput').value = shareGrowth.toFixed(2);
+    // ── Share count change ───────────────────────────────────────────────────
+    const sg = shareCountCAGR(years);
+    if (sg !== null) {
+        document.getElementById('shareChangeInput').value = sg.toFixed(2);
         document.getElementById('sharesHelperText').textContent =
-            `Annual diluted shares growth over the past ${years} year(s) is: ${shareGrowth.toFixed(2)}%`;
+            `Annual diluted shares change over the past ${years} year(s) is: ${sg.toFixed(2)}%`;
+    } else {
+        document.getElementById('sharesHelperText').textContent =
+            `Share count growth: no data — set manually.`;
     }
 
-    // Most recent metric value → custom starting point
-    const mostRecent = getMostRecentMetric(metric);
-    if (mostRecent != null) {
-        const inMillions = Math.round(mostRecent / 1e6);
-        document.getElementById('customFCFInput').value = inMillions;
+    // ── Starting metric value ────────────────────────────────────────────────
+    const recent = getMostRecent(metric);
+    if (recent != null) {
+        const inM = Math.round(recent / 1e6);
+        document.getElementById('customFCFInput').value = inM;
         document.getElementById('customFCFHelperText').textContent =
-            `Most recent ${label} value is: ${inMillions.toLocaleString()} M ($${(mostRecent / 1e9).toFixed(2)}B)`;
+            `Most recent ${label}: ${inM.toLocaleString()} M (${fmtB(recent)})`;
     } else {
         document.getElementById('customFCFHelperText').textContent =
-            `Most recent ${label}: data not available.`;
+            `Most recent ${label}: no data found — enter manually.`;
     }
 
     triggerCalculation();
 }
 
-// ============================================================
-// METRIC SELECT CHANGE
-// ============================================================
-document.getElementById('metricSelect').addEventListener('change', () => { if (stockData) autoFill(); });
+// Re-fill when metric select changes
+document.getElementById('metricSelect').addEventListener('change', () => {
+    if (stockData) autoFill();
+});
 
-['growthInput','decayInput','ratioInput','returnInput','dividendGrowthInput','shareChangeInput','customFCFInput'].forEach(id => {
+// Recalculate on any input change
+['growthInput','decayInput','ratioInput','returnInput',
+ 'dividendGrowthInput','shareChangeInput','customFCFInput'].forEach(id => {
     document.getElementById(id).addEventListener('input', triggerCalculation);
 });
 
-// ============================================================
-// CALCULATION  — uses shares from income statement
-// ============================================================
+// ═════════════════════════════════════════════════════════════════════════════
+//  DCF CALCULATION
+// ═════════════════════════════════════════════════════════════════════════════
 function triggerCalculation() {
     if (!stockData) return;
     const r = calculateDCF();
@@ -1063,78 +1061,66 @@ function triggerCalculation() {
     updateCharts(r);
 }
 
-function getSharesOutstanding() {
-    if (!stockData || !stockData.inc.length) return 1e9; // fallback 1B shares
-    for (const row of stockData.inc) {
-        const s = extractShares(row);
-        if (s && s > 0) return s;
-    }
-    return 1e9;
-}
-
 function calculateDCF() {
-    const currentPrice = stockData.quote?.price || 0;
-    const sharesOut    = getSharesOutstanding();
+    const currentPrice  = stockData.quote?.price || 0;
+    const shares        = getShares() || 1e9;
 
-    const growthRate   = parseFloat(document.getElementById('growthInput').value)         / 100;
-    const decayRate    = parseFloat(document.getElementById('decayInput').value)          / 100;
-    const ratio        = parseFloat(document.getElementById('ratioInput').value);
-    const desiredReturn= parseFloat(document.getElementById('returnInput').value)         / 100;
-    const divGrowthRate= parseFloat(document.getElementById('dividendGrowthInput').value) / 100;
-    const shareChange  = parseFloat(document.getElementById('shareChangeInput').value)    / 100;
-    const years        = parseInt(document.getElementById('yearsInput').value)            || 5;
+    const growthRate    = parseFloat(document.getElementById('growthInput').value)         / 100;
+    const decayRate     = parseFloat(document.getElementById('decayInput').value)          / 100;
+    const ratio         = parseFloat(document.getElementById('ratioInput').value);
+    const desiredReturn = parseFloat(document.getElementById('returnInput').value)         / 100;
+    const divGrowthPct  = parseFloat(document.getElementById('dividendGrowthInput').value) / 100;
+    const shareChange   = parseFloat(document.getElementById('shareChangeInput').value)    / 100;
+    const years         = parseInt(document.getElementById('yearsInput').value)            || 5;
+    const metric        = document.getElementById('metricSelect').value;
 
-    // Base metric — prefer custom input, then auto-detect
-    const metric       = document.getElementById('metricSelect').value;
-    const customMM     = parseFloat(document.getElementById('customFCFInput').value);
+    // Base metric — custom input (millions) takes priority
+    const customMM = parseFloat(document.getElementById('customFCFInput').value);
     let baseTotal;
     if (!isNaN(customMM) && customMM !== 0) {
         baseTotal = customMM * 1e6;
     } else {
-        baseTotal = getMostRecentMetric(metric) ?? 0;
+        baseTotal = getMostRecent(metric) ?? 0;
     }
 
-    let basePerShare = sharesOut > 0 ? baseTotal / sharesOut : 0;
+    const basePerShare = shares > 0 ? baseTotal / shares : 0;
 
-    // Current dividend per share
-    const lastDiv = stockData.quote?.lastAnnualDividend || 0;
-
-    // ── PROJECT metric per share (no decay) ──
-    const projectedMetric      = [];
-    const projectedMetricDecay = [];
-    let mPS   = basePerShare;
-    let mPSD  = basePerShare;
-    let gD    = growthRate;
+    // ── Project metric per-share (no decay) + (with decay) ──────────────────
+    const projNoDecay    = [];
+    const projWithDecay  = [];
+    let mPS  = basePerShare;
+    let mPSD = basePerShare;
+    let gD   = growthRate;
     let shrMul = 1;
 
     for (let i = 1; i <= years; i++) {
-        mPS  *= (1 + growthRate);
+        mPS    *= (1 + growthRate);
         shrMul *= (1 + shareChange);
-        projectedMetric.push(mPS / shrMul);
+        projNoDecay.push(mPS / shrMul);
 
         mPSD *= (1 + gD);
-        projectedMetricDecay.push(mPSD);
+        projWithDecay.push(mPSD);
         gD = Math.max(0, gD - decayRate);
     }
 
-    // Future price from projected metric × ratio
-    const finalMetric       = projectedMetric[years - 1]      || 0;
-    const futureStockPrice  = finalMetric * ratio;
+    // Future price = projected metric per-share × ratio
+    const futureStockPrice = (projNoDecay[years - 1] || 0) * ratio;
 
-    // Total dividends (undiscounted)
+    // Total cumulative dividends per share (undiscounted)
+    const lastDiv = stockData.quote?.lastAnnualDividend || 0;
     let totalDivs = 0;
     let div = lastDiv;
     for (let i = 0; i < years; i++) {
-        div *= (1 + divGrowthRate);
+        div *= (1 + divGrowthPct);
         totalDivs += div;
     }
 
-    // Fair value = PV of (futurePrice + totalDivs) @ desired return
+    // Fair value = PV of (futurePrice + dividends) @ desired rate
     const fairValue = (futureStockPrice + totalDivs) / Math.pow(1 + desiredReturn, years);
 
-    // CAGR from current price to (future + dividends)
+    // CAGR from today to (futurePrice + dividends)
     const totalReturn = futureStockPrice + totalDivs;
-    const cagr = currentPrice > 0
+    const cagrVal = currentPrice > 0
         ? (Math.pow(totalReturn / currentPrice, 1 / years) - 1) * 100
         : 0;
 
@@ -1143,29 +1129,30 @@ function calculateDCF() {
         : 0;
 
     return {
-        currentPrice, futureStockPrice,
-        totalDivs, fairValue, cagr, upside, years,
-        projectedMetric, projectedMetricDecay,
-        baseTotal,
-        sharesOut,
-        desiredReturn: desiredReturn * 100,
+        currentPrice, futureStockPrice, totalDivs, fairValue,
+        cagr: cagrVal, upside, years,
+        projNoDecay, projWithDecay,
+        baseTotal, basePerShare, shares,
+        growthRate, ratio, desiredReturn: desiredReturn * 100,
     };
 }
 
-// ============================================================
-// UI UPDATE
-// ============================================================
-function fmtPrice(n)  { if (!n && n !== 0) return '—'; return '$' + n.toFixed(2); }
+// ═════════════════════════════════════════════════════════════════════════════
+//  UI UPDATE
+// ═════════════════════════════════════════════════════════════════════════════
+function fmtPrice(n)  { return n == null ? '—' : '$' + n.toFixed(2); }
 function fmtPct(n)    { return (n >= 0 ? '+' : '') + n.toFixed(2) + '%'; }
+function fmtB(v)      { return v == null ? 'N/A' : '$' + (v / 1e9).toFixed(2) + 'B'; }
 
 function updateUI(r) {
     document.getElementById('currentPrice').textContent = fmtPrice(r.currentPrice);
     document.getElementById('futurePrice').textContent  = fmtPrice(r.futureStockPrice);
 
-    const futurePct  = r.currentPrice > 0 ? ((r.futureStockPrice - r.currentPrice) / r.currentPrice) * 100 : 0;
-    const fpBadge    = document.getElementById('futurePriceBadge');
-    fpBadge.textContent  = fmtPct(futurePct);
-    fpBadge.className    = 'result-badge ' + (futurePct >= 0 ? 'badge-success' : 'badge-danger');
+    const futurePct = r.currentPrice > 0
+        ? ((r.futureStockPrice - r.currentPrice) / r.currentPrice) * 100 : 0;
+    const fpBadge = document.getElementById('futurePriceBadge');
+    fpBadge.textContent = fmtPct(futurePct);
+    fpBadge.className   = 'result-badge ' + (futurePct >= 0 ? 'badge-success' : 'badge-danger');
 
     document.getElementById('dividends').textContent = fmtPrice(r.totalDivs);
     document.getElementById('fairValue').textContent = fmtPrice(r.fairValue);
@@ -1195,10 +1182,10 @@ function updateUI(r) {
     document.getElementById('desiredReturnText').textContent = r.desiredReturn.toFixed(1);
 }
 
-// ============================================================
-// CHARTS
-// ============================================================
-function getChartColors() {
+// ═════════════════════════════════════════════════════════════════════════════
+//  CHARTS
+// ═════════════════════════════════════════════════════════════════════════════
+function chartColors() {
     const dark = html.getAttribute('data-theme') !== 'light';
     return {
         grid: dark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.07)',
@@ -1208,51 +1195,44 @@ function getChartColors() {
 
 function updateCharts(r) {
     if (!r) { if (stockData) r = calculateDCF(); else return; }
-    updatePriceChart(r);
-    updateMetricChart(r);
+    buildPriceChart(r);
+    buildMetricChart(r);
 }
 
-// ── PRICE CHART ────────────────────────────────────────────────
+// ── Price Chart ───────────────────────────────────────────────────────────────
 function buildPriceDatasets(r) {
-    const years = r.years;
-    const yr0   = new Date().getFullYear();
-    const labels = Array.from({ length: years + 1 }, (_, i) => (yr0 + i).toString());
+    const yr0    = new Date().getFullYear();
+    const labels = Array.from({ length: r.years + 1 }, (_, i) => (yr0 + i).toString());
 
-    const growthRate    = parseFloat(document.getElementById('growthInput').value) / 100;
-    const ratio         = parseFloat(document.getElementById('ratioInput').value);
-    const desiredReturn = parseFloat(document.getElementById('returnInput').value) / 100;
-    const sharesOut     = r.sharesOut || getSharesOutstanding();
-
-    // Stock At Ratio: project metric per share × ratio, year by year
-    let mPS = r.baseTotal > 0 ? r.baseTotal / sharesOut : 0;
+    // Stock At Ratio: base * (1+g)^i * ratio  per-share
+    let mPS = r.basePerShare;
     const ratioData = [r.currentPrice];
-    for (let i = 0; i < years; i++) {
-        mPS *= (1 + growthRate);
-        ratioData.push(mPS * ratio);
+    for (let i = 0; i < r.years; i++) {
+        mPS *= (1 + r.growthRate);
+        ratioData.push(mPS * r.ratio);
     }
 
-    // DCF Fair Value: discount ratioData[years] back each year
-    const futureTotal = ratioData[years];
+    // DCF Fair Value line: discount future price back year by year
+    const disc = r.desiredReturn / 100;
     const dcfData = [r.currentPrice];
-    for (let i = 1; i <= years; i++) {
-        dcfData.push(futureTotal / Math.pow(1 + desiredReturn, years - i + 1));
+    for (let i = 1; i <= r.years; i++) {
+        dcfData.push(ratioData[r.years] / Math.pow(1 + disc, r.years - i + 1));
     }
 
-    // Flat current price line
-    const flatData = Array(years + 1).fill(r.currentPrice);
+    const flatData = Array(r.years + 1).fill(r.currentPrice);
 
     return {
         labels,
         datasets: {
-            ratio: { label: 'Stock Price At Ratio',  data: ratioData, borderColor: '#10B981', backgroundColor: 'rgba(16,185,129,0.1)',  tension: 0.4, fill: true  },
-            price: { label: 'Stock Price (Today)',   data: flatData,  borderColor: '#FF7A00', backgroundColor: 'rgba(255,122,0,0.07)',   tension: 0,   borderDash: [6,4] },
-            dcf:   { label: 'DCF Fair Value',        data: dcfData,   borderColor: '#3b82f6', backgroundColor: 'rgba(59,130,246,0.08)',  tension: 0.4, fill: true, borderDash: [6,3] },
+            ratio: { label:'Stock Price At Ratio', data:ratioData, borderColor:'#10B981', backgroundColor:'rgba(16,185,129,0.1)', tension:0.4, fill:true },
+            price: { label:'Current Price',        data:flatData,  borderColor:'#FF7A00', backgroundColor:'rgba(255,122,0,0.07)', tension:0, borderDash:[6,4] },
+            dcf:   { label:'DCF Fair Value',       data:dcfData,   borderColor:'#3b82f6', backgroundColor:'rgba(59,130,246,0.08)', tension:0.4, fill:true, borderDash:[6,3] },
         }
     };
 }
 
-function updatePriceChart(r) {
-    const c = getChartColors();
+function buildPriceChart(r) {
+    const c   = chartColors();
     const ctx = document.getElementById('stockPriceChart').getContext('2d');
     if (priceChart) { priceChart.destroy(); priceChart = null; }
 
@@ -1264,14 +1244,15 @@ function updatePriceChart(r) {
         data: { labels, datasets: [ds] },
         options: {
             responsive: true, maintainAspectRatio: false,
-            interaction: { mode: 'index', intersect: false },
             plugins: {
                 legend: { display: false },
-                tooltip: { backgroundColor: '#1e293b', titleColor: '#F1F5F9', bodyColor: '#94A3B8', borderColor: '#334155', borderWidth: 1, callbacks: { label: ctx => ' $' + ctx.parsed.y.toFixed(2) } }
+                tooltip: { backgroundColor:'#1e293b', titleColor:'#F1F5F9', bodyColor:'#94A3B8',
+                    borderColor:'#334155', borderWidth:1,
+                    callbacks: { label: ctx => ' $' + ctx.parsed.y.toFixed(2) } }
             },
             scales: {
-                y: { beginAtZero: false, grid: { color: c.grid }, ticks: { color: c.tick, callback: v => '$' + v.toFixed(0) } },
-                x: { grid: { color: c.grid }, ticks: { color: c.tick } }
+                y: { beginAtZero:false, grid:{color:c.grid}, ticks:{color:c.tick, callback: v => '$' + v.toFixed(0)} },
+                x: { grid:{color:c.grid}, ticks:{color:c.tick} }
             }
         }
     });
@@ -1290,72 +1271,66 @@ window.togglePriceChart = function(btn, series) {
     priceChart.update();
 };
 
-// ── METRIC CHART ───────────────────────────────────────────────
-function updateMetricChart(r) {
+// ── Metric Chart ──────────────────────────────────────────────────────────────
+function buildMetricChart(r) {
     const metric = document.getElementById('metricSelect').value;
     const label  = getMetricLabel(metric);
-    const years  = r.years;
     const yr0    = new Date().getFullYear();
-    const c      = getChartColors();
+    const c      = chartColors();
 
     document.getElementById('chart2Title').textContent =
-        `${label}: Historical (${yr0 - 10}–${yr0}) and Projected (${yr0}–${yr0 + years})`;
+        `${label}: Historical & Projected`;
 
     const ctx = document.getElementById('cashFlowChart').getContext('2d');
     if (metricChart) { metricChart.destroy(); metricChart = null; }
 
-    // Historical (up to 10 rows, reversed to oldest→newest)
-    const rawHist = getMetricValues(metric, 10);
+    // Historical (up to 10 rows, oldest → newest)
+    const rawHist    = getMetricSeries(metric, 10);
     const histLabels = rawHist.map((_, i) => (yr0 - rawHist.length + i).toString());
     const histData   = rawHist.map((v, i) => ({ x: histLabels[i], y: v / 1e9 }));
 
-    // Projected: start from last historical point
-    const growthRate = parseFloat(document.getElementById('growthInput').value) / 100;
-    const decayRate  = parseFloat(document.getElementById('decayInput').value)  / 100;
-    const base       = rawHist.length ? rawHist[rawHist.length - 1] : (r.baseTotal || 0);
-
-    const projLabels = [(yr0).toString()];
+    // Projected from last historical point
+    const base = rawHist.length ? rawHist[rawHist.length - 1] : (r.baseTotal || 0);
     const projData   = [{ x: yr0.toString(), y: base / 1e9 }];
     const projDecay  = [{ x: yr0.toString(), y: base / 1e9 }];
 
-    let pv = base, pvD = base, gD = growthRate;
-    for (let i = 1; i <= years; i++) {
+    let pv = base, pvD = base, gD = r.growthRate;
+    for (let i = 1; i <= r.years; i++) {
         const lbl = (yr0 + i).toString();
-        pv *= (1 + growthRate);
+        pv  *= (1 + r.growthRate);
         projData.push({ x: lbl, y: pv / 1e9 });
 
         pvD *= (1 + gD);
         projDecay.push({ x: lbl, y: pvD / 1e9 });
-        gD = Math.max(0, gD - decayRate);
+        gD = Math.max(0, gD - (parseFloat(document.getElementById('decayInput').value) / 100));
     }
 
     const makeDs = (data, bg, lbl) => ({
-        label: lbl,
-        data,
-        backgroundColor: bg,
-        borderRadius: 4,
-        borderSkipped: false,
+        label: lbl, data, backgroundColor: bg, borderRadius: 4, borderSkipped: false,
     });
 
-    const activeData = activeMetricSeries === 'historical' ? histData
-        : activeMetricSeries === 'projected' ? projData : projDecay;
-    const activeBg  = activeMetricSeries === 'historical' ? '#10B981'
-        : activeMetricSeries === 'projected' ? '#3b82f6' : '#f59e0b';
-    const activeLbl = activeMetricSeries === 'historical' ? `${label} (Historical)`
-        : activeMetricSeries === 'projected' ? `${label} (Projected, No Decay)` : `${label} (Projected, With Decay)`;
+    const active = activeMetricSeries;
+    const map = {
+        historical:      { data:histData,   bg:'#10B981', lbl:`${label} (Historical)` },
+        projected:       { data:projData,   bg:'#3b82f6', lbl:`${label} (Projected, No Decay)` },
+        projected_decay: { data:projDecay,  bg:'#f59e0b', lbl:`${label} (Projected, With Decay)` },
+    };
+    const s = map[active] || map.historical;
 
     metricChart = new Chart(ctx, {
         type: 'bar',
-        data: { datasets: [makeDs(activeData, activeBg, activeLbl)] },
+        data: { datasets: [makeDs(s.data, s.bg, s.lbl)] },
         options: {
             responsive: true, maintainAspectRatio: false,
             plugins: {
                 legend: { display: false },
-                tooltip: { backgroundColor: '#1e293b', titleColor: '#F1F5F9', bodyColor: '#94A3B8', borderColor: '#334155', borderWidth: 1, callbacks: { label: ctx => ' $' + ctx.parsed.y.toFixed(2) + 'B' } }
+                tooltip: { backgroundColor:'#1e293b', titleColor:'#F1F5F9', bodyColor:'#94A3B8',
+                    borderColor:'#334155', borderWidth:1,
+                    callbacks: { label: ctx => ' $' + ctx.parsed.y.toFixed(2) + 'B' } }
             },
             scales: {
-                x: { type: 'category', grid: { color: c.grid }, ticks: { color: c.tick } },
-                y: { grid: { color: c.grid }, ticks: { color: c.tick, callback: v => '$' + v.toFixed(1) + 'B' } }
+                x: { type:'category', grid:{color:c.grid}, ticks:{color:c.tick} },
+                y: { grid:{color:c.grid}, ticks:{color:c.tick, callback: v => '$' + v.toFixed(1) + 'B'} }
             }
         }
     });
@@ -1368,14 +1343,17 @@ function updateMetricChart(r) {
 
 window.toggleMetricChart = function(btn, series) {
     activeMetricSeries = series;
-    document.querySelectorAll('[onclick^="toggleMetricChart"]').forEach(b => b.classList.remove('active', 'active-green'));
+    document.querySelectorAll('[onclick^="toggleMetricChart"]').forEach(b => {
+        b.classList.remove('active', 'active-green');
+    });
     btn.classList.add('active', 'active-green');
     if (!metricChart) return;
+
     const lbl = metricChart._label;
     const map = {
-        historical:     { data: metricChart._hist,      bg: '#10B981', label: `${lbl} (Historical)` },
-        projected:      { data: metricChart._proj,      bg: '#3b82f6', label: `${lbl} (Projected, No Decay)` },
-        projected_decay:{ data: metricChart._projDecay, bg: '#f59e0b', label: `${lbl} (Projected, With Decay)` },
+        historical:      { data:metricChart._hist,      bg:'#10B981', label:`${lbl} (Historical)` },
+        projected:       { data:metricChart._proj,      bg:'#3b82f6', label:`${lbl} (Projected, No Decay)` },
+        projected_decay: { data:metricChart._projDecay, bg:'#f59e0b', label:`${lbl} (Projected, With Decay)` },
     };
     const s = map[series];
     if (!s) return;
@@ -1384,6 +1362,24 @@ window.toggleMetricChart = function(btn, series) {
     metricChart.data.datasets[0].label           = s.label;
     metricChart.update();
 };
+
+// ═════════════════════════════════════════════════════════════════════════════
+//  STATUS / DATA-CHECK HELPERS
+// ═════════════════════════════════════════════════════════════════════════════
+function showStatus(msg, type) {
+    const el = document.getElementById('statusMsg');
+    el.textContent = msg;
+    el.className   = `status-msg status-${type}`;
+    el.style.display = 'block';
+}
+function hideStatus() { document.getElementById('statusMsg').style.display = 'none'; }
+function showDataCheck(msg) {
+    const el = document.getElementById('dataCheck');
+    el.innerHTML = '<strong>✅ Data loaded:</strong> ' + msg;
+    el.classList.add('show');
+}
+function hideDataCheck() { document.getElementById('dataCheck').classList.remove('show'); }
+
 </script>
 </body>
 </html>
