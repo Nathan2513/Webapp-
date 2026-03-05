@@ -585,9 +585,9 @@
                     <div class="chart-header">
                         <h3 class="chart-title">Stock Price — Historical & Projection</h3>
                         <div style="display:flex;align-items:center;gap:20px;font-size:0.8rem;color:var(--text-secondary);">
-                            <span style="display:flex;align-items:center;gap:6px;"><span style="display:inline-block;width:20px;height:2px;background:rgba(255,255,255,0.75);"></span>Stock Price</span>
+                            <span style="display:flex;align-items:center;gap:6px;"><span style="display:inline-block;width:20px;height:2px;background:var(--text-primary);opacity:0.7;"></span>Stock Price</span>
                             <span style="display:flex;align-items:center;gap:6px;"><span style="display:inline-block;width:20px;height:2px;background:#FF7A00;"></span>DCF Fair Value</span>
-                            <span style="display:flex;align-items:center;gap:6px;"><span style="display:inline-block;width:20px;border-top:2px dashed rgba(255,255,255,0.4);"></span>Target</span>
+                            <span style="display:flex;align-items:center;gap:6px;"><span style="display:inline-block;width:20px;height:0;border-top:2px dashed var(--text-secondary);opacity:0.5;"></span>Target</span>
                         </div>
                     </div>
                     <div class="chart-wrapper"><canvas id="stockPriceChart"></canvas></div>
@@ -1217,8 +1217,10 @@ function updateUI(r) {
 function chartColors() {
     const dark = html.getAttribute('data-theme') !== 'light';
     return {
-        grid: dark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.07)',
-        tick: dark ? '#94A3B8' : '#6B7280',
+        grid:      dark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.07)',
+        tick:      dark ? '#94A3B8' : '#6B7280',
+        priceLine: dark ? 'rgba(255,255,255,0.85)' : 'rgba(30,41,59,0.85)',
+        connector: dark ? 'rgba(255,255,255,0.35)' : 'rgba(30,41,59,0.35)',
     };
 }
 
@@ -1333,11 +1335,11 @@ function buildPriceChart(r) {
         type: 'line',
         data: {
             datasets: [
-                // White historical price line
+                // Historical price line (white in dark, dark in light)
                 {
                     label: 'Stock Price',
                     data: whiteData,
-                    borderColor: 'rgba(255,255,255,0.85)',
+                    borderColor: c.priceLine,
                     backgroundColor: 'transparent',
                     borderWidth: 2,
                     tension: 0.35,
@@ -1364,7 +1366,7 @@ function buildPriceChart(r) {
                 {
                     label: '_connector',
                     data: connectorData,
-                    borderColor: 'rgba(255,255,255,0.4)',
+                    borderColor: c.connector,
                     backgroundColor: 'transparent',
                     borderWidth: 1.5,
                     borderDash: [5, 5],
