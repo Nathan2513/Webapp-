@@ -301,7 +301,6 @@
         }
         .chart-toggle:hover { border-color: var(--primary-orange); color: var(--primary-orange); }
         .chart-toggle.active { background: var(--primary-orange); color: white; border-color: var(--primary-orange); }
-        .chart-toggle.active-green { background: var(--success-color); color: white; border-color: var(--success-color); }
         .chart-wrapper { position: relative; height: 300px; }
 
         /* STATUS */
@@ -1196,17 +1195,18 @@ function calculateDCF() {
     let shrMul = 1;
 
     for (let i = 1; i <= years; i++) {
-        mPS    *= (1 + growthRate);
         shrMul *= (1 + shareChange);
+
+        mPS *= (1 + growthRate);
         projNoDecay.push(mPS / shrMul);
 
         mPSD *= (1 + gD);
-        projWithDecay.push(mPSD);
+        projWithDecay.push(mPSD / shrMul);   // share change applied to both
         gD = Math.max(0, gD - decayRate);
     }
 
-    // Future price = projected metric per-share × ratio
-    const futureStockPrice = (projNoDecay[years - 1] || 0) * ratio;
+    // Future price uses WITH-DECAY projection (decay has real effect on DCF)
+    const futureStockPrice = (projWithDecay[years - 1] || 0) * ratio;
 
     // Total cumulative dividends per share (undiscounted)
     const lastDiv = stockData.quote?.lastAnnualDividend || 0;
@@ -1541,29 +1541,38 @@ function buildMetricChart(r) {
     metricChart._projDecay = projWithDecayData;
     metricChart._label     = label;
 
-    // Reset buttons
+    // Restore whichever series was active (don't reset to historical on every recalc)
+    const seriesMap = {
+        historical:      { data: histData,          bg: '#10B981', label: `${label} (Historical)` },
+        projected:       { data: projNoDecayData,   bg: '#FF7A00', label: `${label} (Projected)` },
+        projected_decay: { data: projWithDecayData, bg: '#FF7A00', label: `${label} (With Decay)` },
+    };
+    const active = seriesMap[activeMetricSeries] || seriesMap.historical;
+    metricChart.data.datasets[0].data            = active.data;
+    metricChart.data.datasets[0].backgroundColor = active.bg;
+    metricChart.data.datasets[0].label           = active.label;
+    metricChart.update('none');
+
+    // Sync button highlight
     ['toggleHist','toggleProj','toggleDecay'].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.classList.remove('active','active-green');
+        document.getElementById(id)?.classList.remove('active');
     });
-    const h = document.getElementById('toggleHist');
-    if (h) h.classList.add('active','active-green');
-    activeMetricSeries = 'historical';
+    const btnMap = { historical:'toggleHist', projected:'toggleProj', projected_decay:'toggleDecay' };
+    document.getElementById(btnMap[activeMetricSeries] || 'toggleHist')?.classList.add('active');
 }
 
 window.switchMetricChart = function(btn, series) {
     activeMetricSeries = series;
     ['toggleHist','toggleProj','toggleDecay'].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.classList.remove('active','active-green');
+        document.getElementById(id)?.classList.remove('active');
     });
-    btn.classList.add('active','active-green');
+    btn.classList.add('active');
     if (!metricChart) return;
     const lbl = metricChart._label;
     const map = {
-        historical:      { data:metricChart._hist,      bg:'#10B981', label:`${lbl} (Historical)` },
-        projected:       { data:metricChart._proj,      bg:'#3b82f6', label:`${lbl} (Projected)` },
-        projected_decay: { data:metricChart._projDecay, bg:'#f59e0b', label:`${lbl} (With Decay)` },
+        historical:      { data: metricChart._hist,      bg: '#10B981', label: `${lbl} (Historical)` },
+        projected:       { data: metricChart._proj,      bg: '#FF7A00', label: `${lbl} (Projected)` },
+        projected_decay: { data: metricChart._projDecay, bg: '#FF7A00', label: `${lbl} (With Decay)` },
     };
     const s = map[series];
     if (!s) return;
